@@ -3,144 +3,221 @@
 #set page(fill: luma(12%)) if dark
 
 #import "@preview/numbly:0.1.0": numbly
+#import "@preview/cetz:0.3.1"
+#import "@preview/fletcher:0.5.2" as fletcher: node, edge
 
 #set par(justify: true)
 #set text(size: 14pt)
-#set heading(numbering: numbly(
-  sym.square + "",
-  sym.section + "{2}.",
-  default: none,
-))
+#set heading(numbering: numbly(sym.section + "{1} "))
 
+// Horizontal rule
 #let hrule = line(length: 100%)
+
+// Blob for fletcher diagrams
+#let blob(
+  pos,
+  label,
+  tint: white,
+  ..args,
+) = node(
+  pos,
+  align(center, label),
+  fill: tint.lighten(80%),
+  stroke: 1pt + tint.darken(20%),
+  corner-radius: 5pt,
+  ..args,
+)
+
+// Aliases
+#let imply = sym.arrow.r
+#let iff = sym.arrow.l.r
+#let maps = sym.arrow.bar
 
 #show "TLA+": [TLA#super("+")]
 
-= Formal Methods in Software Engineering
+///////////////////////////////////////
 
-== Annotation
+#block[
+  #set par(justify: false)
+  #set text(size: 1.5em)
+  *Formal Methods in Software Engineering*
+]
 
-This course explores the foundational principles and practical applications of Formal Methods in Software Engineering.
-Students will learn how to specify, model, and verify software systems using techniques such as model checking (with Kripke structures, TLA+, and temporal logics) and symbolic execution (with SMT solvers).
-A light introduction to theorem proving with Coq will contrast automated approaches with interactive proof development.
-Emphasis will be placed on real-world applications and industry case studies, culminating in group projects and literature reviews.
+= Annotation
 
-== Learning Outcomes
+Are you curious about the logical foundations that guarantee software correctness from the ground up?
+In this course, you will deepen your understanding of propositional and first-order logic, see how SAT and SMT solvers automate reasoning, and explore a range of model-checking techniques --- from transition systems and Kripke structures to temporal logics (LTL, CTL, ATL).
+We also examine BDD-based verification, bounded model checking (BMC), and property-directed reachability (IC3/PDR) to show how safety, liveness, and fairness properties can be systematically verified.
+The course centers on the core theories and methods that shape modern formal verification research, and uses academic tools like NuSMV, Alloy/Forge, and Dafny.
+This blend of theory and hands-on exploration is ideal for CS students seeking a thorough look at how logic-based techniques ensure reliability in complex software systems.
+
+
+= (more motivating) Annotation
+
+Curious about how mathematics can make software error-free?
+This course offers a thorough exploration of logic-based techniques for modeling and verifying complex systems.
+You’ll gain strong foundations in propositional and first-order logic, learn how SAT and SMT solvers automate reasoning, and practice a variety of model-checking methods --- from Kripke structures and transition systems to specifications and temporal logics (LTL, CTL, ATL).
+We also look at BDD-based verification, bounded model checking (BMC), and property-directed reachability (IC3/PDR), revealing how safety, liveness, and fairness properties can be systematically proven.
+By working with academic tools such as NuSMV, Alloy/Forge, and Dafny, you’ll discover how cutting-edge research aligns with practical analysis techniques, readying you for deeper explorations in formal verification.
+
+
+= (more formal) Annotation
+
+This course examines the logical foundations of software correctness through a rigorous study of formal verification methods.
+Students will refine their understanding of propositional and first-order logic, explore SAT and SMT solver internals, and learn a range of model-checking techniques, including Kripke structures, temporal logics (LTL, CTL, ATL), and BDD-based algorithms.
+Further topics include bounded model checking (BMC) and property-directed reachability (IC3/PDR), each illustrating key theoretical insights that underpin the verification of safety, liveness, and fairness properties.
+Although the course showcases academic tools such as NuSMV, Alloy/Forge, and Dafny, its primary focus lies in the deep theoretical concepts that unify current research in formal methods, making it ideal for students seeking an advanced, concept-driven understanding of software reliability.
+
+
+
+= Learning Outcomes
 
 By the end of the semester, students should be able to:
+- Demonstrate fluency in propositional and first-order logic for use in formal specification.
+- Encode verification problems in SAT/SMT formulations and effectively utilize modern solvers (e.g., Cadical, Z3).
+- Model reactive systems using transition systems and Kripke structures, and specify correctness properties in temporal logics (LTL, CTL, ATL).
+- Employ a range of model checking techniques --- including SAT-based, BDD-based, bounded model checking, and IC3/PDR --- to verify safety and liveness properties.
+- Use software tools (NuSMV, Alloy/Forge, Dafny) to perform model checking and automated reasoning on simplified but realistic software systems.
+- Critically assess industrial and academic literature on formal verification, synthesizing insights into a final project or case study presentation.
 
-- Formally specify concurrent or complex software systems using TLA+.
-- Construct and interpret Kripke structures and temporal logic (LTL) formulas to model system properties.
-- Apply model checking techniques in NuSMV, including SAT-based bounded model checking.
-- Understand and experiment with symbolic execution as a complementary technique for verifying software.
-- Use Coq at a basic level to prove simple properties and distinguish between automated vs. interactive verification.
-- Critically review academic/industrial literature on the use of formal methods and propose simplified project implementations.
+= Prerequisites
 
-== Prerequisites
+Students are expected to have prior exposure to:
+- Discrete mathematics (propositional logic, set theory)
+- Basic proof techniques (natural deduction)
+- Automata theory and formal languages
+- At least one programming language
 
-Students are expected to be proficient in discrete mathematics (propositional logic, natural deduction, set theory) and to have basic knowledge of automata theory, formal languages, and at least one programming language.
-Prior completion of a course in software engineering or systems design is helpful but not strictly required.
+Experience with software engineering or systems design is helpful but not required.
 
-== Course Format
+= Course Format
 
-- Lectures
-- Seminars
-- Assignments
-- Project
-- Exam
+- *Lectures*: Present theoretical foundations and methods.
+- *Seminars*: Discuss research papers, advanced topics, and industrial cases.
+- *Assignments*: Reinforce core concepts via problem sets and tool-based labs.
+- *Project*: Undertake a substantial verification or modeling task.
+- *Exam*: Assess understanding of theoretical and applied aspects of formal methods.
 
-== Course Structure
+= Course Structure
 
-Topics are introduced in a modular fashion, roughly in the order below.
-Depending on class progress, some modules may be shifted or compressed.
+== Overview and Industrial Context
 
-+ *Overview and Industrial Context:* \
-  This module establishes the importance of formal methods by showcasing real-world failures and successes in software and systems engineering.
-  - Students will examine case studies from leading organizations (Intel, NASA, Amazon) to illustrate how formal techniques address software complexity and correctness.
-  - By reflecting on past accidents and current best practices, students will appreciate why rigorous approaches to specification and verification are indispensable for critical systems.
-  - Discussion sessions will prompt students to connect these lessons to their own fields of interest.
+- *Key Themes:* Historical failures (Therac-25, Ariane 5), business impacts (Intel, NASA), and how formal methods reduce errors.
+- *Activities:* Case study discussions, short reflections on the cost of software bugs.
 
-+ *SAT and SMT for Verification:* \
-  An overview of how SAT/SMT solvers (MiniSAT, Z3) provide the foundation for verifying models and finding counterexamples.
-  Simple exercises such as encoding small constraints or puzzles will be used to demonstrate solver capabilities.
+== Propositional Logic
 
-+ *Model Checking Foundations:* \
-  A focused look at Kripke structures, labeling, and temporal logic (LTL).
-  Students will formulate system properties (safety, liveness) and explore how to verify them.
+- *Content:* Syntax, semantics, normal forms (CNF), tautologies, satisfiability.
+- *Applications:* Encoding simple constraints, forming the basis for SAT solving.
+- *In-class/Lab:* Translating small puzzles or system properties into propositional logic.
 
-+ *NuSMV Model Checker:* \
-  Hands-on use of NuSMV for modeling concurrent or reactive systems.
-  Students will learn to specify LTL properties, run model checking, interpret counterexamples, and address challenges like state-space explosion.
+== SAT
 
-+ *TLA+ for System Specification:* \
-  Specification syntax, actions, and states in TLA+.
-  The TLA+ Toolbox will be used for writing, simulating, and model checking high-level system requirements.
-  Concepts such as refinement and invariants will be introduced with small concurrent algorithm examples.
+- *Content:* SAT-solving fundamentals, DPLL backtracking, conflict-driven clause learning (CDCL).
+- *Tools and Demos:* MiniSAT, short solver experiments.
+- *Assignments:* Students encode a small problem (e.g., Sudoku or scheduling) and run a solver to find solutions or detect unsatisfiability.
 
-+ *Bounded Model Checking and Symbolic Execution:* \
-  Coverage of SAT-based bounded model checking, unrolling transitions to a fixed depth, encoding them into SAT/SMT.
-  Students will also learn symbolic execution fundamentals, exploring how tools like KLEE systematically test paths in a program.
+== First-Order Logic
 
-+ *Introduction to Coq:* \
-  A short tour of interactive theorem proving.
-  Key features of Coq (proof terms, tactics, induction) will be demonstrated through small functional programs or data structure proofs.
-  The goal is to show the contrast between automated and manual proof approaches.
+- *Content:* Syntax, semantics, quantifiers, free vs. bound variables, theories in FOL.
+- *Deduction in FOL:* Natural deduction, sequent calculus (at a high level).
+- *Relevance:* Understanding how real software specifications require more expressive logic than propositional alone.
 
-+ *Research, Case Studies, and Student Presentations:* \
-  A deeper examination of industrial applications (e.g., Microsoft's driver verification, NASA mission-critical software, Amazon's usage of TLA+).
-  Students will present reviews of selected research papers or book chapters, focusing on the problem domain, formal verification techniques, and insights gained.
+== SMT
 
-== Projects and Assignments
+- *Content:* Extending SAT to Satisfiability Modulo Theories (linear arithmetic, arrays, bitvectors).
+- *Standard Formats:* SMT-LIB language for specifying problems.
+- *Tools and Frameworks:* Z3 usage.
+- *Nelson-Oppen Framework:* Combining theories for more complex verifications.
 
-Throughout the course, students will complete lab exercises and a major project. Exercises will reinforce tool proficiency (e.g., NuSMV specs, TLA+ modeling, small symbolic execution tasks).
-The major project can be chosen from instructor-proposed topics or student proposals with instructor approval.
-Possible project directions include bounded model checking of a simplified protocol, symbolic execution of a small software component, or a TLA+ specification of a concurrency scheme.
+== Model Checking
 
-Students will also conduct literature reviews on relevant research or industry papers, culminating in group presentations.
-These reviews should dissect how formal methods were applied, what problems were solved, and how this could translate to real business contexts.
+- *Transition Systems and Kripke Structures:* Modeling program states, transitions, labeling atomic propositions.
+- *Temporal Logics:* Safety, liveness, fairness; LTL, CTL, ATL for specifying system properties.
+- *NuSMV Tutorial:* Creating models, writing properties, interpreting counterexamples.
+- *Alloy / Forge:* Relational modeling, generating instances or counterexamples.
+- *Dafny:* A language+tool that integrates specification, verification, and proof-like checks.
 
-== Grading and Evaluation
+== Advanced Model Checking Techniques
 
-- *Homework and Lab Exercises* (20%): Short assignments focusing on each new tool or technique introduced.
-- *Literature Review & Presentation* (20%): Students individually or in small groups evaluate an academic or industrial formal methods case study.
-- *Term Project* (30%): A substantial verification or specification effort that integrates multiple course topics. Final deliverables include a written report and an in-class demo or presentation.
-- *Final Exam* (20%): A written or oral exam covering theoretical concepts, tool usage, and practical applications.
-- *Participation* (10%): Assessed through discussion contributions, attendance, and engagement in peer reviews.
+- *SAT-based Model Checking:* Bounded model checking (BMC) with unrolling.
+- *BDD-based Model Checking:* Using binary decision diagrams for state-space representation.
+- *k-Induction and Inductive Invariants:* Proving properties beyond a fixed bound.
+- *IC3 / PDR:* Incremental construction of inductive proofs, property-directed reachability.
+- *Comparisons and Trade-Offs:* When each technique excels or struggles.
 
-=== Homework
+= Projects and Assignments
 
-=== Literature Review & Presentation
+Students will complete:
+1. *Lab Exercises:* Applying each method or tool in small-scale examples --- e.g., encoding a puzzle in SAT, verifying a simple concurrency protocol in NuSMV, exploring an Alloy model.
+2. *Major Course Project:* A deeper verification or specification task selected from instructor-provided ideas (e.g., verifying a distributed cache algorithm in NuSMV or Alloy, experimenting with Dafny for array safety proofs).
+3. *Literature Reviews and Presentations:* Groups research an industrial or academic use of formal methods (e.g., hardware verification at Intel, flight software checks at NASA). They present both the methodology and lessons learned.
 
-=== Term Project
+= Grading and Evaluation
 
-=== Final Exam
+#[
+  #import fletcher.shapes: *
+  #set align(center)
+  #fletcher.diagram(
+    // debug: true,
+    spacing: 2pt,
+    edge-stroke: 1pt,
+    edge-corner-radius: 5pt,
+    mark-scale: 150%,
 
-=== Participation
+    blob((0, 0), [Homework (20%)], shape: rect, tint: green),
+    blob((1, 0), [Review (20%)], shape: rect, tint: green),
+    blob((2, 0), [Project (30%)], shape: rect, tint: green),
+    blob((3, 0), [Exam (20%)], shape: rect, tint: blue),
+    blob((4, 0), [Participation (10%)], shape: rect, tint: purple),
+  )
+]
+
+== Homework and Lab Exercises (20%)
+
+Frequent assignments focusing on each logic or tool introduced.
+
+== Literature Review & Presentation (20%)
+
+Students analyze a real case study, synthesizing insights from papers or technical reports.
+
+== Term Project (30%)
+
+A substantial modeling/verification effort that integrates multiple techniques from the course. Includes a written report and final presentation.
+
+== Final Exam (20%)
+
+Tests both theoretical understanding (logic, model checking principles) and tool-based reasoning (e.g., how to encode properties in NuSMV).
+
+== Participation (10%)
+
+Evaluates discussion contributions, attendance, engagement in peer reviews, and collaboration in labs.
 
 TODO: coins/tokens
 
-== Course Policies
+= Course Policies
 
 Standard university policies on academic integrity, attendance, and accommodations apply.
 Students are encouraged to regularly collaborate and discuss concepts, but all submitted work must be their own unless explicitly stated otherwise.
 Late submissions will be penalized unless prior arrangements are made with the instructor.
 
-== Resources
+= Resources
 
 - Clarke, Grumberg, and Peled, Model Checking.
 - Lamport, Specifying Systems (TLA+).
 - Huth and Ryan, Logic in Computer Science.
 - SAT/SMT solver documentation (e.g., Z3, MiniSAT).
 - Online tutorials for symbolic execution tools (KLEE, Java PathFinder).
-- Coq documentation and “Coq in a Hurry” by Yves Bertot.- https://softwarefoundations.cis.upenn.edu/
+- Coq documentation and “Coq in a Hurry” by Yves Bertot.
+- https://softwarefoundations.cis.upenn.edu/
 
 Instructor handouts, slides, and additional readings will be posted on the course website.
-Software such as NuSMV, TLA+ Toolbox, and Coq will be provided or linked for students to download.
+Software will be provided or linked for students to download.
 
-== Additional Information
+= Additional Information
 
 ...
 
-== Contacts
+= Contacts
 
 ...
