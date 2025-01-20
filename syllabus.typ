@@ -45,30 +45,11 @@
 
 = Annotation
 
-Are you curious about the logical foundations that guarantee software correctness from the ground up?
-In this course, you will deepen your understanding of propositional and first-order logic, see how SAT and SMT solvers automate reasoning, and explore a range of model-checking techniques --- from transition systems and Kripke structures to temporal logics (LTL, CTL, ATL).
-We also examine BDD-based verification, bounded model checking (BMC), and property-directed reachability (IC3/PDR) to show how safety, liveness, and fairness properties can be systematically verified.
-The course centers on the core theories and methods that shape modern formal verification research, and uses academic tools like NuSMV, Alloy/Forge, and Dafny.
-This blend of theory and hands-on exploration is ideal for CS students seeking a thorough look at how logic-based techniques ensure reliability in complex software systems.
-
-
-= (more motivating) Annotation
-
-Curious about how mathematics can make software error-free?
-This course offers a thorough exploration of logic-based techniques for modeling and verifying complex systems.
-You’ll gain strong foundations in propositional and first-order logic, learn how SAT and SMT solvers automate reasoning, and practice a variety of model-checking methods --- from Kripke structures and transition systems to specifications and temporal logics (LTL, CTL, ATL).
-We also look at BDD-based verification, bounded model checking (BMC), and property-directed reachability (IC3/PDR), revealing how safety, liveness, and fairness properties can be systematically proven.
-By working with academic tools such as NuSMV, Alloy/Forge, and Dafny, you’ll discover how cutting-edge research aligns with practical analysis techniques, readying you for deeper explorations in formal verification.
-
-
-= (more formal) Annotation
-
-This course examines the logical foundations of software correctness through a rigorous study of formal verification methods.
-Students will refine their understanding of propositional and first-order logic, explore SAT and SMT solver internals, and learn a range of model-checking techniques, including Kripke structures, temporal logics (LTL, CTL, ATL), and BDD-based algorithms.
-Further topics include bounded model checking (BMC) and property-directed reachability (IC3/PDR), each illustrating key theoretical insights that underpin the verification of safety, liveness, and fairness properties.
-Although the course showcases academic tools such as NuSMV, Alloy/Forge, and Dafny, its primary focus lies in the deep theoretical concepts that unify current research in formal methods, making it ideal for students seeking an advanced, concept-driven understanding of software reliability.
-
-
+Ever dreamed of writing perfect, bug-free code?
+In this course, you'll dive into the depths of formal methods: explore propositional and first-order logic, master SAT and SMT solvers, and discover the fundamentals of verification --- from transition systems and Kripke models to specification and temporal logics (LTL, CTL, ATL).
+We'll examine SAT- and BDD-based verification approaches, look at bounded model checking (BMC) and property-directed reachability (IC3/PDR), and show how to systematically ensure reliability and correctness (safety and liveness properties) in complex systems.
+All theoretical concepts are reinforced through hands-on examples using academic tools such as NuSMV, Alloy/Forge, and Dafny, so you can see exactly how research ideas become practical solutions.
+This course is ideal for anyone seeking to understand the core principles of verification and apply them in real projects, aiming for the highest standards of software quality and reliability.
 
 = Learning Outcomes
 
