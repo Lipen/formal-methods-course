@@ -85,7 +85,7 @@
             numbering(" [1]", page - heading.location().page() + 1)
           }
         }
-        block(inset: (bottom: 0.8em))[
+        block(inset: (bottom: 1em))[
           #context {
             body
             place(bottom, dy: 0.5em)[
