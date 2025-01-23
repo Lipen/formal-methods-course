@@ -104,9 +104,6 @@
       ]
     ],
     footer-descent: 0.8em,
-    // background: place(bottom+right, dx: -1em, dy: -1em)[
-    //   #context counter(page).display("1/1", both: true)
-    // ],
   )
   set outline(target: heading.where(level: 1), title: none)
   set bibliography(title: none)
