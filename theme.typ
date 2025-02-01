@@ -169,6 +169,9 @@
   // Fix emptyset symbol
   show sym.emptyset: set text(font: "Libertinus Sans")
 
+  // Make links underlined
+  show link: underline
+
   // Content
   content
 }
