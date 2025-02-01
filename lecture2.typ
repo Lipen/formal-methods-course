@@ -8,177 +8,140 @@
   dark: true,
 )
 
-= First-Order Logic
+= Introduction to FOL
 
 == Motivation
-- First-order logic (FOL) extends propositional logic by introducing quantifiers and predicates, allowing reasoning about objects, their properties, and relationships.
-- *Why FOL?*
-  - Propositional logic is limited to truth-functional reasoning, but many real-world problems require reasoning about individuals and their relationships.
-  - Applications: Verifying algorithms, formalizing mathematics, and modeling knowledge in AI.
+First-order logic (FOL) extends propositional logic by introducing quantifiers and predicates, enabling reasoning about objects, their properties, and relationships.
+Unlike propositional logic, which is limited to fixed truth values for statements, FOL allows expressions like "All humans are mortal" ($forall x . "Human"(x) imply "Mortal"(x)$) or "There exists a solution to this problem" ($exists x . "Solution"(x)$).
+
+Applications of FOL are diverse, spanning verifying algorithms, formalizing mathematical theories, and modeling knowledge in AI and databases.
+For instance, "Every student has an ID" translates to $forall x . ("Student"(x) imply "HasID"(x))$, ensuring structured reasoning about such properties.
 
 == What is First-Order Logic?
-- *Core Idea*:
-  - FOL combines the syntax and semantics of propositional logic with additional expressiveness for quantification and predicates.
-- *Comparison with Propositional Logic*:
-  - Propositional logic deals with true/false values for fixed statements.
-  - FOL enables reasoning about variable entities, their properties, and relationships.
-  - Example:
-    - Propositional: "A implies B" ($A imply B$).
-    - FOL: "If a person is a student, they have an ID" $forall x ("Student"(x) imply "HasID"(x))$.
+First-order logic provides a structured way to reason about entities and their relationships.
+It builds upon propositional logic by adding variables, predicates, functions, and quantifiers, allowing complex statements to be expressed.
+
+In comparison to propositional logic, which handles static true/false statements (e.g., "A implies B" as $A imply B$), FOL enables richer representations such as "If a person is a student, they have an ID" ($forall x . ("Student"(x) imply "HasID"(x))$), with $x$ representing individuals within a domain.
 
 == Syntax of First-Order Logic
+First-order logic defines a formal language consisting of several components.
 
-- *Alphabet*:
-  + Logical symbols: $not, and, or, imply, iff$.
-  + Quantifiers: $forall$ (universal) and $exists$ (existential).
-  + Variables: $x, y, z, ...$.
-  + Constants: $a, b, c, ...$ (specific entities).
-  + Functions: $f(x), g(x, y), ...$ (map objects to objects).
-  + Predicates: $P(x), Q(x, y), ...$ (statements about objects).
+*Alphabet*: Logical symbols (*not*, *and*, *or*, *imply*, *iff*), quantifiers (*forall*, *exists*), variables ($x, y, z, dots$), constants ($a, b, c, dots$), functions ($f(x), g(x, y), dots$), and predicates ($P(x), Q(x, y), dots$).
 
-- *Terms*:
-  - *Definition*: Constants, variables, or function applications.
-  - Examples:
-    - $x$ (variable), $a$ (constant), $f(x, y)$ (function).
+*Terms*: Terms denote objects in the domain and can be constants, variables, or function applications.
+Examples include $x$ (variable), $a$ (constant), and $f(x, y)$ (function).
 
-- *Atomic Formulas*:
-  - Formed by applying predicates to terms.
-  - Examples: $P(x)$, $Q(f(x), y)$.
+*Atomic Formulas*: Atomic formulas are created by applying predicates to terms, such as $P(x)$ ("$x$ satisfies property $P$") or $Q(f(x), y)$ ("$f(x)$ and $y$ are related by $Q$").
 
 == Well-Formed Formulas (WFFs)
-- Built inductively from atomic formulas using:
-  + Logical connectives: $and, or, imply, iff$.
-  + Quantifiers: $forall$ and $exists$.
+Formulas in FOL are defined inductively.
 
-- Examples:
-  - $forall x . (P(x) imply Q(x))$.
-  - $exists y . (R(y) and P(f(a, y)))$.
+*Base Case*: Atomic formulas, such as $P(x)$, are WFFs.
 
-- Example of invalid (not well-formed) formula: $forall (P(x) and Q(x))$ (missing quantified variable).
+*Inductive Step*: If $alpha$ and $beta$ are WFFs, then the following are also WFFs:
+- $not alpha$
+- $(alpha and beta)$
+- $(alpha or beta)$
+- $(alpha imply beta)$
+- $(alpha iff beta)$
+- $(forall x . alpha)$
+- $(exists x . alpha)$
+
+*Examples*: $forall x . (P(x) imply Q(x))$, $exists y . (R(y) and P(f(a, y)))$.
 
 == Semantics of First-Order Logic
+The semantics of FOL specify how formulas are interpreted.
 
-- *Interpretations*:
-  - Define the meaning of terms, predicates, and formulas.
-  - An interpretation $I$ consists of:
-    + A domain $D$ (set of objects).
-    + An assignment of values to constants, functions, and predicates.
+A *domain* ($D$) represents the set of all objects under consideration.
+*Variable assignments* map variables to elements in $D$, while *interpretations* assign meanings to constants, functions, and predicates.
 
-- *Variable Assignments*:
-  - Map variables to elements in the domain $D$.
-  - Extended to terms recursively using function interpretations.
+*Truth Conditions*:
+1. $P(t_1, dots, t_n)$ is true if $(t_1, dots, t_n)$ is in the interpretation of $P$.
+2. $forall x . phi$ is true if $phi$ is true for all assignments $x in D$.
+3. $exists x . phi$ is true if $phi$ is true for some assignments $x in D$.
 
-- *Truth of a Formula*:
-  - Defined inductively:
-    - $P(t_1, ..., t_n)$ is true if $(t_1, ..., t_n)$ is in the interpretation of $P$.
-    - $forall x . phi$ is true if $phi$ is true for all assignments of $x$.
-    - $exists x . phi$ is true if $phi$ is true for some assignment of $x$.
+*Example*: Let $D = {1, 2, 3}$, and $P(x)$ mean "$x$ is even."
+- $forall x . P(x)$ is false (counter-example: $x = 3$ is not even).
+- $exists x . P(x)$ is true (example: $x = 2$ is even).
 
-#block(breakable: false)[
-  - *Examples*:
-    - Domain $D = \{1, 2, 3\}$.
-    - $P(x)$: "x is even".
-    - $forall x P(x)$: False (not all numbers are even).
-    - $exists x P(x)$: True (2 is even).
-]
+= Metatheory
 
 == Logical Theories
-- *Definition*:
-  - A logical theory $T$ is a set of axioms (formulas assumed true).
-  - Includes all formulas derivable from these axioms.
-- *Examples of Theories*:
-  + Peano Arithmetic: Axioms for natural numbers.
-  + Group Theory: Axioms for algebraic groups.
-  + Geometry: Axioms defining points, lines, and planes.
-- *Consistency and Completeness*:
-  - A theory is consistent if it does not derive contradictions.
-  - A theory is complete if, for every formula $phi$, either $phi$ or $not phi$ is derivable.
+A logical theory $T$ consists of a set of axioms (assumed true formulas) and all formulas derivable from them.
+
+*Examples*:
+- *Peano Arithmetic*: Defines natural numbers with axioms for addition and multiplication.
+- *Group Theory*: Specifies algebraic structures with axioms for identity, inverses, and associativity.
+- *Geometry*: Encodes relationships among points, lines, and planes.
+
+A theory is *consistent* if no contradictions are derivable, and *complete* if every formula or its negation is derivable.
 
 == Logical Entailment
-- *Definition*:
-  - $Gamma models phi$ means $phi$ is true in every model of $Gamma$.
-  - Generalizes propositional entailment.
-- *Examples*:
-  - $forall x . (P(x) imply Q(x)), P(a) models Q(a)$.
-- *Relation to Proof*:
-  - Logical entailment connects semantic truth to syntactic provability.
+Logical entailment ($Gamma models phi$) means that $phi$ is true in all models of $Gamma$.
+For instance, if $Gamma = {forall x . (P(x) imply Q(x)), P(a)}$, then $Gamma models Q(a)$.
+
+Entailment ensures that semantic truths are provable within a syntactic framework.
 
 == Proof Systems for First-Order Logic
-- *Natural Deduction*:
-  - Rules for quantifier introduction/elimination and connectives.
-  - Example:
-    - From $forall x . P(x)$, infer $P(a)$ (universal elimination).
-  - Constructing formal proofs step by step.
-- *Sequent Calculus*:
-  - Represents logical arguments as sequents: $Gamma imply Delta$.
-  - Rules for manipulating sequents.
-  - Example:
-    - $Gamma imply P(a)$ inferred from $Gamma imply forall x . P(x)$.
-- *Resolution*:
-  - Refutation-based method for proving unsatisfiability.
-  - Converts formulas into clausal form.
-  - Unification: Finding substitutions to make terms identical.
-  - Example: Proving $exists x . (P(x) and Q(x))$ entails $exists x . P(x)$.
+Several formal proof systems are used to reason about FOL:
+
+*Natural Deduction*: Introduces and eliminates quantifiers and connectives.
+For example, from $forall x . P(x)$, infer $P(a)$ (universal elimination).
+
+*Sequent Calculus*: Represents arguments as sequents ($Gamma imply Delta$), where $Gamma$ entails $Delta$.
+Example: From $Gamma imply forall x . P(x)$, infer $Gamma imply P(a)$.
+
+*Resolution*: Refutation-based method for proving unsatisfiability.
+It converts formulas into clausal form and derives contradictions to establish proofs.
 
 == Soundness and Completeness
-- *Soundness*:
-  - If $Gamma tack phi$, then $Gamma models phi$.
-  - Ensures derivations produce semantically valid results.
-- *Completeness*:
-  - If $Gamma models phi$, then $Gamma tack phi$.
-  - Guarantees all semantically true formulas are provable.
-- *Compactness Theorem*:
-  - If every finite subset of $Gamma$ is satisfiable, then $Gamma$ is satisfiable.
-  - Applications in model theory and automated reasoning.
-  - Example: Infinite sets of constraints on natural numbers.
+Soundness ensures that every provable formula is true in all models ($Gamma tack phi imply Gamma models phi$).
+Completeness guarantees that every formula true in all models is provable ($Gamma models phi imply Gamma tack phi$).
+
+The *Compactness Theorem* states that if every finite subset of $Gamma$ is satisfiable, then $Gamma$ is satisfiable.
+This is crucial for reasoning about infinite systems.
 
 == Decidability and Complexity
-- *Decidability of FOL*:
-  - FOL is undecidable: No algorithm can determine the truth of every FOL formula.
-  - Contrast with propositional logic (decidable via truth tables).
-- *Semi-Decidability*:
-  - If $Gamma models phi$, there exists a proof procedure to verify it.
-  - If $Gamma models.not phi$, no guarantee of termination.
-- *Complexity in Restricted Cases*:
-  - Certain fragments of FOL (e.g., monadic logic) are decidable.
-  - Example: Deciding satisfiability for formulas with a single quantifier.
+FOL is undecidable; no algorithm can determine the truth of every FOL formula.
+However, certain fragments, like monadic logic, are decidable.
+Semi-decidability allows verification of provable statements but not their refutations.
 
-== Theorem Proving in First-Order Logic
-- *Automated Theorem Proving*:
-  - Tools like Prover9, Vampire, and Coq implement FOL reasoning.
-  - Applications: Program verification, AI planning.
-  - Example: Prove "If all inputs to a circuit are high, the output is high."
-- *Resolution in Practice*:
-  - Convert formulas to clausal form.
-  - Apply resolution rules iteratively to detect contradictions.
-- *Interactive Proof Assistants*:
-  - Examples: Coq, Lean.
-  - Application: Verifying mathematical proofs and software correctness.
+== Theorem Proving and Applications
+Automated theorem proving tools like Prover9, Coq, and Lean are widely used in:
 
-== Examples and Applications
-- *Translating Natural Language*:
-  - "All students passed": $forall x . ("Student"(x) imply "Passed"(x))$.
-  - "Some courses are challenging": $exists y . ("Course"(y) and "Challenging"(y))$.
-- *Verifying Theorems*:
-  - Show $forall x . (P(x) imply Q(x)) and P(a)$ entails $Q(a)$.
-- *Database Constraints*:
-  - Example: "Every employee has a manager": $forall x . ("Employee"(x) imply exists y . ("Manager"(y) and "ReportsTo"(x, y)))$.
+- *Verification*: Ensuring correctness of algorithms.
+- *Planning*: Reasoning about sequences of actions.
+- *AI*: Modeling and querying knowledge bases.
 
-== Advanced Topics
-- *Extensions of FOL*:
-  - Higher-order logic: Quantification over predicates and functions.
-  - Temporal logic: Reasoning about time-dependent properties.
-  - Modal logic: Adding necessity and possibility operators.
-- *Skolemization*:
-  - Eliminating existential quantifiers using Skolem functions.
-- *Herbrand Universes*:
-  - Constructing finite representations of models from ground terms for automated reasoning.
+= Advanced Topics
+
+== Model Theory
+
+TODO:
+- Structure
+- Models
+
+== Proof Theory
+
+TODO:
+- Natural Deduction
+- Sequent Calculus
+- Resolution
+
+= Applications
+
+== Modern Applications
+
+TODO:
+- Formal Verification
+- Knowledge Representation
+- Automated Reasoning
+- Database Theory
+- AI and Machine Learning
+
+= Conclusion
 
 == Summary
-- First-order logic (FOL) provides a powerful framework for reasoning about objects, their properties, and relationships.
-- Key topics:
-  - Syntax and semantics.
-  - Logical theories and proof systems.
-  - Soundness, completeness, and compactness.
-  - Applications in theorem proving, AI, and verification.
-- FOL underpins modern formal methods, including higher-order logics and model checking.
+First-order logic provides a foundation for reasoning about objects and their relationships.
+It extends propositional logic with quantifiers, predicates, and functions, enabling diverse applications in mathematics, AI, and formal verification.
+Understanding FOL is essential for exploring advanced topics like higher-order logic and model checking.
