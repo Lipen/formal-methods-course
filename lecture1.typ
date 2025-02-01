@@ -5,7 +5,7 @@
   date: "Spring 2025",
   authors: "Konstantin Chukharev",
   ratio: 16 / 9,
-  dark: true,
+  dark: false,
 )
 
 = Propositional Logic
@@ -145,7 +145,10 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 == Logical Laws and Tautologies
 
-- *Associative* and *Commutative* laws for $and$, $or$, $iff$.
+- *Associative* and *Commutative* laws for $and$, $or$, $iff$:
+  - $A compose (B compose C) equiv (A compose B) compose C$
+  - $A compose B equiv B compose A$
+
 - *Distributive laws*:
   - $A and (B or C) equiv (A and B) or (A and C)$
   - $A or (B and C) equiv (A or B) and (A or C)$
@@ -159,6 +162,7 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 - *Implication*:
   - $(A imply B) equiv (not A or B)$
+
 - *Contraposition*:
   - $(A imply B) equiv (not B imply not A)$
 - *Law of Excluded Middle*:
@@ -178,11 +182,12 @@ A formal logic is defined by its *syntax* and *semantics*.
 == Completeness of Connectives
 
 - All Boolean functions can be expressed using ${not, and, or}$ (so called _"standard Boolean basis"_~).
+
 - Even smaller sets are sufficient:
-  - ${not, and}$ (AIG)
+  - ${not, and}$ --- see AIG (And-Inverter Graph) and #link("http://github.com/arminbiere/aiger")[AIGER format].
   - ${not, or}$
-  - ${overline(and)}$ (NAND)
-  - ${overline(or)}$ (NOR)
+  - ${overline(and)}$ --- NAND
+  - ${overline(or)}$ --- NOR
 
 == TODO
 
