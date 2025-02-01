@@ -9,6 +9,8 @@
   dark: false,
 )
 
+#import "@preview/curryst:0.4.0": rule, proof-tree
+
 = Propositional Logic
 
 == Motivation
@@ -190,18 +192,114 @@ A formal logic is defined by its *syntax* and *semantics*.
   - ${overline(and)}$ --- NAND
   - ${overline(or)}$ --- NOR
 
+== Natural Deduction
+
+- *Natural deduction* is a proof system for propositional logic.
+
+- *Axioms*:
+  - *No axioms*.
+
+- *Rules*:
+  - *Introduction*: $and$-introduction, $or$-introduction, $imply$-introduction, $not$-introduction.
+  - *Elimination*: $and$-elimination, $or$-elimination, $imply$-elimination, $not$-elimination.
+  - *Reduction ad Absurdum*
+  - *Law of Excluded Middle* (note: forbidden in _intuitionistic_ logic)
+
+- *Proofs* are constructed by applying rules to assumptions and previously derived formulas.
+
+#align(center)[
+  #proof-tree(
+    title-inset: 0.5em,
+    horizontal-spacing: 2pt,
+    rule(
+      name: "rule name",
+      [$Gamma$ (_assumptions_) $entails$ (_conclusion_)],
+      [$Gamma_1$ $entails$ (_premise 1_)],
+      [$Gamma_2$ $entails$ (_premise 2_)],
+      [$dots$],
+    ),
+  )
+]
+
+== Inference Rules
+
+#align(center)[
+  #grid(
+    columns: (1fr, 1fr),
+    proof-tree(rule(name: [LEM], $Gamma entails phi or not phi$, [~])),
+    proof-tree(rule(name: [assumption], $Gamma, phi entails phi$, [~])),
+  )
+]
+
+#align(center)[
+  #grid(
+    columns: 1fr,
+    proof-tree(
+      rule(name: [reduction ad absurdum], $Gamma entails beta$, $Gamma entails alpha$, $Gamma entails not alpha$),
+    ),
+  )
+]
+
+#align(center)[
+  #grid(
+    columns: (1fr, 1fr, 1fr),
+    proof-tree(rule(name: [$and$-elimination], $Gamma entails alpha$, $Gamma entails alpha and beta$)),
+    proof-tree(rule(name: [$and$-elimination], $Gamma entails beta$, $Gamma entails alpha and beta$)),
+    proof-tree(
+      rule(name: [$and$-introduction], $Gamma entails alpha and beta$, $Gamma entails alpha$, $Gamma entails beta$),
+    ),
+  )
+]
+
+#align(center)[
+  #grid(
+    columns: 1fr,
+    proof-tree(
+      rule(
+        name: [$or$-elimination],
+        $Gamma entails beta$,
+        $Gamma entails alpha_1 or alpha_2$,
+        $Gamma, alpha_1 entails beta$,
+        $Gamma, alpha_2 entails beta$,
+      ),
+    ),
+  )
+]
+
+#align(center)[
+  #grid(
+    columns: (1fr, 1fr),
+    proof-tree(rule(name: [$or$-introduction], $Gamma entails alpha or beta$, $Gamma entails alpha$)),
+    proof-tree(rule(name: [$or$-introduction], $Gamma entails alpha or beta$, $Gamma entails beta$)),
+  )
+]
+
+#align(center)[
+  #grid(
+    columns: (1fr, 1fr),
+    proof-tree(
+      rule(name: [$imply$-elimination], $Gamma entails beta$, $Gamma entails alpha$, $Gamma entails alpha imply beta$),
+    ),
+    proof-tree(rule(name: [$imply$-introduction], $Gamma, alpha entails beta$, $Gamma entails alpha imply beta$)),
+  )
+]
+
 == TODO
 
-- Natural deduction
-- Soundnsess and completeness of propositional logic
-- Decidability of propositional logic
-- Complexity
-- Normal forms
-- Compactness
-- Equisatisfiability, Tseitin transformation, Example
-- DIMACS format
-- SAT
-- Cook theorem
+#import "@preview/cheq:0.2.2": checklist
+
+#show: checklist
+
+- [x] Natural deduction
+- [ ] Soundnsess and completeness of propositional logic
+- [ ] Decidability of propositional logic
+- [ ] Complexity
+- [ ] Normal forms
+- [ ] Compactness
+- [ ] Equisatisfiability, Tseitin transformation, Example
+- [ ] DIMACS format
+- [ ] SAT
+- [ ] Cook theorem
 
 == Summary
 
