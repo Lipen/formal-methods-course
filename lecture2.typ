@@ -1,3 +1,4 @@
+#import "common.typ": *
 #import "theme.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],

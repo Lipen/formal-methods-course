@@ -2,35 +2,14 @@
 #set text(fill: white) if dark
 #set page(fill: luma(12%)) if dark
 
+#import "common.typ": *
+
 #import "@preview/numbly:0.1.0": numbly
 #import "@preview/cetz:0.3.1"
-#import "@preview/fletcher:0.5.2" as fletcher: node, edge
 
 #set par(justify: true)
 #set text(size: 14pt)
 #set heading(numbering: numbly(sym.section + "{1} "))
-
-// Horizontal rule
-#let hrule = line(length: 100%)
-
-// Blob for fletcher diagrams
-#let blob(
-  pos,
-  label,
-  tint: white,
-  ..args,
-) = node(
-  pos,
-  align(center, label),
-  fill: tint.lighten(80%),
-  stroke: 1pt + tint.darken(20%),
-  corner-radius: 5pt,
-  ..args,
-)
-
-// Aliases
-#let imply = sym.arrow.r
-#let iff = sym.arrow.l.r
 
 #show "TLA+": [TLA#super("+")]
 
