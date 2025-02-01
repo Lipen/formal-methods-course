@@ -11,6 +11,9 @@
 
 #import "@preview/curryst:0.4.0": rule, proof-tree
 
+#import "@preview/cheq:0.2.2": checklist
+#show: checklist
+
 = Propositional Logic
 
 == Motivation
@@ -192,6 +195,20 @@ A formal logic is defined by its *syntax* and *semantics*.
   - ${overline(and)}$ --- NAND
   - ${overline(or)}$ --- NOR
 
+== Normal Forms
+
+- *Conjunctive Normal Form (CNF)*:
+  - A formula is in CNF if it is a _conjunction_ of _clauses_ (disjunctions of literals).
+  - Example: $(A or B) and (not A or C) and (B or not C)$ --- CNF with 3 clauses.
+
+- *Disjunctive Normal Form (DNF)*:
+  - A formula is in DNF if it is a _disjunction_ of _cubes_ (conjunctions of literals).
+  - Example: $(A and B) or (not A and C) or (B and not C)$ --- DNF with 3 cubes.
+
+- *Algebraic Normal Form (ANF)*:
+  - A formula is in ANF if it is a _sum_ of _products_ of literals (or a constant 1).
+  - Example: $A xor B overline(C) xor overline(A) C xor 1$ --- ANF with 4 terms.
+
 == Natural Deduction
 
 - *Natural deduction* is a proof system for propositional logic.
@@ -284,11 +301,19 @@ A formal logic is defined by its *syntax* and *semantics*.
   )
 ]
 
+== Soundness and Completeness
+
+TODO
+
+== Computability and Decidability
+
+TODO
+
+== Complexity
+
+TODO
+
 == TODO
-
-#import "@preview/cheq:0.2.2": checklist
-
-#show: checklist
 
 - [x] Natural deduction
 - [ ] Soundnsess and completeness of propositional logic
