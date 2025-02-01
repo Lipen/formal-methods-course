@@ -9,6 +9,8 @@
   dark: false,
 )
 
+#import "@preview/fletcher:0.5.4" as fletcher: diagram, node, edge
+
 #import "@preview/curryst:0.4.0": rule, proof-tree
 
 #import "@preview/cheq:0.2.2": checklist
