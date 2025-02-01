@@ -31,7 +31,6 @@
 // Aliases
 #let imply = sym.arrow.r
 #let iff = sym.arrow.l.r
-#let maps = sym.arrow.bar
 
 #show "TLA+": [TLA#super("+")]
 
@@ -81,10 +80,9 @@ Experience with software engineering or systems design is helpful but not requir
 
 = Course Structure
 
-== Overview and Industrial Context
+== Overview
 
-- *Key Themes:* Historical failures (Therac-25, Ariane 5), business impacts (Intel, NASA), and how formal methods reduce errors.
-- *Activities:* Case study discussions, short reflections on the cost of software bugs.
+- *Introduction to Formal Methods*: Motivation, applications, and core concepts.
 
 == Propositional Logic
 
