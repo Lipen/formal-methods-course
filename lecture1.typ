@@ -200,16 +200,16 @@ A formal logic is defined by its *syntax* and *semantics*.
 == Normal Forms
 
 - *Conjunctive Normal Form (CNF)*:
-  - A formula is in CNF if it is a _conjunction_ of _clauses_ (disjunctions of literals).
+  - A formula is in CNF if it is a conjunction of _clauses_ (disjunctions of literals).
   - Example: $(A or B) and (not A or C) and (B or not C)$ --- CNF with 3 clauses.
 
 - *Disjunctive Normal Form (DNF)*:
-  - A formula is in DNF if it is a _disjunction_ of _cubes_ (conjunctions of literals).
-  - Example: $(A and B) or (not A and C) or (B and not C)$ --- DNF with 3 cubes.
+  - A formula is in DNF if it is a disjunction of _cubes_ (conjunctions of literals).
+  - Example: $(not A and B) or (B and C) or (not A and B and not C)$ --- DNF with 3 cubes.
 
 - *Algebraic Normal Form (ANF)*:
-  - A formula is in ANF if it is a _sum_ of _products_ of literals (or a constant 1).
-  - Example: $A xor B overline(C) xor overline(A) C xor 1$ --- ANF with 4 terms.
+  - A formula is in ANF if it is a sum of _products_ of variables (or a constant 1).
+  - Example: $B xor A B xor A B C$ --- ANF with 3 terms.
 
 == Natural Deduction
 
