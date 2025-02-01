@@ -88,7 +88,7 @@
         block(inset: (bottom: 1em))[
           #context {
             body
-            place(bottom, dy: 0.5em)[
+            place(bottom, dy: 0.4em)[
               #line(length: measure(body).width, stroke: 0.8pt + title-color)
             ]
           }
