@@ -248,17 +248,29 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 #let rules-grid = (..args) => {
   // Note: each 'arg' in 'args' is a 'rule(...)'
-  let data = args.pos().map(arg => diagram(blob((0, 0), proof-tree(arg), shape: fletcher.shapes.rect, tint: green)))
   set align(center)
   grid(
-    columns: (1fr,) * data.len(),
-    ..data
+    columns: args.pos().len(),
+    column-gutter: 1em,
+    ..args
+      .pos()
+      .map(arg => diagram(
+        node(
+          (0, 0),
+          proof-tree(arg),
+          shape: fletcher.shapes.rect,
+          corner-radius: 5pt,
+          fill: green.lighten(80%),
+          stroke: 1pt + green.darken(20%),
+        ),
+      ))
   )
+  v(-0.5em)
 }
 
 #rules-grid(
   rule(
-    name: [LEM],
+    name: [law of excluded middle],
     $Gamma entails phi or not phi$,
     [~],
   ),
@@ -299,24 +311,21 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 #rules-grid(
   rule(
-    name: [$or$-elimination],
-    $Gamma entails beta$,
-    $Gamma entails alpha_1 or alpha_2$,
-    $Gamma, alpha_1 entails beta$,
-    $Gamma, alpha_2 entails beta$,
-  ),
-)
-
-#rules-grid(
-  rule(
-    name: [$or$-introduction],
+    name: [$or$-intro],
     $Gamma entails alpha or beta$,
     $Gamma entails alpha$,
   ),
   rule(
-    name: [$or$-introduction],
+    name: [$or$-intro],
     $Gamma entails alpha or beta$,
     $Gamma entails beta$,
+  ),
+  rule(
+    name: [$or$-elim],
+    $Gamma entails beta$,
+    $Gamma entails alpha_1 or alpha_2$,
+    $Gamma, alpha_1 entails beta$,
+    $Gamma, alpha_2 entails beta$,
   ),
 )
 
