@@ -242,70 +242,125 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 == Inference Rules
 
-#align(center)[
-  #grid(
-    columns: (1fr, 1fr),
-    proof-tree(rule(name: [LEM], $Gamma entails phi or not phi$, [~])),
-    proof-tree(rule(name: [assumption], $Gamma, phi entails phi$, [~])),
+#let rules-grid = (..args) => {
+  // Note: each 'arg' in 'args' is a 'rule(...)'
+  let data = args.pos().map(arg => diagram(blob((0, 0), proof-tree(arg), shape: fletcher.shapes.rect, tint: green)))
+  set align(center)
+  grid(
+    columns: (1fr,) * data.len(),
+    ..data
   )
-]
+}
 
-#align(center)[
-  #grid(
-    columns: 1fr,
-    proof-tree(
-      rule(name: [reduction ad absurdum], $Gamma entails beta$, $Gamma entails alpha$, $Gamma entails not alpha$),
-    ),
-  )
-]
+#rules-grid(
+  rule(
+    name: [LEM],
+    $Gamma entails phi or not phi$,
+    [~],
+  ),
+  rule(
+    name: [assumption],
+    $Gamma, phi entails phi$,
+    [~],
+  ),
+)
 
-#align(center)[
-  #grid(
-    columns: (1fr, 1fr, 1fr),
-    proof-tree(rule(name: [$and$-elimination], $Gamma entails alpha$, $Gamma entails alpha and beta$)),
-    proof-tree(rule(name: [$and$-elimination], $Gamma entails beta$, $Gamma entails alpha and beta$)),
-    proof-tree(
-      rule(name: [$and$-introduction], $Gamma entails alpha and beta$, $Gamma entails alpha$, $Gamma entails beta$),
-    ),
-  )
-]
+#rules-grid(
+  rule(
+    name: [reduction ad absurdum],
+    $Gamma entails beta$,
+    $Gamma entails alpha$,
+    $Gamma entails not alpha$,
+  ),
+)
 
-#align(center)[
-  #grid(
-    columns: 1fr,
-    proof-tree(
-      rule(
-        name: [$or$-elimination],
-        $Gamma entails beta$,
-        $Gamma entails alpha_1 or alpha_2$,
-        $Gamma, alpha_1 entails beta$,
-        $Gamma, alpha_2 entails beta$,
-      ),
-    ),
-  )
-]
+#rules-grid(
+  rule(
+    name: [$and$-elimination],
+    $Gamma entails alpha$,
+    $Gamma entails alpha and beta$,
+  ),
+  rule(
+    name: [$and$-elimination],
+    $Gamma entails beta$,
+    $Gamma entails alpha and beta$,
+  ),
+  rule(
+    name: [$and$-introduction],
+    $Gamma entails alpha and beta$,
+    $Gamma entails alpha$,
+    $Gamma entails beta$,
+  ),
+)
 
-#align(center)[
-  #grid(
-    columns: (1fr, 1fr),
-    proof-tree(rule(name: [$or$-introduction], $Gamma entails alpha or beta$, $Gamma entails alpha$)),
-    proof-tree(rule(name: [$or$-introduction], $Gamma entails alpha or beta$, $Gamma entails beta$)),
-  )
-]
+#rules-grid(
+  rule(
+    name: [$or$-elimination],
+    $Gamma entails beta$,
+    $Gamma entails alpha_1 or alpha_2$,
+    $Gamma, alpha_1 entails beta$,
+    $Gamma, alpha_2 entails beta$,
+  ),
+)
 
-#align(center)[
-  #grid(
-    columns: (1fr, 1fr),
-    proof-tree(
-      rule(name: [$imply$-elimination], $Gamma entails beta$, $Gamma entails alpha$, $Gamma entails alpha imply beta$),
-    ),
-    proof-tree(rule(name: [$imply$-introduction], $Gamma, alpha entails beta$, $Gamma entails alpha imply beta$)),
-  )
-]
+#rules-grid(
+  rule(
+    name: [$or$-introduction],
+    $Gamma entails alpha or beta$,
+    $Gamma entails alpha$,
+  ),
+  rule(
+    name: [$or$-introduction],
+    $Gamma entails alpha or beta$,
+    $Gamma entails beta$,
+  ),
+)
+
+#rules-grid(
+  rule(
+    name: [$imply$-elimination],
+    $Gamma entails beta$,
+    $Gamma entails alpha$,
+    $Gamma entails alpha imply beta$,
+  ),
+  rule(
+    name: [$imply$-introduction],
+    $Gamma, alpha entails beta$,
+    $Gamma entails alpha imply beta$,
+  ),
+)
+
 
 == Soundness and Completeness
 
-TODO
+- A formal system is *sound* if every provable formula is true in all models.
+  - *Weak soundness*: "every provable formula is a tautology". \
+    // If $entails alpha$, then $models alpha$.
+    #[
+      #import fletcher.shapes: *
+      #diagram(blob((0, 0), [If $entails alpha$, then $models alpha$.], shape: rect, tint: green))
+    ]
+  - *Strong soundness*: "every derivable (from $Gamma$) formula is a logical consequence (of $Gamma$)". \
+    // If $Gamma entails alpha$, then $Gamma models alpha$.
+    #[
+      #import fletcher.shapes: *
+      #diagram(blob((0, 0), [If $Gamma entails alpha$, then $Gamma models alpha$.], shape: rect, tint: green))
+    ]
+
+- A formal system is *complete* if every formula true in all models is provable.
+  - *Weak completeness*: "every tautology is provable". \
+    // If $models alpha$, then $entails alpha$.
+    #[
+      #import fletcher.shapes: *
+      #diagram(blob((0, 0), [If $models alpha$, then $entails alpha$.], shape: rect, tint: blue))
+    ]
+  - *Strong completeness*: "every logical consequence (of $Gamma$) is derivable (from $Gamma$)". \
+    // If $Gamma models alpha$, then $Gamma entails alpha$.
+    #[
+      #import fletcher.shapes: *
+      #diagram(blob((0, 0), [If $Gamma models alpha$, then $Gamma entails alpha$.], shape: rect, tint: blue))
+    ]
+
 
 == Computability and Decidability
 
@@ -318,10 +373,11 @@ TODO
 == TODO
 
 - [x] Natural deduction
-- [ ] Soundnsess and completeness of propositional logic
+- [/] Soundnsess and completeness of propositional logic
 - [ ] Decidability of propositional logic
 - [ ] Complexity
-- [ ] Normal forms
+- [/] Normal forms
+- [ ] Canonical normal forms
 - [ ] Compactness
 - [ ] Equisatisfiability, Tseitin transformation, Example
 - [ ] DIMACS format
