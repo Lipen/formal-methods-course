@@ -1,4 +1,4 @@
-#import "@preview/fletcher:0.5.2" as fletcher: node, edge
+#import "@preview/fletcher:0.5.4" as fletcher: node
 
 // Horizontal rule
 #let hrule = line(length: 100%)
