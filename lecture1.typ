@@ -16,6 +16,8 @@
 #import "@preview/cheq:0.2.2": checklist
 #show: checklist
 
+#show heading.where(level: 3): set block(above: 1em, below: 0.6em)
+
 = Propositional Logic
 
 == Motivation
