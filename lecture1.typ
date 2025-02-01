@@ -190,7 +190,7 @@ A formal logic is defined by its *syntax* and *semantics*.
 - All Boolean functions can be expressed using ${not, and, or}$ (so called _"standard Boolean basis"_~).
 
 - Even smaller sets are sufficient:
-  - ${not, and}$ --- see AIG (And-Inverter Graph) and #link("http://github.com/arminbiere/aiger")[AIGER format].
+  - ${not, and}$ --- AIG (And-Inverter Graph), see also: #link("http://github.com/arminbiere/aiger")[AIGER format].
   - ${not, or}$
   - ${overline(and)}$ --- NAND
   - ${overline(or)}$ --- NOR
