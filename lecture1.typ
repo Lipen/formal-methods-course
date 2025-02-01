@@ -85,7 +85,9 @@ A formal logic is defined by its *syntax* and *semantics*.
 #let Eval(x) = $bracket.l.double #x bracket.r.double$
 
 - Each propositional variable is assigned a truth value: $T$ (true) or $F$ (false).
+
 - More formally, _interpretation_ $nu: V arrow {0, 1}$ assigns truth values to all variables (atoms).
+
 - Truth values of complex formulas are computed (evaluated) recursively:
   + $#Eval($p$) eq.delta nu(p)$, where $p in V$ is a propositional variable
   + $#Eval($not alpha$) eq.delta 1 - #Eval($alpha$)$
