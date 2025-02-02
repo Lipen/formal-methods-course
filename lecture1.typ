@@ -359,7 +359,6 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
   ),
 )
 
-
 == Soundness and Completeness
 
 - A formal system is *sound* if every provable formula is true in all models.
@@ -390,15 +389,10 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
       #diagram(blob((0, 0), [If $Gamma models alpha$, then $Gamma entails alpha$.], shape: rect, tint: blue))
     ]
 
-
 == Computability
 
-#colorbox(
-  title: [Church--Turing Thesis],
-  color: "teal",
-  stroke: 1pt,
-)[
-  *Computable functions* are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
+#definition(title: [Church--Turing Thesis])[
+  _Computable functions_ are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
 ]
 
 #quote[
@@ -409,14 +403,14 @@ For example, a partial function $f : NN^k arrow.hook NN$ is computable ("can be 
 - If $f(x)$ is defined, then the program terminates on the input $x$ with the value $f(x)$ stored in the computer memory.
 - If $f(x)$ is undefined, then the program never terminates on the input $x$.
 
+#definition[
+  An *effective procedure* is a finite, deterministic, mechanical algorithm that guarantees to terminate and produce the correct answer in a finite number of steps.
+]
+
 == Decidability
 
-#colorbox(
-  title: [Decidable set],
-  color: "blue",
-  stroke: 1pt,
-)[
-  Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
+#definition(title: [Decidable set])[
+  Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* (or *computable*) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
 ]
 
 *Examples:*
@@ -439,15 +433,71 @@ In general, it is undecidable.
 
 However, it is possible to obtain a weaker result.
 
-#definition[
-  A set $A$ is *semi-decidable* (or *effectively enumerable*) if there is an _effective procedure_ which lists, in some order, every member of $A$.
+#definition(title: [Semi-decidable set])[
+  A set $S$ is *computably enumerable* if there is an _enumeration procedure_ which lists, in some order, every member of $S$: $s_1, s_2, s_3 dots$
+
+  Equivalently, a set $S$ is *semi-decidable* if there is an algorithm such that the set of inputs for which the algorithm halts is exactly $S$.
 ]
 
-Note that if $A$ is infinite, this procedure will _never_ finish, but every member of $A$ will be listed _eventually_, after some finite amount of time.
+Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but every member of $S$ will be listed _eventually_, after some finite amount of time.
+
+*Some properties:*
+- Decidable sets are closed under union, intersection, Cartesian product, and complement.
+- Semi-decidable sets are closed under union, intersection, and Cartesian product.
+
+#pagebreak()
 
 #theorem[
-  A set $A$ of expressions is effectively enumerable iff there is an effective procedure which, given any expression $alpha$, produces the answer "yes" iff $alpha in A$.
+  A set $S$ is computably enumerable iff it is semi-decidable.
 ]
+
+_(here, we assume that $S$ is a set of WFFs)_
+
+_(`=>` proof of "only if" part)_ \ If $S$ is computably enumerable, we can check if $alpha in S$ by enumerating all members of $S$ and checking if $alpha$ is among them.
+If it is, we answer "yes"; otherwise, we continue enumerating.
+Thus, if $alpha in S$, the procedure produces "yes".
+If $alpha notin S$, the procedure runs forever.
+
+_(`<=` proof of "if" part)_ \ On the other hand, suppose we have a procedure $P$ which, given $alpha$, terminates and produces "yes" iff $alpha in S$.
+To show that $S$ is computably enumerable, we can proceed as follows.
++ Construct a systematic enumeration of *all* expressions (for example, by listing all strings over the alphabet in length-lexicographical order): $beta_1, beta_2, beta_3, dots$
++ Break the procedure $P$ into a finite number of "steps" (for example, by program instructions).
++ Run the procedure on each expression in turn, for an increasing number of steps (see #link("https://en.wikipedia.org/wiki/Dovetailing_(computer_science)")[dovetailing]):
+  - Run $P$ on $beta_1$ for 1 step.
+  - Run $P$ on $beta_1$ for 2 steps, then on $beta_2$ for 2 steps.
+  - ...
+  - Run $P$ on each of $beta_1, dots, beta_n$ for $n$ steps each.
+  - ...
++ If $P$ produces "yes" for some $beta_i$, output (yield) $beta_i$ and continue enumerating.
+
+This procedure will eventually list all members of $S$.
+
+#pagebreak()
+
+#theorem[
+  A set is decidable iff both it and its complement are semi-decidable.
+]
+
+_Proof._ Alternate between running the procedure for the set and the procedure for its completement.
+One of them will eventually produce "yes".
+
+#pagebreak()
+
+#theorem[
+  If $Sigma$ is an effectively enumerable set of WFFs, then the set of tautological consequences of $Sigma$ is effectively enumerable.
+]
+
+_Proof._ Consider an enumeration of the elements of $Sigma$: $sigma_1, sigma_2, sigma_3, dots$
+
+By the compactness theorem, $Sigma models alpha$ iff ${sigma_1, dots, sigma_n} models alpha$ for some $n$.
+
+Hence, it is sufficient to successively test:
+- $emptyset models alpha$
+- ${sigma_1} models alpha$
+- ${sigma_1, sigma_2} models alpha$
+- $dots$
+
+If any of these tests succeeds (each is decidable), then $Sigma models alpha$.
 
 == Complexity
 
@@ -457,10 +507,11 @@ TODO
 
 - [x] Natural deduction
 - [/] Soundnsess and completeness of propositional logic
-- [/] Computability
+- [ ] Compactness
+- [x] Computability
 - [x] Decidability
 - [ ] Undecidable sets
-- [ ] Semi-decidability
+- [x] Semi-decidability
 - [ ] Complexity
 - [/] Normal forms
 - [ ] Canonical normal forms
