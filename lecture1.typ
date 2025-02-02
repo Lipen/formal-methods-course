@@ -155,6 +155,20 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 - Note: SAT is NP, but VALID is co-NP.
 
+== Solving SAT using Truth Tables
+
+=== Algorithm for satisfiability
+
+To check whether $alpha$ is satisfiable, construct a truth table for $alpha$.
+If there is a row where $alpha$ evaluates to true, then $alpha$ is satisfiable.
+Otherwise, $alpha$ is unsatisfiable.
+
+=== Algorithm for semantical entailment (tautological implication)
+
+The check whether ${alpha_1, dots, alpha_k} models beta$, check the satisfiability of $(alpha_1 and dots and alpha_k) and (not beta)$.
+If it is unsatisfiable, then ${alpha_1, dots, alpha_k} models beta$.
+Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
+
 == Logical Laws and Tautologies
 
 - *Associative* and *Commutative* laws for $and$, $or$, $iff$:
