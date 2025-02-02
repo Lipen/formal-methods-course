@@ -16,7 +16,7 @@
 #import "@preview/cheq:0.2.2": checklist
 #show: checklist
 
-#import "@preview/colorful-boxes:1.4.2": colorbox
+#import "@preview/colorful-boxes:1.4.2": *
 
 #show heading.where(level: 3): set block(above: 1em, below: 0.6em)
 
@@ -395,23 +395,59 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
 
 #colorbox(
   title: [Church--Turing Thesis],
-  color: "blue",
+  color: "teal",
   stroke: 1pt,
 )[
-  Computable functions are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
+  *Computable functions* are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
 ]
 
-Every model of computation that has ever been imagined can compute only computable functions, and all computable functions can be computed by any of several models of computation that are apparently very different, such as Turing machines, register machines, lambda calculus and general recursive functions.
+#quote[
+  Every model of computation that has ever been imagined can compute _only_ computable functions, and _all_ computable functions can be computed by any of several _models of computation_ that are apparently very different, such as Turing machines, register machines, lambda calculus and general recursive functions.
+]
+
+For example, a partial function $f : NN^k arrow.hook NN$ is computable ("can be calculated") if there exists a computer program with the following properties:
+- If $f(x)$ is defined, then the program terminates on the input $x$ with the value $f(x)$ stored in the computer memory.
+- If $f(x)$ is undefined, then the program never terminates on the input $x$.
 
 == Decidability
 
-Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
+#colorbox(
+  title: [Decidable set],
+  color: "blue",
+  stroke: 1pt,
+)[
+  Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
+]
 
-The set $W$ of all WFFs is decidable, as we can check if a given string is well-formed by recursively verifying the syntax rules.
+*Examples:*
 
-For a given finite set $Sigma$ of WFFs, the set ${alpha | Sigma models alpha}$ of all tautological consequences of $Sigma$ is decidable, as we can decide $Sigma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at most $2^(|Sigma|)$) and check if each satisfies all formulas in $Sigma$.
+- The set $W$ of all WFFs is decidable.
+  - _We can check if a given string is well-formed by recursively verifying the syntax rules._
 
-The set of all tautologies is decidable, as it is the set of all tautological consequences of the empty set.
+- For a given finite set $Sigma$ of WFFs, the set ${alpha | Sigma models alpha}$ of all tautological consequences of $Sigma$ is decidable.
+  - _We can decide $Sigma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at~most~$2^(|Sigma|)$) and check if each satisfies all formulas in $Sigma$._
+
+- The set of all tautologies is decidable. \
+  - _It is the set of all tautological consequences of the empty set._
+
+TODO: undecidable sets (existence proof)
+
+== Semi-decidability
+
+Suppose we want to determine $Gamma models alpha$ where $Gamma$ is infinite.
+In general, it is undecidable.
+
+However, it is possible to obtain a weaker result.
+
+#definition[
+  A set $A$ is *semi-decidable* (or *effectively enumerable*) if there is an _effective procedure_ which lists, in some order, every member of $A$.
+]
+
+Note that if $A$ is infinite, this procedure will _never_ finish, but every member of $A$ will be listed _eventually_, after some finite amount of time.
+
+#theorem[
+  A set $A$ of expressions is effectively enumerable iff there is an effective procedure which, given any expression $alpha$, produces the answer "yes" iff $alpha in A$.
+]
 
 == Complexity
 
@@ -421,7 +457,10 @@ TODO
 
 - [x] Natural deduction
 - [/] Soundnsess and completeness of propositional logic
-- [ ] Decidability of propositional logic
+- [/] Computability
+- [x] Decidability
+- [ ] Undecidable sets
+- [ ] Semi-decidability
 - [ ] Complexity
 - [/] Normal forms
 - [ ] Canonical normal forms
