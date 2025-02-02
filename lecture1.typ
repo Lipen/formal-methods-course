@@ -217,6 +217,17 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
   - ${overline(and)}$ --- NAND
   - ${overline(or)}$ --- NOR
 
+== Incompleteness of Connectives
+
+TODO
+
+== Compactness
+
+Recall:
+- A WFF $alpha$ is *satisfiable* if there exists an interpretation $nu$ such that $nu models alpha$.
+- A set of WFFs $Sigma$ is *satisfiable* if there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
+- A set of WFFs $Sigma$ is *finitely satisfiable* if every finite subset of $Sigma$ is satisfiable.
+
 == Normal Forms
 
 - *Conjunctive Normal Form (CNF)*:
