@@ -393,6 +393,16 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
 
 TODO
 
+== Decidability
+
+Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
+
+The set $W$ of all WFFs is decidable, as we can check if a given string is well-formed by recursively verifying the syntax rules.
+
+For a given finite set $Sigma$ of WFFs, the set ${alpha | Sigma models alpha}$ of all tautological consequences of $Sigma$ is decidable, as we can decide $Sigma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at most $2^(|Sigma|)$) and check if each satisfies all formulas in $Sigma$.
+
+The set of all tautologies is decidable, as it is the set of all tautological consequences of the empty set.
+
 == Complexity
 
 TODO
