@@ -325,6 +325,13 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
 
 #rules-grid(
   rule(
+    name: [$or$-elim],
+    $Gamma entails beta$,
+    $Gamma entails alpha_1 or alpha_2$,
+    $Gamma, alpha_1 entails beta$,
+    $Gamma, alpha_2 entails beta$,
+  ),
+  rule(
     name: [$or$-intro],
     $Gamma entails alpha or beta$,
     $Gamma entails alpha$,
@@ -333,13 +340,6 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
     name: [$or$-intro],
     $Gamma entails alpha or beta$,
     $Gamma entails beta$,
-  ),
-  rule(
-    name: [$or$-elim],
-    $Gamma entails beta$,
-    $Gamma entails alpha_1 or alpha_2$,
-    $Gamma, alpha_1 entails beta$,
-    $Gamma, alpha_2 entails beta$,
   ),
 )
 
