@@ -16,6 +16,8 @@
 #import "@preview/cheq:0.2.2": checklist
 #show: checklist
 
+#import "@preview/colorful-boxes:1.4.2": colorbox
+
 #show heading.where(level: 3): set block(above: 1em, below: 0.6em)
 
 = Propositional Logic
@@ -389,9 +391,17 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
     ]
 
 
-== Computability and Decidability
+== Computability
 
-TODO
+#colorbox(
+  title: [Church--Turing Thesis],
+  color: "blue",
+  stroke: 1pt,
+)[
+  Computable functions are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
+]
+
+Every model of computation that has ever been imagined can compute only computable functions, and all computable functions can be computed by any of several models of computation that are apparently very different, such as Turing machines, register machines, lambda calculus and general recursive functions.
 
 == Decidability
 
