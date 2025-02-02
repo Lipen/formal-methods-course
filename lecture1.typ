@@ -228,6 +228,56 @@ Recall:
 - A set of WFFs $Sigma$ is *satisfiable* if there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
 - A set of WFFs $Sigma$ is *finitely satisfiable* if every finite subset of $Sigma$ is satisfiable.
 
+#theorem(title: [Compactness Theorem])[
+  A set of WFFs $Sigma$ is satisfiable iff it is finitely satisfiable.
+]
+
+_Proof._
+
+*(`=>`)* Suppose $Sigma$ is satisfiable, i.e. there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
+
+This direction is trivial: any subset of a satisfiable set is clearly satisfiable.
+- For each finite subset $Sigma' subset.eq Sigma$, $nu$ also satisfies all formulas in $Sigma'$.
+- Thus, every finite subset of $Sigma$ is satisfiable.
+
+#pagebreak()
+
+*(`<=`)* Suppose $Sigma$ is finitely satisfiable, i.e. every finite subset of $Sigma$ is satisfiable.
+
+Construct a _maximal_ finitely satisfiable set $Delta$ as follows:
+
+- Let $alpha_1, dots, alpha_n, dots$ be a fixed enumeration of all WFFs.
+  - _This is possible since the set of all sequences of a countable set is countable._
+
+- Then, let:
+  $
+    Delta_0 &= Sigma, \
+    Delta_(n+1) &= cases(
+      Delta_n union {alpha_(n+1)} "if this is finitely satisfiable,",
+      Delta_n union {not alpha_(n+1)} "otherwise.",
+    )
+  $
+  - _Note that each $Delta_n$ is finitely satisfiable by construction._
+
+- Let $Delta = union.big_(n in NN) Delta_n$. Note:
+  + $Sigma subset.eq Delta$
+  + $alpha in Delta$ or $not alpha in Delta$ for any WFF $alpha$
+  + $Delta$ is finitely satisfiable by construction.
+
+Now we need to show that $Delta$ is satisfiable (and thus $Sigma subset.eq Delta$ is also satisfiable).
+
+Define an interpretation $nu$ as follows: for each propositional variable $p$, let $nu(p) = 1$ iff $p in Delta$.
+
+We claim that $nu$ satisfies all formulas in $Delta$.
+The proof is by induction on well-formed formulas.
+- Base case: $p in Delta$ for some propositional variable $p$.
+  - By definition, $nu(p) = 1$.
+// - Inductive step: $alpha$ is a WFF and $nu$ satisfies all formulas in $Delta$.
+//   - If $alpha in Delta$, then $nu(alpha) = 1$.
+//   - If $not alpha in Delta$, then $nu(not alpha) = 1 - nu(alpha) = 0$.
+//   - In either case, $nu(alpha) = 1$.
+- TODO: inductive step
+
 == Normal Forms
 
 - *Conjunctive Normal Form (CNF)*:
@@ -518,7 +568,7 @@ TODO
 
 - [x] Natural deduction
 - [/] Soundnsess and completeness of propositional logic
-- [ ] Compactness
+- [/] Compactness
 - [x] Computability
 - [x] Decidability
 - [ ] Undecidable sets
@@ -526,7 +576,6 @@ TODO
 - [ ] Complexity
 - [/] Normal forms
 - [ ] Canonical normal forms
-- [ ] Compactness
 - [ ] Equisatisfiability, Tseitin transformation, Example
 - [ ] DIMACS format
 - [ ] SAT
