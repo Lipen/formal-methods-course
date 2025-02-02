@@ -184,8 +184,6 @@
   fill-header: none,
   radius: 0.2em,
 ) = {
-  let header = none
-
   if fill-header == none and fill-body == none {
     fill-header = default-color.lighten(75%)
     fill-body = default-color.lighten(85%)
@@ -199,24 +197,31 @@
     radius = 0pt
   }
 
-  if counter == none and title != none {
-    header = [*#title.*]
-  } else if counter != none and title == none {
-    header = [*#counter.*]
+  let header = none
+  if counter != none {
+    if title != none {
+      header = [*#counter:* #title.]
+    } else {
+      header = [*#counter.*]
+    }
   } else {
-    header = [*#counter:* #title.]
+    if title != none {
+      header = [*#title.*]
+    }
   }
 
   show stack: set block(breakable: false, above: 0.8em, below: 0.5em)
 
   stack(
-    block(
-      width: 100%,
-      inset: (x: 0.4em, top: 0.35em, bottom: 0.45em),
-      fill: fill-header,
-      radius: (top: radius, bottom: 0cm),
-      header,
-    ),
+    if header != none {
+      block(
+        width: 100%,
+        inset: (x: 0.4em, top: 0.35em, bottom: 0.45em),
+        fill: fill-header,
+        radius: (top: radius, bottom: 0cm),
+        header,
+      )
+    },
     block(
       width: 100%,
       inset: (x: 0.4em, top: 0.35em, bottom: 0.45em),
