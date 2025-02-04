@@ -27,12 +27,15 @@ In comparison to propositional logic, which handles static true/false statements
 == Syntax of First-Order Logic
 First-order logic defines a formal language consisting of several components.
 
-*Alphabet*: Logical symbols (*not*, *and*, *or*, *imply*, *iff*), quantifiers (*forall*, *exists*), variables ($x, y, z, dots$), constants ($a, b, c, dots$), functions ($f(x), g(x, y), dots$), and predicates ($P(x), Q(x, y), dots$).
+=== Alphabet
+Logical symbols (*not*, *and*, *or*, *imply*, *iff*), quantifiers (*forall*, *exists*), variables ($x, y, z, dots$), constants ($a, b, c, dots$), functions ($f(x), g(x, y), dots$), and predicates ($P(x), Q(x, y), dots$).
 
-*Terms*: Terms denote objects in the domain and can be constants, variables, or function applications.
+=== Terms
+Terms denote objects in the domain and can be constants, variables, or function applications.
 Examples include $x$ (variable), $a$ (constant), and $f(x, y)$ (function).
 
-*Atomic Formulas*: Atomic formulas are created by applying predicates to terms, such as $P(x)$ ("$x$ satisfies property $P$") or $Q(f(x), y)$ ("$f(x)$ and $y$ are related by $Q$").
+=== Atomic Formulas
+Atomic formulas are created by applying predicates to terms, such as $P(x)$ ("$x$ satisfies property $P$") or $Q(f(x), y)$ ("$f(x)$ and $y$ are related by $Q$").
 
 == Well-Formed Formulas (WFFs)
 Formulas in FOL are defined inductively.
