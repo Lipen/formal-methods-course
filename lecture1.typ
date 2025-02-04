@@ -289,15 +289,31 @@ Now we need to show that $Delta$ is satisfiable (and thus $Sigma subset.eq Delta
 
 Define an interpretation $nu$ as follows: for each propositional variable $p$, let $nu(p) = 1$ iff $p in Delta$.
 
-We claim that $nu$ satisfies all formulas in $Delta$.
+We claim that $nu$ satisfies a WFF $alpha$ iff $alpha in Delta$.
 The proof is by induction on well-formed formulas.
-- Base case: $p in Delta$ for some propositional variable $p$.
-  - By definition, $nu(p) = 1$.
-// - Inductive step: $alpha$ is a WFF and $nu$ satisfies all formulas in $Delta$.
-//   - If $alpha in Delta$, then $nu(alpha) = 1$.
-//   - If $not alpha in Delta$, then $nu(not alpha) = 1 - nu(alpha) = 0$.
-//   - In either case, $nu(alpha) = 1$.
-- TODO: inductive step
+- Base case:
+  - Suppose $alpha equiv p$ for some propositional variable $p$.
+  - By definition, $Eval(p) = nu(p) = 1$.
+- Inductive step:
+  - _(Note: here, we consider only one case for brevity)_
+  - Suppose $alpha equiv beta and gamma$.
+  - $Eval(alpha) = 1$ iff both $Eval(beta) = 1$ and $Eval(gamma) = 1$ *iff* both $beta in Delta$ and $gamma in Delta$.
+  - Now, if both $beta$ and $gamma$ are in $Delta$, then since ${beta, gamma, not alpha}$ is not satisfiable, we must have $alpha in Delta$.
+  - Similarly, if either $beta$ or $gamma$ is not in $Delta$, then its negation must be in $Delta$, and thus $alpha notin Delta$.
+
+#pagebreak()
+
+#corollary[
+  If $Gamma models alpha$, then there is a finite $Sigma_0 subset.eq Sigma$ such that $Sigma_0 models alpha$.
+]
+
+_Proof._
+
+Suppose that $Gamma_0 models.not alpha$ for every finite $Gamma_0 subset.eq Gamma$.
+
+Then, $Sigma_0 union {not alpha}$ is satisfiable for every finite $Sigma_0 subset.eq Sigma$.
+
+Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, which contradicts the assumption that $Gamma models alpha$.
 
 == Normal Forms
 
@@ -570,7 +586,7 @@ TODO
 
 - [x] Natural deduction
 - [/] Soundnsess and completeness of propositional logic
-- [/] Compactness
+- [x] Compactness
 - [x] Computability
 - [x] Decidability
 - [ ] Undecidable sets
