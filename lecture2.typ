@@ -6,7 +6,7 @@
   date: "Spring 2025",
   authors: "Konstantin Chukharev",
   ratio: 16 / 9,
-  dark: true,
+  dark: false,
 )
 
 = Introduction to FOL
