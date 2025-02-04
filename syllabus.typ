@@ -11,8 +11,6 @@
 #set text(size: 14pt)
 #set heading(numbering: numbly(sym.section + "{1} "))
 
-#show "TLA+": [TLA#super("+")]
-
 ///////////////////////////////////////
 
 #block[
@@ -23,7 +21,7 @@
 
 = Annotation
 
-Ever dreamed of writing perfect, bug-free code?
+_Ever dreamed of writing perfect, bug-free code?_
 In this course, you'll dive into the depths of formal methods: explore propositional and first-order logic, master SAT and SMT solvers, and discover the fundamentals of verification --- from transition systems and Kripke models to specification and temporal logics (LTL, CTL, ATL).
 We'll examine SAT- and BDD-based verification approaches, look at bounded model checking (BMC) and property-directed reachability (IC3/PDR), and show how to systematically ensure reliability and correctness (safety and liveness properties) in complex systems.
 All theoretical concepts are reinforced through hands-on examples using academic tools such as NuSMV, Alloy/Forge, and Dafny, so you can see exactly how research ideas become practical solutions.
@@ -131,9 +129,9 @@ Students will complete:
   )
 ]
 
-== Homework and Lab Exercises (20%)
+== Homework Assignments (20%)
 
-Frequent assignments focusing on each logic or tool introduced.
+Assignments focusing on each logic or tool introduced.
 
 == Literature Review & Presentation (20%)
 
@@ -151,30 +149,15 @@ Tests both theoretical understanding (logic, model checking principles) and tool
 
 Evaluates discussion contributions, attendance, engagement in peer reviews, and collaboration in labs.
 
-TODO: coins/tokens
-
 = Course Policies
 
-Standard university policies on academic integrity, attendance, and accommodations apply.
-Students are encouraged to regularly collaborate and discuss concepts, but all submitted work must be their own unless explicitly stated otherwise.
-Late submissions will be penalized unless prior arrangements are made with the instructor.
+- Standard university policies on academic integrity, attendance, and accommodations apply.
+- Students are encouraged to regularly collaborate and discuss concepts, but all submitted work must be their own unless explicitly stated otherwise.
+- Late submissions will be penalized unless prior arrangements are made with the instructor.
 
 = Resources
 
-- Clarke, Grumberg, and Peled, Model Checking.
-- Lamport, Specifying Systems (TLA+).
-- Huth and Ryan, Logic in Computer Science.
-- SAT/SMT solver documentation (e.g., Z3, MiniSAT).
-- Online tutorials for symbolic execution tools (KLEE, Java PathFinder).
-- Coq documentation and “Coq in a Hurry” by Yves Bertot.
-- https://softwarefoundations.cis.upenn.edu/
-
-Instructor handouts, slides, and additional readings will be posted on the course website.
-Software will be provided or linked for students to download.
-
-= Additional Information
-
-...
+Lecture notes, slides, and additional readings will be uploaded in the course GitHub repo: https://github.com/Lipen/formal-methods-course.
 
 = Contacts
 
