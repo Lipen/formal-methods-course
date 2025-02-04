@@ -454,7 +454,7 @@ The proof is by induction on well-formed formulas.
 
 == Computability
 
-#definition(title: [Church--Turing Thesis])[
+#definition(title: [Church--Turing thesis])[
   _Computable functions_ are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
 ]
 
