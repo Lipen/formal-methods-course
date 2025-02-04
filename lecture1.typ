@@ -22,6 +22,15 @@
 
 #let Eval(x) = $bracket.l.double #x bracket.r.double$
 
+#let fancy-box(tint: green, content) = diagram(
+  blob(
+    (0, 0),
+    content,
+    shape: fletcher.shapes.rect,
+    tint: tint,
+  ),
+)
+
 = Propositional Logic
 
 == Motivation
@@ -341,18 +350,7 @@ The proof is by induction on well-formed formulas.
   grid(
     columns: args.pos().len(),
     column-gutter: 1em,
-    ..args
-      .pos()
-      .map(arg => diagram(
-        node(
-          (0, 0),
-          proof-tree(arg),
-          shape: fletcher.shapes.rect,
-          corner-radius: 5pt,
-          fill: green.lighten(80%),
-          stroke: 1pt + green.darken(20%),
-        ),
-      ))
+    ..args.pos().map(arg => fancy-box(tint: green, proof-tree(arg)))
   )
   v(-0.5em)
 }
@@ -436,30 +434,22 @@ The proof is by induction on well-formed formulas.
 
 - A formal system is *sound* if every provable formula is true in all models.
   - *Weak soundness*: "every provable formula is a tautology". \
-    // If $entails alpha$, then $models alpha$.
-    #[
-      #import fletcher.shapes: *
-      #diagram(blob((0, 0), [If $entails alpha$, then $models alpha$.], shape: rect, tint: green))
+    #fancy-box(tint: green)[
+      If $entails alpha$, then $models alpha$.
     ]
   - *Strong soundness*: "every derivable (from $Gamma$) formula is a logical consequence (of $Gamma$)". \
-    // If $Gamma entails alpha$, then $Gamma models alpha$.
-    #[
-      #import fletcher.shapes: *
-      #diagram(blob((0, 0), [If $Gamma entails alpha$, then $Gamma models alpha$.], shape: rect, tint: green))
+    #fancy-box(tint: green)[
+      If $Gamma entails alpha$, then $Gamma models alpha$.
     ]
 
 - A formal system is *complete* if every formula true in all models is provable.
   - *Weak completeness*: "every tautology is provable". \
-    // If $models alpha$, then $entails alpha$.
-    #[
-      #import fletcher.shapes: *
-      #diagram(blob((0, 0), [If $models alpha$, then $entails alpha$.], shape: rect, tint: blue))
+    #fancy-box(tint: blue)[
+      If $models alpha$, then $entails alpha$.
     ]
   - *Strong completeness*: "every logical consequence (of $Gamma$) is derivable (from $Gamma$)". \
-    // If $Gamma models alpha$, then $Gamma entails alpha$.
-    #[
-      #import fletcher.shapes: *
-      #diagram(blob((0, 0), [If $Gamma models alpha$, then $Gamma entails alpha$.], shape: rect, tint: blue))
+    #fancy-box(tint: blue)[
+      If $Gamma models alpha$, then $Gamma entails alpha$.
     ]
 
 == Computability
