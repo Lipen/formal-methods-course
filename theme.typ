@@ -99,7 +99,7 @@
     footer: [
       #set text(0.8em)
       #set align(right)
-      #rect(radius: 100%, fill: title-color.transparentize(80%))[
+      #rect(radius: 100%, fill: title-color.lighten(85%))[
         #context counter(page).display("1/1", both: true)
       ]
     ],
