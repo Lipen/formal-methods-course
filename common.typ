@@ -25,6 +25,7 @@
 #let iff = sym.arrow.l.r
 #let to = sym.arrow.long.r
 #let maps = sym.arrow.bar
+#let neq = sym.eq.not
 #let leq = sym.lt.eq
 #let geq = sym.gt.eq
 #let models = sym.tack.double
