@@ -20,6 +20,8 @@
 
 #show heading.where(level: 3): set block(above: 1em, below: 0.6em)
 
+#let Eval(x) = $bracket.l.double #x bracket.r.double$
+
 = Propositional Logic
 
 == Motivation
@@ -83,8 +85,6 @@ A formal logic is defined by its *syntax* and *semantics*.
 // - Right-to-left associativity for $imply$: #h(1em) $A imply B imply C = A imply (B imply C)$.
 
 == Semantics of Propositional Logic
-
-#let Eval(x) = $bracket.l.double #x bracket.r.double$
 
 - Each propositional variable is assigned a truth value: $T$ (true) or $F$ (false).
 
