@@ -48,7 +48,7 @@
   set page(
     width: width,
     height: height,
-    margin: (x: 0.5 * space, top: space, bottom: 0.8 * space),
+    margin: (x: 0.5 * space, top: space, bottom: 0.6 * space),
     // background: context {
     //   let top_margin = if type(page.margin) == dictionary {
     //     page.margin.at("top")
@@ -103,7 +103,7 @@
         #context counter(page).display("1/1", both: true)
       ]
     ],
-    footer-descent: 0.8em,
+    footer-descent: 0.2em,
   )
   set outline(target: heading.where(level: 1), title: none)
   set bibliography(title: none)
