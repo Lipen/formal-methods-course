@@ -141,17 +141,17 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 - $A or B and (not A and not B)$ is satisfiable, but not valid.
 - $A or B and (not A and not B) and (A iff B)$ is unsatisfiable.
-- ${A, A imply B} models B$
+- ${A imply B, A} models B$
 - ${A, not A} models A and not A$
 - $not (A and B)$ is tautologically equivalent to $not A or not B$.
 
 == Duality of SAT vs VALID
 
 - *SAT*: Given a formula $alpha$, determine if it is satisfiable.
-  $ exists nu . nu(alpha) $
+  $ exists nu . Eval(alpha) $
 
 - *VALID*: Given a formula $alpha$, determine if it is valid.
-  $ forall nu . nu(alpha) $
+  $ forall nu . Eval(alpha) $
 
 - *Duality*: $alpha$ is valid iff $not alpha$ is unsatisfiable.
 
@@ -159,17 +159,15 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 == Solving SAT using Truth Tables
 
-=== Algorithm for satisfiability
-
+*Algorithm for satisfiability:* \
 To check whether $alpha$ is satisfiable, construct a truth table for $alpha$.
 If there is a row where $alpha$ evaluates to true, then $alpha$ is satisfiable.
 Otherwise, $alpha$ is unsatisfiable.
 
-=== Algorithm for semantical entailment (tautological implication)
-
+*Algorithm for semantical entailment (tautological implication):* \
 The check whether ${alpha_1, dots, alpha_k} models beta$, check the satisfiability of $(alpha_1 and dots and alpha_k) and (not beta)$.
 If it is unsatisfiable, then ${alpha_1, dots, alpha_k} models beta$.
-Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
+Otherwise, ${alpha_1, dots, alpha_k} models.not beta$.
 
 == Logical Laws and Tautologies
 
@@ -219,7 +217,21 @@ Otherwise, ${alpha_1, dots, alpha_k} not models beta$.
 
 == Incompleteness of Connectives
 
-TODO
+To prove that a set of connectives is incomplete, we find a property that is true for all WFFs expressed using those connectives, but that is not true for some Boolean function.
+
+*Example:* ${and, imply}$ is not complete.
+
+_Proof._ Let $alpha$ be a WFF which uses only these connectives.
+Let $nu$ be an interpretation such that $nu(A_i) = 1$ for all propositional variables $A_i$.
+Next, we prove by induction that $Eval(alpha) = 1$.
+- Base case:
+  - $Eval(A_i) = nu(A_i) = 1$
+- Inductive step:
+  - $Eval(beta and gamma) = min(Eval(beta), Eval(gamma)) = 1$
+  - $Eval(beta imply gamma) = max(1-Eval(beta), Eval(gamma)) = 1$
+
+Thus, $Eval(alpha) = 1$ for all WFFs $alpha$ built from ${and, imply}$.
+However, $Eval(not A_1) = 0$, so there is no such formula $alpha$ tautologically equivalent to $not A_1$.
 
 == Compactness
 
