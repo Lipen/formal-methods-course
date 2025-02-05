@@ -130,6 +130,79 @@ Valid (*well-formed*) expressions are defined *inductively*:
   )
 )
 
+== Normal Forms
+
+- *Conjunctive Normal Form (CNF)*:
+  - A formula is in CNF if it is a conjunction of _clauses_ (disjunctions of literals).
+  #example[$(A or B) and (not A or C) and (B or not C)$ --- CNF with 3 clauses.]
+
+- *Disjunctive Normal Form (DNF)*:
+  - A formula is in DNF if it is a disjunction of _cubes_ (conjunctions of literals).
+  #example[$(not A and B) or (B and C) or (not A and B and not C)$ --- DNF with 3 cubes.]
+
+- *Algebraic Normal Form (ANF)*:
+  - A formula is in ANF if it is a sum of _products_ of variables (or a constant 1).
+  #example[$B xor A B xor A B C$ --- ANF with 3 terms.]
+
+
+== Logical Laws and Tautologies
+
+- *Associative* and *Commutative* laws for $and$, $or$, $iff$:
+  - $A compose (B compose C) equiv (A compose B) compose C$
+  - $A compose B equiv B compose A$
+
+- *Distributive laws*:
+  - $A and (B or C) equiv (A and B) or (A and C)$
+  - $A or (B and C) equiv (A or B) and (A or C)$
+- *Negation*:
+  - $not not A equiv A$
+- *De Morgan's laws*:
+  - $not(A and B) equiv not A or not B$
+  - $not(A or B) equiv not A and not B$
+
+#pagebreak()
+
+- *Implication*:
+  - $(A imply B) equiv (not A or B)$
+
+- *Contraposition*:
+  - $(A imply B) equiv (not B imply not A)$
+- *Law of Excluded Middle*:
+  - $(A or not A) equiv top$
+- *Contradiction*:
+  - $(A and not A) equiv bot$
+- *Exportation*:
+  - $((A and B) imply C) equiv (A imply (B imply C))$
+
+== Completeness of Connectives
+
+- All Boolean functions can be expressed using ${not, and, or}$ (so called _"standard Boolean basis"_~).
+
+- Even smaller sets are sufficient:
+  - ${not, and}$ --- AIG (And-Inverter Graph), see also: #link("http://github.com/arminbiere/aiger")[AIGER format].
+  - ${not, or}$
+  - ${overline(and)}$ --- NAND
+  - ${overline(or)}$ --- NOR
+
+== Incompleteness of Connectives
+
+To prove that a set of connectives is incomplete, we find a property that is true for all WFFs expressed using those connectives, but that is not true for some Boolean function.
+
+#example[${and, imply}$ is not complete.]
+
+#proof[Let $alpha$ be a WFF which uses only these connectives.
+  Let $nu$ be an interpretation such that #box($nu(A_i) = 1$) for all propositional variables $A_i$.
+  Next, we prove by induction that $Eval(alpha) = 1$.
+  - Base case:
+    - $Eval(A_i) = nu(A_i) = 1$
+  - Inductive step:
+    - $Eval(beta and gamma) = min(Eval(beta), Eval(gamma)) = 1$
+    - $Eval(beta imply gamma) = max(1-Eval(beta), Eval(gamma)) = 1$
+
+  Thus, $Eval(alpha) = 1$ for all WFFs $alpha$ built from ${and, imply}$.
+  However, $Eval(not A_1) = 0$, so there is no such formula $alpha$ tautologically equivalent to $not A_1$.
+]
+
 = Semantical Aspects
 
 == Validity, Satisfiability, Entailment
@@ -182,71 +255,6 @@ The check whether ${alpha_1, dots, alpha_k} models beta$, check the satisfiabili
 If it is unsatisfiable, then ${alpha_1, dots, alpha_k} models beta$.
 Otherwise, ${alpha_1, dots, alpha_k} models.not beta$.
 
-== Logical Laws and Tautologies
-
-- *Associative* and *Commutative* laws for $and$, $or$, $iff$:
-  - $A compose (B compose C) equiv (A compose B) compose C$
-  - $A compose B equiv B compose A$
-
-- *Distributive laws*:
-  - $A and (B or C) equiv (A and B) or (A and C)$
-  - $A or (B and C) equiv (A or B) and (A or C)$
-- *Negation*:
-  - $not not A equiv A$
-- *De Morgan's laws*:
-  - $not(A and B) equiv not A or not B$
-  - $not(A or B) equiv not A and not B$
-
-#pagebreak()
-
-- *Implication*:
-  - $(A imply B) equiv (not A or B)$
-
-- *Contraposition*:
-  - $(A imply B) equiv (not B imply not A)$
-- *Law of Excluded Middle*:
-  - $(A or not A) equiv top$
-- *Contradiction*:
-  - $(A and not A) equiv bot$
-- *Exportation*:
-  - $((A and B) imply C) equiv (A imply (B imply C))$
-
-== Example Problems
-
-- Given $alpha = (A or B) and not A$, determine:
-  + Is $alpha$ consistent (satisfiable)?
-  + Is $alpha$ valid (a tautology)?
-  + Compute the truth table for $alpha$.
-
-== Completeness of Connectives
-
-- All Boolean functions can be expressed using ${not, and, or}$ (so called _"standard Boolean basis"_~).
-
-- Even smaller sets are sufficient:
-  - ${not, and}$ --- AIG (And-Inverter Graph), see also: #link("http://github.com/arminbiere/aiger")[AIGER format].
-  - ${not, or}$
-  - ${overline(and)}$ --- NAND
-  - ${overline(or)}$ --- NOR
-
-== Incompleteness of Connectives
-
-To prove that a set of connectives is incomplete, we find a property that is true for all WFFs expressed using those connectives, but that is not true for some Boolean function.
-
-#example[${and, imply}$ is not complete.]
-
-#proof[Let $alpha$ be a WFF which uses only these connectives.
-  Let $nu$ be an interpretation such that #box($nu(A_i) = 1$) for all propositional variables $A_i$.
-  Next, we prove by induction that $Eval(alpha) = 1$.
-  - Base case:
-    - $Eval(A_i) = nu(A_i) = 1$
-  - Inductive step:
-    - $Eval(beta and gamma) = min(Eval(beta), Eval(gamma)) = 1$
-    - $Eval(beta imply gamma) = max(1-Eval(beta), Eval(gamma)) = 1$
-
-  Thus, $Eval(alpha) = 1$ for all WFFs $alpha$ built from ${and, imply}$.
-  However, $Eval(not A_1) = 0$, so there is no such formula $alpha$ tautologically equivalent to $not A_1$.
-]
-
 == Compactness
 
 Recall:
@@ -281,9 +289,9 @@ Recall:
     $
       Delta_0 &= Sigma, \
       Delta_(n+1) &= cases(
-      Delta_n union {alpha_(n+1)} "if this is finitely satisfiable,",
-      Delta_n union {not alpha_(n+1)} "otherwise.",
-    )
+        Delta_n union {alpha_(n+1)} "if this is finitely satisfiable,",
+        Delta_n union {not alpha_(n+1)} "otherwise.",
+      )
     $
     - _Note that each $Delta_n$ is finitely satisfiable by construction._
 
@@ -329,20 +337,6 @@ Recall:
 
   Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, thus $Sigma models.not alpha$, which contradicts the theorem assumption that $Sigma models alpha$.
 ]
-
-== Normal Forms
-
-- *Conjunctive Normal Form (CNF)*:
-  - A formula is in CNF if it is a conjunction of _clauses_ (disjunctions of literals).
-  #example[$(A or B) and (not A or C) and (B or not C)$ --- CNF with 3 clauses.]
-
-- *Disjunctive Normal Form (DNF)*:
-  - A formula is in DNF if it is a disjunction of _cubes_ (conjunctions of literals).
-  #example[$(not A and B) or (B and C) or (not A and B and not C)$ --- DNF with 3 cubes.]
-
-- *Algebraic Normal Form (ANF)*:
-  - A formula is in ANF if it is a sum of _products_ of variables (or a constant 1).
-  #example[$B xor A B xor A B C$ --- ANF with 3 terms.]
 
 = Proof Systems
 
