@@ -246,6 +246,7 @@ However, $Eval(not A_1) = 0$, so there is no such formula $alpha$ tautologically
 
 Recall:
 - A WFF $alpha$ is *satisfiable* if there exists an interpretation $nu$ such that $nu models alpha$.
+- Hereinafter, let $Gamma$ denote a _finite_ set of WFFs, and $Sigma$ denote a _possibly infinite_ set of WFFs.
 - A set of WFFs $Sigma$ is *satisfiable* if there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
 - A set of WFFs $Sigma$ is *finitely satisfiable* if every finite subset of $Sigma$ is satisfiable.
 
@@ -304,16 +305,16 @@ The proof is by induction on well-formed formulas.
 #pagebreak()
 
 #corollary[
-  If $Gamma models alpha$, then there is a finite $Sigma_0 subset.eq Sigma$ such that $Sigma_0 models alpha$.
+  If $Sigma models alpha$, then there is a finite $Sigma_0 subset.eq Sigma$ such that $Sigma_0 models alpha$.
 ]
 
 _Proof._
 
-Suppose that $Gamma_0 models.not alpha$ for every finite $Gamma_0 subset.eq Gamma$.
+Suppose that $Sigma_0 models.not alpha$ for every finite $Sigma_0 subset.eq Sigma$.
 
 Then, $Sigma_0 union {not alpha}$ is satisfiable for every finite $Sigma_0 subset.eq Sigma$.
 
-Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, which contradicts the assumption that $Gamma models alpha$.
+Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, which contradicts the assumption that $Sigma models alpha$.
 
 == Normal Forms
 
