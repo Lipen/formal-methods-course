@@ -296,18 +296,24 @@ Recall:
 
   Define an interpretation $nu$ as follows: for each propositional variable $p$, let $nu(p) = 1$ iff $p in Delta$.
 
-  We claim that $nu$ satisfies a WFF $alpha$ iff $alpha in Delta$.
+  We claim that $nu models alpha$ iff $alpha in Delta$.
   The proof is by induction on well-formed formulas.
   - Base case:
     - Suppose $alpha equiv p$ for some propositional variable $p$.
     - By definition, $Eval(p) = nu(p) = 1$.
   - Inductive step:
-    - _(Note: here, we consider only one case for brevity. Other cases are similar.)_
+    - _(Note: we consider only two cases: $not$ and $and$, since they form a complete set of connectives.)_
+    - Suppose $alpha equiv not beta$.
+      - $Eval(alpha) = 1$ iff $Eval(beta) = 0$ iff $beta notin Delta$ iff $not beta in Delta$ iff $alpha in Delta$.
     - Suppose $alpha equiv beta and gamma$.
-    - $Eval(alpha) = 1$ iff both $Eval(beta) = 1$ and $Eval(gamma) = 1$ *iff* both $beta in Delta$ and $gamma in Delta$.
-    - Now, if both $beta$ and $gamma$ are in $Delta$, then since ${beta, gamma, not alpha}$ is not satisfiable, we must have $alpha in Delta$.
-    - Similarly, if either $beta$ or $gamma$ is not in $Delta$, then its negation must be in $Delta$, and thus $alpha notin Delta$.
-    - Thus, $Eval(alpha) = 1$ iff $alpha in Delta$.
+      - $Eval(alpha) = 1$ iff both $Eval(beta) = 1$ and $Eval(gamma) = 1$ iff both $beta in Delta$ and $gamma in Delta$.
+      - If both $beta$ and $gamma$ are in $Delta$, then $beta and gamma$ is in $Delta$, thus $alpha in Delta$.
+        - Why? Because if $beta and gamma notin Delta$, then $not (beta and gamma) in Delta$. But then ${beta, gamma, not (beta and gamma)}$ is a finite subset of $Delta$ that is not satisfiable, which is a contradiction of $Delta$ being finitely satisfiable.
+      - Similarly, if either $beta notin Delta$ or $gamma notin Delta$, then $beta and gamma notin Delta$, thus $alpha notin Delta$.
+        - Why? Again, suppose $beta and gamma in Delta$. Since $beta notin Delta$ or $gamma notin Delta$, at least one of $not beta$ or $not gamma$ is in $Delta$. Wlog, assume $not beta in Delta$. Then, ${not beta, beta and gamma}$ is a finite subset of $Delta$ that is not satisfiable, which is a contradiction of $Delta$ being finitely satisfiable.
+      - Thus, $Eval(alpha) = 1$ iff $alpha in Delta$.
+
+  This shows that $Eval(alpha) = 1$ iff $alpha in Delta$, thus $Delta$ is satisfiable by $nu$.
 ]
 
 #pagebreak()
