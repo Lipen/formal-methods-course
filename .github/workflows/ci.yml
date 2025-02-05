@@ -25,10 +25,17 @@ jobs:
         with:
           cache-dependency-path: requirements.typ
 
+
+      - name: Setup fontist
+        uses: fontist/setup-fontist@v2
+
+      - name: Install "Libertinus Sans" font
+        run: fontist install "Libertinus Sans"
+
       - run: typst --version
-      - run: typst compile syllabus.typ
-      - run: typst compile lecture1.typ
-      - run: typst compile lecture2.typ
+      - run: typst compile syllabus.typ --font-path ~/.fontist/fonts
+      - run: typst compile lecture1.typ --font-path ~/.fontist/fonts
+      - run: typst compile lecture2.typ --font-path ~/.fontist/fonts
 
       - name: Upload PDFs as artifact
         uses: actions/upload-artifact@v4
@@ -39,10 +46,10 @@ jobs:
       - name: Upload PDFs as release
         uses: softprops/action-gh-release@v2
         with:
-          files: "*.pdf"
           tag_name: current
           name: Latest PDFs
           body: Current state of PDFs
+          files: "*.pdf"
 
       - name: Prepare files for gh-pages
         run: |
