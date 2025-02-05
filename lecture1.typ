@@ -488,10 +488,10 @@ Recall:
 ]
 
 #quote[
-  Every model of computation that has ever been imagined can compute _only_ computable functions, and _all_ computable functions can be computed by any of several _models of computation_ that are apparently very different, such as Turing machines, register machines, lambda calculus and general recursive functions.
+  _Every model of computation that has ever been imagined can compute _only_ computable functions, and _all_ computable functions can be computed by any of several _models of computation_ that are apparently very different, such as Turing machines, register machines, lambda calculus and general recursive functions._
 ]
 
-For example, a partial function $f : NN^k arrow.hook NN$ is computable ("can be calculated") if there exists a computer program with the following properties:
+For example, a partial function $f : NN^k arrow.hook NN$ is _computable_ ("can be calculated") if there exists a computer program with the following properties:
 - If $f(x)$ is defined, then the program terminates on the input $x$ with the value $f(x)$ stored in the computer memory.
 - If $f(x)$ is undefined, then the program never terminates on the input $x$.
 
@@ -510,7 +510,7 @@ For example, a partial function $f : NN^k arrow.hook NN$ is computable ("can be 
     - _We can check if a given string is well-formed by recursively verifying the syntax rules._
 
   - For a given finite set $Gamma$ of WFFs, the set ${alpha | Gamma models alpha}$ of all tautological consequences of $Gamma$ is decidable.
-    - _We can decide $Gamma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at~most~$2^abs(Gamma)$) and check if each satisfies all formulas in $Gamma$._
+    - _We can decide $Gamma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at~most~$2^abs(Gamma)$) and checking if each satisfies all formulas in $Gamma$._
 
   - The set of all tautologies is decidable. \
     - _It is the set of all tautological consequences of the empty set._
