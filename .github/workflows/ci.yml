@@ -1,0 +1,56 @@
+name: CI
+run-name: Render
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - .gitignore
+      - README*
+      - LICENSE
+      - .github/**
+      - "!.github/workflows/ci.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v3
+        with:
+          cache-dependency-path: requirements.typ
+
+      - run: typst --version
+      - run: typst compile syllabus.typ
+      - run: typst compile lecture1.typ
+      - run: typst compile lecture2.typ
+
+      - name: Upload PDFs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDF
+          path: "*.pdf"
+
+      - name: Upload PDFs as release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.pdf"
+          tag_name: current
+          name: Latest PDFs
+          body: Current state of PDFs
+
+      - name: Prepare files for gh-pages
+        run: |
+          mkdir -p public
+          mv *.pdf public/
+
+      - name: Publish PDFs to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
