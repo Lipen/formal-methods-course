@@ -20,7 +20,7 @@
 
 #show heading.where(level: 3): set block(above: 1em, below: 0.6em)
 
-#let Eval(x) = $bracket.l.double #x bracket.r.double$
+#let Eval(x) = $bracket.l.double #x bracket.r.double_nu$
 
 #let fancy-box(tint: green, content) = diagram(
   blob(
@@ -79,19 +79,19 @@ A formal logic is defined by its *syntax* and *semantics*.
 + Parentheses for grouping: $($, $)$.
 
 === Well-Formed Formulas (WFFs)
-
-// Valid (*well-formed*) expressions are defined *inductively*:
+Valid (*well-formed*) expressions are defined *inductively*:
 + A single propositional symbol (e.g. $A$) is a WFF.
 + If $alpha$ and $beta$ are WFFs, so are:~ $not alpha$,~ $(alpha and beta)$,~ $(alpha or beta)$,~ $(alpha imply beta)$,~ $(alpha iff beta)$.
 + No other expressions are WFFs.
 
-=== Conventions
+#pagebreak()
 
+=== Conventions
 - Large variety of propositional variables: $A, B, C, dots, p, q, r, dots$.
 - Outer parentheses can be omitted: $A and B$ instead of $(A and B)$.
 - Operator precedence: $not thick > thick and thick > thick or thick > thick imply thick > thick iff$.
-// - Left-to-right associativity for $and$ and $or$: #h(1em) $A and B and C = (A and B) and C$.
-// - Right-to-left associativity for $imply$: #h(1em) $A imply B imply C = A imply (B imply C)$.
+- Left-to-right associativity for $and$ and $or$: #h(1em) $A and B and C = (A and B) and C$.
+- Right-to-left associativity for $imply$: #h(1em) $A imply B imply C = A imply (B imply C)$.
 
 == Semantics of Propositional Logic
 
@@ -100,12 +100,12 @@ A formal logic is defined by its *syntax* and *semantics*.
 - More formally, _interpretation_ $nu: V arrow {0, 1}$ assigns truth values to all variables (atoms).
 
 - Truth values of complex formulas are computed (evaluated) recursively:
-  + $#Eval($p$) eq.delta nu(p)$, where $p in V$ is a propositional variable
-  + $#Eval($not alpha$) eq.delta 1 - #Eval($alpha$)$
-  + $#Eval($alpha and beta$) eq.delta min(#Eval($alpha$), #Eval($beta$))$
-  + $#Eval($alpha or beta$) eq.delta max(#Eval($alpha$), #Eval($beta$))$
-  + $#Eval($alpha imply beta$) eq.delta #Eval($alpha$) leq #Eval($beta$)$
-  + $#Eval($alpha iff beta$) eq.delta #Eval($alpha$) = #Eval($beta$)$
+  + $Eval(p) eq.delta nu(p)$, where $p in V$ is a propositional variable
+  + $Eval(not alpha) eq.delta 1 - Eval(alpha)$
+  + $Eval(alpha and beta) eq.delta min(Eval(alpha), Eval(beta))$
+  + $Eval(alpha or beta) eq.delta max(Eval(alpha), Eval(beta))$
+  + $Eval(alpha imply beta) eq.delta (Eval(alpha) leq Eval(beta)) = max(1 - Eval(alpha), Eval(beta))$
+  + $Eval(alpha iff beta) eq.delta (Eval(alpha) = Eval(beta)) = 1 - abs(Eval(alpha) - Eval(beta))$
 
 == Truth Tables
 
@@ -134,14 +134,14 @@ A formal logic is defined by its *syntax* and *semantics*.
 
 === Validity
 - $alpha$ is a *tautology* if $alpha$ is true under all truth assignments. \
-  Formally, $alpha$ is *valid*, denoted "$models alpha$", iff $nu(alpha) = 1$ for all interpretations $nu in {0,1}^V$.
+  Formally, $alpha$ is *valid*, denoted "$models alpha$", iff $Eval(alpha) = 1$ for all interpretations $nu in {0,1}^V$.
 - $alpha$ is a *contradiction* if $alpha$ is false under all truth assignments. \
-  Formally, $alpha$ is *unsatisfiable* if $nu(alpha) = 0$ for all interpretations $nu in {0,1}^V$.
+  Formally, $alpha$ is *unsatisfiable* if $Eval(alpha) = 0$ for all interpretations $nu in {0,1}^V$.
 
 === Satisfiability
-- $alpha$ is *satisfiable* (*consistent*) if there exists an interpretation $nu in {0,1}^V$ where $nu(alpha) = 1$. \
+- $alpha$ is *satisfiable* (*consistent*) if there exists an interpretation $nu in {0,1}^V$ where $Eval(alpha) = 1$. \
   When $alpha$ is satisfiable by $nu$, denoted $nu models alpha$, this interpretation is called a *model* of $alpha$.
-- $alpha$ is *falsifiable* (*invalid*) if there exists an interpretation $nu in {0,1}^V$ where $nu(alpha) = 0$.
+- $alpha$ is *falsifiable* (*invalid*) if there exists an interpretation $nu in {0,1}^V$ where $Eval(alpha) = 0$.
 
 === Entailment
 - Let $Gamma$ be a set of WFFs. Then $Gamma$ *tautologically implies* (*semantically entails*) $alpha$, denoted $Gamma models alpha$, if~every truth assignment that satisfies all formulas in $Gamma$ also satisfies $alpha$.
@@ -501,11 +501,11 @@ For example, a partial function $f : NN^k arrow.hook NN$ is computable ("can be 
 
 *Examples:*
 
-- The set $W$ of all WFFs is decidable.
+- The set of all WFFs is decidable.
   - _We can check if a given string is well-formed by recursively verifying the syntax rules._
 
-- For a given finite set $Sigma$ of WFFs, the set ${alpha | Sigma models alpha}$ of all tautological consequences of $Sigma$ is decidable.
-  - _We can decide $Sigma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at~most~$2^(|Sigma|)$) and check if each satisfies all formulas in $Sigma$._
+- For a given finite set $Gamma$ of WFFs, the set ${alpha | Gamma models alpha}$ of all tautological consequences of $Gamma$ is decidable.
+  - _We can decide $Gamma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at~most~$2^abs(Gamma)$) and check if each satisfies all formulas in $Gamma$._
 
 - The set of all tautologies is decidable. \
   - _It is the set of all tautological consequences of the empty set._
