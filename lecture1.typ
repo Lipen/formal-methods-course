@@ -128,6 +128,8 @@ A formal logic is defined by its *syntax* and *semantics*.
   )
 )
 
+= Semantical Aspects
+
 == Validity, Satisfiability, Entailment
 
 === Validity
@@ -330,6 +332,8 @@ Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, whic
   - A formula is in ANF if it is a sum of _products_ of variables (or a constant 1).
   - Example: $B xor A B xor A B C$ --- ANF with 3 terms.
 
+= Proof Systems
+
 == Natural Deduction
 
 - *Natural deduction* is a proof system for propositional logic.
@@ -468,6 +472,8 @@ Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, whic
     #fancy-box(tint: blue)[
       If $Gamma models alpha$, then $Gamma entails alpha$.
     ]
+
+= Theory of Computation
 
 == Computability
 
