@@ -1,0 +1,27 @@
+= Formal Methods in Software Engineering
+
+image:https://github.com/Lipen/formal-methods-course/actions/workflows/ci.yml/badge.svg?branch=master["CI",link="https://github.com/Lipen/formal-methods-course/actions/workflows/ci.yml"]
+
+> This repo contains materials for the course "Formal Methods in Software Engineering" at ITMO University.
+
+== Rendered
+
+[%autowidth]
+|===
+
+|image:https://img.shields.io/badge/Syllabus-Course Information-blue?style=social&logo=gitbook["Syllabus", link="https://lipen.github.io/formal-methods-course/syllabus.pdf"]
+
+|image:https://img.shields.io/badge/Lecture 1-Propositional Logic-blue?style=social&logo=gitbook["Lecture 1: Propositional Logic", link="https://lipen.github.io/formal-methods-course/lecture1.pdf"]
+
+|image:https://img.shields.io/badge/Lecture 2-Propositional Logic-blue?style=social&logo=gitbook["Lecture 2: First-Order Logic", link="https://lipen.github.io/formal-methods-course/lecture2.pdf"]
+
+|===
+
+== Build
+
+To compile the PDFs from the source code, use link:https://typst.app/[Typst].
+
+[source]
+----
+typst compile lecture1.pdf
+----
