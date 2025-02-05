@@ -107,6 +107,8 @@ Valid (*well-formed*) expressions are defined *inductively*:
   + $Eval(alpha imply beta) eq.delta (Eval(alpha) leq Eval(beta)) = max(1 - Eval(alpha), Eval(beta))$
   + $Eval(alpha iff beta) eq.delta (Eval(alpha) = Eval(beta)) = 1 - abs(Eval(alpha) - Eval(beta))$
 
+= Foundations
+
 == Truth Tables
 
 #table(
