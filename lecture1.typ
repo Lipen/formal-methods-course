@@ -441,8 +441,8 @@ Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, whic
   ),
   rule(
     name: [$imply$-introduction],
-    $Gamma, alpha entails beta$,
     $Gamma entails alpha imply beta$,
+    $Gamma, alpha entails beta$,
   ),
 )
 
