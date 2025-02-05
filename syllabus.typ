@@ -5,7 +5,7 @@
 #import "common.typ": *
 
 #import "@preview/numbly:0.1.0": numbly
-#import "@preview/cetz:0.3.1"
+#import "@preview/cetz:0.3.2"
 
 #set par(justify: true)
 #set text(size: 14pt)
