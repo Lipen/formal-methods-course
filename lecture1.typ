@@ -230,19 +230,20 @@ Otherwise, ${alpha_1, dots, alpha_k} models.not beta$.
 
 To prove that a set of connectives is incomplete, we find a property that is true for all WFFs expressed using those connectives, but that is not true for some Boolean function.
 
-*Example:* ${and, imply}$ is not complete.
+#example[${and, imply}$ is not complete.]
 
-_Proof._ Let $alpha$ be a WFF which uses only these connectives.
-Let $nu$ be an interpretation such that $nu(A_i) = 1$ for all propositional variables $A_i$.
-Next, we prove by induction that $Eval(alpha) = 1$.
-- Base case:
-  - $Eval(A_i) = nu(A_i) = 1$
-- Inductive step:
-  - $Eval(beta and gamma) = min(Eval(beta), Eval(gamma)) = 1$
-  - $Eval(beta imply gamma) = max(1-Eval(beta), Eval(gamma)) = 1$
+#proof[Let $alpha$ be a WFF which uses only these connectives.
+  Let $nu$ be an interpretation such that #box($nu(A_i) = 1$) for all propositional variables $A_i$.
+  Next, we prove by induction that $Eval(alpha) = 1$.
+  - Base case:
+    - $Eval(A_i) = nu(A_i) = 1$
+  - Inductive step:
+    - $Eval(beta and gamma) = min(Eval(beta), Eval(gamma)) = 1$
+    - $Eval(beta imply gamma) = max(1-Eval(beta), Eval(gamma)) = 1$
 
-Thus, $Eval(alpha) = 1$ for all WFFs $alpha$ built from ${and, imply}$.
-However, $Eval(not A_1) = 0$, so there is no such formula $alpha$ tautologically equivalent to $not A_1$.
+  Thus, $Eval(alpha) = 1$ for all WFFs $alpha$ built from ${and, imply}$.
+  However, $Eval(not A_1) = 0$, so there is no such formula $alpha$ tautologically equivalent to $not A_1$.
+]
 
 == Compactness
 
@@ -252,57 +253,60 @@ Recall:
 - A set of WFFs $Sigma$ is *satisfiable* if there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
 - A set of WFFs $Sigma$ is *finitely satisfiable* if every finite subset of $Sigma$ is satisfiable.
 
-#theorem(title: [Compactness Theorem])[
+#theorem([Compactness Theorem])[
   A set of WFFs $Sigma$ is satisfiable iff it is finitely satisfiable.
 ]
 
-_Proof._
+#proof([($arrow.double.r$)])[
+  Suppose $Sigma$ is satisfiable, i.e. there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
 
-*(`=>`)* Suppose $Sigma$ is satisfiable, i.e. there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
-
-This direction is trivial: any subset of a satisfiable set is clearly satisfiable.
-- For each finite subset $Sigma' subset.eq Sigma$, $nu$ also satisfies all formulas in $Sigma'$.
-- Thus, every finite subset of $Sigma$ is satisfiable.
+  This direction is trivial: any subset of a satisfiable set is clearly satisfiable.
+  - For each finite subset $Sigma' subset.eq Sigma$, $nu$ also satisfies all formulas in $Sigma'$.
+  - Thus, every finite subset of $Sigma$ is satisfiable.
+]
 
 #pagebreak()
 
-*(`<=`)* Suppose $Sigma$ is finitely satisfiable, i.e. every finite subset of $Sigma$ is satisfiable.
+#proof([($arrow.double.l$)])[
+  Suppose $Sigma$ is finitely satisfiable, i.e. every finite subset of $Sigma$ is satisfiable.
 
-Construct a _maximal_ finitely satisfiable set $Delta$ as follows:
+  Construct a _maximal_ finitely satisfiable set $Delta$ as follows:
 
-- Let $alpha_1, dots, alpha_n, dots$ be a fixed enumeration of all WFFs.
-  - _This is possible since the set of all sequences of a countable set is countable._
+  - Let $alpha_1, dots, alpha_n, dots$ be a fixed enumeration of all WFFs.
+    - _This is possible since the set of all sequences of a countable set is countable._
 
-- Then, let:
-  $
-    Delta_0 &= Sigma, \
-    Delta_(n+1) &= cases(
+  - Then, let:
+    $
+      Delta_0 &= Sigma, \
+      Delta_(n+1) &= cases(
       Delta_n union {alpha_(n+1)} "if this is finitely satisfiable,",
       Delta_n union {not alpha_(n+1)} "otherwise.",
     )
-  $
-  - _Note that each $Delta_n$ is finitely satisfiable by construction._
+    $
+    - _Note that each $Delta_n$ is finitely satisfiable by construction._
 
-- Let $Delta = union.big_(n in NN) Delta_n$. Note:
-  + $Sigma subset.eq Delta$
-  + $alpha in Delta$ or $not alpha in Delta$ for any WFF $alpha$
-  + $Delta$ is finitely satisfiable by construction.
+  - Let $Delta = union.big_(n in NN) Delta_n$. Note:
+    + $Sigma subset.eq Delta$
+    + $alpha in Delta$ or $not alpha in Delta$ for any WFF $alpha$
+    + $Delta$ is finitely satisfiable by construction.
 
-Now we need to show that $Delta$ is satisfiable (and thus $Sigma subset.eq Delta$ is also satisfiable).
+  Now we need to show that $Delta$ is satisfiable (and thus $Sigma subset.eq Delta$ is also satisfiable).
 
-Define an interpretation $nu$ as follows: for each propositional variable $p$, let $nu(p) = 1$ iff $p in Delta$.
+  Define an interpretation $nu$ as follows: for each propositional variable $p$, let $nu(p) = 1$ iff $p in Delta$.
 
-We claim that $nu$ satisfies a WFF $alpha$ iff $alpha in Delta$.
-The proof is by induction on well-formed formulas.
-- Base case:
-  - Suppose $alpha equiv p$ for some propositional variable $p$.
-  - By definition, $Eval(p) = nu(p) = 1$.
-- Inductive step:
-  - _(Note: here, we consider only one case for brevity)_
-  - Suppose $alpha equiv beta and gamma$.
-  - $Eval(alpha) = 1$ iff both $Eval(beta) = 1$ and $Eval(gamma) = 1$ *iff* both $beta in Delta$ and $gamma in Delta$.
-  - Now, if both $beta$ and $gamma$ are in $Delta$, then since ${beta, gamma, not alpha}$ is not satisfiable, we must have $alpha in Delta$.
-  - Similarly, if either $beta$ or $gamma$ is not in $Delta$, then its negation must be in $Delta$, and thus $alpha notin Delta$.
+  We claim that $nu$ satisfies a WFF $alpha$ iff $alpha in Delta$.
+  The proof is by induction on well-formed formulas.
+  - Base case:
+    - Suppose $alpha equiv p$ for some propositional variable $p$.
+    - By definition, $Eval(p) = nu(p) = 1$.
+  - Inductive step:
+    - _(Note: here, we consider only one case for brevity. Other cases are similar.)_
+    - Suppose $alpha equiv beta and gamma$.
+    - $Eval(alpha) = 1$ iff both $Eval(beta) = 1$ and $Eval(gamma) = 1$ *iff* both $beta in Delta$ and $gamma in Delta$.
+    - Now, if both $beta$ and $gamma$ are in $Delta$, then since ${beta, gamma, not alpha}$ is not satisfiable, we must have $alpha in Delta$.
+    - Similarly, if either $beta$ or $gamma$ is not in $Delta$, then its negation must be in $Delta$, and thus $alpha notin Delta$.
+    - Thus, $Eval(alpha) = 1$ iff $alpha in Delta$.
+]
 
 #pagebreak()
 
@@ -310,27 +314,27 @@ The proof is by induction on well-formed formulas.
   If $Sigma models alpha$, then there is a finite $Sigma_0 subset.eq Sigma$ such that $Sigma_0 models alpha$.
 ]
 
-_Proof._
+#proof[
+  Suppose that $Sigma_0 models.not alpha$ for every finite $Sigma_0 subset.eq Sigma$.
 
-Suppose that $Sigma_0 models.not alpha$ for every finite $Sigma_0 subset.eq Sigma$.
+  Then, $Sigma_0 union {not alpha}$ is satisfiable for every finite #box($Sigma_0 subset.eq Sigma$), that is, $Sigma union {not alpha}$ is finitely satisfiable.
 
-Then, $Sigma_0 union {not alpha}$ is satisfiable for every finite $Sigma_0 subset.eq Sigma$.
-
-Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, which contradicts the assumption that $Sigma models alpha$.
+  Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, thus $Sigma models.not alpha$, which contradicts the theorem assumption that $Sigma models alpha$.
+]
 
 == Normal Forms
 
 - *Conjunctive Normal Form (CNF)*:
   - A formula is in CNF if it is a conjunction of _clauses_ (disjunctions of literals).
-  - Example: $(A or B) and (not A or C) and (B or not C)$ --- CNF with 3 clauses.
+  #example[$(A or B) and (not A or C) and (B or not C)$ --- CNF with 3 clauses.]
 
 - *Disjunctive Normal Form (DNF)*:
   - A formula is in DNF if it is a disjunction of _cubes_ (conjunctions of literals).
-  - Example: $(not A and B) or (B and C) or (not A and B and not C)$ --- DNF with 3 cubes.
+  #example[$(not A and B) or (B and C) or (not A and B and not C)$ --- DNF with 3 cubes.]
 
 - *Algebraic Normal Form (ANF)*:
   - A formula is in ANF if it is a sum of _products_ of variables (or a constant 1).
-  - Example: $B xor A B xor A B C$ --- ANF with 3 terms.
+  #example[$B xor A B xor A B C$ --- ANF with 3 terms.]
 
 = Proof Systems
 
@@ -477,7 +481,7 @@ Then, by the compactness theorem, $Sigma union {not alpha}$ is satisfiable, whic
 
 == Computability
 
-#definition(title: [Church--Turing thesis])[
+#definition([Church--Turing thesis])[
   _Computable functions_ are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
 ]
 
@@ -495,20 +499,20 @@ For example, a partial function $f : NN^k arrow.hook NN$ is computable ("can be 
 
 == Decidability
 
-#definition(title: [Decidable set])[
+#definition([Decidable set])[
   Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* (or *computable*) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
 ]
 
-*Examples:*
+#example(title: [Examples])[
+  - The set of all WFFs is decidable.
+    - _We can check if a given string is well-formed by recursively verifying the syntax rules._
 
-- The set of all WFFs is decidable.
-  - _We can check if a given string is well-formed by recursively verifying the syntax rules._
+  - For a given finite set $Gamma$ of WFFs, the set ${alpha | Gamma models alpha}$ of all tautological consequences of $Gamma$ is decidable.
+    - _We can decide $Gamma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at~most~$2^abs(Gamma)$) and check if each satisfies all formulas in $Gamma$._
 
-- For a given finite set $Gamma$ of WFFs, the set ${alpha | Gamma models alpha}$ of all tautological consequences of $Gamma$ is decidable.
-  - _We can decide $Gamma models alpha$ using a truth table algorithm by enumerating all possible interpretations (at~most~$2^abs(Gamma)$) and check if each satisfies all formulas in $Gamma$._
-
-- The set of all tautologies is decidable. \
-  - _It is the set of all tautological consequences of the empty set._
+  - The set of all tautologies is decidable. \
+    - _It is the set of all tautological consequences of the empty set._
+]
 
 TODO: undecidable sets (existence proof)
 
@@ -519,7 +523,7 @@ In general, it is undecidable.
 
 However, it is possible to obtain a weaker result.
 
-#definition(title: [Semi-decidable set])[
+#definition([Semi-decidable set])[
   A set $S$ is *computably enumerable* if there is an _enumeration procedure_ which lists, in some order, every member of $S$: $s_1, s_2, s_3 dots$
 
   Equivalently, a set $S$ is *semi-decidable* if there is an algorithm such that the set of inputs for which the algorithm halts is exactly $S$.
@@ -535,28 +539,29 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 
 #theorem[
   A set $S$ is computably enumerable iff it is semi-decidable.
+] <enumerable>
+
+#proof([(*$arrow.double.r$*)])[
+  If $S$ is computably enumerable, we can check if $alpha in S$ by enumerating all members of $S$ and checking if $alpha$ is among them.
+  If it is, we answer "yes"; otherwise, we continue enumerating.
+  Thus, if $alpha in S$, the procedure produces "yes".
+  If $alpha notin S$, the procedure runs forever.
 ]
+#proof([(*$arrow.double.l$*)])[
+  On the other hand, suppose we have a procedure $P$ which, given $alpha$, terminates and produces "yes" iff $alpha in S$.
+  To show that $S$ is computably enumerable, we can proceed as follows.
+  + Construct a systematic enumeration of *all* expressions (for example, by listing all strings over the alphabet in length-lexicographical order): $beta_1, beta_2, beta_3, dots$
+  + Break the procedure $P$ into a finite number of "steps" (for example, by program instructions).
+  + Run the procedure on each expression in turn, for an increasing number of steps (see #link("https://en.wikipedia.org/wiki/Dovetailing_(computer_science)")[dovetailing]):
+    - Run $P$ on $beta_1$ for 1 step.
+    - Run $P$ on $beta_1$ for 2 steps, then on $beta_2$ for 2 steps.
+    - ...
+    - Run $P$ on each of $beta_1, dots, beta_n$ for $n$ steps each.
+    - ...
+  + If $P$ produces "yes" for some $beta_i$, output (yield) $beta_i$ and continue enumerating.
 
-_(here, we assume that $S$ is a set of WFFs)_
-
-_(`=>` proof of "only if" part)_ \ If $S$ is computably enumerable, we can check if $alpha in S$ by enumerating all members of $S$ and checking if $alpha$ is among them.
-If it is, we answer "yes"; otherwise, we continue enumerating.
-Thus, if $alpha in S$, the procedure produces "yes".
-If $alpha notin S$, the procedure runs forever.
-
-_(`<=` proof of "if" part)_ \ On the other hand, suppose we have a procedure $P$ which, given $alpha$, terminates and produces "yes" iff $alpha in S$.
-To show that $S$ is computably enumerable, we can proceed as follows.
-+ Construct a systematic enumeration of *all* expressions (for example, by listing all strings over the alphabet in length-lexicographical order): $beta_1, beta_2, beta_3, dots$
-+ Break the procedure $P$ into a finite number of "steps" (for example, by program instructions).
-+ Run the procedure on each expression in turn, for an increasing number of steps (see #link("https://en.wikipedia.org/wiki/Dovetailing_(computer_science)")[dovetailing]):
-  - Run $P$ on $beta_1$ for 1 step.
-  - Run $P$ on $beta_1$ for 2 steps, then on $beta_2$ for 2 steps.
-  - ...
-  - Run $P$ on each of $beta_1, dots, beta_n$ for $n$ steps each.
-  - ...
-+ If $P$ produces "yes" for some $beta_i$, output (yield) $beta_i$ and continue enumerating.
-
-This procedure will eventually list all members of $S$.
+  This procedure will eventually list all members of $S$.
+]
 
 #pagebreak()
 
@@ -564,8 +569,10 @@ This procedure will eventually list all members of $S$.
   A set is decidable iff both it and its complement are semi-decidable.
 ]
 
-_Proof._ Alternate between running the procedure for the set and the procedure for its completement.
-One of them will eventually produce "yes".
+#proof[
+  Alternate between running the procedure for the set and the procedure for its completement.
+  One of them will eventually produce "yes".
+]
 
 #pagebreak()
 

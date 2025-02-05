@@ -1,4 +1,5 @@
 #import "@preview/numbly:0.1.0": numbly
+#import "@preview/ctheorems:1.1.3": *
 
 #let default-color = blue.darken(40%)
 
@@ -172,117 +173,44 @@
   // Make links underlined
   show link: underline
 
+  // Setup theorems
+  show: thmrules.with(qed-symbol: $square$)
+
   // Content
   content
 }
 
-#let frame(
-  content,
-  counter: none,
-  title: none,
-  fill-body: none,
-  fill-header: none,
-  radius: 0.2em,
-) = {
-  if fill-header == none and fill-body == none {
-    fill-header = default-color.lighten(75%)
-    fill-body = default-color.lighten(85%)
-  } else if fill-header == none {
-    fill-header = fill-body.darken(10%)
-  } else if fill-body == none {
-    fill-body = fill-header.lighten(50%)
-  }
-
-  if radius == none {
-    radius = 0pt
-  }
-
-  let header = none
-  if counter != none {
-    if title != none {
-      header = [*#counter:* #title.]
-    } else {
-      header = [*#counter.*]
-    }
-  } else {
-    if title != none {
-      header = [*#title.*]
-    }
-  }
-
-  show stack: set block(breakable: false, above: 0.8em, below: 0.5em)
-
-  stack(
-    if header != none {
-      block(
-        width: 100%,
-        inset: (x: 0.4em, top: 0.35em, bottom: 0.45em),
-        fill: fill-header,
-        radius: (top: radius, bottom: 0cm),
-        header,
-      )
-    },
-    block(
-      width: 100%,
-      inset: (x: 0.4em, top: 0.35em, bottom: 0.45em),
-      fill: fill-body,
-      radius: (top: 0cm, bottom: radius),
-      content,
-    ),
-  )
-}
-
-#let d = counter("definition")
-#let definition(content, title: none, ..options) = {
-  d.step()
-  frame(
-    counter: context d.display(x => "Definition " + str(x)),
-    title: title,
-    content,
-    ..options,
-  )
-}
-
-#let t = counter("theorem")
-#let theorem(content, title: none, ..options) = {
-  t.step()
-  frame(
-    counter: context t.display(x => "Theorem " + str(x)),
-    title: title,
-    content,
-    ..options,
-  )
-}
-
-#let l = counter("lemma")
-#let lemma(content, title: none, ..options) = {
-  l.step()
-  frame(
-    counter: context l.display(x => "Lemma " + str(x)),
-    title: title,
-    content,
-    ..options,
-  )
-}
-
-#let c = counter("corollary")
-#let corollary(content, title: none, ..options) = {
-  c.step()
-  frame(
-    counter: context c.display(x => "Corollary " + str(x)),
-    title: title,
-    content,
-    ..options,
-  )
-}
-
-#let a = counter("algorithm")
-#let algorithm(content, title: none, ..options) = {
-  a.step()
-  frame(
-    counter: context a.display(x => "Algorithm " + str(x)),
-    title: title,
-    content,
-    ..options,
-  )
-}
+#let definition = thmbox(
+  "definition",
+  "Definition",
+  fill: rgb("#e8f8e8"),
+  inset: 0.8em,
+  padding: (),
+  base_level: 0,
+)
+#let theorem = thmbox(
+  "theorem",
+  "Theorem",
+  fill: rgb("e8e8f8"),
+  inset: 0.8em,
+  padding: (),
+  base_level: 0,
+)
+#let corollary = thmbox(
+  "corollary",
+  "Corollary",
+  base: "theorem",
+  fill: rgb("f8e8e8"),
+  inset: 0.8em,
+  padding: (),
+)
+#let proof = thmproof(
+  "proof",
+  "Proof",
+  inset: (x: 0em, y: 0em),
+)
+#let example = thmplain(
+  "example",
+  "Example",
+  inset: (x: 0em, y: 0em),
+).with(numbering: none)
