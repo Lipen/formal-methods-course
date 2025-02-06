@@ -73,7 +73,7 @@
     footer: context {
       set text(0.8em)
       set align(right)
-      rect(radius: 100%, fill: title-color.lighten(85%))[
+      rect(radius: 100%, fill: title-color.transparentize(85%))[
         #counter(page).display("1/1", both: true)
       ]
     },
