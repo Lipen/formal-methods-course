@@ -594,6 +594,9 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   - $dots$
 
   If any of these tests succeeds (each is decidable), then $Sigma models alpha$.
+
+  This demonstrates that there is an effective procedure that, given any WFF $alpha$, will output "yes" iff $alpha$ is a tautological consequence of $Sigma$.
+  Thus, the set of tautological consequences of $Sigma$ is effectively enumerable.
 ]
 
 == Complexity
