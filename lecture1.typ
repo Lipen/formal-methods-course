@@ -284,6 +284,8 @@ Recall:
     $
     - _Note that each $Delta_n$ is finitely satisfiable by construction._
 
+  #colbreak()
+
   - Let $Delta = union.big_(n in NN) Delta_n$. Note:
     + $Sigma subset.eq Delta$
     + $alpha in Delta$ or $not alpha in Delta$ for any WFF $alpha$
