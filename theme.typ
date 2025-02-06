@@ -50,29 +50,6 @@
     width: width,
     height: height,
     margin: (x: 0.5 * space, top: space, bottom: 0.8 * space),
-    // background: context {
-    //   let top_margin = if type(page.margin) == dictionary {
-    //     page.margin.at("top")
-    //   } else {
-    //     0pt
-    //   }
-    //   let bottom_margin = if type(page.margin) == dictionary {
-    //     page.margin.at("bottom")
-    //   } else {
-    //     0pt
-    //   }
-    //   place(top)[
-    //     #box(height: top_margin, fill: green.transparentize(50%))[
-    //       top margin = #top_margin
-    //     ]
-    //   ]
-    //   place(bottom)[
-    //     #box(height: bottom_margin, fill: green.transparentize(50%))[
-    //       bottom margin = #bottom_margin
-    //     ]
-    //   ]
-    // },
-    // background: place(top, box(height: space, fill: green.transparentize(50%))[BOTTOM MARGIN = #space]),
     header: context {
       let page = here().page()
       let headings = query(selector(heading.where(level: 2)))
@@ -86,25 +63,18 @@
             numbering(" [1]", page - heading.location().page() + 1)
           }
         }
-        block(inset: (bottom: 1em))[
-          #context {
-            body
-            place(bottom, dy: 0.4em)[
-              #line(length: measure(body).width, stroke: 0.8pt + title-color)
-            ]
-          }
-        ]
+        underline(offset: 0.3em, body)
       }
     },
-    header-ascent: 0%,
-    footer: [
-      #set text(0.8em)
-      #set align(right)
-      #rect(radius: 100%, fill: title-color.lighten(85%))[
+    header-ascent: 1.2em,
+    footer: {
+      set text(0.8em)
+      set align(right)
+      rect(radius: 100%, fill: title-color.lighten(85%))[
         #context counter(page).display("1/1", both: true)
       ]
-    ],
-    footer-descent: 0.8em,
+    },
+    footer-descent: 0.5em,
   )
   set outline(target: heading.where(level: 1), title: none)
   set bibliography(title: none)
