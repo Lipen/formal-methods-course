@@ -1,15 +1,22 @@
-#import "@preview/fletcher:0.5.4" as fletcher: node
+#import "requirements.typ": *
+
+#let template(doc) = {
+  // Fix emptyset symbol
+  show sym.emptyset: set text(font: "Libertinus Sans")
+
+  doc
+}
 
 // Horizontal rule
 #let hrule = line(length: 100%)
 
-// blob for fletcher diagrams
+// Blob for fletcher diagrams
 #let blob(
   pos,
   label,
   tint: white,
   ..args,
-) = node(
+) = fletcher.node(
   pos,
   align(center, label),
   fill: tint.lighten(80%),
@@ -17,6 +24,18 @@
   corner-radius: 5pt,
   ..args,
 )
+
+// Colored box around a content
+#let fancy-box(tint: green, content) = {
+  fletcher.diagram(
+    blob(
+      (0, 0),
+      content,
+      shape: fletcher.shapes.rect,
+      tint: tint,
+    ),
+  )
+}
 
 // Aliases
 #let neg = sym.not

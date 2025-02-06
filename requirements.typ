@@ -4,3 +4,4 @@
 #import "@preview/curryst:0.4.0"
 #import "@preview/cheq:0.2.2"
 #import "@preview/colorful-boxes:1.4.2"
+#import "@preview/ctheorems:1.1.3": *

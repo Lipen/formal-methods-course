@@ -1,5 +1,4 @@
-#import "@preview/numbly:0.1.0": numbly
-#import "@preview/ctheorems:1.1.3": *
+#import "requirements.typ": *
 
 #let default-color = blue.darken(40%)
 
@@ -97,7 +96,7 @@
 
   // Headings
   set heading(
-    numbering: numbly(
+    numbering: numbly.numbly(
       sym.section + "{1} ",
       none,
       sym.square + "",
@@ -123,7 +122,7 @@
         text(1.1em, date)
       }
       #v(1em, weak: true)
-      #align(left, authors.join(", ", last: " and "))
+      #authors.join(", ", last: " and ")
     ]
   }
 
@@ -136,9 +135,6 @@
     ),
   )
   set enum(numbering: nums => text(fill: title-color)[*#nums.*])
-
-  // Fix emptyset symbol
-  show sym.emptyset: set text(font: "Libertinus Sans")
 
   // Make links underlined
   show link: underline
