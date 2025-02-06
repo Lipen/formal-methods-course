@@ -1,6 +1,10 @@
 #import "requirements.typ": *
 
-#let template(doc) = {
+#let template(dark: false, doc) = {
+  // Dark mode
+  set text(fill: white) if dark
+  set page(fill: luma(12%)) if dark
+
   // Fix emptyset symbol
   show sym.emptyset: set text(font: "Libertinus Sans")
 
