@@ -38,8 +38,12 @@
     title-color = default-color
   }
 
+  // Dark mode
   set text(fill: white) if dark
   set page(fill: luma(12%)) if dark
+  if dark {
+    title-color = title-color.lighten(30%)
+  }
 
   // Setup
   if title != none {
