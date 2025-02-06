@@ -49,7 +49,7 @@
   set page(
     width: width,
     height: height,
-    margin: (x: 0.5 * space, top: space, bottom: 0.8 * space),
+    margin: (x: 0.5 * space, top: space, bottom: 0.75 * space),
     header: context {
       let page = here().page()
       let headings = query(selector(heading.where(level: 2)))
