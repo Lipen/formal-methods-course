@@ -1,4 +1,6 @@
 #import "common.typ": *
+#show: template
+
 #import "theme.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
@@ -9,27 +11,14 @@
   dark: false,
 )
 
-#import "@preview/fletcher:0.5.4" as fletcher: diagram, node, edge
-
-#import "@preview/curryst:0.4.0": rule, proof-tree
-
-#import "@preview/cheq:0.2.2": checklist
-#show: checklist
-
-#import "@preview/colorful-boxes:1.4.2": *
-
+// custom style
 #show heading.where(level: 3): set block(above: 1em, below: 0.6em)
 
-#let Eval(x) = $bracket.l.double #x bracket.r.double_nu$
+// proof trees
+#import curryst: rule, proof-tree
 
-#let fancy-box(tint: green, content) = diagram(
-  blob(
-    (0, 0),
-    content,
-    shape: fletcher.shapes.rect,
-    tint: tint,
-  ),
-)
+// semantical evaluation
+#let Eval(x) = $bracket.l.double #x bracket.r.double_nu$
 
 = Propositional Logic
 
@@ -604,6 +593,8 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 TODO
 
 == TODO
+
+#show: cheq.checklist
 
 - [x] Natural deduction
 - [/] Soundnsess and completeness of propositional logic
