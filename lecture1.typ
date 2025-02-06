@@ -579,20 +579,22 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 #pagebreak()
 
 #theorem[
-  If $Sigma$ is an effectively enumerable set of WFFs, then the set of tautological consequences of $Sigma$ is effectively enumerable.
+  If $Sigma$ is an effectively enumerable set of WFFs, then the set ${alpha | Sigma models alpha}$ of tautological consequences of $Sigma$ is effectively enumerable.
 ]
 
-_Proof._ Consider an enumeration of the elements of $Sigma$: $sigma_1, sigma_2, sigma_3, dots$
+#proof[
+  Consider an enumeration of the elements of $Sigma$: $sigma_1, sigma_2, sigma_3, dots$
 
-By the compactness theorem, $Sigma models alpha$ iff ${sigma_1, dots, sigma_n} models alpha$ for some $n$.
+  By the compactness theorem, $Sigma models alpha$ iff ${sigma_1, dots, sigma_n} models alpha$ for some $n$.
 
-Hence, it is sufficient to successively test:
-- $emptyset models alpha$
-- ${sigma_1} models alpha$
-- ${sigma_1, sigma_2} models alpha$
-- $dots$
+  Hence, it is sufficient to successively test:
+  - $emptyset models alpha$
+  - ${sigma_1} models alpha$
+  - ${sigma_1, sigma_2} models alpha$
+  - $dots$
 
-If any of these tests succeeds (each is decidable), then $Sigma models alpha$.
+  If any of these tests succeeds (each is decidable), then $Sigma models alpha$.
+]
 
 == Complexity
 
