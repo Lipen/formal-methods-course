@@ -1,4 +1,3 @@
-#import "common.typ": *
 #import "theme.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
@@ -6,7 +5,7 @@
   date: "Spring 2025",
   authors: "Konstantin Chukharev",
   ratio: 16 / 9,
-  dark: false,
+  // dark: true,
 )
 
 = Introduction to FOL

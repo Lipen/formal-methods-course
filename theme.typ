@@ -1,4 +1,4 @@
-#import "requirements.typ": *
+#import "common.typ": *
 
 #let default-color = blue.darken(40%)
 
@@ -39,11 +39,12 @@
   }
 
   // Dark mode
-  set text(fill: white) if dark
-  set page(fill: luma(12%)) if dark
   if dark {
     title-color = title-color.lighten(30%)
   }
+
+  // Common template
+  show: template.with(dark: dark)
 
   // Setup
   if title != none {
@@ -98,7 +99,7 @@
   show heading.where(level: 2): pagebreak(weak: true)
   show heading: set text(1.1em, fill: title-color)
 
-  // Headings
+  // Style headings
   set heading(
     numbering: numbly.numbly(
       sym.section + "{1} ",
@@ -108,7 +109,23 @@
     ),
   )
 
-  // Title
+  // Style lists
+  set list(
+    marker: (
+      text(fill: title-color)[•],
+      text(fill: title-color)[‣],
+      text(fill: title-color)[-],
+    ),
+  )
+  set enum(numbering: nums => text(fill: title-color)[*#nums.*])
+
+  // Make links underlined
+  show link: underline
+
+  // Setup theorems
+  show: thmrules.with(qed-symbol: $square$)
+
+  // Title page
   if title != none {
     if (type(authors) != array) {
       authors = (authors,)
@@ -129,22 +146,6 @@
       #authors.join(", ", last: " and ")
     ]
   }
-
-  // Styling
-  set list(
-    marker: (
-      text(fill: title-color)[•],
-      text(fill: title-color)[‣],
-      text(fill: title-color)[-],
-    ),
-  )
-  set enum(numbering: nums => text(fill: title-color)[*#nums.*])
-
-  // Make links underlined
-  show link: underline
-
-  // Setup theorems
-  show: thmrules.with(qed-symbol: $square$)
 
   // Content
   content

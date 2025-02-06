@@ -1,6 +1,3 @@
-#import "common.typ": *
-#show: template
-
 #import "theme.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
