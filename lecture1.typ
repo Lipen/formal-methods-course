@@ -8,7 +8,7 @@
   date: "Spring 2025",
   authors: "Konstantin Chukharev",
   ratio: 16 / 9,
-  dark: false,
+  // dark: true,
 )
 
 // custom style
