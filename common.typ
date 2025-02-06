@@ -8,6 +8,9 @@
   // Fix emptyset symbol
   show sym.emptyset: set text(font: "Libertinus Sans")
 
+  // Setup theorems
+  show: thmrules.with(qed-symbol: $square$)
+
   doc
 }
 

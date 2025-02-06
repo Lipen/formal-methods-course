@@ -122,9 +122,6 @@
   // Make links underlined
   show link: underline
 
-  // Setup theorems
-  show: thmrules.with(qed-symbol: $square$)
-
   // Title page
   if title != none {
     if (type(authors) != array) {
