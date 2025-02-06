@@ -67,11 +67,11 @@
       }
     },
     header-ascent: 1.2em,
-    footer: {
+    footer: context {
       set text(0.8em)
       set align(right)
       rect(radius: 100%, fill: title-color.lighten(85%))[
-        #context counter(page).display("1/1", both: true)
+        #counter(page).display("1/1", both: true)
       ]
     },
     footer-descent: 0.5em,
