@@ -25,17 +25,11 @@ jobs:
         with:
           cache-dependency-path: requirements.typ
 
-
-      - name: Setup fontist
-        uses: fontist/setup-fontist@v2
-
-      - name: Install "Libertinus Sans" font
-        run: fontist install "Libertinus Sans"
-
       - run: typst --version
-      - run: typst compile syllabus.typ --font-path ~/.fontist/fonts
-      - run: typst compile lecture1.typ --font-path ~/.fontist/fonts
-      - run: typst compile lecture2.typ --font-path ~/.fontist/fonts
+      - run: typst compile syllabus.typ
+      - run: typst compile lec-prop-logic.typ
+      - run: typst compile lec-fol.typ
+      - run: typst compile lec-computation.typ
 
       - name: Upload PDFs as artifact
         uses: actions/upload-artifact@v4
