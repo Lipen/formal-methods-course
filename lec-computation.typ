@@ -1,16 +1,16 @@
 #import "theme.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
-  subtitle: "Propositional Logic",
+  subtitle: "Theory of Computation",
   date: "Spring 2025",
   authors: "Konstantin Chukharev",
   ratio: 16 / 9,
   // dark: true,
 )
 
-= Theory of Computation
+= Computability
 
-== Computability
+== Computable functions
 
 #definition([Church--Turing thesis])[
   _Computable functions_ are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
@@ -24,11 +24,15 @@ For example, a partial function $f : NN^k arrow.hook NN$ is _computable_ ("can b
 - If $f(x)$ is defined, then the program terminates on the input $x$ with the value $f(x)$ stored in the computer memory.
 - If $f(x)$ is undefined, then the program never terminates on the input $x$.
 
+== Effective procedures
+
 #definition[
   An *effective procedure* is a finite, deterministic, mechanical algorithm that guarantees to terminate and produce the correct answer in a finite number of steps.
 ]
 
-== Decidability
+= Decidability
+
+== Decidable sets
 
 #definition([Decidable set])[
   Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* (or *computable*) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
