@@ -9,7 +9,7 @@
   show sym.emptyset: set text(font: "Libertinus Sans")
 
   // Setup theorems
-  show: thmrules.with(qed-symbol: $square$)
+  show: ctheorems.thmrules.with(qed-symbol: $square$)
 
   doc
 }

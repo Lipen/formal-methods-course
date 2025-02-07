@@ -1,5 +1,7 @@
 #import "common.typ": *
 
+#import ctheorems: *
+
 #let default-color = blue.darken(40%)
 
 #let layouts = (
