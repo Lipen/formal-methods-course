@@ -134,9 +134,13 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   Thus, the set of tautological consequences of $Sigma$ is effectively enumerable.
 ]
 
-== Complexity
+= Complexity Zoo
+
+== Complexity classes
 
 TODO
+
+See also: https://complexityzoo.net/Petting_Zoo
 
 == TODO
 
