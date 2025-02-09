@@ -209,6 +209,51 @@ To prove that a set of connectives is incomplete, we find a property that is tru
 - Formally, $Gamma models alpha$ iff for all interpretations $nu in {0,1}^V$ and formulas $beta in Gamma$, if $nu models beta$, then $nu models alpha$.
 - Note: $alpha models beta$, where $alpha$ and $beta$ are WFFs, is just a shorthand for ${alpha} models beta$.
 
+== Implication vs Entailment
+
+The *implication* operator ($imply$) is a syntactic construct, while *entailment* ($models$) is a semantical relation.
+
+They are related as follows:
+$alpha imply beta$ is valid iff $alpha models beta$.
+
+#example[
+  $A imply (A or B)$ is valid (a tautology), and $A models A or B$
+
+  #table(
+    columns: 5,
+    align: center,
+    stroke: (x, y) => (
+      top: if y == 0 { 1pt } else if y == 1 { none } else { 0pt },
+      bottom: if y == 0 { 0.6pt } else { 1pt },
+    ),
+    table.header($A$, $B$, $A or B$, $A imply (A or B)$, $A models A or B$),
+    ..(
+      for A in (false, true) {
+        for B in (false, true) {
+          (
+            (A, B, A or B, not A or (A or B)).map(b => if b {
+              text(fill: green.darken(20%))[1]
+            } else {
+              text(fill: red.darken(20%))[0]
+            })
+              + (
+                if A {
+                  if A or B {
+                    text(fill: green.darken(20%))[OK]
+                  } else {
+                    text(fill: red.darken(20%))[FAIL]
+                  }
+                } else {
+                  [---]
+                },
+              )
+          )
+        }
+      }
+    )
+  )
+]
+
 == Examples
 
 - $A or B and (not A and not B)$ is satisfiable, but not valid.
