@@ -529,6 +529,24 @@ Recall:
   )
 ]
 
+== Exercises
+
++ $entails (b imply c) imply ((not b imply not a) imply (a imply c))$
++ $a or b entails b or a$
++ $a imply c, b imply c, a or b entails c$
++ $not a or b entails a imply b$
++ $a imply b entails not a or b$
++ $a imply b, a imply not b entails not a$
++ $not p imply bot med entails p$ (with allowed $not not$E)
++ $entails p or not p$
++ $a or b, b or c, not b entails a and c$
++ $a or (b imply a) entails not a imply not b$
++ $p imply not p entails not p$
++ $a imply b, not b entails not a$
++ $((a imply b) imply a) imply a$
++ $not a imply not b entails b imply a$
++ $entails (a imply b) or (b imply a)$
+
 == Soundness and Completeness
 
 - A formal system is *sound* if every provable formula is true in all models.
