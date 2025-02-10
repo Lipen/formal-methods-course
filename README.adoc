@@ -41,6 +41,7 @@ This course is heavily based on the following courses and books:
 - University of Toronto :: Formal Methods of Software Design :: link:https://www.cs.toronto.edu/~hehner/FMSD/[link]
 - Brown University :: CS 1710 :: Logic for Systems (2025) :: link:https://csci1710.github.io/[link]
 - Cornell University :: CS 2800 :: Discrete Structures (2017) :: link:https://www.cs.cornell.edu/courses/cs2800/2017fa/[link]
-- M. Huth and M. Ryan, Logic in Computer Science: Modelling and Reasoning about Systems, 2nd ed. USA: Cambridge University Press, 2004.
+- H. B. Enderton, A mathematical introduction to logic, 2nd ed. Academic Press, 2010.
+- M. Huth and M. Ryan, Logic in Computer Science: Modelling and Reasoning about Systems, 2nd ed. Cambridge University Press, 2004.
 - B. C. Pierce et al., link:https://softwarefoundations.cis.upenn.edu/lf-current/index.html[Logical Foundations], in Software foundations, vol. 1. Electronic textbook, 2025.
-- E. C. R. Hehner, link:https://www.cs.toronto.edu/~hehner/aPToP/[a Practical Theory of Programming]. Toronto, Canada: Electronic textbook, 2025.
+- E. C. R. Hehner, link:https://www.cs.toronto.edu/~hehner/aPToP/[a Practical Theory of Programming]. Electronic textbook, 2025.
