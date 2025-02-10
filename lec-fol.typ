@@ -8,6 +8,8 @@
   // dark: true,
 )
 
+#show table.cell.where(y: 0): strong
+
 = Introduction to FOL
 
 == Motivation
@@ -79,12 +81,17 @@ Which of the following are true?
 + $models exists x . (P(x) imply forall y . P(y))$ // True (*)
 
 Which models satisfy the following sentences?
-+ $forall x forall y . (x = y)$
-  - Models with a single element.
-+ $forall x forall y . Q(x, y)$
-  - Models $(A, Q)$ where $Q = A times A$.
-+ $forall x exists y . Q(x, y)$
-  - Models $(A, Q)$ where $dom Q = A$.
+#table(
+  columns: 2,
+  stroke: none,
+  table.header[Sentence][Models],
+  $forall x forall y . (x = y)$,
+  [Models with a single element.],
+  $forall x forall y . Q(x, y)$,
+  [Models $(A, Q)$ where $Q = A times A$.],
+  $forall x exists y . Q(x, y)$,
+  [Models $(A, Q)$ where $dom Q = A$.],
+)
 
 = Metatheory
 
