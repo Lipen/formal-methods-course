@@ -1,0 +1,24 @@
+davis1960:
+  type: Article
+  title: A computing procedure for quantification theory
+  author:
+    - Davis, Martin
+    - Putnam, Hilary
+  journal: Journal of the ACM
+  volume: 7
+  number: 3
+  page-range: 201-215
+  date: 1960
+
+davis1962:
+  type: Article
+  title: A machine program for theorem-proving
+  author:
+    - Davis, Martin
+    - Logemann, George
+    - Loveland, Donald
+  journal: Communications of the ACM
+  volume: 5
+  number: 7
+  page-range: 394-397
+  date: 1962

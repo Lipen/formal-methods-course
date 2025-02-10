@@ -184,3 +184,9 @@
   "Example",
   inset: (x: 0em, y: 0em),
 ).with(numbering: none)
+#let note = thmplain(
+  "note",
+  "Note",
+  inset: (x: 0em, y: 0em),
+  titlefmt: (it) => strong(it),
+).with(numbering: none)

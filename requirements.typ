@@ -5,3 +5,5 @@
 #import "@preview/cheq:0.2.2"
 #import "@preview/colorful-boxes:1.4.2"
 #import "@preview/ctheorems:1.1.3"
+#import "@preview/diagraph:0.3.1"
+#import "@preview/lovelace:0.3.0"
