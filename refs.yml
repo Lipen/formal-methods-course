@@ -62,3 +62,26 @@ nieuwenhuis2006:
   publisher: ACM
   serial-number:
     doi: 10.1145/1217856.1217859
+
+cook1971:
+  type: article
+  title: The complexity of theorem-proving procedures
+  author: Cook, Stephen A.
+  journal: Proceedings of the Third Annual ACM Symposium on Theory of Computing
+  date: 1971
+  page-range: 151-158
+  publisher: ACM
+  serial-number:
+    doi: 10.1145/800157.805047
+
+levin1973:
+  type: article
+  title: Universal sequential search problems
+  author: Levin, Leonid A.
+  journal: Problemy Peredachi Informatsii
+  volume: 9
+  number: 3
+  date: 1973
+  page-range: 115-116
+  serial-number:
+    doi: 10.1016/0022-0000(73)90033-1

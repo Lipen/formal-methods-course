@@ -178,7 +178,7 @@ $
 SAT is a _decision_ problem, which means that the answer is either "yes" or "no".
 However, in practice, we are mainly interested in _finding_ the actual satisfying assignment if it exists --- this is a _functional_ SAT problem.
 
-Historically, SAT was the first problem proven to be NP-complete, independently by Stephen Cook and Leonid Levin in 1971.
+Historically, SAT was the first problem proven to be NP-complete, independently by Stephen Cook @cook1971 and Leonid Levin @levin1973 in 1971.
 
 #theorem([Cook--Levin])[
   SAT is NP-complete.
