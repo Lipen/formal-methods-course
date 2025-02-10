@@ -508,15 +508,16 @@ Recall:
     column-gutter: 1em,
     table.header[Proof tree:][Linear proof (Fitch notation):],
     proof-tree(
+      title-inset: 0.5em,
       rule(
         name: [$and$i],
         $q and r$,
         rule(
           name: [$and$e],
           $q$,
-          $p and q$,
+          rule($p and q$), // premise
         ),
-        [$r$],
+        rule($r$), // premise
       ),
     ),
     fitch(
