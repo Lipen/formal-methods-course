@@ -515,6 +515,16 @@ Extended rules:
 
 TODO: discuss
 
+== TODO
+
+#show: cheq.checklist
+- [ ] CDCL
+- [/] Abstract DPLL
+- [ ] Encodings
+- [ ] SAT Solvers
+- [ ] Applications
+- [ ] Exercises
+
 == Bibliography
 
 #bibliography("refs.yml")
