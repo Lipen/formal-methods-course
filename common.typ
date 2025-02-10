@@ -22,13 +22,16 @@
   pos,
   label,
   tint: white,
+  shape: fletcher.shapes.rect,
+  corner-radius: 5pt,
   ..args,
 ) = fletcher.node(
   pos,
   align(center, label),
   fill: tint.lighten(80%),
   stroke: 1pt + tint.darken(20%),
-  corner-radius: 5pt,
+  shape: shape,
+  corner-radius: corner-radius,
   ..args,
 )
 
