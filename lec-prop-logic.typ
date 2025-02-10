@@ -388,19 +388,22 @@ Recall:
 
 - *Proofs* are constructed by applying rules to assumptions and previously derived formulas.
 
-#align(center)[
-  #proof-tree(
+#grid(
+  columns: (1fr, 2fr),
+  align: center,
+  $ underbrace(#[$A_1, dots, A_n entails A$], "sequent") $,
+  proof-tree(
     title-inset: 0.5em,
     horizontal-spacing: 2pt,
     rule(
       name: "rule name",
-      [$Gamma$ (_assumptions_) $entails$ (_conclusion_)],
+      [$Gamma$ $entails$ (_conclusion_)],
       [$Gamma_1$ $entails$ (_premise 1_)],
       [$Gamma_2$ $entails$ (_premise 2_)],
       [$dots$],
     ),
-  )
-]
+  ),
+)
 
 == Inference Rules
 
