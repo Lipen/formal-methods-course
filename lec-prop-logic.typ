@@ -570,25 +570,18 @@ Recall:
     ]
 
 == TODO
-
 #show: cheq.checklist
-
 - [/] Normal forms
 - [ ] Canonical normal forms
 - [ ] BDDs
 - [x] Natural deduction
-- [/] Soundnsess and completeness, proofs
-- [x] Compactness
-- [ ] Complexity classes
-- [ ] SAT
-- [ ] Equisatisfiability, Tseitin transformation
-- [ ] DIMACS format
-- [ ] SAT
-- [ ] Cook theorem
-- [ ] Polytime reductions
-
-== Summary
-
-- Propositional logic provides a foundation for reasoning about Boolean functions.
-- Key concepts: Syntax, semantics, WFFs, truth tables, and logical laws.
-- Next steps: SAT solvers and their role in automated reasoning.
+- [ ] Sequent calculus
+- [ ] Fitch notation
+- [ ] Proof checkers
+- [ ] Proof assistants
+- [ ] Automatic theorem provers
+- [ ] Abstract proof systems
+- [ ] Intuitionistic logic
+- [x] Soundnsess and completeness
+- [ ] Proof of soundness
+- [ ] Proof of completeness
