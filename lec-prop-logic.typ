@@ -10,12 +10,16 @@
 
 // custom style
 #show heading.where(level: 3): set block(above: 1em, below: 0.6em)
+#show table.cell.where(y: 0): strong
 
 // proof trees
 #import curryst: rule, proof-tree
 
 // semantical evaluation
 #let Eval(x) = $bracket.l.double #x bracket.r.double_nu$
+
+// smash
+#let smash(it) = box(width: 0pt, align(center, box(width: float.inf * 1pt, it)))
 
 = Propositional Logic
 
@@ -492,6 +496,37 @@ Recall:
     $Gamma, alpha entails beta$,
   ),
 )
+
+== Example Derivation
+
+#example[
+  $underbrace(p and q\, r, "premises") entails underbrace(q and r, #smash("conclusion"))$
+
+  #table(
+    columns: 2,
+    stroke: none,
+    column-gutter: 1em,
+    table.header[Proof tree:][Linear proof (Fitch notation):],
+    proof-tree(
+      rule(
+        name: [$and$i],
+        $q and r$,
+        rule(
+          name: [$and$e],
+          $q$,
+          $p and q$,
+        ),
+        [$r$],
+      ),
+    ),
+    fitch(
+      (0, $p and q$, "premise"),
+      (0, $r$, "premise"),
+      (0, $q$, [$and$e 1]),
+      (0, $q and r$, [$and$i 2,3]),
+    ),
+  )
+]
 
 == Soundness and Completeness
 
