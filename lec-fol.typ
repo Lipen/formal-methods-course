@@ -67,6 +67,25 @@ A *domain* ($D$) represents the set of all objects under consideration.
 - $forall x . P(x)$ is false (counter-example: $x = 3$ is not even).
 - $exists x . P(x)$ is true (example: $x = 2$ is even).
 
+== Examples
+
+Suppose that $P$ is a unary predicate, and $Q$ is a binary predicate.
+Which of the following are true?
++ $forall x . P(x) models P(y)$ // True
++ $P(x) models forall x . P(x)$ // False
++ $forall x . P(x) models exists y . P(y)$ // True (*)
++ $exists x forall y . Q(x,y) models forall y exists x . Q(x,y)$ // True
++ $forall x exists y . Q(x,y) models exists y forall x . Q(x,y)$ // False
++ $models exists x . (P(x) imply forall y . P(y))$ // True (*)
+
+Which models satisfy the following sentences?
++ $forall x forall y . (x = y)$
+  - Models with a single element.
++ $forall x forall y . Q(x, y)$
+  - Models $(A, Q)$ where $Q = A times A$.
++ $forall x exists y . Q(x, y)$
+  - Models $(A, Q)$ where $dom Q = A$.
+
 = Metatheory
 
 == Logical Theories

@@ -61,3 +61,4 @@
 #let entails = sym.tack.r
 #let notin = sym.in.not
 #let setminus = sym.backslash
+#let dom = math.op("dom")
