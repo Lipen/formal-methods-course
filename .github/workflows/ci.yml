@@ -28,8 +28,9 @@ jobs:
       - run: typst --version
       - run: typst compile syllabus.typ
       - run: typst compile lec-prop-logic.typ
-      - run: typst compile lec-fol.typ
+      - run: typst compile lec-sat.typ
       - run: typst compile lec-computation.typ
+      - run: typst compile lec-fol.typ
 
       - name: Upload PDFs as artifact
         uses: actions/upload-artifact@v4
