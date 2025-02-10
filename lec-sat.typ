@@ -1,7 +1,7 @@
 #import "theme.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
-  subtitle: "Boolean Satisfiability Problem",
+  subtitle: "Boolean Satisfiability",
   date: "Spring 2025",
   authors: "Konstantin Chukharev",
   ratio: 16 / 9,
