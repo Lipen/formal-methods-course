@@ -166,7 +166,7 @@ The main advantage of the clausal form over the CNF is that we can convert any f
 + If $F$ is a formula which has the form $C_1 and dots and C_n$, where $n > 0$ and each $C_i$ is a clause, then its clausal form is $S eq.def {C_1, dots, C_n}$.
 + Otherwise, apply Tseitin transformation: introduce a name for each subformula $A$ of $F$ such that $B$ is not a literal and use this name instead of a subformula.
 
-= SAT Problem
+= SAT
 
 == Boolean Satisfiability Problem (SAT)
 
@@ -263,6 +263,8 @@ What is the largest complete graph for which this is possible for a given number
 
 Now, run a SAT solver for increasing values of $n$, and find the largest $n$ for which the formula is satisfiable.
 The answer is $n = 16$ for $k = 3$.
+
+= Algorithms for SAT
 
 == Davis--Putnam Algorithm
 
@@ -364,7 +366,7 @@ In DPLL, the resolution rule is replaced with a _splitting_ rule.
 
 The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfying assignment iff one exists.
 
-== DPLL
+== DPLL Pseudocode
 
 #lovelace.pseudocode-list(
   // title: [$"DPLL"(S)$],
