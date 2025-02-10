@@ -46,3 +46,19 @@ nieuwenhuis2005:
   publisher: Springer
   serial-number:
     doi: 10.1007/978-3-540-32275-7_3
+
+nieuwenhuis2006:
+  type: article
+  title: "Solving SAT and SAT Modulo Theories - From an abstract Davis--Putnam--Logemann--Loveland procedure to DPLL(T)"
+  author:
+    - Nieuwenhuis, Robert
+    - Oliveras, Albert
+    - Tinelli, Cesare
+  journal: Journal of the ACM
+  volume: 53
+  number: 6
+  date: 2006
+  page-range: 937-977
+  publisher: ACM
+  serial-number:
+    doi: 10.1145/1217856.1217859

@@ -428,7 +428,7 @@ The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfyi
 == Abstract DPLL
 
 #definition[
-  Abstract DPLL is a high-level framework for a general and simple abstract rule-based formulation of the DPLL procedure. @nieuwenhuis2005
+  Abstract DPLL is a high-level framework for a general and simple abstract rule-based formulation of the DPLL procedure. @nieuwenhuis2005 @nieuwenhuis2006
 ]
 
 DPLL procedure is being modelled by a _transition system_: a set of _states_ and a _transition relation_.
