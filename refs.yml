@@ -1,5 +1,5 @@
 davis1960:
-  type: Article
+  type: article
   title: A computing procedure for quantification theory
   author:
     - Davis, Martin
@@ -9,9 +9,11 @@ davis1960:
   number: 3
   page-range: 201-215
   date: 1960
+  serial-number:
+    doi: 10.1145/321033.321034
 
 davis1962:
-  type: Article
+  type: article
   title: A machine program for theorem-proving
   author:
     - Davis, Martin
@@ -22,3 +24,5 @@ davis1962:
   number: 7
   page-range: 394-397
   date: 1962
+  serial-number:
+    doi: 10.1145/368273.368557
