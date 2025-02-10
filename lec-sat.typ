@@ -12,6 +12,8 @@
 
 #import fletcher: diagram, node, edge
 
+#let transition = $scripts(arrow.double.long)$
+
 = Foundations
 
 == Literals
@@ -421,13 +423,95 @@ The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfyi
 //   edge(<n2>, "..|>", <n4>),
 // )
 
+= Advanced Topics
+
 == Abstract DPLL
 
-TODO
+#definition[
+  Abstract DPLL is a high-level framework for a general and simple abstract rule-based formulation of the DPLL procedure. @nieuwenhuis2005
+]
 
-== TEST
+DPLL procedure is being modelled by a _transition system_: a set of _states_ and a _transition relation_.
+- States are denoted by $S$.
+- We write $S transition S'$ when the pair $(S, S')$ is in the transition relation, meaning that $S'$ is _reachable_ from~$S$ in one _transition step_.
+- We denote by $transition^*$ the reflexive-transitive closure of $transition$.
+- We write $S transition^! S'$ if $S transition^* S'$ and $S'$ is a _final_ state, i.e., there is no $S''$ such that $S' transition S''$.
+- A state is either _fail_ or a pair $M || F$, where $M$ is a _model_ (a sequence of _annotated literals_) and $F$ is a finite set of clauses.
+- An empty sequence of literals is denoted by $emptyset$.
+- A literal can be annotated as _decision literal_, which is denoted by $l^d$.
+- We write $F,C$ to denote the set $F union {C}$.
 
-#lorem(100)
+== DPLL
+
+The _basic DPLL system_ consists of the following transition rules:
+
+- _UnitPropagate_: \
+  $M || F, (C or l) transition M l || F, (C or l)$
+  #h(1em) *if* $cases(
+    M med models med  not C,
+    l "is undefined in" M,
+  )$
+
+- _PureLiteral_: \
+  $M || F transition M || F$
+  #h(1em) *if* $cases(
+    l "occurs in some clause of" F,
+    not l "does not occur in any clause of" F,
+    l "is undefined in" M,
+  )$
+
+- _Decide_: \
+  $M || F, C transition M l^d || F, C$
+  #h(1em) *if* $cases(
+    l "or" not l "occurs in a clause of" F,
+    l "is undefined in" M,
+  )$
+
+- _Fail_: \
+  $M || F, C transition$ _fail_
+  #h(1em) *if* $cases(
+    M med models med not C,
+    M "contains no decision literals",
+  )$
+
+- _Backtrack_: \
+  $M l^d N || F,C transition M not l || F,C$
+  #h(1em) *if* $cases(
+    M l^d N med models med not C,
+    N "contains no decision literals",
+  )$
+
+== CDCL
+
+Extended rules:
+
+- _Learn_: \
+  $M || F transition M || F,C$
+  #h(1em) *if* $cases(
+    "all atoms of" C "occur in" F,
+    F models C,
+  )$
+
+- _Backjump_: \
+  $M l^d N || F,C transition M l' || F,C$
+  #h(1em) *if* $cases(
+    M l^d N med models med not C,
+    "there is asome clause" C' or l' "such that:",
+    F\,C med models med C' or l',
+    l' "is undefined in" M,
+    l' or not l' "occurs in" F "or in" M l^d N,
+  )$
+
+- _Forget_: \
+  $M || F, C transition M || F$
+  #h(1em) *if* $cases(
+    F med models med C,
+  )$
+
+- _Restart_: \
+  $M || F transition emptyset || F$
+
+TODO: discuss
 
 == Bibliography
 

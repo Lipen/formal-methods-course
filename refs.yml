@@ -26,3 +26,23 @@ davis1962:
   date: 1962
   serial-number:
     doi: 10.1145/368273.368557
+
+nieuwenhuis2005:
+  type: chapter
+  title: Abstract DPLL and Abstract DPLL Modulo Theories
+  author:
+    - Nieuwenhuis, Robert
+    - Oliveras, Albert
+    - Tinelli, Cesare
+  editor:
+    - Baader, Franz
+    - Voronkov, Andrei
+  parent:
+    type: book
+    title: Logic for Programming, Artificial Intelligence, and Reasoning
+  date: 2005
+  volume: 3452
+  page-range: 36-50
+  publisher: Springer
+  serial-number:
+    doi: 10.1007/978-3-540-32275-7_3
