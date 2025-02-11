@@ -10,7 +10,7 @@
 
 = Computability
 
-== Computable functions
+== Computable Functions
 
 #definition([Church--Turing thesis])[
   _Computable functions_ are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
@@ -26,7 +26,7 @@
   - If $f(x)$ is undefined, then the program never terminates on the input $x$.
 ]
 
-== Effective procedures
+== Effective Procedures
 
 #definition[
   An *effective procedure* is a finite, deterministic, mechanical algorithm that guarantees to terminate and produce the correct answer in a finite number of steps.
@@ -34,7 +34,7 @@
 
 = Decidability
 
-== Decidable sets
+== Decidable Sets
 
 #definition([Decidable set])[
   Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* (or *computable*) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
@@ -51,7 +51,7 @@
     - _It is the set of all tautological consequences of the empty set._
 ]
 
-== Undecidable sets
+== Undecidable Sets
 
 #definition([Undecidable set])[
   A set $S$ is *undecidable* if it is not decidable.
@@ -181,7 +181,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 
 = Complexity Zoo
 
-== Complexity classes
+== Complexity Classes
 
 TODO
 
