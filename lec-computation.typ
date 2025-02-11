@@ -51,7 +51,21 @@
     - _It is the set of all tautological consequences of the empty set._
 ]
 
-TODO: undecidable sets (existence proof)
+== Undecidable sets
+
+#definition([Undecidable set])[
+  A set $S$ is *undecidable* if it is not decidable.
+]
+
+#example[
+  The existence of undecidable sets of expressions can be shown as follows.
+
+  An algorithm is completely determined by its _finite_ description.
+  Thus, there are only _countably many_ effective procedures.
+  But there are uncountably many sets of expressions.
+  (Why? The set of expressions is countably infinite. Therefore, its power set is uncountable.)
+  Hence, there are _more_ sets of expressions than there are possible effective procedures.
+]
 
 == Semi-decidability
 
