@@ -67,6 +67,8 @@
   Hence, there are _more_ sets of expressions than there are possible effective procedures.
 ]
 
+= Semi-decidability
+
 == Semi-decidability
 
 Suppose we want to determine $Gamma models alpha$ where $Gamma$ is infinite.
@@ -86,7 +88,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 - Decidable sets are closed under union, intersection, Cartesian product, and complement.
 - Semi-decidable sets are closed under union, intersection, and Cartesian product.
 
-#pagebreak()
+== Enumerability and Semi-decidability
 
 #theorem[
   A set $S$ is computably enumerable iff it is semi-decidable.
@@ -114,18 +116,46 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   This procedure will eventually list all members of $S$.
 ]
 
-#pagebreak()
+== Dual Enumerability and Decidability
 
 #theorem([Kleene])[
   A set is decidable iff both it and its complement are semi-decidable.
 ]
 
-#proof[
-  Alternate between running the procedure for the set and the procedure for its completement.
-  One of them will eventually produce "yes".
+#proof([(*$arrow.double.r$*)])[
+  _If $A$ is decidable, then both $A$ and its complement $overline(A)$ are effectively enumerable._
+
+  Since $A$ is decidable, there exists an effective procedure $P$ that halts on all inputs and returs "yes" if $alpha in A$ and "no" otherwise.
+
+  To enumerate $A$:
+  - Systematically generate all expressions $alpha_1, alpha_2, alpha_3, dots$
+  - For each $alpha_i$, run $P$. If $P$ outputs "yes", yield $alpha_i$. Otherwise, continue.
+
+  Similarly, enumerate $overline(A)$ by yielding $alpha_i$ when $P$ outputs "no".
+
+  Both enumerations are effective, since $P$ always halts, so $A$ and its complement are semi-decidable.
 ]
 
 #pagebreak()
+
+#proof([(*$arrow.double.l$*)])[
+  _If $A$ and $overline(A)$ are effectively enumerable, then $A$ is decidable._
+
+  Let $E$ be an enumerator for $A$ and $overline(E)$ an enumerator for $overline(A)$.
+
+  To decide if $alpha in A$, _interleave_ the execution of $E$ and $overline(E)$, that is, for $n = 1,2,3,dots$
+  - Run $E$ for $n$ steps and if it produces $alpha$, _halt_ and output "yes".
+  - Run $overline(E)$ for $n$ steps and if it produces $alpha$, _halt_ and output "no".
+
+  Since $alpha$ is either in $A$ or in $overline(A)$, one of the enumerators will eventually produce $alpha$.
+  The interleaving with increasing number of steps ensures fair scheduling without starvation.
+
+  _Remark:_
+  The "dovetailing" technique (alternating between enumerators with increasing step) avoids infinite waiting while maintaining finite memory requirements.
+  The alternative is to run both enumerators _simultaneosly_, in parallel, using, for example, two computers.
+]
+
+== Enumerability of Tautological Consequences
 
 #theorem[
   If $Sigma$ is an effectively enumerable set of WFFs, then the set ${alpha | Sigma models alpha}$ of tautological consequences of $Sigma$ is effectively enumerable.
