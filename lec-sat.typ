@@ -196,6 +196,8 @@ However, in practice, we are mainly interested in _finding_ the actual satisfyin
 ]
 
 // TODO: Add a proof sketch.
+// TODO: mention Karp
+// TODO: define Karp's many-one reduction
 
 == Solving General Search Problems with SAT
 
