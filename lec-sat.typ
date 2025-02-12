@@ -192,7 +192,7 @@ However, in practice, we are mainly interested in _finding_ the actual satisfyin
 #theorem([Cook--Levin])[
   SAT is NP-complete.
 
-  That is, any problem in NP can be _reduced_ to SAT in polynomial time, using #link("https://en.wikipedia.org/wiki/Many-one_reduction")[many-one reductions].
+  That is, _any_ problem in NP can be _reduced_ to SAT in polynomial time (using #link("https://en.wikipedia.org/wiki/Many-one_reduction")[many-one reduction]).
 ]
 
 // TODO: Add a proof sketch.
