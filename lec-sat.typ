@@ -147,7 +147,7 @@ The set $S$ of clauses obtained by the Tseitin transformation is _equisatisfiabl
 
   The equivalent CNF of $F$ consists of $2^5 = 32$ clauses.
 
-  The equisatisfiable CNF of $F$ consists of $4$ clauses, yet introduces $3$ fresh variables.
+  The equisatisfiable CNF of $F$ consists of $16$ clauses, yet introduces $3$ fresh variables.
 ]
 
 == Clausal Form
