@@ -24,7 +24,9 @@
     align: center,
     column-gutter: 2em,
     row-gutter: 0.5em,
-    image("assets/Martin_Davis.jpg", height: 3cm), image("assets/Hilary_Putnam.jpg", height: 3cm),
+    box(inset: (right: -0.6cm), clip: true, image("assets/Martin_Davis.jpg", height: 3cm)),
+    image("assets/Hilary_Putnam.jpg", height: 3cm),
+
     [Martin Davis], [Hilary Putnam],
   )
   #let body = [
