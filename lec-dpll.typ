@@ -114,9 +114,9 @@ Introduced by Martin Davis, George Logemann, and Donald Loveland in 1961, the al
 In DPLL, the resolution rule is replaced with a _splitting_ rule.
 + Let $Delta$ be the current set of clauses.
 + Choose a propositional variable $p$ occuring in the formula.
-+ Test the satisfiability of $Delta union {(p)}$.
++ Test the satisfiability of $Delta union {(p)}$:
   - If satisfiable, assign $p = 1$ and continue with the new formula.
-  - If unsatisfiable, test the satisfiability of $Delta union {(not p)}$.
+  - If unsatisfiable, test the satisfiability of $Delta union {(not p)}$:
     - If satisfiable, assign $p = 0$ and continue with the new formula.
     - If unsatisfiable, backtrack.
 
