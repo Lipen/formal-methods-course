@@ -22,7 +22,7 @@
   #let fig = grid(
     columns: 2,
     align: center,
-    column-gutter: 2em,
+    column-gutter: 1em,
     row-gutter: 0.5em,
     box(inset: (right: -0.6cm), clip: true, image("assets/Martin_Davis.jpg", height: 3cm)),
     image("assets/Hilary_Putnam.jpg", height: 3cm),
