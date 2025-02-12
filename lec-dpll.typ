@@ -1,7 +1,7 @@
 #import "theme.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
-  subtitle: "Boolean Satisfiability",
+  subtitle: "DPLL",
   date: "Spring 2025",
   authors: "Konstantin Chukharev",
   ratio: 16 / 9,

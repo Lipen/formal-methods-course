@@ -1,7 +1,7 @@
 #import "theme.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
-  subtitle: "Boolean Satisfiability",
+  subtitle: "SAT",
   date: "Spring 2025",
   authors: "Konstantin Chukharev",
   ratio: 16 / 9,
@@ -32,7 +32,7 @@
   Note: _complementary_ literals $p$ and $overline(p)$ are each other's completement.
 ]
 
-== Clauses
+== Conjunctive Normal Form
 
 #definition([Clause])[
   A _clause_ is a disjunction of literals.
@@ -42,8 +42,6 @@
 
   Note: $square$ is _false in every interpretation_, that is, unsatisfiable.
 ]
-
-== Conjunctive Normal Form
 
 #definition([Conjunctive Normal Form (CNF)])[
   A formula is said to be in _conjunctive normal form_ if it is a conjunction of clauses.
@@ -162,7 +160,7 @@ The main advantage of the clausal form over the CNF is that we can convert any f
 + If $F$ is a formula which has the form $C_1 and dots and C_n$, where $n > 0$ and each $C_i$ is a clause, then its clausal form is $S eq.def {C_1, dots, C_n}$.
 + Otherwise, apply Tseitin transformation: introduce a name for each subformula $A$ of $F$ such that $B$ is not a literal and use this name instead of a subformula.
 
-= SAT
+= SAT Problem
 
 == Boolean Satisfiability Problem (SAT)
 
