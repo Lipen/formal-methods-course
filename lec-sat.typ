@@ -195,6 +195,8 @@ However, in practice, we are mainly interested in _finding_ the actual satisfyin
   That is, any problem in NP can be _reduced_ to SAT in polynomial time, using #link("https://en.wikipedia.org/wiki/Many-one_reduction")[many-one reductions].
 ]
 
+// TODO: Add a proof sketch.
+
 == Solving General Search Problems with SAT
 
 Modelling and solving general search problems:
