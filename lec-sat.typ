@@ -239,7 +239,7 @@ What is the largest complete graph for which this is possible for a given number
 
 + _Describe states using propositional variables._
   - A simple (_one-hot_, or _direct_) encoding uses three variables for each edge: $e_1$, $e_2$, and $e_3$.
-    There are 9 possible combinations of values of three variables, which given a state space of $9^abs(E)$.
+    There are 8 possible combinations of values of three variables, which given a state space of $8^abs(E)$.
     This is larger than necessary, but keeps the encoding simple.
 
 + _Describe legal and illegal states using propositional formulas._
