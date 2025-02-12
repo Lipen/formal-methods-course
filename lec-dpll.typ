@@ -53,10 +53,16 @@ Hereinafter, we assume that the formulas are given in CNF form.
 ]
 
 Suppose $(p)$ is a unit clause.
-Let $-p$ denote the negation of $p$, where double negation is collapsed (i.e.,~$- not q = q$).
+Recall that $overline(p)$ denotes the complement literal:
+#h(1em, weak: true)
+$overline(p) = cases(
+  not p "if" p "is positive",
+  p "if" p "is negative"
+)$
+
 Then, the unit propagation rule is defined as follows:
 - Assign the value of $p$ to true.
-- Remove all instances of $-p$ from clauses in the formula (shortening the corresponding clauses).
+- Remove all instances of $overline(p)$ from clauses in the formula (shortening the corresponding clauses).
 - Remove all clauses containing $p$ (including the unit clause itself).
 
 #example[
