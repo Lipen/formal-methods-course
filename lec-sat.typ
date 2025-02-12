@@ -184,9 +184,7 @@ However, in practice, we are mainly interested in _finding_ the actual satisfyin
   #let body = [
     Historically, SAT was the first problem proven to be NP-complete, independently by Stephen Cook @cook1971 and Leonid Levin @levin1973 in 1971.
   ]
-
-  #import "@preview/wrap-it:0.1.0": wrap-content
-  #wrap-content(fig, body, align: top + right)
+  #wrap-it.wrap-content(fig, body, align: top + right)
 ]
 
 == Cook--Levin Theorem

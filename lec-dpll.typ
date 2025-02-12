@@ -37,9 +37,7 @@
     - The affirmative-negative rule (*pure literal*).
     - The atomic formula elimination rule (*resolution*).
   ]
-
-  #import "@preview/wrap-it:0.1.0": wrap-content
-  #wrap-content(fig, body, align: top + right)
+  #wrap-it.wrap-content(fig, body, align: top + right)
 ]
 
 The first two rules reduce the total number of literals in the formula.
