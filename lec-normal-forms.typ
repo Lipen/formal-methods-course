@@ -268,19 +268,19 @@ The set $S$ of clauses obtained by the Tseitin transformation is _equisatisfiabl
 
 == Clausal Form
 
-#definition[Clausal Form][
+#definition[Clausal form][
   A _clausal form_ of a formula $F$ is a set $S_F$ of clauses which is satisfiable iff $F$ is satisfiable.
 
-  A clausal form of a _set_ of formulas $F'$ is a set $S'$ of clauses which is satisfiable iff $F'$ is satisfiable.
+  A clausal form of a _set_ of formulas $S$ is a set $S'$ of clauses which is satisfiable iff $S$ is satisfiable.
 
   Even stronger requirement:
   - $F$ and $S_F$ have the same models in the language of $F$.
-  - $F'$ and $S'$ have the same models in the language of $F'$.
+  - $S$ and $S'$ have the same models in the language of $S$.
 ]
 
-The main advantage of the clausal form over the CNF is that we can convert any formula into a set of clauses in _almost linear time_.
+The main advantage of the clausal form over the equivalent CNF is that we can convert any formula into a set of clauses in _almost linear time_.
 + If $F$ is a formula which has the form $C_1 and dots and C_n$, where $n > 0$ and each $C_i$ is a clause, then its clausal form is $S eq.def {C_1, dots, C_n}$.
-+ Otherwise, apply Tseitin transformation: introduce a name for each subformula $A$ of $F$ such that $B$ is not a literal and use this name instead of a subformula.
++ Otherwise, apply Tseitin transformation: introduce a name for each subformula $A$ of $F$ such that $A$ is not a literal and use this name instead of a subformula $A$.
 
 == TODO
 
