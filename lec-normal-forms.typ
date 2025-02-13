@@ -286,6 +286,8 @@ The main advantage of the clausal form over the equivalent CNF is that we can co
 
 #show: cheq.checklist
 - [ ] Exercises
+- [ ] Example: convert formula to clausal form
+- [ ] DNF vs CNF satisfiability
 
 // == Bibliography
 // #bibliography("refs.yml")
