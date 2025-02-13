@@ -13,6 +13,8 @@ image:https://github.com/Lipen/formal-methods-course/actions/workflows/ci.yml/ba
 
 |image:https://img.shields.io/badge/Lecture-Propositional Logic-blue?style=social&logo=gitbook["Lecture: Propositional Logic", link="https://lipen.github.io/formal-methods-course/lec-prop-logic.pdf"]
 
+|image:https://img.shields.io/badge/Lecture-Normal Forms-blue?style=social&logo=gitbook["Lecture: Normal Forms", link="https://lipen.github.io/formal-methods-course/lec-normal-forms.pdf"]
+
 |image:https://img.shields.io/badge/Lecture-Boolean Satisfiability-blue?style=social&logo=gitbook["Lecture: Boolean Satisfiability", link="https://lipen.github.io/formal-methods-course/lec-sat.pdf"]
 
 |image:https://img.shields.io/badge/Lecture-Theory of Computation-blue?style=social&logo=gitbook["Lecture: Theory of Computation", link="https://lipen.github.io/formal-methods-course/lec-computation.pdf"]
