@@ -39,7 +39,7 @@ However, in practice, we are mainly interested in _finding_ the actual satisfyin
 
 == Cook--Levin Theorem
 
-#theorem([Cook--Levin])[
+#theorem[Cook--Levin][
   SAT is NP-complete.
 
   That is, _any_ problem in NP can be _reduced_ to SAT in polynomial time (using #link("https://en.wikipedia.org/wiki/Many-one_reduction")[many-one reduction]).

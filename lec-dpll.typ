@@ -48,7 +48,7 @@ Hereinafter, we assume that the formulas are given in CNF form.
 
 == Unit Propagation Rule
 
-#definition([Unit clause])[
+#definition[Unit clause][
   A _unit clause_ is a clause with a single literal.
 ]
 
@@ -75,7 +75,7 @@ Then, the unit propagation rule is defined as follows:
 
 == Pure Literal Rule
 
-#definition([Pure literal])[
+#definition[Pure literal][
   A literal $p$ is _pure_ if it appears in the formula only positively or only negatively.
 ]
 

@@ -16,7 +16,7 @@
 
 == Normal Forms in Propositional Logic
 
-#definition([Normal form])[
+#definition[Normal form][
   A _normal form_ is a standardized syntactic representation of logical formulas with a _restricted_ structure.
 
   Normal forms enable efficient reasoning, simplification, and decision procedures, making them essential in automated theorem proving, model checking, and logic synthesis.
@@ -35,7 +35,7 @@ Every propositional formula can be converted to an _equivalent_ formula in any o
 
 == Negation Normal Form (NNF)
 
-#definition([NNF])[
+#definition[NNF][
   A formula is in _negation normal form_ if the negation operator ($not$) is only applied to propositional variables, and the only allowed logical connectives are $and$, $or$, and $not$.
 ]
 
@@ -55,13 +55,13 @@ $
 
 == Literals
 
-#definition([Literal])[
+#definition[Literal][
   A _literal_ is a propositional variable or its negation.
   - $p$ is a _positive literal_.
   - $not p$ is a _negative literal_.
 ]
 
-#definition([Complement])[
+#definition[Complement][
   The _complement_ of a literal $p$ is denoted by $overline(p)$.
   $
     overline(p) = cases(
@@ -116,7 +116,7 @@ The NNF of formulas containing $iff$ can grow _exponentially_ in size.
 
 == Disjunctive Normal Form
 
-#definition([Disjunctive Normal Form (DNF)])[
+#definition[Disjunctive Normal Form (DNF)][
   A formula is said to be in _disjunctive normal form_ if it is a disjunction of _cubes_ (conjunctions of literals).
   $
     A = or.big_i and.big_j p_(i j)
@@ -136,11 +136,11 @@ $
 
 == Cubes and Clauses
 
-#definition([Cube])[
+#definition[Cube][
   A _cube_ is a conjunction of literals.
 ]
 
-#definition([Clause])[
+#definition[Clause][
   A _clause_ is a disjunction of literals.
   - An _empty clause_ is a clause with no literals, commonly denoted by $square$.
   - A _unit clause_ is a clause with a single literal, that is, just a literal itself.
@@ -151,7 +151,7 @@ $
 
 == Conjunctive Normal Form
 
-#definition([Conjunctive Normal Form (CNF)])[
+#definition[Conjunctive Normal Form (CNF)][
   A formula is said to be in _conjunctive normal form_ if it is a conjunction of _clauses_.
   $
     A = and.big_i or.big_j p_(i j)
@@ -240,7 +240,7 @@ $
 
 == Equisatisfiability
 
-#definition([Equisatisfiability])[
+#definition[Equisatisfiability][
   Two formulas $A$ and $B$ are _equisatisfiable_ if $A$ is satisfiable _if and only~if_ $B$ is satisfiable.
 ]
 
@@ -268,7 +268,7 @@ The set $S$ of clauses obtained by the Tseitin transformation is _equisatisfiabl
 
 == Clausal Form
 
-#definition([Clausal Form])[
+#definition[Clausal Form][
   A _clausal form_ of a formula $F$ is a set $S_F$ of clauses which is satisfiable iff $F$ is satisfiable.
 
   A clausal form of a _set_ of formulas $F'$ is a set $S'$ of clauses which is satisfiable iff $F'$ is satisfiable.

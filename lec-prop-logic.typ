@@ -298,11 +298,11 @@ Recall:
 - A set of WFFs $Sigma$ is *satisfiable* if there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
 - A set of WFFs $Sigma$ is *finitely satisfiable* if every finite subset of $Sigma$ is satisfiable.
 
-#theorem([Compactness Theorem])[
+#theorem[Compactness Theorem][
   A set of WFFs $Sigma$ is satisfiable iff it is finitely satisfiable.
 ]
 
-#proof([($arrow.double.r$)])[
+#proof[($arrow.double.r$)][
   Suppose $Sigma$ is satisfiable, i.e. there exists an interpretation $nu$ that satisfies all formulas in $Sigma$.
 
   This direction is trivial: any subset of a satisfiable set is clearly satisfiable.
@@ -312,7 +312,7 @@ Recall:
 
 #pagebreak()
 
-#proof([($arrow.double.l$)])[
+#proof[($arrow.double.l$)][
   Suppose $Sigma$ is finitely satisfiable, i.e. every finite subset of $Sigma$ is satisfiable.
 
   Construct a _maximal_ finitely satisfiable set $Delta$ as follows:

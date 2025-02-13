@@ -12,7 +12,7 @@
 
 == Computable Functions
 
-#definition([Church--Turing thesis])[
+#definition[Church--Turing thesis][
   _Computable functions_ are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
 ]
 
@@ -36,7 +36,7 @@
 
 == Decidable Sets
 
-#definition([Decidable set])[
+#definition[Decidable set][
   Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* (or *computable*) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
 ]
 
@@ -53,7 +53,7 @@
 
 == Undecidable Sets
 
-#definition([Undecidable set])[
+#definition[Undecidable set][
   A set $S$ is *undecidable* if it is not decidable.
 ]
 
@@ -76,7 +76,7 @@ In general, it is undecidable.
 
 However, it is possible to obtain a weaker result.
 
-#definition([Semi-decidable set])[
+#definition[Semi-decidable set][
   A set $S$ is *computably enumerable* if there is an _enumeration procedure_ which lists, in some order, every member of $S$: $s_1, s_2, s_3 dots$
 
   Equivalently, a set $S$ is *semi-decidable* if there is an algorithm such that the set of inputs for which the algorithm halts is exactly $S$.
@@ -94,13 +94,13 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   A set $S$ is computably enumerable iff it is semi-decidable.
 ] <enumerable>
 
-#proof([(*$arrow.double.r$*)])[
+#proof[(*$arrow.double.r$*)][
   If $S$ is computably enumerable, we can check if $alpha in S$ by enumerating all members of $S$ and checking if $alpha$ is among them.
   If it is, we answer "yes"; otherwise, we continue enumerating.
   Thus, if $alpha in S$, the procedure produces "yes".
   If $alpha notin S$, the procedure runs forever.
 ]
-#proof([(*$arrow.double.l$*)])[
+#proof[(*$arrow.double.l$*)][
   On the other hand, suppose we have a procedure $P$ which, given $alpha$, terminates and produces "yes" iff $alpha in S$.
   To show that $S$ is computably enumerable, we can proceed as follows.
   + Construct a systematic enumeration of *all* expressions (for example, by listing all strings over the alphabet in length-lexicographical order): $beta_1, beta_2, beta_3, dots$
@@ -118,11 +118,11 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 
 == Dual Enumerability and Decidability
 
-#theorem([Kleene])[
+#theorem[Kleene][
   A set is decidable iff both it and its complement are semi-decidable.
 ]
 
-#proof([(*$arrow.double.r$*)])[
+#proof[(*$arrow.double.r$*)][
   _If $A$ is decidable, then both $A$ and its complement $overline(A)$ are effectively enumerable._
 
   Since $A$ is decidable, there exists an effective procedure $P$ that halts on all inputs and returs "yes" if $alpha in A$ and "no" otherwise.
@@ -138,7 +138,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 
 #pagebreak()
 
-#proof([(*$arrow.double.l$*)])[
+#proof[(*$arrow.double.l$*)][
   _If $A$ and $overline(A)$ are effectively enumerable, then $A$ is decidable._
 
   Let $E$ be an enumerator for $A$ and $overline(E)$ an enumerator for $overline(A)$.
