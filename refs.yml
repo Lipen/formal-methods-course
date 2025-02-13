@@ -36,9 +36,6 @@ nieuwenhuis2005:
     - Nieuwenhuis, Robert
     - Oliveras, Albert
     - Tinelli, Cesare
-  editor:
-    - Baader, Franz
-    - Voronkov, Andrei
   date: 2005
   page-range: 36-50
   serial-number:
@@ -46,6 +43,9 @@ nieuwenhuis2005:
   parent:
     title: Logic for Programming, Artificial Intelligence, and Reasoning
     volume: 3452
+    editor:
+      - Baader, Franz
+      - Voronkov, Andrei
 
 nieuwenhuis2006:
   type: article
