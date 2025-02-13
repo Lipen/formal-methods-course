@@ -99,7 +99,9 @@ What is the largest complete graph for which this is possible for a given number
 - For $k = 1$, the answer is $n = 2$.
   - The graph $K_2$ has only one edge, which can be colored with a single color.
 - For $k = 2$, the answer is $n = 5$.
+  - See the example of 2-colored $K_5$ on the right.
 - For $k = 3$, the answer is $n = 16$.
+  - This is the work for a SAT solver. See the next slides.
 
 #place(bottom + right)[
   #diagraph.raw-render(
