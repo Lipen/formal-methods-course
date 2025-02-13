@@ -88,3 +88,20 @@ levin1973:
     title: Problemy Peredachi Informatsii
     issue: 3
     volume: 9
+
+karp1972:
+  type: anthos
+  title: Reducibility among Combinatorial Problems
+  author: Karp, Richard M.
+  date: 1972
+  page-range: 85-103
+  serial-number:
+    doi: 10.1007/978-1-4684-2001-2_9
+  parent:
+    title: Complexity of {Computer Computations}
+    editor:
+    - Miller, Raymond E.
+    - Thatcher, James W.
+    - Bohlinger, Jean D.
+    publisher:
+      name: Springer
