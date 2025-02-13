@@ -33,17 +33,17 @@ Each normal form has its own advantages and disadvantages, and is used in differ
 
 Every propositional formula can be converted to an _equivalent_ formula in any of these normal forms.
 
-== Negation Normal Form (NNF)
+== Negation Normal Form
 
-#definition[NNF][
-  A formula is in _negation normal form_ if the negation operator ($not$) is only applied to propositional variables, and the only allowed logical connectives are $and$, $or$, and $not$.
+#definition[Negation Normal Form (NNF)][
+  A formula is in _negation normal form_ if the negation operator ($not$) is only applied to variables, and the only allowed logical connectives are $and$ and $or$.
 ]
 
 #example[
   The formula $(p and q) or (not p and not q)$ is in NNF.
 ]
 #example[
-  The formula $not (p and q) or (not p and not q)$ is _not_ in NNF.
+  The formula $not (p and q) or (not p and not q)$ is _not_ in NNF due to $not (dots)$.
 ]
 
 *Grammar* for NNF formulas:
