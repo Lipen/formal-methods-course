@@ -84,26 +84,30 @@ Historically, SAT was the first problem proven to be NP-complete, independently 
 
 == Solving General Search Problems with SAT
 
-Modelling and solving general search problems:
-+ Define a finite set of possible _states_.
-+ Describe states using propositional _variables_.
-+ Describe _legal_ and _illegal_ states using propositional _formulas_.
-+ Construct a propositional _formula_ describing the desired state.
-+ Translate the formula into an _equisatisfiable_ CNF formula.
-+ If the formula is _satisfiable_, the satisfying assignment corresponds to the desired state.
-+ If the formula is _unsatisfiable_, the desired state does not exist.
+SAT solvers are powerful tools for solving general search problems.
+Given a problem, we can encode it as a SAT instance and use a SAT solver to find a solution.
+
+To model a search problem as a SAT instance, the general approach is as follows:
++ Define propositional variables to represent the problem's _state_.
+
++ Encode the problem's _constraints_ using propositional formulas.
+
++ Translate the formulas into a _clausal form_ using the Tseitin transformations.
+
++ Run a SAT solver to find a satisfying assignment or prove its non-existence.
 
 == Example: Graph Coloring
 
-Recall that a graph $G = (V,E)$ consists of a set $V$ of vertices and a set $E$ of edges, where each edge is an unordered pair of vertices.
-
+Graph $G = (V,E)$ consists of a set $V$ of vertices and a set $E$ of edges, where each edge is an unordered pair of vertices.
 A complete graph on $n$ vertices, denoted $K_n$, is a graph with $abs(V) = n$ such that $E$ contains all possible pairs of vertices.
 In total, $K_n$ has $n(n-1)/2$ edges.
 
 Given a graph, color its vertices such that no two adjacent vertices have the same color.
 
 Given a complete graph $K_n$, color its edges using $k$ colors without creating a monochromatic triangle.
-What is the largest complete graph for which this is possible for a given number of colors?
+What is the largest complete graph for which this is possible for a given number of colors?#footnote[
+  For a more general case, see #link("https://en.wikipedia.org/wiki/Ramsey's_theorem")[Ramsey's theorem]
+]
 - For $k = 1$, the answer is $n = 2$.
   - The graph $K_2$ has only one edge, which can be colored with a single color.
 - For $k = 2$, the answer is $n = 5$.
@@ -131,35 +135,23 @@ What is the largest complete graph for which this is possible for a given number
 
 == Modelling and Solving the Graph Coloring Example
 
-+ _Define a finite set of possible states._
-  - Each possible edge coloring is a state.
-    There are $3^abs(E)$ possible states.
-
 + _Describe states using propositional variables._
-  - A simple (_one-hot_, or _direct_) encoding uses three variables for each edge: $e_1$, $e_2$, and $e_3$.
-    There are 8 possible combinations of values of three variables, which given a state space of $8^abs(E)$.
-    This is larger than necessary, but keeps the encoding simple.
+  - A simple (_one-hot_, or _direct_) encoding uses three (as $k = 3$) variables for each edge: $e_1$, $e_2$, and $e_3$.
+    There are $2^3 = 8$ possible combinations of values of three variables, but only 3 of them are _valid_.
 
-+ _Describe legal and illegal states using propositional formulas._
-  - For each edge $e in E$, the formula $e_1 + e_2 + e_3 = 1$ (so called "cardinality constraint") ensures that each edge is colored with exactly one color.
-    This reduces the state space to $3^abs(E)$.
++ _Describe constrains using propositional formulas._
+  - Each edge must be colored with exactly one color.
+    For each edge $e$:
+    $ (e_1 or e_2 or e_3) and not (e_1 and e_2) and not (e_1 and e_3) and not (e_2 and e_3) $
+  - No monochromatic triangles are allowed.
+    For each triangle $(e,f,g)$:
+    $ not (e_1 and f_1 and g_1) and not (e_2 and f_2 and g_2) and not (e_3 and f_3 and g_3) $
 
-+ _Construct a propositional formula describing the desired state._
-  - The desired state is one in which there are no monochromatic triangles.
-    For each triangle $(e,f,g)$, we explicitly forbid it from being colored with the same color:
-    $ not ((e_1 iff f_1) and (f_1 iff g_1) and (e_2 iff f_2) and (f_2 iff g_2) and (e_3 iff f_3) and (f_3 iff g_3)) $
++ _Translate the formula into a clausal form._
 
-+ _Translate the formula into an equisatisfiable CNF formula._
-  - This can be done using the Tseitin transformations.
++ _Run a SAT solver to find a satisfying assignment or prove its non-existence._
 
-+ _If the formula is satisfiable, the satisfying assignment corresponds to the desired state._
-  - The satisfying assignment corresponds to a valid edge coloring.
-    Among variables $e_1$, $e_2$, and $e_3$, the single one with the value of 1 corresponds to the color of the edge.
-
-+ _If the formula is unsatisfiable, the desired state does not exist._
-  - If the formula is unsatisfiable, there is no valid edge coloring.
-
-Now, run a SAT solver for increasing values of $n$, and find the largest $n$ for which the formula is satisfiable.
+Now, perform this process for increasing values of $n$, and find the largest $n$ for which the formula is satisfiable.
 The answer is $n = 16$ for $k = 3$.
 
 == TODO
