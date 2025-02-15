@@ -59,7 +59,7 @@ _Examples:_
 == Decidable Sets
 
 #definition[Decidable set][
-  Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is _decidable_ (or _computable_) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
+  Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is _decidable_ (or _computable_, or~_recursive_) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
 ]
 
 #example(title: [Examples])[
