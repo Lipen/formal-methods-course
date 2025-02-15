@@ -22,6 +22,16 @@ $
 SAT is a _decision_ problem, which means that the answer is either "yes" or "no".
 However, in practice, we are mainly interested in _finding_ the actual satisfying assignment if it exists --- this is a _functional_ SAT problem.
 
+== Cook--Levin Theorem
+
+Historically, SAT was the first problem proven to be NP-complete, independently by Stephen Cook @cook1971 and Leonid Levin @levin1973 in 1971.
+
+#theorem[Cook--Levin][
+  SAT is NP-complete.
+
+  That is, SAT is in NP, and _any_ problem in NP can be _reduced_ to SAT in polynomial time.
+] <cook-levin>
+
 #[
   #let fig = grid(
     columns: 3,
@@ -35,30 +45,22 @@ However, in practice, we are mainly interested in _finding_ the actual satisfyin
     [Stephen Cook], [Leonid Levin], [Richard Karp],
   )
   #let body = [
-    Historically, SAT was the first problem proven to be NP-complete, independently by Stephen Cook @cook1971 and Leonid Levin @levin1973 in 1971.
+    The proof is due to Richard Karp @karp1972, who introduced the concept of _polynomial-time many-one reductions_, also known as _Karp reductions_.
+    The~earlier proof by Cook was based on a weaker type of reduction called _Turing reduction_ or _Cook reduction_.
   ]
   #wrap-it.wrap-content(fig, body, align: top + right)
 ]
 
-== Cook--Levin Theorem
+== Karp's Polynomial-time Many-One Reduction
 
-#theorem[Cook--Levin][
-  SAT is NP-complete.
-
-  That is, SAT is in NP, and _any_ problem in NP can be _reduced_ to SAT in polynomial time.
-]
-
-The proof is due to Richard Karp @karp1972, who introduced the concept of _polynomial-time many-one reductions_, also known as _Karp reductions_.
-The earlier proof by Cook was based on a weaker type of reduction called _Turing reduction_ or _Cook reduction_.
-
-#definition[#link("https://en.wikipedia.org/wiki/Many-one_reduction")[Karp's many-one reduction]][
-  A polynomial-time _many-one reduction_ from a problem $A$ to a problem $B$ is a polynomial-time computable function $f$ such that for every instance $x$ of $A$, $x$ is a "yes" instance of $A$ if and only if $f(x)$ is a "yes" instance of $B$.
+#definition[Many-one reduction #h(1pt, weak: true)#href("https://en.wikipedia.org/wiki/Many-one_reduction")#h(1pt, weak: true)][
+  A polynomial-time _many-one reduction_ from a problem $A$ to a problem~$B$ is a polynomial-time computable function~$f$ such that for every instance $x$ of $A$, $x$ is a "yes" instance of~$A$ if and only if $f(x)$ is a "yes" instance of~$B$.
   A reduction of this kind is denoted as $A scripts(lt.eq)_p B$ and called a _polynomial transformation_ or _Karp reduction_.
 ]
 
-#pagebreak()
+== Proving the Cook--Levin Theorem
 
-#proof[sketch][
+#proof[sketch of @cook-levin][
   A problem $L$ is in NP if there exists a polynomial-time verifier (Turing machine) $V(x,c)$ that verifies whether a certificate $c$ is a valid proof that $x in L$.
 
   A _Karp reduction_ from $L$ to SAT is a polynomial-time computable function $f$ mapping instances $x$ of $L$ to propositional formulas $phi_x$, such that $x in L$ iff $phi_x$ is satisfiable.
