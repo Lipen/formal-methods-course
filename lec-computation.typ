@@ -249,6 +249,26 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   Thus, the set of tautological consequences of $Sigma$ is effectively enumerable.
 ]
 
+= Languages
+
+== Language Classes
+
+#cetz.canvas({
+  import cetz.draw: *
+  circle((0, 0), radius: (8, 3.5))
+  circle((-2, 0), radius: (6, 3))
+  circle((-4, 0), radius: (4, 2))
+  circle((-5, 0), radius: (3, 1.5))
+  circle((-6, 0), radius: (2, 1))
+  circle((-7, 0), radius: (1, 0.5))
+  content((-7,0))[Finite]
+  content((-5,0))[Regular]
+  content((-3,0))[Context- \ Free]
+  content((-1,0))[Decidable]
+  content((2.5,0))[Computably \ Enumerable]
+  content((6.5,0))[All languages]
+})
+
 = Complexity Zoo
 
 == Complexity Classes
@@ -266,7 +286,7 @@ See also: https://complexityzoo.net/Petting_Zoo
 - [x] Undecidable sets
 - [x] Semi-decidability
 - [ ] Decidable language outside of NP
-- [ ] Diagram of language classes (Finite, Regular, Context-Free, Recursive (Decidable), CE(RE), co-CE)
+- [/] Diagram of language classes (Finite, Regular, Context-Free, Recursive (Decidable), CE(RE), co-CE)
 - [ ] Complexity classes
 - [ ] NP-completeness
 - [ ] Polytime reductions
