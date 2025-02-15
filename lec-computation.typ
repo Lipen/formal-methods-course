@@ -116,7 +116,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   A set $S$ is computably enumerable iff it is semi-decidable.
 ] <enumerable>
 
-#proof[(*$arrow.double.r$*)][
+#proof[($arrow.double.r$)][
   If $S$ is computably enumerable, we can check if $alpha in S$ by enumerating all members of $S$ and checking if $alpha$ is among them.
   If it is, we answer "yes"; otherwise, we continue enumerating.
   Thus, if $alpha in S$, the procedure produces "yes".
@@ -124,6 +124,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 ]
 #proof[(*$arrow.double.l$*)][
   On the other hand, suppose we have a procedure $P$ which, given $alpha$, terminates and produces "yes" iff $alpha in S$.
+#proof[($arrow.double.l$)][
   To show that $S$ is computably enumerable, we can proceed as follows.
   + Construct a systematic enumeration of *all* expressions (for example, by listing all strings over the alphabet in length-lexicographical order): $beta_1, beta_2, beta_3, dots$
   + Break the procedure $P$ into a finite number of "steps" (for example, by program instructions).
@@ -144,7 +145,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   A set is decidable iff both it and its complement are semi-decidable.
 ]
 
-#proof[(*$arrow.double.r$*)][
+#proof[($arrow.double.r$)][
   _If $A$ is decidable, then both $A$ and its complement $overline(A)$ are effectively enumerable._
 
   Since $A$ is decidable, there exists an effective procedure $P$ that halts on all inputs and returs "yes" if $alpha in A$ and "no" otherwise.
@@ -160,7 +161,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 
 #pagebreak()
 
-#proof[(*$arrow.double.l$*)][
+#proof[($arrow.double.l$)][
   _If $A$ and $overline(A)$ are effectively enumerable, then $A$ is decidable._
 
   Let $E$ be an enumerator for $A$ and $overline(E)$ an enumerator for $overline(A)$.
