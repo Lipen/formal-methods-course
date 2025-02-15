@@ -269,6 +269,10 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
     content((6, 0), anchor: "east")[#set text(fill: blue); Computably \ Enumerable]
     content((-6, 0), anchor: "west")[#set text(fill: red); co-CE]
     content((0, 3.5))[All languages]
+    circle((3, -2), radius: 3pt, fill: yellow)
+    content((3, -2), anchor: "south-west", padding: 5pt)[HALT]
+    circle((0, -2), radius: 3pt, fill: yellow)
+    content((0, -2), anchor: "south-west", padding: 5pt)[SAT]
   })
 ]
 
