@@ -9,3 +9,4 @@
 #import "@preview/lovelace:0.3.0"
 #import "@preview/derive-it:0.1.2"
 #import "@preview/wrap-it:0.1.0"
+#import "@preview/shadowed:0.1.2"

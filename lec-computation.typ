@@ -89,6 +89,47 @@ _Examples:_
   Hence, there are _more_ sets of expressions than there are possible effective procedures.
 ]
 
+= Undecidability
+
+== Halting Problem
+
+#definition[Halting problem][
+  The _halting problem_ is the problem of determining, given a program and an input, whether the program will eventually halt when run with that input.
+]
+
+#theorem[Turing][
+  The halting problem is undecidable.
+]
+
+#proof[sketch][
+  Suppose there exists a procedure $H$ that decides the halting problem.
+  We can construct a program $P$ that takes itself as input and runs $H$ on it.
+  If $H$ says that $P$ halts, then $P$ enters an infinite loop.
+  If $H$ says that $P$ does not halt, then $P$ halts.
+  This leads to a contradiction, proving that $H$ cannot exist.
+]
+
+#pagebreak()
+#shadowed.shadowed(inset: 5pt, radius: 5pt)[
+  ```py
+  def halts(P, x) -> bool:
+    """
+    Returns True if program P halts on input x.
+    Returns False if P loops forever.
+    """
+
+  def self_halts(P):
+    if halts(P, P):
+      while True: # loop forever
+    else:
+      return # halt
+  ```
+]
+
+Now, observe that ```py halts(self_halts)``` cannot return neither ```py True``` nor ```py False```. *Contradition!*
+
+Thus, the `halts` _does not exist_ (cannot be implemented), and thus the halting problem is _undecidable_.
+
 = Semi-decidability
 
 == Semi-decidability
@@ -207,12 +248,6 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   This demonstrates that there is an effective procedure that, given any WFF $alpha$, will output "yes" iff $alpha$ is a tautological consequence of $Sigma$.
   Thus, the set of tautological consequences of $Sigma$ is effectively enumerable.
 ]
-
-= Undecidability
-
-== Halting Problem
-
-TODO
 
 = Complexity Zoo
 
