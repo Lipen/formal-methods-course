@@ -154,6 +154,56 @@ What is the largest complete graph for which this is possible for a given number
 Now, perform this process for increasing values of $n$, and find the largest $n$ for which the formula is satisfiable.
 The answer is $n = 16$ for $k = 3$.
 
+== Code for Graph Coloring Example
+
+#columns(2)[
+  #set text(size: 0.8em)
+  #show raw: block.with(stroke: 0.4pt, inset: 1em, radius: 5pt)
+  ```py
+  n = 17
+  k = 3
+  m = n * (n - 1) // 2
+
+  edges = {}
+  for u in range(1, n + 1):
+      for v in range(u + 1, n + 1):
+          edges[(u, v)] = len(edges) + 1
+
+  def color(e, c):
+      return (e - 1) * k + c
+
+  clauses = []
+  for e in range(1, m + 1):
+      # At least one color is assigned to edge e
+      clauses.append([
+        color(e, c) for c in range(1, k + 1)
+      ])
+      # At most one color is assigned to edge e
+      for c1 in range(1, k + 1):
+          for c2 in range(c1 + 1, k + 1):
+              clauses.append([
+                -color(e, c1), -color(e, c2)
+              ])
+  # No mono-chromatic triangles
+  for v1 in range(1, n + 1):
+      for v2 in range(v1 + 1, n + 1):
+          for v3 in range(v2 + 1, n + 1):
+              e12 = edges[(v1, v2)]
+              e23 = edges[(v2, v3)]
+              e13 = edges[(v1, v3)]
+              for c in range(1, k + 1):
+                  clauses.append([
+                    -color(e12, c),
+                    -color(e23, c),
+                    -color(e13, c)
+                  ])
+
+  print(f"p cnf {color(len(edges), k)} {len(clauses)}")
+  for clause in clauses:
+      print(" ".join(map(str, clause)) + " 0")
+  ```
+]
+
 == TODO
 
 #show: cheq.checklist
