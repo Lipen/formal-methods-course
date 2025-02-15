@@ -19,8 +19,8 @@ $
   exists X . f(X) = 1
 $
 
-SAT is a _decision_ problem, which means that the answer is either "yes" or "no".
-However, in practice, we are mainly interested in _finding_ the actual satisfying assignment if it exists --- this is a _functional_ SAT problem.
+SAT is a _decision_ problem --- the answer is either "yes" or "no".
+In practice, we are mainly interested in _finding_ the actual satisfying assignment if it exists --- this search problem is called _functional_ SAT.
 
 == Cook--Levin Theorem
 
@@ -45,8 +45,8 @@ Historically, SAT was the first problem proven to be NP-complete, independently 
     [Stephen Cook], [Leonid Levin], [Richard Karp],
   )
   #let body = [
-    The proof is due to Richard Karp @karp1972, who introduced the concept of _polynomial-time many-one reductions_, also known as _Karp reductions_.
-    The~earlier proof by Cook was based on a weaker type of reduction called _Turing reduction_ or _Cook reduction_.
+    Cook's original proof was based on the concept of _Turing reductions_ (now called _Cook reductions_).
+    Richard Karp @karp1972 later refined this with a stronger concept of polynomial-time _many-one reductions_ (now known as _Karp reductions_), establishing the modern framework for NP-completeness.
   ]
   #wrap-it.wrap-content(fig, body, align: top + right)
 ]
@@ -54,30 +54,33 @@ Historically, SAT was the first problem proven to be NP-complete, independently 
 == Karp's Polynomial-time Many-One Reduction
 
 #definition[Many-one reduction #h(1pt, weak: true)#href("https://en.wikipedia.org/wiki/Many-one_reduction")#h(1pt, weak: true)][
-  A polynomial-time _many-one reduction_ from a problem $A$ to a problem~$B$ is a polynomial-time computable function~$f$ such that for every instance $x$ of $A$, $x$ is a "yes" instance of~$A$ if and only if $f(x)$ is a "yes" instance of~$B$.
-  A reduction of this kind is denoted as $A scripts(lt.eq)_p B$ and called a _polynomial transformation_ or _Karp reduction_.
+  A polynomial-time _many-one reduction_ from problem $A$ to~$B$, denoted $A scripts(lt.eq)_p B$, is a polynomial-time computable function~$f$ such that for every instance $x$ of $A$, $x$ is a "yes" instance of~$A$ if and only if $f(x)$ is a "yes" instance of~$B$.
+
+  A reduction of this kind is also called a _polynomial transformation_ or _Karp reduction_.
 ]
 
 == Proving the Cook--Levin Theorem
 
-#proof[sketch of @cook-levin][
-  A problem $L$ is in NP if there exists a polynomial-time verifier (Turing machine) $V(x,c)$ that verifies whether a certificate $c$ is a valid proof that $x in L$.
-
-  A _Karp reduction_ from $L$ to SAT is a polynomial-time computable function $f$ mapping instances $x$ of $L$ to propositional formulas $phi_x$, such that $x in L$ iff $phi_x$ is satisfiable.
-
-  For input $x$, simulate $V(x, c)$ computation (with certificate $c$) as a _Turing machine_ run.
-  Encode its execution over $T = cal(O)(p(abs(x)))$ steps into a propositional formula $phi_x$:
-  - Variables represent the machine's state, tape cells, and head position at each step $t$.
-  - Clauses enforce the initial configuration (input $x$ and empty certificate $c$), valid transitions between steps (per $V$'s rules), and the acceptance at step $T$.
-
-  A satisfying assignment to $phi_x$ corresponds to a valid certificate $c$ causing $V(x, c)$ to accept.
-
-  The encoding $x maps phi_x$ is computable in polynomial time.
-  Since $L in "NP"$ was arbitrary, _all NP problems can be reduced to SAT_, proving SAT is *NP-hard*.
-  As SAT is also in *NP*, it is *NP-complete*.
+#proof[(SAT $in$ NP)][
+  A satisfying assignment serves as a _certificate_ verifiable in linear time.
 ]
 
-#underline[This foundational result shows that SAT is a "universal" problem for NP.]
+#proof[of @cook-levin][
+  _Any problem in NP can be reduced to SAT in polynomial time._
+
+  A problem $L$ is in NP if there exists a polynomial-time _verifier_ (Turing machine) $V(x, c)$ that checks whether $c$ is a valid certificate for $x in L$.
+
+  A _Karp reduction_ from $L$ to SAT is a polynomial-time computable function mapping instances $x$ of $L$ to propositional formulas $phi_x$, such that $phi_x$ is satisfiable iff $x in L$.
+
+  Construct a formula $phi_x$ encoding the computation of $V(x, c)$ for input $x$ and certificate $c$.
+  - Variables encode the Turing machine state, tape cells, and head position at each step $t$.
+  - Clauses enforce the initial configuration (fixed input $x$, free variables for certificate $c$), valid transitions (per $V$'s rules), and acceptance at step $T in cal(O)(p(abs(x)))$.
+  A satisfying assignment to $phi_x$ corresponds to a valid certificate $c$ causing $V(x, c)$ to accept, thus $x in L$.
+]
+
+#underline[
+  This foundational result shows that SAT is a "universal" problem for NP.
+]
 
 == Solving General Search Problems with SAT
 
