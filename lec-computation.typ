@@ -126,7 +126,7 @@ _Examples:_
   ```
 ]
 
-Now, observe that ```py halts(self_halts)``` cannot return neither ```py True``` nor ```py False```. *Contradition!*
+Observe that ```py halts(self_halts, self_halts)``` cannot return neither ```py True``` nor ```py False```. *Contradition!*
 
 Thus, the `halts` _does not exist_ (cannot be implemented), and thus the halting problem is _undecidable_.
 
