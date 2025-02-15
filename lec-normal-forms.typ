@@ -235,7 +235,7 @@ $
 $
 
 #note[
-  The resulting formula is, in general, *not equivalent* to the original one, but it is _equisatisfiable_, i.e., it is _satisfiable_ iff the original formula is satisfiable.
+  The resulting formula is, in general, *not equivalent* to the original one, but it is _equisatisfiable_, i.e., it is satisfiable iff the original formula is satisfiable.
 ]
 
 == Equisatisfiability
