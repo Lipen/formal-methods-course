@@ -263,9 +263,10 @@ See also: https://complexityzoo.net/Petting_Zoo
 
 - [x] Computability
 - [x] Decidability
-- [ ] Undecidable sets
+- [x] Undecidable sets
 - [x] Semi-decidability
+- [ ] Decidable language outside of NP
+- [ ] Diagram of language classes (Finite, Regular, Context-Free, Recursive (Decidable), CE(RE), co-CE)
 - [ ] Complexity classes
 - [ ] NP-completeness
 - [ ] Polytime reductions
-- [ ] Cook theorem
