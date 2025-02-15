@@ -20,24 +20,46 @@
   _Every model of computation that has ever been imagined can compute _only_ computable functions, and _all_ computable functions can be computed by any of several _models of computation_ that are apparently very different, such as Turing machines, register machines, lambda calculus and general recursive functions._
 ]
 
-#example[
+#definition[Computable function][
   A partial function $f : NN^k arrow.hook NN$ is _computable_ ("can be calculated") if there exists a computer program with the following properties:
-  - If $f(x)$ is defined, then the program terminates on the input $x$ with the value $f(x)$ stored in the computer memory.
+  - If $f(x)$ is defined, then the program terminates on the input $x$ with the value $f(x)$ stored in memory.
   - If $f(x)$ is undefined, then the program never terminates on the input $x$.
 ]
 
 == Effective Procedures
 
-#definition[
-  An *effective procedure* is a finite, deterministic, mechanical algorithm that guarantees to terminate and produce the correct answer in a finite number of steps.
+#definition[Effective procedure][
+  An _effective procedure_ is a finite, deterministic, mechanical algorithm that guarantees to terminate and produce the correct answer in a finite number of steps.
+
+  An algorithm (set of instructions) is called an _effective procedure_ if it:
+  - Consists of _exact_, finite steps.
+  - Always _terminates_ in finite time.
+  - Produces the _correct_ answer for given inputs.
+  - Requires no external assistance to execute.
+  - Can be performed _manually_, with pencil and paper.
 ]
+
+#definition[
+  A function is _computable_ if there exists an effective procedure that computes it.
+]
+
+== Examples of Computable Functions
+
+_Examples:_
+- The function $f(x) = x^2$ is computable.
+- The function $f(x) = x!$ is computable.
+- The function $f(n) =$ "$n$-th prime number" is computable.
+- The function $f(n) =$ "the $n$-th digit of $pi$" is computable.
+- The Ackermann function is computable.
+- The function that answers the question "Does God exist?" is computable.
+- If the Collatz conjecture is true, the stopping time (number of steps to reach 1) of any $n$ is computable.
 
 = Decidability
 
 == Decidable Sets
 
 #definition[Decidable set][
-  Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is *decidable* (or *computable*) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
+  Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is _decidable_ (or _computable_) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
 ]
 
 #example(title: [Examples])[
@@ -54,11 +76,11 @@
 == Undecidable Sets
 
 #definition[Undecidable set][
-  A set $S$ is *undecidable* if it is not decidable.
+  A set $S$ is _undecidable_ if it is not decidable.
 ]
 
 #example[
-  The existence of undecidable sets of expressions can be shown as follows.
+  The existence of _undecidable_ sets of expressions can be shown as follows.
 
   An algorithm is completely determined by its _finite_ description.
   Thus, there are only _countably many_ effective procedures.
@@ -71,15 +93,15 @@
 
 == Semi-decidability
 
-Suppose we want to determine $Gamma models alpha$ where $Gamma$ is infinite.
+Suppose we want to determine $Sigma models alpha$ where $Sigma$ is infinite.
 In general, it is undecidable.
 
 However, it is possible to obtain a weaker result.
 
 #definition[Semi-decidable set][
-  A set $S$ is *computably enumerable* if there is an _enumeration procedure_ which lists, in some order, every member of $S$: $s_1, s_2, s_3 dots$
+  A set $S$ is _computably enumerable_ if there is an _enumeration procedure_ which lists, in some order, every member of $S$: $s_1, s_2, s_3 dots$
 
-  Equivalently, a set $S$ is *semi-decidable* if there is an algorithm such that the set of inputs for which the algorithm halts is exactly $S$.
+  Equivalently (see @enumerable), a set $S$ is _semi-decidable_ if there is an algorithm such that the set of inputs for which the algorithm halts is exactly $S$.
 ]
 
 Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but every member of $S$ will be listed _eventually_, after some finite amount of time.
@@ -178,6 +200,12 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   This demonstrates that there is an effective procedure that, given any WFF $alpha$, will output "yes" iff $alpha$ is a tautological consequence of $Sigma$.
   Thus, the set of tautological consequences of $Sigma$ is effectively enumerable.
 ]
+
+= Undecidability
+
+== Halting Problem
+
+TODO
 
 = Complexity Zoo
 
