@@ -54,7 +54,7 @@ Historically, SAT was the first problem proven to be NP-complete, independently 
 == Karp's Polynomial-time Many-One Reduction
 
 #definition[Many-one reduction #h(1pt, weak: true)#href("https://en.wikipedia.org/wiki/Many-one_reduction")#h(1pt, weak: true)][
-  A polynomial-time _many-one reduction_ from problem $A$ to~$B$, denoted $A scripts(lt.eq)_p B$, is a polynomial-time computable function~$f$ such that for every instance $x$ of $A$, $x$ is a "yes" instance of~$A$ if and only if $f(x)$ is a "yes" instance of~$B$.
+  A polynomial-time _many-one reduction_ from problem $A$ to~$B$, denoted $A scripts(lt.eq)_p B$, is a polynomial-time computable function $f$ such that for every instance $x$ of $A$, $x$ is a "yes" instance of $A$ if and only if $f(x)$ is a "yes" instance of $B$.
 
   A reduction of this kind is also called a _polynomial transformation_ or _Karp reduction_.
 ]
