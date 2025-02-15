@@ -209,7 +209,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 #pagebreak()
 
 #proof[($arrow.double.l$)][
-  _If $A$ and $overline(A)$ are effectively enumerable, then $A$ is decidable._
+  _If both $A$ and its complement $overline(A)$ are effectively enumerable, then $A$ is decidable._
 
   Let $E$ be an enumerator for $A$ and $overline(E)$ an enumerator for $overline(A)$.
 
