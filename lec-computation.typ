@@ -256,19 +256,19 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 #align(center)[
   #cetz.canvas({
     import cetz.draw: *
-    circle((0, 0.1), radius: (8, 3.8))
-    circle((0, 0), radius: (3, 1.5))
-    circle((-0.9, 0), radius: (2, 1))
+    circle((0, 0.2), radius: (8, 3.8))
+    circle((0, 0), radius: (3, 1.3))
+    circle((-0.9, 0), radius: (2, 0.9))
     circle((-1.8, 0), radius: (1, 0.5))
-    circle((1.5, 0.1), radius: (5, 2.8), stroke: blue)
-    circle((-1.5, 0.1), radius: (5, 2.8), stroke: red)
+    circle((1.5, 0.2), radius: (5, 2.8), stroke: blue)
+    circle((-1.5, 0.2), radius: (5, 2.8), stroke: red)
     content((-1.8, 0))[Finite]
     content((.1, 0))[Regular]
     content((2, 0))[Context- \ Free]
     content((0, 2))[#set text(fill: purple); Decidable = \ $"CE" sect "co-CE"$]
     content((6, 0), anchor: "east")[#set text(fill: blue); Computably \ Enumerable]
     content((-6, 0), anchor: "west")[#set text(fill: red); co-CE]
-    content((0, 3.4))[All languages]
+    content((0, 3.5))[All languages]
   })
 ]
 
