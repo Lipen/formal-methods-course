@@ -92,9 +92,9 @@ To model a search problem as a SAT instance, the general approach is as follows:
 
 + Encode the problem's _constraints_ using propositional formulas.
 
-+ Translate the formulas into a _clausal form_ using the Tseitin transformations.
++ Translate the formulas into a _clausal form_.
 
-+ Run a SAT solver to find a satisfying assignment or prove its non-existence.
++ Run a SAT solver to _find_ a satisfying assignment or _prove_ its non-existence.
 
 == Example: Graph Coloring
 
