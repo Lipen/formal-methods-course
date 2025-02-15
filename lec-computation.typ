@@ -188,7 +188,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 
 == Dual Enumerability and Decidability
 
-#theorem[Kleene][
+#theorem[
   A set is decidable iff both it and its complement are semi-decidable.
 ]
 
