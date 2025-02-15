@@ -117,16 +117,22 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 ] <enumerable>
 
 #proof[($arrow.double.r$)][
-  If $S$ is computably enumerable, we can check if $alpha in S$ by enumerating all members of $S$ and checking if $alpha$ is among them.
+  _If $S$ is computably enumerable, then it is semi-decidable._
+
+  Since $S$ is computably enumerable, we can check if $alpha in S$ by enumerating all members of $S$ and checking if $alpha$ is among them.
   If it is, we answer "yes"; otherwise, we continue enumerating.
   Thus, if $alpha in S$, the procedure produces "yes".
   If $alpha notin S$, the procedure runs forever.
 ]
-#proof[(*$arrow.double.l$*)][
-  On the other hand, suppose we have a procedure $P$ which, given $alpha$, terminates and produces "yes" iff $alpha in S$.
+
+#pagebreak()
+
 #proof[($arrow.double.l$)][
+  _If $S$ is semi-decidable, then it is computably enumerable._
+
+  Suppose we have a procedure $P$ which, given $alpha$, terminates and produces "yes" iff $alpha in S$.
   To show that $S$ is computably enumerable, we can proceed as follows.
-  + Construct a systematic enumeration of *all* expressions (for example, by listing all strings over the alphabet in length-lexicographical order): $beta_1, beta_2, beta_3, dots$
+  + Construct a systematic enumeration of _all_ expressions (for example, by listing all strings over the alphabet in length-lexicographical order): $beta_1, beta_2, beta_3, dots$
   + Break the procedure $P$ into a finite number of "steps" (for example, by program instructions).
   + Run the procedure on each expression in turn, for an increasing number of steps (see #link("https://en.wikipedia.org/wiki/Dovetailing_(computer_science)")[dovetailing]):
     - Run $P$ on $beta_1$ for 1 step.
@@ -136,7 +142,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
     - ...
   + If $P$ produces "yes" for some $beta_i$, output (yield) $beta_i$ and continue enumerating.
 
-  This procedure will eventually list all members of $S$.
+  This procedure will eventually list all members of $S$, thus $S$ is computably enumerable.
 ]
 
 == Dual Enumerability and Decidability
