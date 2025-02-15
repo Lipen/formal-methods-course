@@ -51,6 +51,9 @@
 #let fitch(..args) = derive-it.ded-nat(arr: args.pos(), ..args.named())
 #let fitch-boxed(..args) = derive-it.ded-nat-boxed(arr: args.pos(), ..args.named())
 
+// Link with icon
+#let href(..args) = link(..args, super(fontawesome.fa-external-link()))
+
 // Aliases
 #let neg = sym.not
 #let imply = sym.arrow.r
