@@ -24,12 +24,15 @@ However, in practice, we are mainly interested in _finding_ the actual satisfyin
 
 #[
   #let fig = grid(
-    columns: 2,
+    columns: 3,
     align: center,
     column-gutter: 1em,
     row-gutter: 0.5em,
-    image("assets/Stephen_Cook.jpg", height: 3cm), image("assets/Leonid_Levin.jpg", height: 3cm),
-    [Stephen Cook], [Leonid Levin],
+    image("assets/Stephen_Cook.jpg", height: 3cm),
+    image("assets/Leonid_Levin.jpg", height: 3cm),
+    image("assets/Richard_Karp.jpg", height: 3cm),
+
+    [Stephen Cook], [Leonid Levin], [Richard Karp],
   )
   #let body = [
     Historically, SAT was the first problem proven to be NP-complete, independently by Stephen Cook @cook1971 and Leonid Levin @levin1973 in 1971.
