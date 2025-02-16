@@ -116,21 +116,25 @@ What is the largest complete graph for which this is possible for a given number
   - This is the work for a SAT solver. See the next slides.
 
 #place(bottom + right)[
-  #diagraph.raw-render(
-    ```
-    graph {
-      rankdir=LR;
-      node [shape=circle fixedsize=shape width=.3];
-      1 -- 2 -- 3 -- 4 -- 5 -- 1 [color=red penwidth=3 weight=10];
-      1 -- 3;
-      1 -- 4;
-      2 -- 4;
-      2 -- 5;
-      3 -- 5;
+  #fletcher.diagram({
+    let nodes = (1, 2, 3, 4, 5)
+    for i in nodes {
+      let angle = 18deg + i * 72deg
+      fletcher.node((angle, 1cm), str(i), stroke: 1pt, outset: 1pt, name: str(i))
     }
-    ```,
-    engine: "fdp",
-  )
+    for i in nodes {
+      for j in nodes {
+        if i < j {
+          fletcher.edge(
+            label(str(i)),
+            label(str(j)),
+            "-",
+            stroke: if (calc.abs(i - j) == 1 or (i == 1 and j == 5)) { 2pt + red } else { 1pt + blue },
+          )
+        }
+      }
+    }
+  })
 ]
 
 == Modelling and Solving the Graph Coloring Example
