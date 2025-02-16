@@ -100,8 +100,8 @@ karp1972:
   parent:
     title: Complexity of {Computer Computations}
     editor:
-    - Miller, Raymond E.
-    - Thatcher, James W.
-    - Bohlinger, Jean D.
+      - Miller, Raymond E.
+      - Thatcher, James W.
+      - Bohlinger, Jean D.
     publisher:
       name: Springer
