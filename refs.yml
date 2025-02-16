@@ -105,3 +105,19 @@ karp1972:
       - Bohlinger, Jean D.
     publisher:
       name: Springer
+
+leino2017:
+  type: article
+  title: Accessible Software Verification with {Dafny}
+  author:
+    - Leino, M.
+    - Rustan, K.
+  date: 2017-11
+  page-range: 94-97
+  serial-number:
+    doi: 10.1109/MS.2017.4121212
+  parent:
+    type: periodical
+    title: IEEE Software
+    issue: 6
+    volume: 34
