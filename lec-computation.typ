@@ -265,7 +265,7 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
     content((-1.8, 0))[Finite]
     content((.1, 0))[Regular]
     content((2, 0))[Context- \ Free]
-    content((0, 2))[#set text(fill: purple); Decidable = \ $"CE" sect "co-CE"$]
+    content((0, 2))[#set text(fill: purple); Decidable = \ $"CE" intersect "co-CE"$]
     content((6, 0), anchor: "east")[#set text(fill: blue); Computably \ Enumerable]
     content((-6, 0), anchor: "west")[#set text(fill: red); co-CE]
     content((0, 3.5))[All languages]
