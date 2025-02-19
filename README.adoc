@@ -21,7 +21,7 @@ image:https://github.com/Lipen/formal-methods-course/actions/workflows/ci.yml/ba
 
 |image:https://img.shields.io/badge/Lecture-Theory of Computation-blue?style=social&logo=gitbook["Lecture: Theory of Computation", link="https://lipen.github.io/formal-methods-course/lec-computation.pdf"]
 
-|image:https://img.shields.io/badge/Lecture-First--Order Logic-blue?style=social&logo=gitbook["Lecture: First-Order Logic", link="https://lipen.github.io/formal-methods-course/lec-fol.pdf"]
+|image:https://img.shields.io/badge/Lecture-First Order Logic-blue?style=social&logo=gitbook["Lecture: First-Order Logic", link="https://lipen.github.io/formal-methods-course/lec-fol.pdf"]
 
 |===
 
