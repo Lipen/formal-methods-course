@@ -20,14 +20,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Fontist
-        uses: fontist/setup-fontist@v2
-
-      - name: Install fonts
-        run: |
-          fontist manifest-install manifest.yml
-          echo "TYPST_FONT_PATHS=~/.fontist/fonts" >> "$GITHUB_ENV"
-
       - name: Setup Typst
         uses: typst-community/setup-typst@v4
         with:
