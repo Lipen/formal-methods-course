@@ -256,23 +256,27 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 #align(center)[
   #cetz.canvas({
     import cetz.draw: *
-    circle((0, 0.2), radius: (8, 3.8))
-    circle((0, 0), radius: (3, 1.3))
-    circle((-0.9, 0), radius: (2, 0.9))
-    circle((-1.8, 0), radius: (1, 0.5))
-    circle((1.5, 0.2), radius: (5, 2.8), stroke: blue)
-    circle((-1.5, 0.2), radius: (5, 2.8), stroke: red)
-    content((-1.8, 0))[Finite]
-    content((.1, 0))[Regular]
-    content((2, 0))[Context- \ Free]
-    content((0, 2))[#set text(fill: purple); Decidable = \ $"CE" intersect "co-CE"$]
-    content((6, 0), anchor: "east")[#set text(fill: blue); Computably \ Enumerable]
-    content((-6, 0), anchor: "west")[#set text(fill: red); co-CE]
-    content((0, 3.5))[All languages]
-    circle((3, -2), radius: 3pt, fill: yellow)
-    content((3, -2), anchor: "south-west", padding: 5pt)[HALT]
-    circle((0, -2), radius: 3pt, fill: yellow)
-    content((0, -2), anchor: "south-west", padding: 5pt)[SAT]
+    circle((0, 0), radius: (0.8, 0.4))
+    circle((0, 0.4), radius: (1.4, 0.8))
+    circle((0, 0.8), radius: (2, 1.2))
+    circle((0, 1.2), radius: (2.6, 1.6))
+    circle((0, 2.4), radius: (4, 2.8), stroke: blue)
+    circle((0, 1.4), radius: (4, 2.6), stroke: red)
+    rect((-5, -1.5), (5, 6))
+    content((0, 0))[Finite]
+    content((0, .7))[Regular]
+    content((0, 1.55))[Context-Free]
+    content((0, 2.3))[Context-Sensitive]
+    content((0, 3.2))[#set text(fill: purple); Decidable = $"RE" intersect "co-RE"$]
+    content((0, 4.4))[#set text(fill: blue); Computably Enumerable (RE)]
+    content((0, -0.8))[#set text(fill: red); co-RE]
+    circle((2.5, 2.5), radius: 3pt, fill: yellow)
+    content((2.5, 2.5), anchor: "north-west", padding: 5pt)[SAT]
+    circle((3.2, 3.8), radius: 3pt, fill: yellow)
+    content((3.2, 3.8), anchor: "south-west", padding: 5pt)[HALT]
+    circle((2.8, 5), radius: 3pt, fill: yellow)
+    content((2.8, 5), anchor: "south-west", padding: 5pt)[REGULAR]
+    content((0, 6), anchor: "north", padding: 5pt)[All languages]
   })
 ]
 
