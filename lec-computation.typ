@@ -280,6 +280,19 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   })
 ]
 
+#pagebreak()
+
+$"P" subset.eq "NP" subset.eq "R" subset.eq "RE"$
+
+- RE \
+  contains languages which are _accepted_ by any TM
+- R = RE $intersect$ co-RE \
+  contains all languages which are _decided_ by any TM
+- NP \
+  contains all languages which are _accepted_ by any _polynomial-time_ TM
+- P \
+  contains all languages which are _decided_ by any _polynomial-time_ and _deterministic_ TM
+
 = Complexity Zoo
 
 == Complexity Classes
