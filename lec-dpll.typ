@@ -107,9 +107,9 @@ The pure literal rule is defined as follows:
 
 == Davis--Putnam--Logemann--Loveland (DPLL) Algorithm
 
-The DPLL algorithm @davis1962 is a complete, backtracking search algorithm for deciding the satisfiability of propositional logic formulas in CNF, that is, for solving the CNF-SAT problem.
+Introduced by Martin Davis, George Logemann, and Donald Loveland @davis1962, the DPLL algorithm is a refinement of the Davis--Putnam algorithm.
 
-Introduced by Martin Davis, George Logemann, and Donald Loveland in 1961, the algorithm is a refinement of the Davis--Putnam algorithm.
+The DPLL algorithm is a complete, backtracking search algorithm for deciding the satisfiability of propositional logic formulas in CNF, that is, for solving the CNF-SAT problem.
 
 In DPLL, the resolution rule is replaced with a _splitting_ rule.
 + Let $Delta$ be the current set of clauses.
