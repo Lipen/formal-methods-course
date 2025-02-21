@@ -120,12 +120,10 @@ In DPLL, the resolution rule is replaced with a _splitting_ rule.
 
 The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfying assignment iff one exists.
 
-== DPLL Pseudocode
+== DPLL
 
-#grid(
-  columns: (auto, 1fr),
-  align: (left, center),
-  lovelace.pseudocode-list(
+#place(left)[
+  #lovelace.pseudocode-list(
     // title: [$"DPLL"(S)$],
     hooks: 0.5em,
     line-gap: 0.7em,
@@ -143,18 +141,23 @@ The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfyi
     + *else*
       - *return* $"DPLL"(S union {not L})$
     + *end*
-  ],
-  diagram(
+  ]
+]
+#place(bottom + right)[
+  #diagram(
     // debug: true,
-    spacing: (3em, 2em),
+    spacing: (2.5em, 3em),
+    node-corner-radius: 3pt,
     edge-stroke: 1pt,
     edge-corner-radius: 5pt,
     mark-scale: 80%,
     blob(
       (0, 0),
-      [Start],
+      [$"DPLL"(S)$],
       tint: purple,
-      shape: fletcher.shapes.parallelogram,
+      shape: fletcher.shapes.rect,
+      corner-radius: 1em,
+      name: <start>,
     ),
     edge("-|>"),
     blob(
@@ -167,101 +170,168 @@ The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfyi
     edge("-|>"),
     blob(
       (0, 2),
-      [Conflict?],
-      tint: yellow,
-      shape: fletcher.shapes.diamond,
-      name: <conflict>,
-    ),
-    edge("-|>", label: "no"),
-    blob(
-      (-1, 2),
-      [Empty?],
+      [Empty? \ $S =^? emptyset$],
       tint: yellow,
       shape: fletcher.shapes.diamond,
       name: <empty>,
     ),
     blob(
-      (-1, 3),
-      [Satisfiable],
+      (0, 3),
+      [Conflict? \ $square in^? S$],
+      tint: yellow,
+      shape: fletcher.shapes.diamond,
+      name: <conflict>,
+    ),
+    blob(
+      (-1, 2),
+      [SAT],
       tint: green,
-      shape: fletcher.shapes.rect,
+      shape: fletcher.shapes.parallelogram,
       name: <sat>,
     ),
     blob(
-      (-1, 1),
-      [Select literal \ and assign],
+      (-1, 3),
+      [UNSAT],
+      tint: red,
+      shape: fletcher.shapes.parallelogram,
+      name: <unsat>,
+    ),
+    blob(
+      (1, 3),
+      [Select literal $L$],
       tint: blue,
       shape: fletcher.shapes.rect,
       name: <select>,
     ),
     blob(
       (1, 2),
-      [Level is 0?],
-      tint: yellow,
-      shape: fletcher.shapes.diamond,
-      name: <level>,
-    ),
-    blob(
-      (1, 3),
-      [Unsatisfiable],
-      tint: red,
+      [Recursive call \ $"DPLL"(S union {L})$],
+      tint: blue,
       shape: fletcher.shapes.rect,
-      name: <unsat>,
+      name: <recursive-positive>,
     ),
     blob(
       (1, 1),
-      [Analyze \ Learn \ Backjump],
+      [Recursive call \ $"DPLL"(S union {not L})$],
       tint: blue,
       shape: fletcher.shapes.rect,
-      name: <analyze>,
+      name: <recursive-negative>,
     ),
-    edge(<conflict>, "-|>", <empty>)[no],
-    edge(<conflict>, "-|>", <level>)[yes],
-    edge(<level>, "-|>", <unsat>)[yes],
-    edge(<level>, "-|>", <analyze>)[no],
-    edge(<empty>, "-|>", <sat>)[yes],
-    edge(<empty>, "-|>", <select>)[no],
-    edge(<select>, "-|>", <propagate>),
-    edge(<analyze>, <propagate>, "-|>"),
-  ),
-)
+    node(
+      (1, 0),
+      [SAT/UNSAT],
+      // tint: purple,
+      fill: gradient.linear(green.lighten(80%), red.lighten(80%)),
+      shape: fletcher.shapes.parallelogram,
+      stroke: 1pt + gradient.linear(green.darken(20%), red.darken(20%)),
+      name: <return>,
+    ),
+    edge(<empty>, "-|>", <conflict>, [no], label-pos: 0.1),
+    edge(<empty>, "-|>", <sat>, [yes], label-pos: 0.1),
+    edge(<conflict>, "-|>", <unsat>, [yes], label-pos: 0.1),
+    edge(<conflict>, "-|>", <select>, [no], label-pos: 0.1),
+    edge(<select>, "-|>", <recursive-positive>),
+    edge(
+      <recursive-positive>,
+      "-|>",
+      <sat.north>,
+      text(fill: green.darken(20%))[SAT],
+      label-pos: 0.1,
+      bend: -40deg,
+      label-angle: auto,
+    ),
+    edge(
+      <recursive-positive>,
+      "-|>",
+      <recursive-negative>,
+      text(fill: red.darken(20%))[UNSAT],
+    ),
+    edge(<recursive-negative>, "-|>", <return>),
+  )
+]
 
-// #diagram(
-//   debug: 3,
-//   // axes: (ttb, ltr),
-//   blob((0.5, 0), tint: yellow, name: <n0>)[
-//     $
-//       not a or not b \
-//       not a or b \
-//       a or not b \
-//       a or b \
-//     $
-//   ],
-//   blob((0, 1), tint: yellow, name: <n1>)[
-//     $
-//       not a \
-//       not a or not b \
-//       not a or b \
-//       a or not b \
-//       a or b \
-//     $
-//   ],
-//   blob((1, 1), tint: yellow, name: <n2>)[
-//     $
-//       a \
-//       not a or not b \
-//       not a or b \
-//       a or not b \
-//       a or b \
-//     $
-//   ],
-//   blob((0, 2), tint: yellow, name: <n3>)[$square$],
-//   blob((1, 2), tint: yellow, name: <n4>)[$square$],
-//   edge(<n0>, "-|>", <n1>)[$a$],
-//   edge(<n0>, "-|>", <n2>)[$not a$],
-//   edge(<n1>, "..|>", <n3>),
-//   edge(<n2>, "..|>", <n4>),
-// )
+== Conflict-Driven Clause Learning (CDCL)
+
+#diagram(
+  // debug: true,
+  spacing: (3em, 2em),
+  node-corner-radius: 3pt,
+  edge-stroke: 1pt,
+  edge-corner-radius: 5pt,
+  mark-scale: 80%,
+  blob(
+    (0, 0),
+    [Start],
+    tint: purple,
+    shape: fletcher.shapes.parallelogram,
+  ),
+  edge("-|>"),
+  blob(
+    (0, 1),
+    [Propagate],
+    tint: blue,
+    shape: fletcher.shapes.rect,
+    name: <propagate>,
+  ),
+  edge("-|>"),
+  blob(
+    (0, 2),
+    [Conflict?],
+    tint: yellow,
+    shape: fletcher.shapes.diamond,
+    name: <conflict>,
+  ),
+  blob(
+    (-1, 2),
+    [Empty?],
+    tint: yellow,
+    shape: fletcher.shapes.diamond,
+    name: <empty>,
+  ),
+  blob(
+    (-1, 3),
+    [SAT],
+    tint: green,
+    shape: fletcher.shapes.parallelogram,
+    name: <sat>,
+  ),
+  blob(
+    (-1, 1),
+    [Select literal \ and assign],
+    tint: blue,
+    shape: fletcher.shapes.rect,
+    name: <select>,
+  ),
+  blob(
+    (1, 2),
+    [Level is 0?],
+    tint: yellow,
+    shape: fletcher.shapes.diamond,
+    name: <level>,
+  ),
+  blob(
+    (1, 3),
+    [UNSAT],
+    tint: red,
+    shape: fletcher.shapes.parallelogram,
+    name: <unsat>,
+  ),
+  blob(
+    (1, 1),
+    [Analyze \ Learn \ Backjump],
+    tint: blue,
+    shape: fletcher.shapes.rect,
+    name: <analyze>,
+  ),
+  edge(<conflict>, "-|>", <empty>)[no],
+  edge(<conflict>, "-|>", <level>)[yes],
+  edge(<level>, "-|>", <unsat>)[yes],
+  edge(<level>, "-|>", <analyze>)[no],
+  edge(<empty>, "-|>", <sat>)[yes],
+  edge(<empty>, "-|>", <select>)[no],
+  edge(<select>, "-|>", <propagate>),
+  edge(<analyze>, <propagate>, "-|>"),
+)
 
 = Advanced Topics
 
