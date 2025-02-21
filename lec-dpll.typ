@@ -145,7 +145,7 @@ The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfyi
     + *end*
   ],
   diagram(
-    debug: true,
+    // debug: true,
     spacing: (3em, 2em),
     edge-stroke: 1pt,
     edge-corner-radius: 5pt,
