@@ -426,7 +426,11 @@ TODO: discuss
 == TODO
 
 #show: cheq.checklist
-- [ ] CDCL
+- [ ] Brief description of "algorithms for SAT" problem
+- [ ] Truth tables algorithm
+- [ ] 2-SAT
+- [ ] Horn-SAT
+- [/] CDCL
 - [/] Abstract DPLL
 
 == Bibliography
