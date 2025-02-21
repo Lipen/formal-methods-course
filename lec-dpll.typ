@@ -122,25 +122,109 @@ The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfyi
 
 == DPLL Pseudocode
 
-#lovelace.pseudocode-list(
-  // title: [$"DPLL"(S)$],
-  hooks: 0.5em,
-  line-gap: 0.7em,
-)[
-  - #smallcaps[*Input:*] set of clauses $S$
-  - #smallcaps[*Output:*] _satisfiable_ or _unsatisfiable_
-  + $S := "propagate"(S)$
-  + *if* $S$ is empty *then*
-    - *return* _satisfiable_
-  + *if* $S$ contains the empty clause *then*
-    - *return* _unsatisfiable_
-  + $L := "select_literal"(S)$
-  + *if* $"DPLL"(S union {L}) = $ _satisfiable_ *then*
-    - *return* _satisfiable_
-  + *else*
-    - *return* $"DPLL"(S union {not L})$
-  + *end*
-]
+#grid(
+  columns: (auto, 1fr),
+  align: (left, center),
+  lovelace.pseudocode-list(
+    // title: [$"DPLL"(S)$],
+    hooks: 0.5em,
+    line-gap: 0.7em,
+  )[
+    - #smallcaps[*Input:*] set of clauses $S$
+    - #smallcaps[*Output:*] _satisfiable_ or _unsatisfiable_
+    + $S := "propagate"(S)$
+    + *if* $S$ is empty *then*
+      - *return* _satisfiable_
+    + *if* $S$ contains the empty clause *then*
+      - *return* _unsatisfiable_
+    + $L := "select_literal"(S)$
+    + *if* $"DPLL"(S union {L}) = $ _satisfiable_ *then*
+      - *return* _satisfiable_
+    + *else*
+      - *return* $"DPLL"(S union {not L})$
+    + *end*
+  ],
+  diagram(
+    debug: true,
+    spacing: (3em, 2em),
+    edge-stroke: 1pt,
+    edge-corner-radius: 5pt,
+    mark-scale: 80%,
+    blob(
+      (0, 0),
+      [Start],
+      tint: purple,
+      shape: fletcher.shapes.parallelogram,
+    ),
+    edge("-|>"),
+    blob(
+      (0, 1),
+      [Propagate],
+      tint: blue,
+      shape: fletcher.shapes.rect,
+      name: <propagate>,
+    ),
+    edge("-|>"),
+    blob(
+      (0, 2),
+      [Conflict?],
+      tint: yellow,
+      shape: fletcher.shapes.diamond,
+      name: <conflict>,
+    ),
+    edge("-|>", label: "no"),
+    blob(
+      (-1, 2),
+      [Empty?],
+      tint: yellow,
+      shape: fletcher.shapes.diamond,
+      name: <empty>,
+    ),
+    blob(
+      (-1, 3),
+      [Satisfiable],
+      tint: green,
+      shape: fletcher.shapes.rect,
+      name: <sat>,
+    ),
+    blob(
+      (-1, 1),
+      [Select literal \ and assign],
+      tint: blue,
+      shape: fletcher.shapes.rect,
+      name: <select>,
+    ),
+    blob(
+      (1, 2),
+      [Level is 0?],
+      tint: yellow,
+      shape: fletcher.shapes.diamond,
+      name: <level>,
+    ),
+    blob(
+      (1, 3),
+      [Unsatisfiable],
+      tint: red,
+      shape: fletcher.shapes.rect,
+      name: <unsat>,
+    ),
+    blob(
+      (1, 1),
+      [Analyze \ Learn \ Backjump],
+      tint: blue,
+      shape: fletcher.shapes.rect,
+      name: <analyze>,
+    ),
+    edge(<conflict>, "-|>", <empty>)[no],
+    edge(<conflict>, "-|>", <level>)[yes],
+    edge(<level>, "-|>", <unsat>)[yes],
+    edge(<level>, "-|>", <analyze>)[no],
+    edge(<empty>, "-|>", <sat>)[yes],
+    edge(<empty>, "-|>", <select>)[no],
+    edge(<select>, "-|>", <propagate>),
+    edge(<analyze>, <propagate>, "-|>"),
+  ),
+)
 
 // #diagram(
 //   debug: 3,
