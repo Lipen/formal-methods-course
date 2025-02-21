@@ -23,7 +23,6 @@
   label,
   tint: white,
   shape: fletcher.shapes.rect,
-  corner-radius: 5pt,
   ..args,
 ) = fletcher.node(
   pos,
@@ -31,7 +30,6 @@
   fill: tint.lighten(80%),
   stroke: 1pt + tint.darken(20%),
   shape: shape,
-  corner-radius: corner-radius,
   ..args,
 )
 
