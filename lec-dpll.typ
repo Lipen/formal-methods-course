@@ -207,14 +207,14 @@ The DPLL algorithm is a _complete_ algorithm: it will eventually find a satisfyi
       (1, 2),
       [Recursive call \ $"DPLL"(S union {L})$],
       tint: blue,
-      shape: fletcher.shapes.rect,
+      shape: fletcher.shapes.hexagon,
       name: <recursive-positive>,
     ),
     blob(
       (1, 1),
       [Recursive call \ $"DPLL"(S union {not L})$],
       tint: blue,
-      shape: fletcher.shapes.rect,
+      shape: fletcher.shapes.hexagon,
       name: <recursive-negative>,
     ),
     node(
