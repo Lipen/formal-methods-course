@@ -8,6 +8,50 @@
   // dark: true,
 )
 
+= Formal Languages
+
+== Language Classes
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+    circle((0, 0), radius: (0.8, 0.4))
+    circle((0, 0.4), radius: (1.4, 0.8))
+    circle((0, 0.8), radius: (2, 1.2))
+    circle((0, 1.2), radius: (2.6, 1.6))
+    circle((0, 2.4), radius: (4, 2.8), stroke: blue)
+    circle((0, 1.2), radius: (4, 2.8), stroke: red)
+    // rect((-5, -1.5), (5, 6))
+    content((0, 0))[Finite]
+    content((0, .7))[Regular]
+    content((0, 1.55))[Context-Free]
+    content((0, 2.3))[Context-Sensitive]
+    content((0, 3.2))[#set text(fill: purple); Decidable = $"RE" intersect "co-RE"$]
+    content((0, 4.4))[#set text(fill: blue); Computably Enumerable (RE)]
+    content((0, -1))[#set text(fill: red); co-RE]
+    circle((2.5, 2.5), radius: 3pt, fill: yellow)
+    content((2.5, 2.5), anchor: "north-west", padding: 5pt)[SAT]
+    circle((3.2, 3.8), radius: 3pt, fill: yellow)
+    content((3.2, 3.8), anchor: "south-west", padding: 5pt)[HALT]
+    circle((2.8, 5), radius: 3pt, fill: yellow)
+    content((2.8, 5), anchor: "south-west", padding: 5pt)[REGULAR]
+    // content((0, 6), anchor: "north", padding: 5pt)[All languages]
+  })
+]
+
+== Language Classes
+
+$"P" subset.eq "NP" subset "R" subset "RE"$
+
+- RE \
+  contains languages which are _accepted_ (_recognized_) by any TM
+- R = RE $intersect$ co-RE \
+  contains all languages which are _decided_ by any TM
+- NP \
+  contains all languages which are _accepted_ (_recognized_) by any _polynomial-time_ TM
+- P \
+  contains all languages which are _decided_ by any _polynomial-time_ and _deterministic_ TM
+
 = Computability
 
 == Computable Functions
@@ -248,50 +292,6 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   This demonstrates that there is an effective procedure that, given any WFF $alpha$, will output "yes" iff $alpha$ is a tautological consequence of $Sigma$.
   Thus, the set of tautological consequences of $Sigma$ is effectively enumerable.
 ]
-
-= Languages
-
-== Language Classes
-
-#align(center)[
-  #cetz.canvas({
-    import cetz.draw: *
-    circle((0, 0), radius: (0.8, 0.4))
-    circle((0, 0.4), radius: (1.4, 0.8))
-    circle((0, 0.8), radius: (2, 1.2))
-    circle((0, 1.2), radius: (2.6, 1.6))
-    circle((0, 2.4), radius: (4, 2.8), stroke: blue)
-    circle((0, 1.4), radius: (4, 2.6), stroke: red)
-    rect((-5, -1.5), (5, 6))
-    content((0, 0))[Finite]
-    content((0, .7))[Regular]
-    content((0, 1.55))[Context-Free]
-    content((0, 2.3))[Context-Sensitive]
-    content((0, 3.2))[#set text(fill: purple); Decidable = $"RE" intersect "co-RE"$]
-    content((0, 4.4))[#set text(fill: blue); Computably Enumerable (RE)]
-    content((0, -0.8))[#set text(fill: red); co-RE]
-    circle((2.5, 2.5), radius: 3pt, fill: yellow)
-    content((2.5, 2.5), anchor: "north-west", padding: 5pt)[SAT]
-    circle((3.2, 3.8), radius: 3pt, fill: yellow)
-    content((3.2, 3.8), anchor: "south-west", padding: 5pt)[HALT]
-    circle((2.8, 5), radius: 3pt, fill: yellow)
-    content((2.8, 5), anchor: "south-west", padding: 5pt)[REGULAR]
-    content((0, 6), anchor: "north", padding: 5pt)[All languages]
-  })
-]
-
-#pagebreak()
-
-$"P" subset.eq "NP" subset.eq "R" subset.eq "RE"$
-
-- RE \
-  contains languages which are _accepted_ by any TM
-- R = RE $intersect$ co-RE \
-  contains all languages which are _decided_ by any TM
-- NP \
-  contains all languages which are _accepted_ by any _polynomial-time_ TM
-- P \
-  contains all languages which are _decided_ by any _polynomial-time_ and _deterministic_ TM
 
 = Complexity Zoo
 
