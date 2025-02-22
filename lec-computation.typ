@@ -310,7 +310,7 @@ See also: https://complexityzoo.net/Petting_Zoo
 - [x] Undecidable sets
 - [x] Semi-decidability
 - [ ] Decidable language outside of NP
-- [/] Diagram of language classes (Finite, Regular, Context-Free, Recursive (Decidable), CE(RE), co-CE)
+- [x] Diagram of language classes
 - [ ] Complexity classes
 - [ ] NP-completeness
 - [ ] Polytime reductions
