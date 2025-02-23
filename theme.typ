@@ -184,6 +184,7 @@
   "Example",
   inset: (x: 0em, y: 0em),
 ).with(numbering: none)
+#let examples = example.with(title: "Examples")
 #let note = thmplain(
   "note",
   "Note",
