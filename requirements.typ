@@ -11,3 +11,4 @@
 #import "@preview/wrap-it:0.1.1"
 #import "@preview/shadowed:0.1.2"
 #import "@preview/fontawesome:0.5.0"
+#import "@preview/finite:0.4.1"

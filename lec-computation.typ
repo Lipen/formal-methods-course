@@ -8,7 +8,73 @@
   // dark: true,
 )
 
-= Formal Languages
+#let yields = $scripts(arrow.double)$
+
+= Languages
+
+== Formal Languages
+
+#definition[Formal language][
+  A set of strings over an alphabet $Sigma$, closed under concatenation.
+]
+
+#place(right)[
+  #grid(
+    columns: 1,
+    align: center,
+    column-gutter: 1em,
+    row-gutter: 0.5em,
+    link("https://en.wikipedia.org/wiki/Noam_Chomsky", image("assets/Noam_Chomsky.jpg", height: 3cm)),
+    [Noam Chomsky],
+  )
+]
+
+Formal languages are classified by _Chomsky hierarchy_:
+- Type 0: Recursively Enumerable
+- Type 1: Context-Sensitive
+- Type 2: Context-Free
+- Type 3: Regular
+
+_Examples_:
+- $L = { a^n | n geq 0 }$
+- $L = { a^n b^n | n geq 0 }$
+- $L = { a^n b^n c^n | n geq 0 }$
+// - $L = { w | }$ // TODO: RE language example
+
+#place(horizon + center, dx: 1em, dy: 1em)[
+  #cetz.canvas({
+    import cetz.draw: *
+    circle((0, 0), radius: (1, .5))
+    circle((0, 0.5), radius: (1.5, 1))
+    circle((0, 1), radius: (2.5, 1.5))
+    circle((0, 1.5), radius: (3.5, 2))
+    content((0, 0))[Regular]
+    content((0, 0.9))[Context-Free]
+    content((0, 1.9))[Context-Sensitive]
+    content((0, 2.9))[Recursively Enumerable]
+  })
+]
+
+== Decision Problems as Languages
+
+#definition[Decision problem][
+  A _decision problem_ is a question with a "yes" or "no" answer.
+
+  Formally, set of inputs for which the problem has an answer "yes" corresponds to a subset $L subset.eq Sigma^ast$, where $Sigma$ is an alphabet.
+]
+
+#example[
+  SAT Problem as a language: \
+  $ "SAT" = { phi | phi "is a satisfiable Boolean formula" } $
+]
+#example[
+  Validity Problem as a language: \
+  $ "VALID" = { phi | phi "is a valid logical formula (tautology)" } $
+]
+#example[
+  Halting Problem as a language: \
+  $ "HALT" = { angle.l M, w angle.r | "Turing machine" M "halts on input" w } $
+]
 
 == Language Classes
 
@@ -39,18 +105,305 @@
   })
 ]
 
-== Language Classes
+= Complexity Classes
 
-$"P" subset.eq "NP" subset "R" subset "RE"$
+== P and NP
 
-- RE \
-  contains languages which are _accepted_ (_recognized_) by any TM
-- R = RE $intersect$ co-RE \
-  contains all languages which are _decided_ by any TM
-- NP \
-  contains all languages which are _accepted_ (_recognized_) by any _polynomial-time_ TM
-- P \
-  contains all languages which are _decided_ by any _polynomial-time_ and _deterministic_ TM
+#definition[
+  Class $P$ consists of problems that can be _solved_ in _polynomial time_.
+
+  Equivalently, $L in P$ iff $L$ is _decidable_ in polynomial time by a _deterministic_ TM.
+]
+#examples[
+  Shortest path, primality testing (AKS algorithm), linear programming.
+]
+
+#definition[
+  Class NP consists of problems where a _certificate_ of a solution ("yes" answer) can be _verified_ in polynomial time.
+
+  Equivalently, $L in "NP"$ iff $L$ is _decidable_ in polynomial time by a _non-deterministic_ TM.
+
+  Equivalently, $L in "NP"$ iff $L$ is _recognizable_ in polynomial time by a _deterministic_ TM.
+]
+#examples[
+  SAT, graph coloring, graph isomorphism, subset sum, knapsack, vertex cover, clique.
+]
+
+== NP-Hard and NP-Complete
+
+#definition[
+  A problem $H$ is _NP-hard_ if every problem $L in "NP"$ is polynomial-time _reducible_ to $H$.
+]
+#examples[
+  Halting problem (undecidable), Traveling Salesman Problem (TSP).
+]
+
+#definition[
+  A problem $H$ is _NP-complete_ if:
+  1. $H in "NP"$
+  2. $H$ is NP-hard
+]
+#examples[
+  SAT, 3-SAT, Hamiltonian path...
+  Actually, almost all NP problems are NP-complete!
+]
+
+#theorem[Cook--Levin][
+  SAT is NP-complete.
+]
+
+== co-NP
+
+#definition[
+  Class co-NP contains problems where _"no"_ instances can be _verified_ in _polynomial time_.
+
+  Equivalently, $L in "co-NP"$ iff the complement of $L$ is in NP:
+  $ "co-NP" = { L | overline(L) in "NP" } $
+]
+
+_Open question_: $"NP" =^? "co-NP"$? Implies $P neq "NP"$ if false.
+
+#examples[
+  - *VALID*: Check if a Boolean formula is always true (tautology).
+  - *UNSAT*: Check if a formula has no satisfying assignment.
+]
+
+== Computational Hierarchy
+
+#place(top + right)[
+  #cetz.canvas({
+    import cetz.draw: *
+    circle((0, 0), radius: (0.5, 0.5))
+    circle((0.5, 0), radius: (1, 0.7))
+    circle((1, 0), radius: (1.5, 0.9))
+    circle((1.5, 0), radius: (2, 1.1))
+    circle((2, 0), radius: (2.5, 1.3))
+    content((0, 0))[P]
+    content((1, 0))[NP]
+    content((2, 0))[EXP]
+    content((3, 0))[R]
+    content((4, 0))[RE]
+  })
+]
+
+$"P" subset.eq "NP" subset.eq "EXP" subset "R" subset "RE"$
+
+- *RE* \
+  Languages _accepted_ (_recognized_) by any TM.
+
+- *R* = RE $intersect$ co-RE \
+  Languages _decided_ by any TM (always halt).
+
+- *EXP* \
+  Languages _decided_ by a _deterministic_ TM in _exponential time_.
+
+- *NP* \
+  Languages _accepted_ (_recognized_) by any TM, or _decided_ by a _non-deterministic_ TM, in _polynomial time_.
+
+- *P* \
+  Languages _decided_ by a _deterministic_ TM in _polynomial time_.
+
+
+= Automata and Recognition
+
+== Finite Automata
+
+#definition[
+  Deterministic Finite Automaton (DFA) is a 5-tuple $(Q, Sigma, delta, q_0, F)$ where:
+  - $Q$ is a _finite_ set of states,
+  - $Sigma$ is an _alphabet_ (finite set of input symbols),
+  - $delta: Q times Sigma to Q$ is a _transition function_,
+  - $q_0 in Q$ is the _start_ state,
+  - $F subset.eq Q$ is a set of _accepting_ states.
+
+  DFA recognizes _regular_ languages (Type 3).
+]
+
+#example[
+  Automaton $cal(A)$ recognizing strings with an even number of 0s, $cal(L)(cal(A)) = { 0^n | n "is even" }$.
+
+  #let aut = (
+    q0: (q1: (0, 1)),
+    q1: (q0: 0, q1: 1),
+  )
+  #grid(
+    columns: 2,
+    column-gutter: 2em,
+    finite.transition-table(aut),
+    box(
+      height: 0pt,
+      finite.automaton(
+        aut,
+        final: ("q0",),
+        style: (
+          state: (radius: 0.5, extrude: 0.8),
+          transition: (curve: 0.6),
+          q1-q1: (anchor: top + right),
+        ),
+      ),
+    ),
+  )
+]
+
+== Turing Machines
+
+#definition[
+  Turing Machine (TM) is a 7-tuple $(Q, Sigma, Gamma, delta, q_0, q_"acc", q_"rej")$ where:
+  - $Gamma$ is a _tape alphabet_ (including blank symbol $square in Gamma$),
+  - $Sigma subset.eq Gamma$ is a _input alphabet_,
+  - $delta: Q times Gamma to Q times Gamma times {"L", "R"}$ is a transition function,
+  - $q_"acc"$ and $q_"rej"$ are the _accept_ and _reject_ states.
+
+  TM recognizes _recursively enumerable_ languages (Type 0).
+
+  Decidable languages are those where TM always halts.
+]
+
+== TM Configuration
+
+At every moment of computation, a TM is in a _configuration_ determined by:
++ The content of the tape.
++ The current state.
++ The head position.
+
+The _next_ step is _completely_ determined by the current configuration.
+
+#let tm-head(pos, state, name: none, ..style) = {
+  import cetz.draw: *
+  group(
+    name: name,
+    {
+      let lu = (rel: (-1, -0.5), to: pos)
+      let ld = (rel: (0, -0.8), to: lu)
+      let ru = (rel: (1, -0.5), to: pos)
+      let rd = (rel: (0, -0.8), to: ru)
+      anchor("state", (rel: (0, -0.7), to: pos))
+      content("state", state)
+      line(pos, lu, ld, rd, ru, ..style, close: true)
+    },
+  )
+}
+
+#definition[
+  A _configuration_ of a TM is a _string_ of the form $u; q; v$ where $u,v in Gamma^*$, $q in Q$, meaning:
+  - Tape contents: $u v$ followed by the blanks.
+  - Current state: $q in Q$.
+  - Head position: at the beginning of $v$.
+
+  #cetz.canvas({
+    import cetz.draw: *
+    scale(50%)
+    rect((0, 0), (rel: (2, 1)), name: "u")
+    content("u.center")[$u$]
+    rect((2, 0), (rel: (1, 1)), name: "a")
+    content("a.center")[$a$]
+    rect((3, 0), (rel: (2, 1)), name: "v")
+    content("v.center")[$v$]
+    line((rel: (-0.3, 0), to: "u.north-west"), (rel: (5.6, 0)))
+    line((rel: (-0.3, 0), to: "u.south-west"), (rel: (5.6, 0)))
+    tm-head((rel: (0.5, 0), to: "a.south-west"))[$q$]
+  })
+]
+
+== TM Execution
+
+The process of _computation_ by a TM is a _sequence_ of configurations.
+- Configuration $C_1$ _yields_ configuration $C_2$, if TM can move from $C_1$ to $C_2$ in _one_ step.
+- Notation for "yields (in 1 step)": $C_1 yields C_2$ or $C_1 yields^1 C_2$.
+- "Yields in $k$ steps": $C_1 yields^k C_2$, if there are configurations $C_1, dots, C_k$ such that $C_1 yields C_2 yields dots yields C_k$.
+- "Yields in _some_ number of steps": $C_1 yields^* C_2$.
+
+#definition[Yields][
+  Let $u,v in Gamma^*$, $a,b,c in Gamma$, $q_i, q_j in Q$.
+  - Move left: $(u a ; q_i ; b v) yields (u ; q_j ; a c v)$ if $delta(q_i, b) = (q_j, c, "L")$ (overwrite $b$ with $c$, move left)
+  - Move right: $(u ; q_i ; b a v) yields (u c ; q_j ; a v)$ if $delta(q_i, b) = (q_j, c, "R")$ (overwrite $b$ with $c$, move left)
+
+  #stack(dir: ltr)[
+    #cetz.canvas({
+      import cetz.draw: *
+      scale(50%)
+      rect((0, 0), (rel: (2, 1)), name: "u")
+      content("u.center")[$u$]
+      rect((2, 0), (rel: (1, 1)), name: "a")
+      content("a.center")[$a$]
+      rect((3, 0), (rel: (1, 1)), name: "b")
+      content("b.center")[$b$]
+      rect((4, 0), (rel: (2, 1)), name: "v")
+      content("v.center")[$v$]
+      line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
+      line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
+      tm-head((rel: (0.5, 0), to: "b.south-west"))[$q_i$]
+    })
+  ][
+    #h(.5em)
+    $yields$
+    #h(.5em)
+  ][
+    #cetz.canvas({
+      import cetz.draw: *
+      scale(50%)
+      rect((0, 0), (rel: (2, 1)), name: "u")
+      content("u.center")[$u$]
+      rect((2, 0), (rel: (1, 1)), name: "a")
+      content("a.center")[$a$]
+      rect((3, 0), (rel: (1, 1)), name: "c")
+      content("c.center")[$c$]
+      rect((4, 0), (rel: (2, 1)), name: "v")
+      content("v.center")[$v$]
+      line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
+      line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
+      tm-head((rel: (0.5, 0), to: "a.south-west"))[$q_j$]
+    })
+  ][
+    #h(3em)
+  ][
+    #cetz.canvas({
+      import cetz.draw: *
+      scale(50%)
+      rect((0, 0), (rel: (2, 1)), name: "u")
+      content("u.center")[$u$]
+      rect((2, 0), (rel: (1, 1)), name: "b")
+      content("b.center")[$b$]
+      rect((3, 0), (rel: (1, 1)), name: "a")
+      content("a.center")[$a$]
+      rect((4, 0), (rel: (2, 1)), name: "v")
+      content("v.center")[$v$]
+      line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
+      line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
+      tm-head((rel: (0.5, 0), to: "b.south-west"))[$q_i$]
+    })
+  ][
+    #h(.5em)
+    $yields$
+    #h(.5em)
+  ][
+    #cetz.canvas({
+      import cetz.draw: *
+      scale(50%)
+      rect((0, 0), (rel: (2, 1)), name: "u")
+      content("u.center")[$u$]
+      rect((2, 0), (rel: (1, 1)), name: "c")
+      content("c.center")[$c$]
+      rect((3, 0), (rel: (1, 1)), name: "a")
+      content("a.center")[$a$]
+      rect((4, 0), (rel: (2, 1)), name: "v")
+      content("v.center")[$v$]
+      line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
+      line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
+      tm-head((rel: (0.5, 0), to: "a.south-west"))[$q_j$]
+    })
+  ]
+
+  Special case for the left end:
+  - $(epsilon ; q_i ; b v) yields (epsilon ; q_j ; c v)$ if $delta(q_i, b) = (q_j, c, "L")$ (overwrite $b$ with $c$, do not move).
+]
+
+#definition[Computation][
+  A process of _computation_ by a TM on input $w in Sigma^*$ is a _sequence_ of configurations $C_1, C_2, dots, C_n$ such that:
+  - $C_1 = (epsilon; q_0; w)$ is the _start_ configuration with input $w in Sigma^*$.
+  - $C_i yields C_{i+1}$ for $i = 1, 2, dots, n-1$.
+  - $C_n$ is a _final_ configuration.
+]
 
 = Computability
 
@@ -58,6 +411,8 @@ $"P" subset.eq "NP" subset "R" subset "RE"$
 
 #definition[Church--Turing thesis][
   _Computable functions_ are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
+
+  // Any algorithmically solvable problem can be computed by a Turing machine.
 ]
 
 #quote[
