@@ -341,13 +341,17 @@ There are _two_ types of Turing machines:
   A TM _recognizes_ a language $L$, if it halts and accepts all words $w in L$, but no others.
 ]
 
-A language recognized by a TM is called _semi-decidable_ or _recursively enumerable_.
+#definition[
+  A language recognized by a TM is called _semi-decidable_ or _recursively enumerable_ or _recursively computable_ or _Turing-recognizable_.
+]
 
 #definition[
   A TM _decides_ a language $L$, if it halts and accepts all words $w in L$, and halts and rejects any other word $s notin L$.
 ]
 
-A language decided by a TM is called _decidable_ or _recursive_.
+#definition[
+  A language decided by a TM is called _decidable_ or _recursive_  or _computable_.
+]
 
 = Complexity
 
