@@ -105,7 +105,7 @@ _Examples_:
   })
 ]
 
-= Complexity Classes
+= Complexity Zoo
 
 == P and NP
 
@@ -203,8 +203,13 @@ $"P" subset.eq "NP" subset.eq "EXP" subset "R" subset "RE"$
 - *P* \
   Languages _decided_ by a _deterministic_ TM in _polynomial time_.
 
+== Complexity Zoo
 
-= Automata and Recognition
+TODO
+
+See also: https://complexityzoo.net/Petting_Zoo
+
+= Machines
 
 == Finite Automata
 
@@ -247,6 +252,34 @@ $"P" subset.eq "NP" subset.eq "EXP" subset "R" subset "RE"$
 
 == Turing Machines
 
+Informally, a Turing Machine is a _finite-state_ machine with an _infinite tape_ and a _head_ that can read and write symbols.
+Initially, the tape contains the _input_ string, the rest are blanks, and the machine is in the _start_ state.
+At each step, the machine reads the symbol under the head, changes the state, writes a new symbol, and moves the head left or right.
+When the machine reaches the _accept_ or _reject_ state, it immediately halts.
+
+#note[
+  If the machine never reaches the _accept_ or _reject_ state, it _loops_ forever.
+]
+
+#v(1em)
+#align(center)[
+  #import fletcher: diagram, node, edge
+  #diagram(
+    node-corner-radius: 2pt,
+    blob((0, 0), [Input], tint: blue, name: <input>),
+    blob((1, 0), [Turing \ machine], tint: purple, name: <tm>),
+    blob((2, -.5), [Accept], tint: green, name: <accept>),
+    blob((2, 0), [Reject], tint: red, name: <reject>),
+    blob((2, .5), [Loop], tint: yellow, name: <loop>),
+    edge(<input>, <tm>, "-|>"),
+    edge(<tm>, <accept>, "-|>"),
+    edge(<tm>, <reject>, "-|>"),
+    edge(<tm>, <loop>, "-|>"),
+  )
+]
+
+== TM Formal Definition
+
 #definition[
   Turing Machine (TM) is a 7-tuple $(Q, Sigma, Gamma, delta, q_0, q_"acc", q_"rej")$ where:
   - $Gamma$ is a _tape alphabet_ (including blank symbol $square in Gamma$),
@@ -257,6 +290,10 @@ $"P" subset.eq "NP" subset.eq "EXP" subset "R" subset "RE"$
   TM recognizes _recursively enumerable_ languages (Type 0).
 
   Decidable languages are those where TM always halts.
+]
+
+#definition[TM language][
+  The language _recognized_ by a TM $M$ is the set of strings $w in Sigma^*$ for which $M$ halts in the _accept_ state.
 ]
 
 == TM Configuration
@@ -647,14 +684,6 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   This demonstrates that there is an effective procedure that, given any WFF $alpha$, will output "yes" iff $alpha$ is a tautological consequence of $Sigma$.
   Thus, the set of tautological consequences of $Sigma$ is effectively enumerable.
 ]
-
-= Complexity Zoo
-
-== Complexity Classes
-
-TODO
-
-See also: https://complexityzoo.net/Petting_Zoo
 
 == TODO
 
