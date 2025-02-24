@@ -199,6 +199,10 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
   ]
 ]
 
+#definition[
+  A TM is a _decider_ if it halts on all inputs.
+]
+
 == TM Configuration
 
 At every moment of computation, a TM is in a _configuration_ determined by:
@@ -332,6 +336,24 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
   Special case for the left end:
   - $(tapestart ; q_i ; b v) yields (tapestart ; q_j ; c v)$ if $delta(q_i, b) = (q_j, c, L)$ (overwrite $b$ with $c$, do not move).
 ]
+
+== Recognizing vs Deciding
+
+There are _two_ types of Turing machines:
++ Total TM: always halts. Also called _decider_.
++ General TM: may loop forever. Also called _recognizer_.
+
+#definition[
+  A TM _recognizes_ a language $L$, if it halts and accepts all words $w in L$, but no others.
+]
+
+A language recognized by a TM is called _semi-decidable_ or _recursively enumerable_.
+
+#definition[
+  A TM _decides_ a language $L$, if it halts and accepts all words $w in L$, and halts and rejects any other word $s notin L$.
+]
+
+A language decided by a TM is called _decidable_ or _recursive_.
 
 = Complexity
 
