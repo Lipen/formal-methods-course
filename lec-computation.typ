@@ -252,7 +252,7 @@ See also: https://complexityzoo.net/Petting_Zoo
 
 == Turing Machines
 
-Informally, a Turing Machine is a _finite-state_ machine with an _infinite tape_ and a _head_ that can read and write symbols.
+Informally, a Turing machine is a _finite-state_ machine with an _infinite tape_ and a _head_ that can read and write symbols.
 Initially, the tape contains the _input_ string, the rest are blanks, and the machine is in the _start_ state.
 At each step, the machine reads the symbol under the head, changes the state, writes a new symbol, and moves the head left or right.
 When the machine reaches the _accept_ or _reject_ state, it immediately halts.
