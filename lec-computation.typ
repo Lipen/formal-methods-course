@@ -205,13 +205,6 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
 
 == TM Configuration
 
-At every moment of computation, a TM is in a _configuration_ determined by:
-+ The content of the tape.
-+ The current state.
-+ The head position.
-
-The _next_ step is completely determined by the current configuration.
-
 #let tm-head(pos, state, name: none, ..style) = {
   import cetz.draw: *
   group(
@@ -229,11 +222,12 @@ The _next_ step is completely determined by the current configuration.
 }
 
 #definition[
-  A _configuration_ of a TM is a tuple $(u ; q ; a v)$ where $u,v in Gamma^*$, $a in Gamma$, $q in Q$, meaning:
+  A _configuration_ of a TM is a _string_ $(u ; q ; v)$ where $u,v in Gamma^*$, $q in Q$, meaning:
   - Tape contents: $u v$ followed by the blanks.
   - Current state is $q$.
-  - Head position: at symbol $a$, between $u$ and $v$.
+  - Head position: at the first symbol of $v$.
 
+  For example, configuration $(u ; q ; a v)$, where $a in Gamma$, is represented as follows:
   #cetz.canvas({
     import cetz.draw: *
     scale(50%)
