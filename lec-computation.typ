@@ -227,12 +227,13 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
   TM recognizes _recursively enumerable_ languages (Type 0).
 ]
 
-#definition[
-  The language _recognized_ by a TM $M$, denoted $cal(L)(M)$, is the set of strings $w in Sigma^*$ for which $M$ halts in the _accept_ state.
+== TM Language
 
-  #note[
-    For the words _not_ in the language, the TM can either _halt_ in the _reject_ state or _loop forever_.
-  ]
+#definition[
+  The language _recognized_ by a TM $M$, denoted $cal(L)(M)$, is the set of strings $w in Sigma^*$ that $M$ accepts, that is, for which $M$ halts in the _accept_ state.
+
+  - For any $w in cal(L)(M)$, $M$ accepts $w$.
+  - For any $w notin cal(L)(M)$, $M$ does not accept $w$, that is, $M$ either _rejects_ $w$ or _loops forever_ on $w$.
 ]
 
 #definition[
