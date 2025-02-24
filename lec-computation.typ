@@ -168,14 +168,50 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
 
     blob((0, 0), [Input], tint: blue, name: <input>),
     blob((1, 0), [Turing \ machine], tint: purple, name: <tm>),
-    blob((2, -.5), [Accept], tint: green, name: <accept>),
-    blob((2, 0), [Reject], tint: red, name: <reject>),
-    blob((2, .5), [Loop], tint: yellow, name: <loop>),
+    blob((2, -0.5), [Accept], tint: green, name: <accept>),
+    blob((2, 0), [Loop], tint: yellow, name: <loop>),
+    blob((2, 0.5), [Reject], tint: red, name: <reject>),
 
     edge(<input>, <tm>, "-|>"),
     edge(<tm>, <accept>, "-|>"),
-    edge(<tm>, <reject>, "-|>"),
     edge(<tm>, <loop>, "-|>"),
+    edge(<tm>, <reject>, "-|>"),
+
+    render: (grid, nodes, edges, options) => {
+      // cetz is also exported as fletcher.cetz
+      cetz.canvas({
+        // this is the default code to render the diagram
+        fletcher.draw-diagram(grid, nodes, edges, debug: options.debug)
+
+        let n-accept = fletcher.find-node(nodes, <accept>)
+        let n-loop = fletcher.find-node(nodes, <loop>)
+        let n-reject = fletcher.find-node(nodes, <reject>)
+
+        fletcher.get-node-anchor(
+          n-accept,
+          0deg,
+          pa => {
+            fletcher.get-node-anchor(
+              n-loop,
+              0deg,
+              pl => {
+                fletcher.get-node-anchor(
+                  n-reject,
+                  0deg,
+                  pr => {
+                    cetz.decorations.brace((rel: (1pt, 5pt), to: pa), (rel: (1pt, 5pt), to: pl), name: "b1")
+                    cetz.decorations.brace((rel: (1pt, -5pt), to: pl), (rel: (1pt, -5pt), to: pr), name: "b2")
+                  },
+                )
+              },
+            )
+          },
+        )
+
+        cetz.draw.content("b1.content", anchor: "west")[Does not reject]
+        cetz.draw.content("b2.content", anchor: "west")[Does not accept]
+      })
+    },
   )
 ]
 
@@ -699,6 +735,18 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
   This demonstrates that there is an effective procedure that, given any WFF $alpha$, will output "yes" iff $alpha$ is a tautological consequence of $Sigma$.
   Thus, the set of tautological consequences of $Sigma$ is effectively enumerable.
 ]
+
+= Universal Machines
+
+== High-Level Description
+
+#definition[
+  A high-level description of a Turing machine consists of:
+]
+
+== Universal Turing Machine
+
+TODO
 
 == TODO
 
