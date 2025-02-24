@@ -355,81 +355,66 @@ The process of _computation_ by a TM is a _sequence_ of configurations.
   - Move left: $(u a ; q_i ; b v) yields (u ; q_j ; a c v)$ if $delta(q_i, b) = (q_j, c, "L")$ (overwrite $b$ with $c$, move left)
   - Move right: $(u ; q_i ; b a v) yields (u c ; q_j ; a v)$ if $delta(q_i, b) = (q_j, c, "R")$ (overwrite $b$ with $c$, move left)
 
-  #stack(dir: ltr)[
-    #cetz.canvas({
-      import cetz.draw: *
-      scale(50%)
-      rect((0, 0), (rel: (2, 1)), name: "u")
-      content("u.center")[$u$]
-      rect((2, 0), (rel: (1, 1)), name: "a")
-      content("a.center")[$a$]
-      rect((3, 0), (rel: (1, 1)), name: "b")
-      content("b.center")[$b$]
-      rect((4, 0), (rel: (2, 1)), name: "v")
-      content("v.center")[$v$]
-      line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
-      line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
-      tm-head((rel: (0.5, 0), to: "b.south-west"))[$q_i$]
-    })
-  ][
-    #h(.5em)
-    $yields$
-    #h(.5em)
-  ][
-    #cetz.canvas({
-      import cetz.draw: *
-      scale(50%)
-      rect((0, 0), (rel: (2, 1)), name: "u")
-      content("u.center")[$u$]
-      rect((2, 0), (rel: (1, 1)), name: "a")
-      content("a.center")[$a$]
-      rect((3, 0), (rel: (1, 1)), name: "c")
-      content("c.center")[$c$]
-      rect((4, 0), (rel: (2, 1)), name: "v")
-      content("v.center")[$v$]
-      line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
-      line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
-      tm-head((rel: (0.5, 0), to: "a.south-west"))[$q_j$]
-    })
-  ][
-    #h(3em)
-  ][
-    #cetz.canvas({
-      import cetz.draw: *
-      scale(50%)
-      rect((0, 0), (rel: (2, 1)), name: "u")
-      content("u.center")[$u$]
-      rect((2, 0), (rel: (1, 1)), name: "b")
-      content("b.center")[$b$]
-      rect((3, 0), (rel: (1, 1)), name: "a")
-      content("a.center")[$a$]
-      rect((4, 0), (rel: (2, 1)), name: "v")
-      content("v.center")[$v$]
-      line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
-      line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
-      tm-head((rel: (0.5, 0), to: "b.south-west"))[$q_i$]
-    })
-  ][
-    #h(.5em)
-    $yields$
-    #h(.5em)
-  ][
-    #cetz.canvas({
-      import cetz.draw: *
-      scale(50%)
-      rect((0, 0), (rel: (2, 1)), name: "u")
-      content("u.center")[$u$]
-      rect((2, 0), (rel: (1, 1)), name: "c")
-      content("c.center")[$c$]
-      rect((3, 0), (rel: (1, 1)), name: "a")
-      content("a.center")[$a$]
-      rect((4, 0), (rel: (2, 1)), name: "v")
-      content("v.center")[$v$]
-      line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
-      line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
-      tm-head((rel: (0.5, 0), to: "a.south-west"))[$q_j$]
-    })
-  ]
+  #cetz.canvas({
+    import cetz.draw: *
+    scale(50%)
+
+    rect((0, 0), (rel: (2, 1)), name: "u")
+    content("u.center")[$u$]
+    rect((2, 0), (rel: (1, 1)), name: "a")
+    content("a.center")[$a$]
+    rect((3, 0), (rel: (1, 1)), name: "b")
+    content("b.center")[$b$]
+    rect((4, 0), (rel: (2, 1)), name: "v")
+    content("v.center")[$v$]
+    line((-0.3, 0), (6.3, 0))
+    line((-0.3, 1), (6.3, 1))
+    tm-head((rel: (0.5, 0), to: "b.south-west"))[$q_i$]
+
+    translate(x: 8)
+    content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, "L"))$]
+
+    rect((0, 0), (rel: (2, 1)), name: "u")
+    content("u.center")[$u$]
+    rect((2, 0), (rel: (1, 1)), name: "a")
+    content("a.center")[$a$]
+    rect((3, 0), (rel: (1, 1)), name: "c")
+    content("c.center")[$c$]
+    rect((4, 0), (rel: (2, 1)), name: "v")
+    content("v.center")[$v$]
+    line((-0.3, 0), (6.3, 0))
+    line((-0.3, 1), (6.3, 1))
+    tm-head((rel: (0.5, 0), to: "a.south-west"))[$q_j$]
+
+    translate(x: 9)
+
+    rect((0, 0), (rel: (2, 1)), name: "u")
+    content("u.center")[$u$]
+    rect((2, 0), (rel: (1, 1)), name: "b")
+    content("b.center")[$b$]
+    rect((3, 0), (rel: (1, 1)), name: "a")
+    content("a.center")[$a$]
+    rect((4, 0), (rel: (2, 1)), name: "v")
+    content("v.center")[$v$]
+    line((-0.3, 0), (6.3, 0))
+    line((-0.3, 1), (6.3, 1))
+    tm-head((rel: (0.5, 0), to: "b.south-west"))[$q_i$]
+
+    translate(x: 8)
+    content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, "R"))$]
+
+    rect((0, 0), (rel: (2, 1)), name: "u")
+    content("u.center")[$u$]
+    rect((2, 0), (rel: (1, 1)), name: "c")
+    content("c.center")[$c$]
+    rect((3, 0), (rel: (1, 1)), name: "a")
+    content("a.center")[$a$]
+    rect((4, 0), (rel: (2, 1)), name: "v")
+    content("v.center")[$v$]
+    line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
+    line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
+    tm-head((rel: (0.5, 0), to: "a.south-west"))[$q_j$]
+  })
 
   Special case for the left end:
   - $(epsilon ; q_i ; b v) yields (epsilon ; q_j ; c v)$ if $delta(q_i, b) = (q_j, c, "L")$ (overwrite $b$ with $c$, do not move).
