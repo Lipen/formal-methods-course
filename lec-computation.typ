@@ -9,6 +9,7 @@
 )
 
 #let yields = $scripts(arrow.double)$
+#let tapestart = box(baseline: 1pt)[$triangle.small.r$]
 
 = Languages
 
@@ -288,7 +289,7 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
   Turing Machine (TM) is a 7-tuple $(Q, Sigma, Gamma, delta, q_0, q_"acc", q_"rej")$ where:
   - $Gamma$ is a _tape alphabet_ (including blank symbol $square in Gamma$),
   - $Sigma subset.eq Gamma$ is a _input alphabet_,
-  - $delta: Q times Gamma to Q times Gamma times {"L", "R"}$ is a transition function,
+  - $delta: Q times Gamma to Q times Gamma times {L, R}$ is a transition function,
   - $q_"acc"$ and $q_"rej"$ are the _accept_ and _reject_ states.
 
   TM recognizes _recursively enumerable_ languages (Type 0).
@@ -307,7 +308,7 @@ At every moment of computation, a TM is in a _configuration_ determined by:
 + The current state.
 + The head position.
 
-The _next_ step is _completely_ determined by the current configuration.
+The _next_ step is completely determined by the current configuration.
 
 #let tm-head(pos, state, name: none, ..style) = {
   import cetz.draw: *
@@ -326,38 +327,46 @@ The _next_ step is _completely_ determined by the current configuration.
 }
 
 #definition[
-  A _configuration_ of a TM is a _string_ of the form $u; q; v$ where $u,v in Gamma^*$, $q in Q$, meaning:
+  A _configuration_ of a TM is a _string_ of the form $u ; q ; v$ where $u,v in Gamma^*$, $q in Q$, meaning:
   - Tape contents: $u v$ followed by the blanks.
-  - Current state: $q in Q$.
-  - Head position: at the beginning of $v$.
+  - Current state is $q$.
+  - Head position: at the first symbol of $v$.
 
   #cetz.canvas({
     import cetz.draw: *
     scale(50%)
+    content((-0.5, 0.5))[$tapestart$]
     rect((0, 0), (rel: (2, 1)), name: "u")
     content("u.center")[$u$]
-    rect((2, 0), (rel: (1, 1)), name: "a")
-    content("a.center")[$a$]
-    rect((3, 0), (rel: (2, 1)), name: "v")
+    rect((2, 0), (rel: (2, 1)), name: "v")
     content("v.center")[$v$]
-    line((rel: (-0.3, 0), to: "u.north-west"), (rel: (5.6, 0)))
-    line((rel: (-0.3, 0), to: "u.south-west"), (rel: (5.6, 0)))
-    tm-head((rel: (0.5, 0), to: "a.south-west"))[$q$]
+    tm-head((rel: (0.5, -1pt), to: "v.south-west"))[$q$]
+    line((0, 0), (4.5, 0))
+    line((0, 1), (4.5, 1))
   })
 ]
 
-== TM Execution
+== TM Computation
 
-The process of _computation_ by a TM is a _sequence_ of configurations.
-- Configuration $C_1$ _yields_ configuration $C_2$, if TM can move from $C_1$ to $C_2$ in _one_ step.
-- Notation for "yields (in 1 step)": $C_1 yields C_2$ or $C_1 yields^1 C_2$.
-- "Yields in $k$ steps": $C_1 yields^k C_2$, if there are configurations $C_1, dots, C_k$ such that $C_1 yields C_2 yields dots yields C_k$.
-- "Yields in _some_ number of steps": $C_1 yields^* C_2$.
+#definition[Computation][
+  The process of _computation_ by a TM on input $w in Sigma^*$ is a _sequence_ of configurations $C_1, C_2, dots, C_n$.
+  - $C_1 = (tapestart; q_0; w)$ is the _start_ configuration with input $w in Sigma^*$.
+  - $C_i yields C_(i+1)$ for each $i$.
+  - $C_n$ is a _final_ configuration.
+]
+
+Configuration $C_1$ _yields_ $C_2$, denoted $C_1 yields C_2$, if TM can move from $C_1$ to $C_2$ in _one_ step.
+- See the formal definition on the next slide.
+
+The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
+- $C_1 yields^* C_2$ denotes "yields in _some_ number of steps".
+
+== TM Yields Relation
 
 #definition[Yields][
   Let $u,v in Gamma^*$, $a,b,c in Gamma$, $q_i, q_j in Q$.
-  - Move left: $(u a ; q_i ; b v) yields (u ; q_j ; a c v)$ if $delta(q_i, b) = (q_j, c, "L")$ (overwrite $b$ with $c$, move left)
-  - Move right: $(u ; q_i ; b a v) yields (u c ; q_j ; a v)$ if $delta(q_i, b) = (q_j, c, "R")$ (overwrite $b$ with $c$, move left)
+  - Move left: $(u a ; q_i ; b v) yields (u ; q_j ; a c v)$ if $delta(q_i, b) = (q_j, c, L)$ (overwrite $b$ with $c$, move left)
+  - Move right: $(u ; q_i ; b a v) yields (u c ; q_j ; a v)$ if $delta(q_i, b) = (q_j, c, R)$ (overwrite $b$ with $c$, move left)
 
   #cetz.canvas({
     import cetz.draw: *
@@ -373,10 +382,10 @@ The process of _computation_ by a TM is a _sequence_ of configurations.
     content("v.center")[$v$]
     line((-0.3, 0), (6.3, 0))
     line((-0.3, 1), (6.3, 1))
-    tm-head((rel: (0.5, 0), to: "b.south-west"))[$q_i$]
+    tm-head((rel: (0.5, -1pt), to: "b.south-west"))[$q_i$]
 
     translate(x: 8)
-    content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, "L"))$]
+    content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, L))$]
 
     rect((0, 0), (rel: (2, 1)), name: "u")
     content("u.center")[$u$]
@@ -388,7 +397,7 @@ The process of _computation_ by a TM is a _sequence_ of configurations.
     content("v.center")[$v$]
     line((-0.3, 0), (6.3, 0))
     line((-0.3, 1), (6.3, 1))
-    tm-head((rel: (0.5, 0), to: "a.south-west"))[$q_j$]
+    tm-head((rel: (0.5, -1pt), to: "a.south-west"))[$q_j$]
 
     translate(x: 9)
 
@@ -402,10 +411,10 @@ The process of _computation_ by a TM is a _sequence_ of configurations.
     content("v.center")[$v$]
     line((-0.3, 0), (6.3, 0))
     line((-0.3, 1), (6.3, 1))
-    tm-head((rel: (0.5, 0), to: "b.south-west"))[$q_i$]
+    tm-head((rel: (0.5, -1pt), to: "b.south-west"))[$q_i$]
 
     translate(x: 8)
-    content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, "R"))$]
+    content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, R))$]
 
     rect((0, 0), (rel: (2, 1)), name: "u")
     content("u.center")[$u$]
@@ -415,20 +424,13 @@ The process of _computation_ by a TM is a _sequence_ of configurations.
     content("a.center")[$a$]
     rect((4, 0), (rel: (2, 1)), name: "v")
     content("v.center")[$v$]
-    line((rel: (-0.3, 0), to: "u.north-west"), (rel: (6.6, 0)))
-    line((rel: (-0.3, 0), to: "u.south-west"), (rel: (6.6, 0)))
-    tm-head((rel: (0.5, 0), to: "a.south-west"))[$q_j$]
+    line((-0.3, 0), (6.3, 0))
+    line((-0.3, 1), (6.3, 1))
+    tm-head((rel: (0.5, -1pt), to: "a.south-west"))[$q_j$]
   })
 
   Special case for the left end:
-  - $(epsilon ; q_i ; b v) yields (epsilon ; q_j ; c v)$ if $delta(q_i, b) = (q_j, c, "L")$ (overwrite $b$ with $c$, do not move).
-]
-
-#definition[Computation][
-  A process of _computation_ by a TM on input $w in Sigma^*$ is a _sequence_ of configurations $C_1, C_2, dots, C_n$ such that:
-  - $C_1 = (epsilon; q_0; w)$ is the _start_ configuration with input $w in Sigma^*$.
-  - $C_i yields C_{i+1}$ for $i = 1, 2, dots, n-1$.
-  - $C_n$ is a _final_ configuration.
+  - $(tapestart ; q_i ; b v) yields (tapestart ; q_j ; c v)$ if $delta(q_i, b) = (q_j, c, L)$ (overwrite $b$ with $c$, do not move).
 ]
 
 = Computability
