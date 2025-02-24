@@ -266,11 +266,15 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
   #import fletcher: diagram, node, edge
   #diagram(
     node-corner-radius: 2pt,
+    edge-stroke: 1pt,
+    mark-scale: 70%,
+
     blob((0, 0), [Input], tint: blue, name: <input>),
     blob((1, 0), [Turing \ machine], tint: purple, name: <tm>),
     blob((2, -.5), [Accept], tint: green, name: <accept>),
     blob((2, 0), [Reject], tint: red, name: <reject>),
     blob((2, .5), [Loop], tint: yellow, name: <loop>),
+
     edge(<input>, <tm>, "-|>"),
     edge(<tm>, <accept>, "-|>"),
     edge(<tm>, <reject>, "-|>"),
