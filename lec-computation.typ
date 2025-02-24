@@ -189,12 +189,14 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
   - $q_"acc"$ and $q_"rej"$ are the _accept_ and _reject_ states.
 
   TM recognizes _recursively enumerable_ languages (Type 0).
-
-  Decidable languages are those where TM always halts.
 ]
 
-#definition[TM language][
-  The language _recognized_ by a TM $M$ is the set of strings $w in Sigma^*$ for which $M$ halts in the _accept_ state.
+#definition[
+  The language _recognized_ by a TM $M$, denoted $cal(L)(M)$, is the set of strings $w in Sigma^*$ for which $M$ halts in the _accept_ state.
+
+  #note[
+    For the words _not_ in the language, the TM can either _halt_ in the _reject_ state or _loop forever_.
+  ]
 ]
 
 == TM Configuration
@@ -223,10 +225,10 @@ The _next_ step is completely determined by the current configuration.
 }
 
 #definition[
-  A _configuration_ of a TM is a _string_ of the form $u ; q ; v$ where $u,v in Gamma^*$, $q in Q$, meaning:
+  A _configuration_ of a TM is a tuple $(u ; q ; a v)$ where $u,v in Gamma^*$, $a in Gamma$, $q in Q$, meaning:
   - Tape contents: $u v$ followed by the blanks.
   - Current state is $q$.
-  - Head position: at the first symbol of $v$.
+  - Head position: at symbol $a$, between $u$ and $v$.
 
   #cetz.canvas({
     import cetz.draw: *
@@ -234,11 +236,13 @@ The _next_ step is completely determined by the current configuration.
     content((-0.5, 0.5))[$tapestart$]
     rect((0, 0), (rel: (2, 1)), name: "u")
     content("u.center")[$u$]
-    rect((2, 0), (rel: (2, 1)), name: "v")
+    rect((2, 0), (rel: (1, 1)), name: "a")
+    content("a.center")[$a$]
+    rect((3, 0), (rel: (2, 1)), name: "v")
     content("v.center")[$v$]
-    tm-head((rel: (0.5, -1pt), to: "v.south-west"))[$q$]
-    line((0, 0), (4.5, 0))
-    line((0, 1), (4.5, 1))
+    tm-head((rel: (0, -1pt), to: "a.south"))[$q$]
+    line((0, 0), (5.5, 0))
+    line((0, 1), (5.5, 1))
   })
 ]
 
@@ -278,7 +282,7 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
     content("v.center")[$v$]
     line((-0.3, 0), (6.3, 0))
     line((-0.3, 1), (6.3, 1))
-    tm-head((rel: (0.5, -1pt), to: "b.south-west"))[$q_i$]
+    tm-head((rel: (0, -1pt), to: "b.south"))[$q_i$]
 
     translate(x: 8)
     content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, L))$]
@@ -293,7 +297,7 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
     content("v.center")[$v$]
     line((-0.3, 0), (6.3, 0))
     line((-0.3, 1), (6.3, 1))
-    tm-head((rel: (0.5, -1pt), to: "a.south-west"))[$q_j$]
+    tm-head((rel: (0, -1pt), to: "a.south"))[$q_j$]
 
     translate(x: 9)
 
@@ -307,7 +311,7 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
     content("v.center")[$v$]
     line((-0.3, 0), (6.3, 0))
     line((-0.3, 1), (6.3, 1))
-    tm-head((rel: (0.5, -1pt), to: "b.south-west"))[$q_i$]
+    tm-head((rel: (0, -1pt), to: "b.south"))[$q_i$]
 
     translate(x: 8)
     content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, R))$]
@@ -322,7 +326,7 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
     content("v.center")[$v$]
     line((-0.3, 0), (6.3, 0))
     line((-0.3, 1), (6.3, 1))
-    tm-head((rel: (0.5, -1pt), to: "a.south-west"))[$q_j$]
+    tm-head((rel: (0, -1pt), to: "a.south"))[$q_j$]
   })
 
   Special case for the left end:
