@@ -106,110 +106,6 @@ _Examples_:
   })
 ]
 
-= Complexity Zoo
-
-== P and NP
-
-#definition[
-  Class $P$ consists of problems that can be _solved_ in _polynomial time_.
-
-  Equivalently, $L in P$ iff $L$ is _decidable_ in polynomial time by a _deterministic_ TM.
-]
-#examples[
-  Shortest path, primality testing (AKS algorithm), linear programming.
-]
-
-#definition[
-  Class NP consists of problems where a _certificate_ of a solution ("yes" answer) can be _verified_ in polynomial time.
-
-  Equivalently, $L in "NP"$ iff $L$ is _decidable_ in polynomial time by a _non-deterministic_ TM.
-
-  Equivalently, $L in "NP"$ iff $L$ is _recognizable_ in polynomial time by a _deterministic_ TM.
-]
-#examples[
-  SAT, graph coloring, graph isomorphism, subset sum, knapsack, vertex cover, clique.
-]
-
-== NP-Hard and NP-Complete
-
-#definition[
-  A problem $H$ is _NP-hard_ if every problem $L in "NP"$ is polynomial-time _reducible_ to $H$.
-]
-#examples[
-  Halting problem (undecidable), Traveling Salesman Problem (TSP).
-]
-
-#definition[
-  A problem $H$ is _NP-complete_ if:
-  1. $H in "NP"$
-  2. $H$ is NP-hard
-]
-#examples[
-  SAT, 3-SAT, Hamiltonian path...
-  Actually, almost all NP problems are NP-complete!
-]
-
-#theorem[Cook--Levin][
-  SAT is NP-complete.
-]
-
-== co-NP
-
-#definition[
-  Class co-NP contains problems where _"no"_ instances can be _verified_ in _polynomial time_.
-
-  Equivalently, $L in "co-NP"$ iff the complement of $L$ is in NP:
-  $ "co-NP" = { L | overline(L) in "NP" } $
-]
-
-_Open question_: $"NP" =^? "co-NP"$? Implies $P neq "NP"$ if false.
-
-#examples[
-  - *VALID*: Check if a Boolean formula is always true (tautology).
-  - *UNSAT*: Check if a formula has no satisfying assignment.
-]
-
-== Computational Hierarchy
-
-#place(top + right)[
-  #cetz.canvas({
-    import cetz.draw: *
-    circle((0, 0), radius: (0.5, 0.5))
-    circle((0.5, 0), radius: (1, 0.7))
-    circle((1, 0), radius: (1.5, 0.9))
-    circle((1.5, 0), radius: (2, 1.1))
-    circle((2, 0), radius: (2.5, 1.3))
-    content((0, 0))[P]
-    content((1, 0))[NP]
-    content((2, 0))[EXP]
-    content((3, 0))[R]
-    content((4, 0))[RE]
-  })
-]
-
-$"P" subset.eq "NP" subset.eq "EXP" subset "R" subset "RE"$
-
-- *RE* \
-  Languages _accepted_ (_recognized_) by any TM.
-
-- *R* = RE $intersect$ co-RE \
-  Languages _decided_ by any TM (always halt).
-
-- *EXP* \
-  Languages _decided_ by a _deterministic_ TM in _exponential time_.
-
-- *NP* \
-  Languages _accepted_ (_recognized_) by any TM, or _decided_ by a _non-deterministic_ TM, in _polynomial time_.
-
-- *P* \
-  Languages _decided_ by a _deterministic_ TM in _polynomial time_.
-
-== Complexity Zoo
-
-TODO
-
-See also: https://complexityzoo.net/Petting_Zoo
-
 = Machines
 
 == Finite Automata
@@ -432,6 +328,110 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
   Special case for the left end:
   - $(tapestart ; q_i ; b v) yields (tapestart ; q_j ; c v)$ if $delta(q_i, b) = (q_j, c, L)$ (overwrite $b$ with $c$, do not move).
 ]
+
+= Complexity
+
+== P and NP
+
+#definition[
+  Class $P$ consists of problems that can be _solved_ in _polynomial time_.
+
+  Equivalently, $L in P$ iff $L$ is _decidable_ in polynomial time by a _deterministic_ TM.
+]
+#examples[
+  Shortest path, primality testing (AKS algorithm), linear programming.
+]
+
+#definition[
+  Class NP consists of problems where a _certificate_ of a solution ("yes" answer) can be _verified_ in polynomial time.
+
+  Equivalently, $L in "NP"$ iff $L$ is _decidable_ in polynomial time by a _non-deterministic_ TM.
+
+  Equivalently, $L in "NP"$ iff $L$ is _recognizable_ in polynomial time by a _deterministic_ TM.
+]
+#examples[
+  SAT, graph coloring, graph isomorphism, subset sum, knapsack, vertex cover, clique.
+]
+
+== NP-Hard and NP-Complete
+
+#definition[
+  A problem $H$ is _NP-hard_ if every problem $L in "NP"$ is polynomial-time _reducible_ to $H$.
+]
+#examples[
+  Halting problem (undecidable), Traveling Salesman Problem (TSP).
+]
+
+#definition[
+  A problem $H$ is _NP-complete_ if:
+  1. $H in "NP"$
+  2. $H$ is NP-hard
+]
+#examples[
+  SAT, 3-SAT, Hamiltonian path...
+  Actually, almost all NP problems are NP-complete!
+]
+
+#theorem[Cook--Levin][
+  SAT is NP-complete.
+]
+
+== co-NP
+
+#definition[
+  Class co-NP contains problems where _"no"_ instances can be _verified_ in _polynomial time_.
+
+  Equivalently, $L in "co-NP"$ iff the complement of $L$ is in NP:
+  $ "co-NP" = { L | overline(L) in "NP" } $
+]
+
+_Open question_: $"NP" =^? "co-NP"$? Implies $P neq "NP"$ if false.
+
+#examples[
+  - *VALID*: Check if a Boolean formula is always true (tautology).
+  - *UNSAT*: Check if a formula has no satisfying assignment.
+]
+
+== Computational Hierarchy
+
+#place(top + right)[
+  #cetz.canvas({
+    import cetz.draw: *
+    circle((0, 0), radius: (0.5, 0.5))
+    circle((0.5, 0), radius: (1, 0.7))
+    circle((1, 0), radius: (1.5, 0.9))
+    circle((1.5, 0), radius: (2, 1.1))
+    circle((2, 0), radius: (2.5, 1.3))
+    content((0, 0))[P]
+    content((1, 0))[NP]
+    content((2, 0))[EXP]
+    content((3, 0))[R]
+    content((4, 0))[RE]
+  })
+]
+
+$"P" subset.eq "NP" subset.eq "EXP" subset "R" subset "RE"$
+
+- *RE* \
+  Languages _accepted_ (_recognized_) by any TM.
+
+- *R* = RE $intersect$ co-RE \
+  Languages _decided_ by any TM (always halt).
+
+- *EXP* \
+  Languages _decided_ by a _deterministic_ TM in _exponential time_.
+
+- *NP* \
+  Languages _accepted_ (_recognized_) by any TM, or _decided_ by a _non-deterministic_ TM, in _polynomial time_.
+
+- *P* \
+  Languages _decided_ by a _deterministic_ TM in _polynomial time_.
+
+== Complexity Zoo
+
+TODO
+
+See also: https://complexityzoo.net/Petting_Zoo
 
 = Computability
 
