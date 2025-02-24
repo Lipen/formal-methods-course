@@ -382,7 +382,7 @@ There are _two_ types of Turing machines:
 ]
 
 #definition[
-  A TM _decides_ a language $L$, if it halts and accepts all words $w in L$, and halts and rejects any other word $s notin L$.
+  A TM _decides_ a language $L$, if it halts and accepts all words $w in L$, and halts and rejects any other word $w notin L$.
 ]
 
 #definition[
