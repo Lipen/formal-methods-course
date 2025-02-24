@@ -350,7 +350,7 @@ There are _two_ types of Turing machines:
 ]
 
 #definition[
-  A language decided by a TM is called _decidable_ or _recursive_  or _computable_.
+  A language decided by a TM is called _decidable_ or _recursive_ or _computable_.
 ]
 
 = Complexity
