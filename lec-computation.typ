@@ -603,7 +603,7 @@ _Examples:_
 == Halting Problem
 
 #definition[Halting problem #href("https://en.wikipedia.org/wiki/Halting_problem")][
-  The _halting problem_ is the problem of determining, given a program and an input, whether the program will eventually halt when run with that input.
+  Given a program and an input, determine whether the program _halts_ (stops after a finite time) on that input or _loops_ forever.
 ]
 
 #theorem[Turing][
