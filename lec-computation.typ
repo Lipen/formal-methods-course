@@ -816,26 +816,35 @@ Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but
 
 = Universal Machines
 
-== High-Level Description
-
-#definition[
-  A high-level description of a Turing machine consists of:
-]
-
 == Universal Turing Machine
 
-TODO
+A _universal Turing machine_ is a Turing machine that is capable of computing any computable sequence. @turing1937
+
+#definition[
+  A _universal Turing machine_ $U_"TM"$ is a Turing machine that can simulate any other TM.
+
+  High-level description of a universal Turing machine $U_"TM"$:
+  - Given an input $(M, w)$, where $M$ is a TM and $w in Sigma^*$:
+    - Run (simulate a computation of) $M$ on $w$.
+      - If $M$ halts and accepts $w$, $U_"TM"$ accepts $(M, w)$.
+      - If $M$ halts and rejects $w$, $U_"TM"$ rejects $(M, w)$.
+]
+
+#definition[
+  The _language of a universal Turing machine_ $U_"TM"$ is the set $A_"TM"$ of all pairs $(M, w)$ such that $M$ is a TM and $M$ accepts $w$.
+
+  $ A_"TM" = cal(L)(U_"TM") = { (M,w) | M "is a TM and" w in cal(L)(M) } $
+]
 
 == TODO
 
 #show: cheq.checklist
 
-- [x] Computability
-- [x] Decidability
-- [x] Undecidable sets
-- [x] Semi-decidability
 - [ ] Decidable language outside of NP
-- [x] Diagram of language classes
-- [ ] Complexity classes
-- [ ] NP-completeness
-- [ ] Polytime reductions
+- [ ] Universal TM
+- [ ] Encodings
+- [ ] Programs
+- [ ] Rice's theorem
+
+== Bibliography
+#bibliography("refs.yml")

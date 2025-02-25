@@ -121,3 +121,16 @@ leino2017:
     title: IEEE Software
     issue: 6
     volume: 34
+
+turing1937:
+  type: article
+  title: On Computable Numbers, with an Application to the Entscheidungsproblem
+  author: Turing, Alan Mathison
+  date: 1937
+  page-range: 230-265
+  serial-number:
+    doi: 10.1112/plms/s2-42.1.230
+  parent:
+    type: periodical
+    title: Proceedings of the London Mathematical Society
+    issue: 1
