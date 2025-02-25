@@ -640,6 +640,61 @@ Observe that ```py halts(self_halts, self_halts)``` cannot return neither ```py 
 
 Thus, the `halts` _does not exist_ (cannot be implemented), and thus the halting problem is _undecidable_.
 
+== Post Correspondence Problem
+
+#definition[Post correspondence problem #href("https://en.wikipedia.org/wiki/Post_correspondence_problem")][
+  Given two finite lists $a_1, dots, a_n$ and $b_1, dots, b_n$ of strings (over the alphabet with at least two symbols), determine whether there exists a sequence of indices $i_1, dots, i_k$, such that $a_(i_1) dots med a_(i_k) = b_(i_1) dots med b_(i_k)$.
+]
+
+#example[
+  Let $A = {a, a b, b b a}$, $B = {b a a, a a, b b}$.
+  A solution is $(3, 2, 3, 1)$:
+  $
+    a_3 a_2 a_3 a_1 = b b a dot a b dot b b a dot a = b b a a b b b a a = b b dot a a dot b b dot b a a = b_3 b_2 b_3 b_1
+  $
+]
+
+An alternative formulation of PCP is a collection of _dominoes_, each with a _top_ and a _bottom_ half, with an unlimited supply of each block, and the goal is to find a sequence of blocks such that the string formed by the _top_ halves is equal to the string formed by the _bottom_ halves.
+
+#align(center)[
+  #cetz.canvas({
+    import cetz.draw: *
+
+    let w = 1
+    let h = 0.6
+    let gap = 0.2
+
+    stroke(0.8pt)
+
+    rect((0, h), (rel: (w, h)), name: "t1")
+    content("t1.center")[$b b a$]
+    rect((0, 0), (rel: (w, h)), name: "b1")
+    content("b1.center")[$b b$]
+    content((w / 2, -0.2), anchor: "north")[#set text(size: 0.8em); $i_1 = 3$]
+
+    translate(x: w + gap)
+    rect((0, h), (rel: (w, h)), name: "t2")
+    content("t2.center")[$a b$]
+    rect((0, 0), (rel: (w, h)), name: "b2")
+    content("b2.center")[$a a$]
+    content((w / 2, -0.2), anchor: "north")[#set text(size: 0.8em); $i_2 = 2$]
+
+    translate(x: w + gap)
+    rect((0, h), (rel: (w, h)), name: "t3")
+    content("t3.center")[$b b a$]
+    rect((0, 0), (rel: (w, h)), name: "b3")
+    content("b3.center")[$b b$]
+    content((w / 2, -0.2), anchor: "north")[#set text(size: 0.8em); $i_3 = 3$]
+
+    translate(x: w + gap)
+    rect((0, h), (rel: (w, h)), name: "t4")
+    content("t4.center")[$a$]
+    rect((0, 0), (rel: (w, h)), name: "b4")
+    content("b4.center")[$b a a$]
+    content((w / 2, -0.2), anchor: "north")[#set text(size: 0.8em); $i_4 = 1$]
+  })
+]
+
 = Semi-decidability
 
 == Semi-decidability
