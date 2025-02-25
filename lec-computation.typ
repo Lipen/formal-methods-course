@@ -618,7 +618,8 @@ _Examples:_
   This leads to a contradiction, proving that $H$ cannot exist.
 ]
 
-#pagebreak()
+== Halting Problem Pseudocode
+
 #shadowed.shadowed(inset: 5pt, radius: 5pt)[
   ```py
   def halts(P, x) -> bool:
