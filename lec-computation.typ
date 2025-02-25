@@ -390,6 +390,27 @@ There are _two_ types of Turing machines:
   A language decided by a TM is called _decidable_ or _recursive_ or _computable_.
 ]
 
+== MIU. MU?
+
+#definition[MIU system][
+  The _MIU system_ is a "formal system" consisting of:
+  - an alphabet $Sigma = { #`M`, #`I`, #`U` }$,
+  - a single axiom: `MI`,
+  - a set of inference rules:
+    #table(
+      columns: 3,
+      column-gutter: 1em,
+      stroke: (x, y) => if y == 0 { (bottom: .4pt) },
+      table.header[*Rule*][*Description*][*Example*],
+      [$x#`I` entails x#`IU`$], [add `U` to the end of any string ending with `I`], [`MI` to `MIU`],
+      [$#`M`x entails #`M`x x$], [double the string after $M$], [`MIU` to `MIUIU`],
+      [$x#`III`y entails x#`U`y$], [replace any `III` with `U`], [`MUIIIU` to `MUUU`],
+      [$x#`UU`y entails x y$], [remove any $U U$], [`MUUU` to `MU`],
+    )
+
+  *Question*: Is `MU` a theorem of the MIU system?
+]
+
 = Complexity
 
 == P and NP
