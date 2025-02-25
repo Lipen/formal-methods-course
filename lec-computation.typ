@@ -374,20 +374,16 @@ There are _two_ types of Turing machines:
 + Total TM: always halts. Also called _decider_.
 + General TM: may loop forever. Also called _recognizer_.
 
-#definition[
+#definition[Recognition][
   A TM _recognizes_ a language $L$, if it halts and accepts all words $w in L$, but no others.
-]
-
-#definition[
   A language recognized by a TM is called _semi-decidable_ or _recursively enumerable_ or _recursively computable_ or _Turing-recognizable_.
+  The set of all recognizable languages is denoted by *RE*.
 ]
 
-#definition[
+#definition[Decision][
   A TM _decides_ a language $L$, if it halts and accepts all words $w in L$, and halts and rejects any other word $w notin L$.
-]
-
-#definition[
   A language decided by a TM is called _decidable_ or _recursive_ or _computable_.
+  The set of all decidable languages is denoted by *R*.
 ]
 
 == MIU. MU?
