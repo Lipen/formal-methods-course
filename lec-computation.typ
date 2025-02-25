@@ -836,6 +836,104 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
   $ A_"TM" = cal(L)(U_"TM") = { (M,w) | M "is a TM and" w in cal(L)(M) } $
 ]
 
+== Diagonalization Language
+
+#grid(
+  columns: 2,
+  column-gutter: 1em,
+  [
+    Consider all possible Turing machines, listed in some order:
+    $ M_0, M_1, dots $
+
+    Consider all strings that are valid TM descriptions:
+    $ angle.l M_0 angle.r, angle.l M_1 angle.r, dots $
+
+    Construct a Turing machine $M_Delta$ that behaves on inputs $angle.l M_0 angle.r, angle.l M_1 angle.r, dots$ by flipping the behavior of $M_0, M_1, dots$.
+
+    Construct the _diagonalization language_ $L_Delta$ of all TMs that do not accept their own description:
+    $ L_Delta = { angle.l M angle.r | M "is a TM and" angle.l M angle.r notin cal(L)(M) } $
+
+    #theorem[
+      $L_Delta$ is not decidable.
+    ]
+  ],
+  [
+    #set align(center)
+    #cetz.canvas({
+      import cetz.draw: *
+
+      scale(95%)
+      scale(y: -1)
+      stroke(0.8pt)
+
+      let n = 5
+      let w = n
+      let h = n
+
+      grid((0, 0), (rel: (w + .3, h + .3)))
+      // grid((-1, 0), (rel: (1, h + .3)))
+      // grid((0, -1), (rel: (w + .3, 1)))
+      grid((0, h + 1), (rel: (w + 0.3, 1)))
+      line((0, 0), (rel: (-0.3, -0.3)))
+
+      // for i in range(n) {
+      //   rect((i, i), (rel: (1, 1)), fill: yellow.lighten(80%))
+      // }
+
+      translate(x: 0.5, y: 0.5)
+
+      for j in range(0, h) {
+        content((-1, j))[$M_#j$]
+      }
+      for i in range(0, w) {
+        content((i, -1))[$angle.l M_#i angle.r$]
+      }
+
+      for i in range(0, w) {
+        content((i, h))[$dots$]
+      }
+      for j in range(0, h) {
+        content((w, j))[$dots$]
+      }
+      content((-1, h))[$dots.v$]
+      content((w, -1))[$dots$]
+      content((w, h))[$dots$]
+      content((w, h + 1))[$dots$]
+      content((-1, h + 1))[$M_Delta$]
+
+      let data = (
+        (true, false, false, true, false),
+        (true, true, true, true, true),
+        (true, true, false, false, false),
+        (false, true, true, true, true),
+        (false, true, false, false, false),
+      )
+
+      for (j, row) in data.enumerate() {
+        for (i, value) in row.enumerate() {
+          let res = if value { [Acc] } else { [No] }
+          if i == j {
+            let color = if value {
+              red.lighten(80%)
+            } else {
+              green.lighten(80%)
+            }
+            group({
+              translate(x: -0.5, y: -0.5)
+              stroke(none)
+              on-layer(-1, rect((i, i), (rel: (1, 1)), fill: color))
+              on-layer(-1, rect((i, h + 1), (rel: (1, 1)), fill: color))
+            })
+            let notres = if value { [No] } else { [Acc] }
+            content((i, h + 1), notres)
+          }
+          content((i, j), res)
+        }
+      }
+    })
+  ],
+)
+
 == TODO
 
 #show: cheq.checklist
