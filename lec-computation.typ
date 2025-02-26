@@ -644,7 +644,7 @@ Thus, the `halts` _does not exist_ (cannot be implemented), and thus the halting
 ]
 
 #example[
-  Let $A = {a, a b, b b a}$, $B = {b a a, a a, b b}$.
+  Let $A = [a, a b, b b a]$, $B = [b a a, a a, b b]$.
   A solution is $(3, 2, 3, 1)$:
   $
     a_3 a_2 a_3 a_1 = b b a dot a b dot b b a dot a = b b a a b b b a a = b b dot a a dot b b dot b a a = b_3 b_2 b_3 b_1
