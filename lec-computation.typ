@@ -851,7 +851,7 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
     $ L_Delta = { angle.l M angle.r | M "is a TM and" angle.l M angle.r notin cal(L)(M) } $
 
     #theorem[
-      $L_Delta$ is not decidable.
+      $L_Delta notin "RE"$.
     ]
   ],
   [
