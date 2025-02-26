@@ -942,6 +942,24 @@ $A_"TM" = cal(L)(U_"TM") = { (M,w) | M "is a TM and" w in cal(L)(M) }$
   $overline(A)_"TM" notin "RE"$
 ]
 
+== Extremely Hard Problem
+
+Regular languages are decidable.
+Thus, some Turing machines accept regular languages and some do not.
+
+#definition[
+  Let REGULAR be the language of all TMs that accept regular languages.
+
+  $ "REGULAR"_"TM" = { angle.l M angle.r | cal(L)(M) "is regular" } $
+]
+
+#theorem[
+  $"REGULAR"_"TM" notin "RE"$.
+]
+#proof[
+  $L_Delta scripts(lt.eq)_M "REGULAR"_"TM"$.
+]
+
 == TODO
 
 #show: cheq.checklist
