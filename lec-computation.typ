@@ -948,16 +948,25 @@ Regular languages are decidable.
 Some Turing machines accept regular languages and some do not.
 
 #definition[
-  Let REGULAR be the language of all TMs that accept regular languages.
+  Let *REGULAR* be the language of all TMs that accept regular languages.
 
   $ "REGULAR"_"TM" = { angle.l M angle.r | cal(L)(M) "is regular" } $
 ]
+
+_No computer program can determine whether a given Turing machine accepts a regular language._
 
 #theorem[
   $"REGULAR"_"TM" notin "RE"$.
 ]
 #proof[
   $L_Delta scripts(lt.eq)_M "REGULAR"_"TM"$.
+]
+
+#theorem[
+  $"REGULAR"_"TM" notin "co-RE"$
+]
+#proof[
+  $overline(L)_Delta scripts(lt.eq)_M "REGULAR"_"TM"$.
 ]
 
 == TODO
