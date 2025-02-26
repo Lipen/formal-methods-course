@@ -936,7 +936,7 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
 #show: cheq.checklist
 
 - [ ] Decidable language outside of NP
-- [ ] Universal TM
+- [/] Universal TM
 - [ ] Encodings
 - [ ] Programs
 - [ ] Rice's theorem
