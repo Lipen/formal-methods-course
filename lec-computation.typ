@@ -931,6 +931,18 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
   ],
 )
 
+== Universal Language
+
+#theorem[
+  $A_"TM"$ is not decidable.
+]
+#theorem[
+  $A_"TM" in "RE"$.
+]
+#theorem[
+  $overline(A)_"TM" notin "RE"$
+]
+
 == TODO
 
 #show: cheq.checklist
