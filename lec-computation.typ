@@ -36,19 +36,20 @@ Formal languages are classified by _Chomsky hierarchy_:
 - Type 2: Context-Free
 - Type 3: Regular
 
+#v(1cm, weak: true)
 _Examples_:
 - $L = { a^n | n geq 0 }$
 - $L = { a^n b^n | n geq 0 }$
 - $L = { a^n b^n c^n | n geq 0 }$
-// - $L = { w | }$ // TODO: RE language example
+- $L = { angle.l M, w angle.r | M "is a TM that halts on input" w }$
 
 #place(horizon + center, dx: 1em, dy: 1em)[
   #cetz.canvas({
     import cetz.draw: *
     circle((0, 0), radius: (1, .5))
     circle((0, 0.5), radius: (1.5, 1))
-    circle((0, 1), radius: (2.5, 1.5))
-    circle((0, 1.5), radius: (3.5, 2))
+    circle((0, 1), radius: (2.2, 1.5))
+    circle((0, 1.6), radius: (3.2, 2.1))
     content((0, 0))[Regular]
     content((0, 0.9))[Context-Free]
     content((0, 1.9))[Context-Sensitive]
