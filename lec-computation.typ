@@ -933,6 +933,8 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
 
 == Universal Language
 
+$A_"TM" = cal(L)(U_"TM") = { (M,w) | M "is a TM and" w in cal(L)(M) }$
+
 #theorem[
   $A_"TM"$ is not decidable.
 ]
