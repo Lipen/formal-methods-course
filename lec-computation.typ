@@ -302,7 +302,7 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
 #definition[Yields][
   Let $u,v in Gamma^*$, $a,b,c in Gamma$, $q_i, q_j in Q$.
   - Move left: $(u a ; q_i ; b v) yields (u ; q_j ; a c v)$ if $delta(q_i, b) = (q_j, c, L)$ (overwrite $b$ with $c$, move left)
-  - Move right: $(u ; q_i ; b a v) yields (u c ; q_j ; a v)$ if $delta(q_i, b) = (q_j, c, R)$ (overwrite $b$ with $c$, move left)
+  - Move right: $(u ; q_i ; b a v) yields (u c ; q_j ; a v)$ if $delta(q_i, b) = (q_j, c, R)$ (overwrite $b$ with $c$, move right)
 
   #cetz.canvas({
     import cetz.draw: *
