@@ -839,16 +839,13 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
   columns: 2,
   column-gutter: 1em,
   [
-    Consider all possible Turing machines, listed in some order:
-    $ M_0, M_1, dots $
-
-    Consider all strings that are valid TM descriptions:
+    Consider all possible Turing machines, listed in some order, and all strings that are valid TM descriptions:
     $ angle.l M_0 angle.r, angle.l M_1 angle.r, dots $
 
-    Construct a Turing machine $M_Delta$ that behaves on inputs $angle.l M_0 angle.r, angle.l M_1 angle.r, dots$ by flipping the behavior of $M_0, M_1, dots$.
-
     Construct the _diagonalization language_ $L_Delta$ of all TMs that do not accept their own description:
-    $ L_Delta = { angle.l M angle.r | M "is a TM and" angle.l M angle.r notin cal(L)(M) } $
+    $ L_Delta = cal(L)(M_Delta) = { angle.l M angle.r | M "is a TM and" angle.l M angle.r notin cal(L)(M) } $
+
+    #note[$M_Delta$ is _not_ listed in the table, since its behavior differs from each other $M_i$ at least on input $angle.l M_i angle.r$.]
 
     #theorem[
       $L_Delta notin "RE"$.
