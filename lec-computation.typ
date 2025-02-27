@@ -942,6 +942,12 @@ $A_"TM" = cal(L)(U_"TM") = { (M,w) | M "is a TM and" w in cal(L)(M) }$
   $overline(A)_"TM" notin "RE"$
 ]
 
+= Reductions
+
+== Mapping Reductions
+
+TODO
+
 == Extremely Hard Problem
 
 Regular languages are decidable.
