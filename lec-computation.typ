@@ -959,7 +959,13 @@ Some Turing machines accept regular languages and some do not.
   $ "REGULAR"_"TM" = { angle.l M angle.r | cal(L)(M) "is regular" } $
 ]
 
-_No computer program can determine whether a given Turing machine accepts a regular language._
+This language is neither recognizable nor co-recognizable. See theorems below.
+
+- _No computer program can confirm that a given Turing machine has a regular language._
+- _No computer program can confirm that a given Turing machine has a non-regular language._
+- _This problem is beyond the limits of what computers can ever do._
+
+== REGULAR is not Recognizable
 
 #theorem[
   $"REGULAR"_"TM" notin "RE"$.
@@ -967,6 +973,8 @@ _No computer program can determine whether a given Turing machine accepts a regu
 #proof[
   $L_Delta scripts(lt.eq)_M "REGULAR"_"TM"$.
 ]
+
+== REGULAR is not even co-Recognizable
 
 #theorem[
   $"REGULAR"_"TM" notin "co-RE"$
