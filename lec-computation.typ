@@ -823,8 +823,9 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
   High-level description of a universal Turing machine $U_"TM"$:
   - Given an input $(M, w)$, where $M$ is a TM and $w in Sigma^*$:
     - Run (simulate a computation of) $M$ on $w$.
-      - If $M$ halts and accepts $w$, $U_"TM"$ accepts $(M, w)$.
-      - If $M$ halts and rejects $w$, $U_"TM"$ rejects $(M, w)$.
+    - If $M$ halts and accepts $w$, $U_"TM"$ accepts $(M, w)$.
+    - If $M$ halts and rejects $w$, $U_"TM"$ rejects $(M, w)$.
+    - _Implicitly_, if $M$ loops on $w$, $U_"TM"$ loops on $(M, w)$.
 ]
 
 #definition[
