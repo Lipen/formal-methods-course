@@ -958,13 +958,27 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
 $A_"TM" = cal(L)(U_"TM") = { angle.l M, w angle.r | M "is a TM and" w in cal(L)(M) }$
 
 #theorem[
-  $A_"TM"$ is not decidable.
-]
-#theorem[
   $A_"TM" in "RE"$.
 ]
+#proof[
+  $U_"TM"$ is a TM that recognizes $A_"TM"$.
+]
+
 #theorem[
   $overline(A)_"TM" notin "RE"$
+]
+#proof[
+  $L_Delta scripts(lt.eq)_M overline(A)_"TM"$.
+  Build a recognizer (impossible) for $L_Delta$ using a (hypothetical) recognizer for $overline(A)_"TM"$.
+]
+
+#theorem[
+  $A_"TM" notin "R"$.
+]
+#proof[
+  $"R"$ is closed under complement.
+  A language $A$ is decidable iff it is both recognizable ($A in "RE"$) and co-recognizable ($overline(A) in "RE"$).
+  We know that $overline(A)_"TM" notin "RE"$, thus $A_"TM"$ cannot be decidable.
 ]
 
 = Reductions
