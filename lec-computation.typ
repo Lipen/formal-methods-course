@@ -984,7 +984,7 @@ Some Turing machines accept regular languages and some do not.
   $ "REGULAR"_"TM" = { angle.l M angle.r | cal(L)(M) "is regular" } $
 ]
 
-This language is neither recognizable nor co-recognizable.
+This language is _neither_ recognizable nor co-recognizable.
 (See theorems on the next slides.)
 
 - _No computer program can confirm that a given Turing machine has a regular language._
