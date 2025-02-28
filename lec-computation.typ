@@ -849,32 +849,6 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
     ]
 
     #note[$M_Delta$ is _not_ listed in the table, since its behavior differs from each other $M_i$ at least on input $angle.l M_i angle.r$.]
-
-    #theorem[
-      $L_Delta notin "RE"$.
-    ]
-
-    // TODO: move this proof to a separate slide
-    //
-    // Proof:
-    //
-    // Suppose $L_Delta$ is recognizable.
-    // Then there exists a recognizer $R$ such that $cal(L)(R) = L_Delta$.
-    // It is the case that either $angle.l R angle.r notin L_Delta$ or $angle.l R angle.r in L_Delta$.
-    //
-    // Case 1: $angle.l R angle.r notin L_Delta$.
-    //  Thus, $R$ does not accept $angle.l R angle.r$.
-    //  By definition of $L_Delta$, $angle.l R angle.r in L_Delta$.
-    //  Contradiction.
-    //
-    // Case 2: $angle.l R angle.r in L_Delta$.
-    //  Thus, $R$ accepts $angle.l R angle.r$.
-    //  By definition of $L_Delta$, $angle.l R angle.r notin L_Delta$.
-    //  Contradiction.
-    //
-    // In either case, we reach a contradiction.
-    // Therefore, the initial assumption that $L_Delta$ is recognizable must be false.
-    // Thus, $L_Delta$ is not recognizable.
   ],
   [
     #set align(center)
@@ -952,6 +926,34 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
     })
   ],
 )
+
+== Diagonalization Language is not Recognizable
+
+$L_Delta = { angle.l M angle.r | angle.l M angle.r notin cal(L)(M) }$
+
+#theorem[
+  $L_Delta notin "RE"$.
+]
+#proof[
+  Suppose $L_Delta$ is recognizable.
+  Then there exists a recognizer $R$ such that $cal(L)(R) = L_Delta$.
+
+  It is the case that either $angle.l R angle.r notin cal(L)(R)$ or $angle.l R angle.r in cal(L)(R)$.
+
+  + $angle.l R angle.r notin cal(L)(R)$.
+    Thus, $angle.l R angle.r in L_Delta$.
+    Since $cal(L)(R) = L_Delta$, $angle.l R angle.r notin cal(L)(R)$.
+    Contradiction.
+
+  + $angle.l R angle.r in cal(L)(R)$.
+    Thus, $angle.l R angle.r notin L_Delta$.
+    Since $cal(L)(R) = L_Delta$, $angle.l R angle.r in cal(L)(R)$.
+    Contradiction.
+
+  In either case, we reach a contradiction.
+  Therefore, the initial assumption that $L_Delta$ is recognizable must be false.
+  Thus, $L_Delta$ is not recognizable.
+]
 
 == Universal Language
 
