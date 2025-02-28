@@ -34,13 +34,22 @@
 )
 
 // Colored box around a content
-#let fancy-box(tint: green, content) = {
+#let fancy-box(
+  tint: green,
+  diagram-style: (:),
+  blob-style: (:),
+  content,
+) = {
   fletcher.diagram(
+    node-corner-radius: 2pt,
+    node-stroke: .8pt,
+    ..diagram-style,
     blob(
       (0, 0),
       content,
       shape: fletcher.shapes.rect,
       tint: tint,
+      ..blob-style,
     ),
   )
 }
