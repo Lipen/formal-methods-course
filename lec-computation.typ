@@ -852,6 +852,28 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
     #theorem[
       $L_Delta notin "RE"$.
     ]
+
+    // TODO: move this proof to a separate slide
+    //
+    // Proof:
+    //
+    // Suppose $L_Delta$ is recognizable.
+    // Then there exists a recognizer $R$ such that $cal(L)(R) = L_Delta$.
+    // It is the case that either $angle.l R angle.r notin L_Delta$ or $angle.l R angle.r in L_Delta$.
+    //
+    // Case 1: $angle.l R angle.r notin L_Delta$.
+    //  Thus, $R$ does not accept $angle.l R angle.r$.
+    //  By definition of $L_Delta$, $angle.l R angle.r in L_Delta$.
+    //  Contradiction.
+    //
+    // Case 2: $angle.l R angle.r in L_Delta$.
+    //  Thus, $R$ accepts $angle.l R angle.r$.
+    //  By definition of $L_Delta$, $angle.l R angle.r notin L_Delta$.
+    //  Contradiction.
+    //
+    // In either case, we reach a contradiction.
+    // Therefore, the initial assumption that $L_Delta$ is recognizable must be false.
+    // Thus, $L_Delta$ is not recognizable.
   ],
   [
     #set align(center)
