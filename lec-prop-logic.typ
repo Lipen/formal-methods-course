@@ -13,7 +13,7 @@
 #show table.cell.where(y: 0): strong
 
 // proof trees
-#import curryst: rule, proof-tree
+#import curryst: rule, prooftree
 
 // semantical evaluation
 #let Eval(x) = $bracket.l.double #x bracket.r.double_nu$
@@ -396,7 +396,7 @@ Recall:
   columns: (1fr, 2fr),
   align: center,
   $ underbrace(#[$A_1, dots, A_n entails A$], "sequent") $,
-  proof-tree(
+  prooftree(
     title-inset: 0.5em,
     horizontal-spacing: 2pt,
     rule(
@@ -417,7 +417,7 @@ Recall:
   grid(
     columns: args.pos().len(),
     column-gutter: 1em,
-    ..args.pos().map(arg => fancy-box(tint: green, proof-tree(arg)))
+    ..args.pos().map(arg => fancy-box(tint: green, prooftree(arg)))
   )
   v(-0.5em)
 }
@@ -507,7 +507,7 @@ Recall:
     stroke: none,
     column-gutter: 1em,
     table.header[Proof tree:][Linear proof (Fitch notation):],
-    proof-tree(
+    prooftree(
       title-inset: 0.5em,
       rule(
         name: [$and$i],
