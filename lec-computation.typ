@@ -821,17 +821,17 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
   A _universal Turing machine_ $U_"TM"$ is a Turing machine that can simulate any other TM.
 
   High-level description of a universal Turing machine $U_"TM"$:
-  - Given an input $(M, w)$, where $M$ is a TM and $w in Sigma^*$:
+  - Given an input $angle.l M, w angle.r$, where $M$ is a TM and $w in Sigma^*$:
     - Run (simulate a computation of) $M$ on $w$.
-    - If $M$ halts and accepts $w$, $U_"TM"$ accepts $(M, w)$.
-    - If $M$ halts and rejects $w$, $U_"TM"$ rejects $(M, w)$.
-    - _Implicitly_, if $M$ loops on $w$, $U_"TM"$ loops on $(M, w)$.
+    - If $M$ halts and accepts $w$, $U_"TM"$ accepts $angle.l M, w angle.r$.
+    - If $M$ halts and rejects $w$, $U_"TM"$ rejects $angle.l M, w angle.r$.
+    - _Implicitly_, if $M$ loops on $w$, $U_"TM"$ loops on $angle.l M, w angle.r$.
 ]
 
 #definition[
   The _language of a universal Turing machine_ $U_"TM"$ is the set $A_"TM"$ of all pairs $(M, w)$ such that $M$ is a TM and $M$ accepts $w$.
 
-  $ A_"TM" = cal(L)(U_"TM") = { (M,w) | M "is a TM and" w in cal(L)(M) } $
+  $ A_"TM" = cal(L)(U_"TM") = { angle.l M, w angle.r | M "is a TM and" w in cal(L)(M) } $
 ]
 
 == Diagonalization Language
@@ -955,7 +955,7 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
 
 == Universal Language
 
-$A_"TM" = cal(L)(U_"TM") = { (M,w) | M "is a TM and" w in cal(L)(M) }$
+$A_"TM" = cal(L)(U_"TM") = { angle.l M, w angle.r | M "is a TM and" w in cal(L)(M) }$
 
 #theorem[
   $A_"TM"$ is not decidable.
