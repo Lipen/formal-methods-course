@@ -398,7 +398,7 @@ Recall:
   $ underbrace(#[$A_1, dots, A_n entails A$], "sequent") $,
   prooftree(
     title-inset: 0.5em,
-    horizontal-spacing: 2pt,
+    vertical-spacing: 2pt,
     rule(
       name: "rule name",
       [$Gamma$ $entails$ (_conclusion_)],
