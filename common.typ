@@ -28,7 +28,7 @@
   pos,
   align(center, label),
   fill: tint.lighten(80%),
-  stroke: 1pt + tint.darken(20%),
+  stroke: tint.darken(20%),
   shape: shape,
   ..args,
 )
