@@ -481,11 +481,12 @@ A variable $x$ may occur _free_ or _bound_ in a $Sigma$-formula.
   The set $FreeVars$ of _free variables_ of a $Sigma$-formula $alpha$ is defined as follows:
   $
     FreeVars(alpha) := cases(
-    {x | x "is a var in" alpha} & "if" alpha "is atomic",
-    FreeVars(beta) & "if" alpha equiv not beta,
-    FreeVars(beta) union FreeVars(gamma) & "if" alpha equiv (alpha join beta) "with" join in {and, or, imply, iff},
-    FreeVars(beta) setminus {v} & "if" alpha equiv Q v : sigma. thin beta "with" Q in {forall, exists},
-  )
+      gap: #0.5em,
+      {x | x "is a var in" alpha} & "if" alpha "is atomic",
+      FreeVars(beta) & "if" alpha equiv not beta,
+      FreeVars(beta) union FreeVars(gamma) & "if" alpha equiv (alpha join beta) "with" join in {and, or, imply, iff},
+      FreeVars(beta) setminus {v} & "if" alpha equiv Q v : sigma. thin beta "with" Q in {forall, exists},
+    )
   $
 ]
 
