@@ -312,15 +312,17 @@ _Examples_:
       - $sexp(x_2, +, 0)$ #NO
       - $sexp(S, 0, 0)$ #NO
       - $sexp(S, sexp(<, 0, 0))$ #YES
-    ], [
+    ],
+    [
       - $sexp(+, x_2, bot)$ #YES
       - $sexp(S, bot)$ #YES
       - $sexp(eqq, 0, bot)$ #YES
-    ], [
+    ],
+    [
       - $sexp("select", a)$ #NO
       - $sexp("select", a, i)$ #YES
       - $sexp("select", sexp("store", a, i, x), j)$ #YES
-    ]
+    ],
   )
 ]
 
