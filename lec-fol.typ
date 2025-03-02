@@ -461,10 +461,10 @@ We _extend_ the sort system for terms with rules for the _logical connectives_ a
   #curryst.prooftree(
     curryst.rule(
       label: smallcaps[Quant],
-      $Gamma entails (op("Q") x : sigma. thin alpha) : BoolSort$,
+      $Gamma entails (op(Q) x : sigma. thin alpha) : BoolSort$,
       $Gamma[x : sigma] entails alpha : BoolSort$,
       $sigma in Sigma^S$,
-      $op("Q") in {forall, exists}$,
+      $op(Q) in {forall, exists}$,
     ),
   )
 ]
@@ -488,7 +488,7 @@ A variable $x$ may occur _free_ or _bound_ in a $Sigma$-formula.
       {x | x "is a var in" alpha} & "if" alpha "is atomic",
       FreeVars(beta) & "if" alpha equiv not beta,
       FreeVars(beta) union FreeVars(gamma) & "if" alpha equiv (alpha ast beta) "with" ast in {and, or, imply, iff},
-      FreeVars(beta) setminus {v} & "if" alpha equiv Q v : sigma. thin beta "with" Q in {forall, exists},
+      FreeVars(beta) setminus {v} & "if" alpha equiv op(Q) v : sigma. thin beta "with" op(Q) in {forall, exists},
     )
   $
 ]
@@ -722,7 +722,7 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   By induction on $alpha$.
   - If $alpha$ is an atomic formula, the result follows from the previous lemma, since $alpha$ is a term and all of its variables are free in it.
   - If $alpha$ is $not beta$ or $alpha_1 ast alpha_2$ with $ast in {and, or, imply, iff}$, the result follows from the induction hypothesis.
-  - If $alpha$ is $op("Q") x : sigma. thin beta$ with $op("Q") in {forall, exists}$, then $FreeVars(beta) = FreeVars(alpha) union {x}$.
+  - If $alpha$ is $op(Q) x : sigma. thin beta$ with $op(Q) in {forall, exists}$, then $FreeVars(beta) = FreeVars(alpha) union {x}$.
     For any $c$ in $sigma^cal(I)$, $cal(I)[x maps c]$ and $cal(J)[x maps c]$ agree on $x$ by construction and on $FreeVars(alpha)$ by assumption.
     The result follows from the induction hypothesis and the semantics of $forall$ and $exists$.
 ]
