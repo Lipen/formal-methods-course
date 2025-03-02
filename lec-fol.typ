@@ -237,7 +237,7 @@ A first-order language is defined w.r.t. a signature $Sigma = angle.l Sigma^S, S
 _Examples_:
 - $forall x_1 (sexp(<, 0, x_1) imply not forall x_2 sexp(<, x_1, x_2))$
 - $x_1 < forall x_2 ))$
-- $x_1 < x_2 imply forall (x:"Nat") x > 0$
+- $x_1 < x_2 imply forall x : NatSort. thin x > 0$
 
 #note[
   Most expressions are *not* _well-formed_.
