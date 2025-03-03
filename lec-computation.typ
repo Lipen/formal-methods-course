@@ -458,13 +458,13 @@ There are _two_ types of Turing machines:
 == co-NP
 
 #definition[
-  Class co-NP contains problems where _"no"_ instances can be _verified_ in _polynomial time_.
+  Complexity class $"co-NP"$ contains problems where _"no"_ instances can be _verified_ in _polynomial time_.
 
-  Equivalently, $L in "co-NP"$ iff the complement of $L$ is in NP:
+  Equivalently, $L in "co-NP"$ iff the complement of $L$ is in $"NP"$:
   $ "co-NP" = { L | overline(L) in "NP" } $
 ]
 
-_Open question_: $"NP" =^? "co-NP"$? Implies $P neq "NP"$ if false.
+_Open question_: $"NP" eq.quest "co-NP"$? Implies $"P" neq "NP"$ if false.
 
 #examples[
   - *VALID*: Check if a Boolean formula is always true (tautology).
@@ -478,18 +478,20 @@ _Open question_: $"NP" =^? "co-NP"$? Implies $P neq "NP"$ if false.
     import cetz.draw: *
     circle((0, 0), radius: (0.5, 0.5))
     circle((0.5, 0), radius: (1, 0.7))
-    circle((1, 0), radius: (1.5, 0.9))
     circle((1.5, 0), radius: (2, 1.1))
     circle((2, 0), radius: (2.5, 1.3))
+    circle((2.5, 0), radius: (3, 1.5))
+    circle((3, 0), radius: (3.5, 1.7))
     content((0, 0))[P]
     content((1, 0))[NP]
-    content((2, 0))[EXP]
-    content((3, 0))[R]
-    content((4, 0))[RE]
+    content((2.5, 0))[PSPACE]
+    content((4, 0))[EXP]
+    content((5, 0))[R]
+    content((6, 0))[RE]
   })
 ]
 
-$"P" subset.eq "NP" subset.eq "EXP" subset "R" subset "RE"$
+$"P" subset.eq "NP" subset.eq "PSPACE" subset.eq "EXP" subset "R" subset "RE"$
 
 - *RE* \
   Languages _accepted_ (_recognized_) by any TM.
@@ -499,6 +501,9 @@ $"P" subset.eq "NP" subset.eq "EXP" subset "R" subset "RE"$
 
 - *EXP* \
   Languages _decided_ by a _deterministic_ TM in _exponential time_.
+
+- *PSPACE* \
+  Languages _decided_ by a _deterministic_ TM in _polynomial space_.
 
 - *NP* \
   Languages _accepted_ (_recognized_) by any TM, or _decided_ by a _non-deterministic_ TM, in _polynomial time_.
