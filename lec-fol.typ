@@ -839,6 +839,92 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   Since~$cal(I)$ was arbitrary, $alpha models beta$.
 ]
 
+= Model Checking
+
+== Semantics in FOL
+
+#definition[Vocabulary][
+  A _vocabulary_ (also known as _signature_) of a language is a collection of symbols used to construct sentences in that language.
+  A vocabulary $cal(V) = angle.l cal(C), cal(F), cal(P) angle.r$ consists of:
+  - A set of _constant symbols_ $cal(C)$, e.g., $0$, $bot$, $emptyset$, $dots$
+  - A set of _function symbols_ $cal(F)$, e.g., $S$, $plus$, $times$, $dots$
+  - A set of _predicate symbols_ $cal(P)$, e.g., $eq$, $lt$, $in$, $dots$
+]
+
+#definition[Model][
+  A _possible world_ (also known as _model_, or _structure_, or _interpretation_) is a mathematical object that gives meaning to the symbols in a vocabulary.
+  A model $cal(M)$ for $cal(V)$ consists of:
+  - A _domain_ $cal(D) = dom(cal(M))$, which is a non-empty set of objects (_universe_).
+  - For each constant symbol $c$ in $cal(C)$, its interpretation $c^cal(M)$ is an element of $cal(D)$.
+  - For each $k$-ary function symbol $f$ in $cal(F)$, its interpretation $f^cal(M)$ is a $k$-ary total function on $cal(D)$.
+  - For each $k$-ary predicate symbol $p$ in $cal(P)$, its interpretation $p^cal(M)$ is a $k$-ary relation on $cal(D)$.
+]
+
+#pagebreak()
+
+#example[
+  Let $cal(V)_"field"$ consist of 2-ary functions $plus$ and $times$, constants $0$ and $1$, and 2-ary predicates $eq$ and $lt$.
+
+  One possible interpretation $cal(M)$ is:
+  - $cal(D) = ZZ$, the integer numbers. $0^cal(M)$ and $1^cal(M)$ are the usual integers zero and one.
+  - $scripts(plus)^cal(M)$, $scripts(times)^cal(M)$, $scripts(eq)^cal(M)$, $scripts(lt)^cal(M)$ are the usual arithmetic operators on integers.
+
+  Alternatively, $cal(D) = RR$, $0^cal(M) := 3.14159$, $1^cal(M) := 42$.
+  There are infinitely many possible interpretations!
+]
+
+== Predicate Logic Statements
+
+#definition[Formula][
+  A _formula_ is a statement about the objects in a world.
+
+  #example[
+    $x$ is a even number.
+  ]
+]
+
+#definition[Sentence][
+  A _sentence_ is a statement about a world.
+
+  #example[
+    Every even natural number greater than 2 is a sum of two prime numbers.
+  ]
+]
+
+== Some Computational Challenges
+
+Decision problems:
++ Given a sentence, is it true in every world? (Validity)
++ Given a sentence, is it true in some world? (Satisfiability)
++ Given a sentence and a world, is it true in that world? (Model checking)
+
+== FOL and Computation
+
+#definition[
+  Model checking problem for first-order logic is the problem of determining whether a given first-order formula $phi$ is satisfied by a given structure $cal(M)$, formally, $cal(M) models phi$.
+
+  $ "MCFO" = { angle.l cal(M), phi angle.r | cal(M) models phi } $
+]
+
+// #note[
+//   MCFO is decidable in $abs(cal(M))^abs(phi)$ time.
+// ]
+
+#theorem[
+  MCFO is NP-hard.
+]
+#proof[
+  SAT can be reduced to MCFO.
+
+  Let $phi$ be a propositional formula.
+  For example, $phi := (p_1 or not p_2 or p_3) and dots$
+
+  Construct a model $cal(M)$ with interpretations for $True$ and $False$, and a first-order formula $phi'$:
+  $ phi' := exists x_1, dots, x_n. thin ((x_1 = True) or (not x_2 = True) or (x_3 = True)) and dots $
+
+  Then, $phi$ is satisfiable iff $cal(M) models phi'$.
+]
+
 // ==========================================
 
 = OLD SLIDES
