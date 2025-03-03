@@ -569,6 +569,11 @@ Recall:
       If $Gamma models alpha$, then $Gamma entails alpha$.
     ]
 
+== Some Random Links
+
+- https://plato.stanford.edu/entries/proof-theoretic-semantics/
+- https://math.stackexchange.com/a/3318545
+
 == TODO
 #show: cheq.checklist
 - [/] Normal forms
