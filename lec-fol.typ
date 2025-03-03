@@ -480,6 +480,29 @@ Here, $Gamma[x : sigma] = Gamma union {x : sigma}$.
 
 A variable $x$ may occur _free_ or _bound_ in a $Sigma$-formula.
 
+#example[
+  In $forall x. thin A(x, y)$, the variable $x$ is said to be _bound_ and $y$ is _free_.
+]
+
+#definition[Free and bound variables][
+  Recursive definition of _free_ variables in a $Sigma$-formula:
+  - $x$ occurs free in a $Sigma$-atom $sexp(A, t_1, dots.c, t_n)$ if some $t_i$ contains $x$.
+  - $x$ occurs free in $not A$ if $x$ occurs free in $A$.
+  - $x$ occurs free in $A ast B$ if $x$ occurs free in $A$ or in $B$.
+  - $x$ occurs free in $op(Q) y : sigma. thin A$ if $x$ occurs free in $A$ and $x$ is not $y$.
+
+  If $alpha$ contains $op(Q) x$, then $x$ is said to be _bound_ in $alpha$.
+]
+
+#note[
+  A variable can be simultaneously free and bound in a formula.
+  For example, $x imply forall x. thin P(x)$.
+]
+
+#definition[Sentence][
+  A formula $alpha$ is _closed_, or a _sentence_, if it contains no free variables.
+]
+
 #definition[
   The set $FreeVars$ of _free variables_ of a $Sigma$-formula $alpha$ is defined as follows:
   $
@@ -509,7 +532,6 @@ A variable $x$ may occur _free_ or _bound_ in a $Sigma$-formula.
 - TODO: open/closed formula
 - TODO: universal closure
 - TODO: existential closure
-- TODO: variable can be simultaneously free and bound
 
 == FOL Semantics
 
