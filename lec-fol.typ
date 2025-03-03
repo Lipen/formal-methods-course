@@ -780,6 +780,65 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   For all $Sigma$-formulas $alpha$ and $beta$, we have $models alpha imply beta$ iff $alpha imply beta$ is valid.
 ]
 
+== Free Variables Theorem 1
+
+#theorem[
+  Consider a signature $Sigma$ and a sort context $Gamma$.
+  Let $Phi$ be a set of $Sigma$-formulas, let $alpha$ be a #box[$Sigma$-formula] with free variables from $Gamma$, and let $x in FreeVars(alpha)$ be a free variable of sort $sigma$ in $Gamma$.
+
+  Suppose $x$ occurs free in no formulas of $Phi$.
+  Then, $Phi models alpha$ iff $Phi models forall x : sigma. thin alpha$.
+]
+
+#proof[($arrow.double.r$)][
+  _If $Phi models alpha$ then $Phi models forall x : sigma. thin alpha$._
+
+  Let $cal(I)$ be an interpretation that satisfies $Phi$.
+  Since $x$ does not occur free in any formulas of $Phi$, $cal(I)$ satisfies all formulas in $Phi$ regardless of how it interprets $x$.
+  Then, for any element $c in sigma^cal(I)$, the interpretation $cal(I)[x maps c]$ satisfies all formulas in $Phi$, including $alpha$ (because $Phi models alpha$).
+  Thus, it also satisfies the formula $forall x : sigma. thin alpha$, by the semantics of $forall$.
+  Hence, every interpretation that satisfies $Phi$ also satisfies $forall x : sigma. thin alpha$, that is, $Phi models forall x : sigma. thin alpha$.
+]
+
+#proof[($arrow.double.l$)][
+  _If $Phi models forall x : sigma. thin alpha$ then $Phi models alpha$._
+
+  Let $cal(I)$ be an interpretation that satisfies $Phi$.
+  By assumption, $cal(I) models forall x : sigma. thin alpha$.
+  This implies that $cal(I) models alpha$ regardless of how $cal(I)$ interprets $x$.
+  Hence, $Phi models alpha$.
+]
+
+== Free Variables Theorem 2
+
+#theorem[
+  Consider a signature $Sigma$ and a sort context $Gamma$.
+  Let $beta$ be a $Sigma$-formula, let $alpha$ be a $Sigma$-formula with free variables from $Gamma$, and let $x in FreeVars(alpha)$ be a free variable of sort $sigma$ in $Gamma$.
+
+  Suppose $x$ does not occur free in $beta$.
+  Then, $alpha models beta$ iff $exists x : sigma. thin alpha models beta$.
+]
+
+#proof[($arrow.double.r$)][
+  _If $alpha models beta$ then $exists x : sigma. thin alpha models beta$._
+
+  Let $cal(I)$ be an interpretation that satisfies $exists x : sigma. alpha$.
+  This means that $cal(I)[x maps c]$ satisfies $alpha$ for some $c in sigma^cal(I)$.
+  By assumption, $cal(I)[x maps c]$ satisfies $beta$ as well.
+  Since $x$ does not occur free in $beta$, changing the value assigned to $x$ does not matter.
+  It follows that $cal(I)$ satisfies $beta$.
+  Since $cal(I)$ was arbitrary, this shows that $exists x : sigma. alpha models beta$.
+]
+
+#proof[($arrow.double.l$)][
+  _If $exists x : sigma. thin alpha models beta$ then $alpha models beta$._
+
+  Let $cal(I)$ be an interpretation that satisfies $alpha$.
+  Then, trivially#footnote[Recall that $sigma^cal(I)$ is _non-empty_.], $cal(I)$ satisfies $exists x : sigma. thin alpha$.
+  By assumption, $cal(I) models beta$.
+  Since~$cal(I)$ was arbitrary, $alpha models beta$.
+]
+
 // ==========================================
 
 = OLD SLIDES
