@@ -834,7 +834,7 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   _If $exists x : sigma. thin alpha models beta$ then $alpha models beta$._
 
   Let $cal(I)$ be an interpretation that satisfies $alpha$.
-  Then, trivially#footnote[Recall that $sigma^cal(I)$ is _non-empty_.], $cal(I)$ satisfies $exists x : sigma. thin alpha$.
+  Then, trivially#footnote[Recall that any _domain_ $sigma^cal(I)$ is _non-empty_.], $cal(I)$ satisfies $exists x : sigma. thin alpha$.
   By assumption, $cal(I) models beta$.
   Since~$cal(I)$ was arbitrary, $alpha models beta$.
 ]
