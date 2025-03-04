@@ -900,15 +900,19 @@ Decision problems:
 
 == FOL and Computation
 
+First basic computational problem in predicate logic is _Model Checking_.
+
 #definition[
   Model checking problem for first-order logic is the problem of determining whether a given first-order formula $phi$ is satisfied by a given structure $cal(M)$, formally, $cal(M) models phi$.
 
   $ "MCFO" = { angle.l cal(M), phi angle.r | cal(M) models phi } $
 ]
 
-// #note[
-//   MCFO is decidable in $abs(cal(M))^abs(phi)$ time.
-// ]
+#note[
+  MCFO is decidable in $abs(cal(M))^abs(phi)$ time.
+]
+
+#pagebreak()
 
 #theorem[
   MCFO is NP-hard.
@@ -924,6 +928,21 @@ Decision problems:
 
   Then, $phi$ is satisfiable iff $cal(M) models phi'$.
 ]
+
+== FOL and Computation
+
+Second basic computational problem in predicate logic is _Finite Satisfiability Problem_.
+
+Given a sentence $phi$, is it finitely satisfiable?
+That is, does there exist a _finite_ model $cal(M)$ such that $cal(M) models phi$?
+
+FSP is semi-decidable, undecidable.
+
+Corollary: Finite Validity is not RE, but in co-RE.
+
+More:
+- set of validities in FOL is in RE
+- FOL satisfiability is undecidable
 
 // == Bibliography
 // #bibliography("refs.yml")
