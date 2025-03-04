@@ -54,6 +54,8 @@
 #let ma = $op("ma")$
 #let sp = $op("sp")$
 
+#let term(x) = $angle.l #x angle.r$
+
 = Introduction to FOL
 
 == Motivation
@@ -195,7 +197,6 @@ Each function and relation symbol has an associated _arity_ (number of arguments
 
 == Grammar
 
-#let term(x) = $angle.l #x angle.r$
 $
   term("Form") &::= term("Atom") | not term("Form") | term("Form") and term("Form") | dots | ("'"forall"'" | "'"exists"'") cal(V). thin term("Form") \
   term("Atom") &::= cal(R) "'('" term("Term")^* "')'" \
