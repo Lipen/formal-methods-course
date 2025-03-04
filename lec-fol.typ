@@ -487,11 +487,8 @@ Are these well-formed terms also well-sorted in the context $Gamma = {x_1 : Bool
 
 #definition[Formula][
   _Well-formed formulas_ are expressions generated from atoms by the _formula-building operations_, denoted $cal(F) = {cal(F)_or, cal(F)_and, cal(F)_not, cal(F)_imply, cal(F)_iff, cal(E)_(x,sigma), cal(A)_(x,sigma)}$.
-  - $cal(F)_or (alpha, beta) := (alpha or beta)$
-  - $cal(F)_and (alpha, beta) := (alpha and beta)$
   - $cal(F)_not (alpha) := (not alpha)$
-  - $cal(F)_imply (alpha, beta) := (alpha imply beta)$
-  - $cal(F)_iff (alpha, beta) := (alpha iff beta)$
+  - $cal(F)_and (alpha, beta) := (alpha and beta)$, similar for $or$, $imply$, and $iff$
   - $cal(E)_(x,sigma) (alpha) := (exists x : sigma. thin alpha)$ for each variable $x$ and sort $sigma$ in $Sigma^S$
   - $cal(A)_(x,sigma) (alpha) := (forall x : sigma. thin alpha)$ for each variable $x$ and sort $sigma$ in $Sigma^S$
 ]
