@@ -893,10 +893,14 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
 
 == Some Computational Challenges
 
-Decision problems:
-+ Given a sentence, is it true in every world? (Validity)
-+ Given a sentence, is it true in some world? (Satisfiability)
-+ Given a sentence and a world, is it true in that world? (Model checking)
+#table(
+  columns: 3,
+  stroke: none,
+  table.header[Decision problem][Formalization][Description],
+  [Validity], [$models phi$], [Is $phi$ true in every world?],
+  [Satisfiability], [$exists cal(M). thin cal(M) models phi$], [Is $phi$ true in some world?],
+  [Model checking], [$cal(M) models phi$], [Is $phi$ true in a given world?],
+)
 
 == FOL and Computation
 
