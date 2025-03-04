@@ -1033,6 +1033,28 @@ More:
 - set of validities in FOL is in RE
 - FOL satisfiability is undecidable
 
+== Finite Satisfiability
+
+#definition[
+  _Finite Satisfiability Problem_ (FSP) is the problem of determining whether a given first-order formula $phi$ has a _finite_ model $cal(M)$ such that $cal(M) models phi$.
+]
+
+#example[
+  Let $phi$ be the first-order formula obtained as the conjunction of the following sentences, where $a_i$ are constants:
+  - $R(a_0, a_1)$
+  - $forall x, y. thin (R(x, y) imply exists z. thin R(y, z))$
+  - $forall x, y, z. thin (R(y, x) and R(z, x) imply (y = z))$
+  - $forall x. thin not R(x, a_0)$
+
+  Formula $phi$ has the infinite model $R(a_0, a_1), R(a_1, a_2), dots$, but is not finitely satisfiable.
+]
+
+// == Trakhtenbrot's Theorem
+
+#theorem[Trakhtenbrot][
+  Finite satisfiability problem for first-order logic is undecidable.
+]
+
 // == Bibliography
 // #bibliography("refs.yml")
 
