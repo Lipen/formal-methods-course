@@ -151,6 +151,88 @@ First-order language is specified by its _parameters_.
   ],
 )
 
+= Formalizing FOL
+
+== Syntax
+
+#definition[Signature][
+  A _vocabulary_ (also known as _signature_) of a language is a collection of symbols used to construct sentences in that language.
+  A signature $Sigma = angle.l cal(F), cal(R), cal(V) angle.r$ consists of:
+  - A set of _function symbols_ $cal(F)$, e.g., $S$, $plus$, $times$, $dots$
+  - A set of _relation symbols_ $cal(R)$, e.g., $eq$, $lt$, $in$, $dots$
+  - A set of _variables_ $cal(V)$, e.g., $x$, $y$, $z$, $dots$
+]
+
+Each function and relation symbol has an associated _arity_ (number of arguments).
+- Functions of arity 0 are called _constants_.
+- Relations of arity 1 are called _predicates_.
+
+== Statements
+
+#definition[Term][
+  A _first-order term_ over $Sigma$ is defined inductively:
+  - Each variable $x in cal(V)$ is a term.
+  - If $t_1, dots, t_n$ are terms and $f$ is an $n$-ary function symbol from $cal(F)$, then $f(t_1, dots, t_n)$ is a term.
+]
+
+#definition[Atom][
+  A _first-order atom_ over $Sigma$ is defined as follows:
+  - If $t_1, dots, t_n$ are terms and $R$ is a relation symbol from $cal(R)$, then $R(t_1, dots, t_n)$ is an atom.
+]
+
+#definition[Formula][
+  A _first-order formula_ over $Sigma$ is defined inductively:
+  - Each atom is a formula.
+  - If $alpha$ and $beta$ are formulas, then $not alpha$, $(alpha and beta)$, $(alpha or beta)$, $(alpha imply beta)$, and $(alpha iff beta)$ are formulas.
+  - If $alpha$ is a formula and $x in cal(V)$ is a variable, then $forall x. thin alpha$ and $exists x. thin alpha$ are formulas.
+]
+
+== Free and Bound Variables
+
+- A variable $x$ is _bound_ in $forall x. thin alpha$ and $exists x. thin alpha$.
+- A variable $x$ is _free_ in $alpha$ if it is not bound in $alpha$.
+- A formula is _closed_ (also called a _sentence_) if it contains no free variables.
+
+== Grammar
+
+#let term(x) = $angle.l #x angle.r$
+$
+  term("Formula") &::= term("Atom") | not term("Formula") | term("Formula") and term("Formula") | dots \
+  term("Atom") &::= cal(R) "'('" term("Term")^* "')'" \
+  term("Term") &::= cal(V) | term("Function") "'('" term("Term")^* "')'" \
+$
+
+// TODO: CASL language example, see Roggenback (2022)
+
+== Semantics
+
+#definition[Model][
+  A _possible world_ (also known as _model_, or _structure_, or _interpretation_) is a mathematical object that gives meaning to the symbols of a language.
+
+  A _first-order model_ $cal(M) = angle.l cal(U), cal(I), nu angle.r$ for $Sigma = angle.l cal(F), cal(R), cal(V) angle.r$ consists of:
+  - A _domain_ $cal(U)$ is a non-empty set of objects (_universe of disclosure_).
+  - An _interpretation_ of an $n$-ary function symbol $f in cal(F)$ is an $n$-ary total function $cal(I)(f) : cal(U)^n to cal(U)$.
+  - An _interpretation_ of an $n$-ary relation symbol $R in cal(R)$ is an $n$-ary relation $cal(I)(R) subset.eq cal(U)^n$.
+  - A _variable valuation_ $nu : cal(V) to cal(U)$ assigning to each variable $x in cal(V)$ an element of $cal(U)$.
+]
+
+#definition[
+  The _term valuation_ induced by a model $cal(M) = angle.l cal(U), cal(I), nu angle.r$ is defined as follows:
+  - $nu(t) = nu(x)$ if $t$ is a variable $x$.
+  - $nu(t) = (cal(I)(f))(nu(t_1), dots, nu(t_n))$ if $t$ is a term $f(t_1, dots, t_n)$.
+]
+
+#definition[Semantics of FOL][
+  The _validation relation_ $models$ between a model $cal(M)$ and a first-order formula $phi$ is defined inductively:
+  - $cal(M) models R(t_1, dots, t_n)$ iff $cal(I)(R)$ contains $(nu(t_1), dots, nu(t_n))$.
+  - $cal(M) models.not bot$.
+  - $cal(M) models not phi$ iff $cal(M) models.not phi$.
+  - $cal(M) models (alpha and beta)$ iff $cal(M) models alpha$ and $cal(M) models beta$. Similar for $or$, $imply$, and $iff$.
+  - $cal(M) models exists x. thin phi$ iff $cal(M') models phi$ for some $cal(M') = angle.l cal(U), cal(I), nu' angle.r$ with $nu'(y) = nu(y)$ for all $y neq x$.
+  - $cal(M) models forall x. thin phi$ iff $cal(M') models phi$ for all $cal(M')$ which differ from $cal(M)$ at most in the valuation of $x$.
+]
+
+
 = Many-Sorted FOL
 
 == Syntax
