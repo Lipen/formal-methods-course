@@ -350,7 +350,7 @@ Based on terms, we can build _atoms_.
 Intuitevely, atoms are expressions that evaluate Boolean values.
 
 #definition[Atoms][
-  The $Sigma$-atoms over $X$, or simply _atoms_, are terms of the form $sexp(p, t_1, dots.c, t_n)$, where $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $p$ is a predicate symbol with $rank(p) = angle.l sigma_1, dots, sigma_n, BoolSort angle.r$.
+  The $Sigma$-atoms over $X$, or simply _atoms_, are terms of the form $sexp(p, t_1, dots.c, t_n)$, where $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $p$ is a predicate with $rank(p) = angle.l sigma_1, dots, sigma_n, BoolSort angle.r$.
 ]
 
 In addition to sorted $Sigma$-variables $X$, also consider _propositional variables_ $cal(B)$.
