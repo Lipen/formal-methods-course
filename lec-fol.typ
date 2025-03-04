@@ -924,7 +924,7 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
 
 = Model Checking
 
-== Semantics in FOL
+== Syntax and Semantics of FOL
 
 #definition[Vocabulary][
   A _vocabulary_ (also known as _signature_) of a language is a collection of symbols used to construct sentences in that language.
@@ -985,7 +985,7 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   [Model checking], [$cal(M) models phi$], [Is $phi$ true in a given world?],
 )
 
-== FOL and Computation
+== First-Order Model Checking
 
 First basic computational problem in predicate logic is _Model Checking_.
 
@@ -1026,6 +1026,8 @@ That is, does there exist a _finite_ model $cal(M)$ such that $cal(M) models phi
 FSP is semi-decidable, undecidable.
 
 Corollary: Finite Validity is not RE, but in co-RE.
+
+TODO: third problem is validity.
 
 More:
 - set of validities in FOL is in RE
