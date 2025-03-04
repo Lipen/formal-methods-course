@@ -157,10 +157,10 @@ First-order language is specified by its _parameters_.
 
 #definition[Signature][
   A _vocabulary_ (also known as _signature_) of a language is a collection of symbols used to construct sentences in that language.
-  A signature $Sigma = angle.l cal(F), cal(R), cal(V) angle.r$ consists of:
+  A signature $Sigma = angle.l cal(V), cal(F), cal(R) angle.r$ consists of:
+  - A set of _variables_ $cal(V)$, e.g., $x$, $y$, $z$, $dots$
   - A set of _function symbols_ $cal(F)$, e.g., $S$, $plus$, $times$, $dots$
   - A set of _relation symbols_ $cal(R)$, e.g., $eq$, $lt$, $in$, $dots$
-  - A set of _variables_ $cal(V)$, e.g., $x$, $y$, $z$, $dots$
 ]
 
 Each function and relation symbol has an associated _arity_ (number of arguments).
@@ -197,7 +197,7 @@ Each function and relation symbol has an associated _arity_ (number of arguments
 
 #let term(x) = $angle.l #x angle.r$
 $
-  term("Formula") &::= term("Atom") | not term("Formula") | term("Formula") and term("Formula") | dots \
+  term("Form") &::= term("Atom") | not term("Form") | term("Form") and term("Form") | dots | ("'"forall"'" | "'"exists"'") cal(V). thin term("Form") \
   term("Atom") &::= cal(R) "'('" term("Term")^* "')'" \
   term("Term") &::= cal(V) | term("Function") "'('" term("Term")^* "')'" \
 $
@@ -209,15 +209,15 @@ $
 #definition[Model][
   A _possible world_ (also known as _model_, or _structure_, or _interpretation_) is a mathematical object that gives meaning to the symbols of a language.
 
-  A _first-order model_ $cal(M) = angle.l cal(U), cal(I), nu angle.r$ for $Sigma = angle.l cal(F), cal(R), cal(V) angle.r$ consists of:
+  A _first-order model_ $cal(M) = angle.l cal(U), nu, cal(I) angle.r$ for $Sigma = angle.l cal(V), cal(F), cal(R) angle.r$ consists of:
   - A _domain_ $cal(U)$ is a non-empty set of objects (_universe of disclosure_).
+  - A _variable valuation_ $nu : cal(V) to cal(U)$ assigning to each variable $x in cal(V)$ an element of $cal(U)$.
   - An _interpretation_ of an $n$-ary function symbol $f in cal(F)$ is an $n$-ary total function $cal(I)(f) : cal(U)^n to cal(U)$.
   - An _interpretation_ of an $n$-ary relation symbol $R in cal(R)$ is an $n$-ary relation $cal(I)(R) subset.eq cal(U)^n$.
-  - A _variable valuation_ $nu : cal(V) to cal(U)$ assigning to each variable $x in cal(V)$ an element of $cal(U)$.
 ]
 
 #definition[
-  The _term valuation_ induced by a model $cal(M) = angle.l cal(U), cal(I), nu angle.r$ is defined as follows:
+  The _term valuation_ induced by a model $cal(M) = angle.l cal(U), nu, cal(I) angle.r$ is defined as follows:
   - $nu(t) = nu(x)$ if $t$ is a variable $x$.
   - $nu(t) = (cal(I)(f))(nu(t_1), dots, nu(t_n))$ if $t$ is a term $f(t_1, dots, t_n)$.
 ]
