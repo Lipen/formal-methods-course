@@ -860,7 +860,7 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   - For each $k$-ary predicate symbol $p$ in $cal(P)$, its interpretation $p^cal(M)$ is a $k$-ary relation on $cal(D)$.
 ]
 
-#pagebreak()
+== Semantics Example
 
 #example[
   Let $cal(V)_"field"$ consist of 2-ary functions $plus$ and $times$, constants $0$ and $1$, and 2-ary predicates $eq$ and $lt$.
