@@ -212,8 +212,9 @@ $
   A _first-order model_ $cal(M) = angle.l cal(U), nu, cal(I) angle.r$ for $Sigma = angle.l cal(V), cal(F), cal(R) angle.r$ consists of:
   - A _domain_ $cal(U)$ is a non-empty set of objects (_universe of disclosure_).
   - A _variable valuation_ $nu : cal(V) to cal(U)$ assigning to each variable $x in cal(V)$ an element of $cal(U)$.
-  - An _interpretation_ of an $n$-ary function symbol $f in cal(F)$ is an $n$-ary total function $cal(I)(f) : cal(U)^n to cal(U)$.
-  - An _interpretation_ of an $n$-ary relation symbol $R in cal(R)$ is an $n$-ary relation $cal(I)(R) subset.eq cal(U)^n$.
+  - An _interpretation_ function $cal(I)$ for the function and relation symbols in $Sigma$.
+    - An _interpretation_ of an $n$-ary function symbol $f in cal(F)$ is an $n$-ary total function $cal(I)(f) : cal(U)^n to cal(U)$.
+    - An _interpretation_ of an $n$-ary relation symbol $R in cal(R)$ is an $n$-ary relation $cal(I)(R) subset.eq cal(U)^n$.
 ]
 
 #definition[
