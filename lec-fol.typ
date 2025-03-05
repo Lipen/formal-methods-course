@@ -327,42 +327,6 @@ _Examples_:
   Most expressions are *not* _well-formed_.
 ]
 
-== Terms (simple)
-
-#definition[Variables][
-  A set $X$ of $Sigma$-variables, or simply _variables_, is a countable set of variable names, each associated with a sort from $Sigma^S$.
-]
-
-Based on variables, we can build _terms_.
-Intuitevely, terms are expressions that evaluate to values.
-
-#definition[Terms][
-  The $Sigma$-terms over $X$, or simply _terms_, are defined inductively:
-  - Each variable $x$ in $X$ is a term of sort $sigma$.
-  - If $c in Sigma^F$ is a constant symbol of sort $sigma$, then $c$ is a term of sort $sigma$.
-  - If $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $f$ is a function symbol with $rank(f) = angle.l sigma_1, dots, sigma_n, sigma angle.r$, then $sexp(f, t_1, dots.c, t_n)$ is a term of sort $sigma$.
-  - _(Nothing else is a term.)_
-]
-
-== Formulas (simple)
-
-Based on terms, we can build _atoms_.
-Intuitevely, atoms are expressions that evaluate Boolean values.
-
-#definition[Atoms][
-  The $Sigma$-atoms over $X$, or simply _atoms_, are terms of the form $sexp(p, t_1, dots.c, t_n)$, where $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $p$ is a predicate with $rank(p) = angle.l sigma_1, dots, sigma_n, BoolSort angle.r$.
-]
-
-In addition to sorted $Sigma$-variables $X$, also consider _propositional variables_ $cal(B)$.
-
-#definition[Formulas][
-  The $Sigma$-formulas over $X$ and $cal(B)$, or simply _formulas_, are defined inductively:
-  - Each propositional variable $p$ in $cal(B)$ is a formula.
-  - Each $Sigma$-atom over $X$ is a formula.
-  - If $alpha$ and $beta$ are formulas, then so are $not alpha$, $(alpha or beta)$, $(alpha and beta)$, $(alpha imply beta)$, and $(alpha iff beta)$.
-  - For each variable $x in X$ and sort $sigma in Sigma^S$, if $alpha$ is a formula, then so are $forall x : sigma. thin alpha$ and $exists x : sigma. thin alpha$.
-]
-
 == Terms
 
 A _term_ is a _well-formed_ S-expression built from function symbols, variables, and parentheses.
@@ -1016,7 +980,43 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   )
 ]
 
-= Model Checking
+= Other slides
+
+== Terms (simple)
+
+#definition[Variables][
+  A set $X$ of $Sigma$-variables, or simply _variables_, is a countable set of variable names, each associated with a sort from $Sigma^S$.
+]
+
+Based on variables, we can build _terms_.
+Intuitevely, terms are expressions that evaluate to values.
+
+#definition[Terms][
+  The $Sigma$-terms over $X$, or simply _terms_, are defined inductively:
+  - Each variable $x$ in $X$ is a term of sort $sigma$.
+  - If $c in Sigma^F$ is a constant symbol of sort $sigma$, then $c$ is a term of sort $sigma$.
+  - If $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $f$ is a function symbol with $rank(f) = angle.l sigma_1, dots, sigma_n, sigma angle.r$, then $sexp(f, t_1, dots.c, t_n)$ is a term of sort $sigma$.
+  - _(Nothing else is a term.)_
+]
+
+== Formulas (simple)
+
+Based on terms, we can build _atoms_.
+Intuitevely, atoms are expressions that evaluate Boolean values.
+
+#definition[Atoms][
+  The $Sigma$-atoms over $X$, or simply _atoms_, are terms of the form $sexp(p, t_1, dots.c, t_n)$, where $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $p$ is a predicate with $rank(p) = angle.l sigma_1, dots, sigma_n, BoolSort angle.r$.
+]
+
+In addition to sorted $Sigma$-variables $X$, also consider _propositional variables_ $cal(B)$.
+
+#definition[Formulas][
+  The $Sigma$-formulas over $X$ and $cal(B)$, or simply _formulas_, are defined inductively:
+  - Each propositional variable $p$ in $cal(B)$ is a formula.
+  - Each $Sigma$-atom over $X$ is a formula.
+  - If $alpha$ and $beta$ are formulas, then so are $not alpha$, $(alpha or beta)$, $(alpha and beta)$, $(alpha imply beta)$, and $(alpha iff beta)$.
+  - For each variable $x in X$ and sort $sigma in Sigma^S$, if $alpha$ is a formula, then so are $forall x : sigma. thin alpha$ and $exists x : sigma. thin alpha$.
+]
 
 == Syntax and Semantics of FOL
 
