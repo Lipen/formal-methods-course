@@ -700,7 +700,7 @@ $
 
   Then:
   - $sexp(pa, sexp(ma, x))^overline(cal(I)) &= pa^cal(I)\(sexp(ma, x)^overline(cal(I))\) = pa^cal(I)\(ma^cal(I)\(x^overline(cal(I))\)\) = pa^cal(I)\(x^cal(I)\) \ &= pa^cal(I)\(ma^cal(I)("Jim")\) = pa^cal(I)\("Jill"\) = "Jay"$
-  - $sexp(sp, sexp(ma, x), y)^overline(cal(I)) &= sp^cal(I)\(sexp(ma, x)^overline(cal(I)), y^overline(cal(I))\) = sp^cal(I)\(ma^cal(I)\(x^overline(cal(I))\), y^cal(I)) = sp^cal(I)\(ma^cal(I)(x^cal(I)), y^cal(I)\) \ &= sp^cal(I)\(ma^cal(I)\("Jim"\), "Joe"\) = sp^cal(I)\("Jill", "Joe"\) = True$
+  - $sexp(sp, sexp(ma, x), y)^overline(cal(I)) &= sp^cal(I)\(sexp(ma, x)^overline(cal(I)), y^overline(cal(I))\) = sp^cal(I)\(ma^cal(I)\(x^overline(cal(I))\), y^overline(cal(I))) = sp^cal(I)\(ma^cal(I)(x^cal(I)), y^cal(I)\) \ &= sp^cal(I)\(ma^cal(I)\("Jim"\), "Joe"\) = sp^cal(I)\("Jill", "Joe"\) = True$
 ]
 
 Further extend $overline(cal(I))$ to _well-sorted non-atomic $Sigma$-formulas_ by structural induction:
