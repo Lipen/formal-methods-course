@@ -920,6 +920,102 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   Since~$cal(I)$ was arbitrary, $alpha models beta$.
 ]
 
+= Proofs in FOL
+
+== Semantic Arguments for FOL
+
+#align(horizon)[
+  #import curryst: prooftree, rule
+  #grid(
+    columns: 3,
+    column-gutter: 1fr,
+    [
+      #prooftree(
+        rule(
+          label: [(a)],
+          $cal(I) models.not alpha$,
+          $cal(I) models not alpha$,
+        ),
+      )
+      #prooftree(
+        rule(
+          label: [(b)],
+          $cal(I) models alpha$,
+          $cal(I) models.not not alpha$,
+        ),
+      )
+      #prooftree(
+        rule(
+          label: [(c)],
+          [$cal(I) models alpha$, $cal(I) models beta$],
+          $cal(I) models alpha and beta$,
+        ),
+      )
+      #prooftree(
+        rule(
+          label: [(d)],
+          [$cal(I) models.not alpha$ | $cal(I) models.not beta$],
+          $cal(I) models.not alpha and beta$,
+        ),
+      )
+    ],
+    [
+      #prooftree(
+        rule(
+          label: [(e)],
+          [$cal(I) models alpha$ | $cal(I) models beta$],
+          $cal(I) models alpha or beta$,
+        ),
+      )
+      #prooftree(
+        rule(
+          label: [(f)],
+          [$cal(I) models.not alpha$, $cal(I) models.not beta$],
+          $cal(I) models.not alpha or beta$,
+        ),
+      )
+      #prooftree(
+        rule(
+          label: [(i)],
+          $cal(I) models bot$,
+          $cal(I) models alpha$,
+          $cal(I) models.not alpha$,
+        ),
+      )
+    ],
+    [
+      #prooftree(
+        rule(
+          label: [(g)],
+          [$cal(I) models.not alpha$ | $cal(I) models beta$],
+          $cal(I) models alpha imply beta$,
+        ),
+      )
+      #prooftree(
+        rule(
+          label: [(h)],
+          [$cal(I) models alpha$, $cal(I) models.not beta$],
+          $cal(I) models.not alpha imply beta$,
+        ),
+      )
+      #prooftree(
+        rule(
+          label: [(j)],
+          [$cal(I) models alpha$, $cal(I) models beta$ | $cal(I) models.not alpha$, $cal(I) models.not beta$],
+          $cal(I) models alpha iff beta$,
+        ),
+      )
+      #prooftree(
+        rule(
+          label: [(k)],
+          [$cal(I) models.not alpha$, $cal(I) models beta$ | $cal(I) models alpha$, $cal(I) models.not beta$],
+          $cal(I) models.not alpha iff beta$,
+        ),
+      )
+    ],
+  )
+]
+
 = Model Checking
 
 == Syntax and Semantics of FOL
