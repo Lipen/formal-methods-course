@@ -69,7 +69,12 @@
             numbering(" [1]", page - heading.location().page() + 1)
           }
         }
-        underline(offset: 0.3em, body)
+        context {
+          body
+          place(bottom, dy: 0.4em)[
+            #line(length: measure(body).width, stroke: 0.6pt + title-color)
+          ]
+        }
       }
     },
     header-ascent: 1.2em,
