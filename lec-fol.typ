@@ -367,9 +367,9 @@ _Examples_:
       - $sexp(eqq, 0, bot)$ #YES
     ],
     [
-      - $sexp("select", a)$ #NO
-      - $sexp("select", a, i)$ #YES
-      - $sexp("select", sexp("store", a, i, x), j)$ #YES
+      - $sexp("read", a)$ #NO
+      - $sexp("read", a, i)$ #YES
+      - $sexp("read", sexp("write", a, i, x), j)$ #YES
     ],
   )
 ]
