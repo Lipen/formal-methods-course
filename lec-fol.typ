@@ -700,14 +700,14 @@ $alpha$ and $beta$ are _logically equivalent_, denoted $alpha equiv beta$, iff $
 A $Sigma$-formula $alpha$ is _valid_, denoted $models alpha$, if $emptyset models alpha$ iff $cal(I) models alpha$ for every interpretation $cal(I)$ of $Sigma$.
 
 #example[
-  Let $Sigma^S = {ASort}$, $Sigma^F = {p, q}$, $rank(p) = angle.l ASort, BoolSort angle.r$, $rank(q) = angle.l ASort, ASort, BoolSort angle.r$, and all variables $v_i$ have sort $ASort$.
+  Let $Sigma^S = {ASort}$, $Sigma^F = {p, q}$, $rank(p) = angle.l ASort, BoolSort angle.r$, $rank(q) = angle.l ASort, ASort, BoolSort angle.r$, and all variables have sort $ASort$.
   Do the following entailments hold?
-  + $forall v_1. thin p(v_1) models p(v_2)$ #YES
-  + $p(v_1) models forall v_1. thin p(v_1)$ #NO
-  + $forall p(v_1) models exists v_2. thin p(v_2)$ #YES
-  + $exists v_2 thin forall v_1. thin q(v_1, v_2) models forall v_1 thin exists v_2. thin q(v_1, v_2)$ #YES
-  + $forall v_1 thin exists v_2. thin q(v_1, v_2) models exists v_2 thin forall v_1. thin q(v_1, v_2)$ #NO
-  + $models exists v_1. thin (p(v_1) imply forall v_2. thin p(v_2))$ #YES
+  + $forall x. thin p(x) models p(y)$ #YES
+  + $p(x) models forall x. thin p(x)$ #NO
+  + $forall x. thin p(x) models exists y. thin p(y)$ #YES
+  + $exists y thin forall x. thin q(x, y) models forall x thin exists y. thin q(x, y)$ #YES
+  + $forall x thin exists y. thin q(x, y) models exists y thin forall x. thin q(x, y)$ #NO
+  + $models exists x. thin (p(x) imply forall y. thin p(y))$ #YES
 ]
 
 == Exercise
