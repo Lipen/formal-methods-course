@@ -699,6 +699,8 @@ $alpha$ and $beta$ are _logically equivalent_, denoted $alpha equiv beta$, iff $
 
 A $Sigma$-formula $alpha$ is _valid_, denoted $models alpha$, if $emptyset models alpha$ iff $cal(I) models alpha$ for every interpretation $cal(I)$ of $Sigma$.
 
+#pagebreak()
+
 #example[
   Let $Sigma^S = {ASort}$, $Sigma^F = {p, q}$, $rank(p) = angle.l ASort, BoolSort angle.r$, $rank(q) = angle.l ASort, ASort, BoolSort angle.r$, and all variables have sort $ASort$.
   Do the following entailments hold?
