@@ -33,6 +33,7 @@ jobs:
       - run: typst compile lec-dpll.typ
       - run: typst compile lec-computation.typ
       - run: typst compile lec-fol.typ
+      - run: typst compile lec-smt.typ
 
       - name: Upload PDFs as artifact
         uses: actions/upload-artifact@v4
