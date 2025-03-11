@@ -137,7 +137,9 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 
   Which of the following interpretations are $cal(T)_"RA"$-interpretations?
   + $RealSort^(cal(I)_1) = QQ$, symbols in $Sigma^F_"RA"$ interpreted as usual. #NO
+
   + $RealSort^(cal(I)_2) = RR$, symbols in $Sigma^F_"RA"$ interpreted as usual, and $StringSort^(cal(I)_2) = {0.5, 1.3}$. #YES
+
   + $RealSort^(cal(I)_3) = RR$, symbols in $Sigma^F_"RA"$ interpreted as usual, and $log^(cal(I)_3)$ is the successor function. #YES
 ]
 
