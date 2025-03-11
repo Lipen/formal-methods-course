@@ -400,3 +400,31 @@ $M$ is the class of interpretations that satisfy the following axioms:
 Satisfiability in $cal(T)_"A"$ is _undecidable_.
 
 There are several _decidable_ _fragments_ of $cal(T)_"A"$.
+
+= Extra slides
+
+== Decidability and Complexity
+
+#table(
+  columns: 6,
+  stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+  table.header[Theory][Description][Full][QF][Full complexity][QFC complexity],
+  [PL], [Propositional logic], [yes], [yes], [NP-complete], [$Theta(n)$],
+  [$cal(T)_"E"$], [equality], [no], [yes], [undecidable], [$cal(O)(n log n)$],
+  [$cal(T)_"PA"$], [Peano Arithmetic], [no], [no], [undecidable], [undecidable],
+  [$cal(T)_NN$], [Presburger Arithmetic], [yes], [yes], [$Omega(2^2^n)$, $cal(O)(2^2^2^(k n))$], [NP-complete],
+  [$cal(T)_ZZ$], [linear integers], [yes], [yes], [$Omega(2^2^n)$, $cal(O)(2^2^2^(k n))$], [NP-complete],
+  [$cal(T)_RR$], [reals (with $dot$)], [yes], [yes], [$cal(O)(2^2^(k n))$], [$cal(O)(2^2^(k n))$],
+  [$cal(T)_QQ$], [rationals (without $dot$)], [yes], [yes], [$Omega(2^n)$, $cal(O)(2^2^(k n))$], [PTIME],
+  [$cal(T)_"RDS"$], [recursive data structures], [no], [yes], [undecidable], [$cal(O)(n log n)$],
+  [$cal(T)^+_"RDS"$], [acyclic recursive data structures], [yes], [yes], [not elementary recursive], [$Theta(n)$],
+  [$cal(T)_"A"$], [arrays], [no], [yes], [undecidable], [NP-complete],
+  [$cal(T)^=_"A"$], [arrays with extensionality], [no], [yes], [undecidable], [NP-complete],
+)
+
+#pagebreak()
+- *"Full"* denotes the decidability of a complete theory _with_ quantifiers.
+- *"QF"* denotes the decidability of a _quantifier-free_ theory.
+- *"Full complexity"* denotes the complexity of the satisfiability in a complete theory _with_ quantifiers.
+- *"QFC complexity"* denotes the complexity of the satisfiability in a quantifier-free _conjunctive_ fragment of a theory.
+- "_Not elementary recursive_" means the runtime cannot be bounded by a fixed-height stack of exponentials.
