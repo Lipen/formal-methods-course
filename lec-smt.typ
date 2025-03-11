@@ -432,6 +432,89 @@ There are several _decidable_ _fragments_ of $cal(T)_"A"$.
 
 == Theory Solvers
 
-#definition[
-  A _theory solver_ is a decision procedure for the satisfiability of conjunctions of literals in a theory $cal(T)$.
+#definition[$cal(T)$-solver][
+  A _theory solver_, or _$cal(T)$-solver_, is a specialized decision procedure for the satisfiability of conjunctions of literals in a theory $cal(T)$.
 ]
+
+#[
+  #import fletcher: diagram, node, edge
+  #import fletcher.shapes: *
+  #set align(center)
+  #diagram(
+    // debug: true,
+    edge-stroke: 1pt,
+    node-corner-radius: 3pt,
+
+    blob((0, 0), [Set of literals], shape: rect, tint: teal, height: 2em, name: <input>),
+    edge("-|>"),
+    blob((1, 0), [$cal(T)$-solver], shape: hexagon, tint: purple, height: 2em, name: <solver>),
+    blob((2, -0.5), [Consistent \ (SAT)], shape: rect, tint: green, height: 3em, name: <sat>),
+    blob((2, 0.5), [Inconsistent \ (UNSAT)], shape: rect, tint: red, height: 3em, name: <unsat>),
+    edge(<solver>, <sat>, "-|>"),
+    edge(<solver>, <unsat>, "-|>"),
+  )
+]
+
+== Difference Logic
+
+#definition[
+  _Difference logic_ is a fragment of linear integer arithmetic consisting of conjunctions of literals of the very restricted form:
+  $ x - y join c $
+  where $x$ and $y$ are integer variables, $c$ is a numeral, and $join in {eq, lt, lt.eq, gt, gt.eq}$.
+]
+
+A solver for difference logic consists of three steps:
++ Literals normalization.
++ Conversion to a graph.
++ Cycle detection.
+
+#pagebreak()
+
+*Step 1:* Rewrite each literal using $lt.eq$ by applying the following rules:
++ $(x - y = c) to (x - y lt.eq c) and (x - y gt.eq c)$
++ $(x - y gt.eq c) to (y - x lt.eq -c)$
++ $(x - y > c) to (y - x < -c)$
++ $(x - y < c) to (x - y lt.eq c - 1)$
+
+*Step 2:* Construct a weighted directed graph $G$ with a vertex for each variable and an edge $x arrow^c y$ for each literal $(x - y lt.eq c)$.
+
+*Step 3:* Check for _negative cycles_ in $G$.
+- Use, for example, the Bellman-Ford algorithm.
+- If $G$ contains a negative cycle, the set of literals is _inconsistent_ (UNSAT).
+- Otherwise, the set of literals is _consistent_ (SAT).
+
+== Difference Logic Example
+
+$
+  (x - y = 5) and (z - y gt.eq 2) and (z - x > 2) and (w - x = 2) and (z - w < 0)
+$
+
+#place(right)[
+  #import fletcher: diagram, node, edge
+  #import fletcher.shapes: *
+  #diagram(
+    edge-stroke: 1pt,
+    spacing: 4em,
+    node((0, 0), shape: circle, width: 5pt, height: 5pt, fill: blue, name: <n1>),
+    node((1, -1), shape: circle, width: 5pt, height: 5pt, fill: blue, name: <n2>),
+    node((1, 1), shape: circle, width: 5pt, height: 5pt, fill: blue, name: <n3>),
+    node((2, 0), shape: circle, width: 5pt, height: 5pt, fill: blue, name: <n4>),
+    edge(<n1>, <n2>, "-}>", [$5$], label-side: center, bend: 30deg),
+    edge(<n2>, <n1>, "-}>", [$-5$], label-side: center, bend: 30deg),
+    edge(<n1>, <n3>, "-}>", [$-2$], label-side: center, bend: 30deg),
+    edge(<n3>, <n1>, "-}>", [$2$], label-side: center, bend: 30deg),
+    edge(<n1>, <n4>, "-}>", [$-3$], label-side: center),
+    edge(<n2>, <n4>, "-}>", [$-2$], label-side: center, bend: 30deg),
+    edge(<n4>, <n3>, "-}>", [$-1$], label-side: center, bend: 30deg),
+  )
+]
+
+$
+  (x - y = 5) &to (x - y lt.eq 5) and (y - x lt.eq -5) \
+  (z - y gt.eq 2) &to y - z lt.eq -2 \
+  (z - x > 2) &to x - z lt.eq -3 \
+  (w - x = 2) &to (w - x lt.eq 2) and (x - w lt.eq -2) \
+  (z - w < 0) &to z - w lt.eq -1 \
+$
+
+*UNSAT* because of the negative cycle: $-3, -1, 2$.
