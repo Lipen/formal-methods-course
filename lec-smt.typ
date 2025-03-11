@@ -428,3 +428,11 @@ There are several _decidable_ _fragments_ of $cal(T)_"A"$.
 - *"Full complexity"* denotes the complexity of the satisfiability in a complete theory _with_ quantifiers.
 - *"QFC complexity"* denotes the complexity of the satisfiability in a quantifier-free _conjunctive_ fragment of a theory.
 - "_Not elementary recursive_" means the runtime cannot be bounded by a fixed-height stack of exponentials.
+
+= Theory Solvers
+
+== Theory Solvers
+
+#definition[
+  A _theory solver_ is a decision procedure for the satisfiability of conjunctions of literals in a theory $cal(T)$.
+]
