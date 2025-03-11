@@ -52,7 +52,7 @@
   set page(
     width: width,
     height: height,
-    margin: (x: 0.5 * space, top: space, bottom: 0.75 * space),
+    margin: (x: 0.5 * space, top: space, bottom: 0.5 * space),
     header: context {
       let page = here().page()
       let headings = query(selector(heading.where(level: 2)))
@@ -78,9 +78,7 @@
     footer: context {
       set text(0.8em)
       set align(right)
-      rect(radius: 100%, fill: title-color.transparentize(85%))[
-        #counter(page).display("1/1", both: true)
-      ]
+      counter(page).display("1 / 1", both: true)
     },
     footer-descent: 0.5em,
   )
