@@ -273,7 +273,7 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
 
 // TODO: replace #theorem with #lemma
 #theorem[Lemma][
-  Every recursively axiomatizable theory $cal(T)$ admits a a procedure $E_cal(T)$ that _enumerates_ all $cal(T)$-valid formulas.
+  Every recursively axiomatizable theory $cal(T)$ admits a procedure $E_cal(T)$ that _enumerates_ all $cal(T)$-valid formulas.
 ]
 
 #theorem[
