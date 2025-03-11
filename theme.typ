@@ -122,7 +122,7 @@
   set enum(numbering: nums => text(fill: title-color)[*#nums.*])
 
   // Colored emph
-  show emph: set text(emph-color) if emph-color != none
+  show emph: set text(fill: emph-color) if emph-color != none
 
   // Make links underlined
   show link: underline
