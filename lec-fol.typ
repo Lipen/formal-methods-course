@@ -12,10 +12,7 @@
 
 #let True = $#`true`$
 #let False = $#`false`$
-// #let True = $"true"$
-// #let False = $"false"$
 
-// #let eqq = $scripts(eq.delta)$
 #let eqq = $scripts(eq^.)$
 #let rank = $op("rank")$
 
