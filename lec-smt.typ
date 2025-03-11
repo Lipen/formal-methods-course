@@ -8,6 +8,9 @@
   // dark: true,
 )
 
+#show table.cell.where(y: 0): strong
+#show emph: set text(blue.lighten(20%))
+
 #let eqq = $scripts(eq^.)$
 #let rank = $op("rank")$
 
@@ -222,10 +225,11 @@ It is not hard to show that a formula $alpha$ is valid in $cal(T)$ _iff_ it is v
 #pagebreak()
 #example[
   The axiomatic (mono-sorted) theory of _dense linear orders without endpoints_ with $Sigma^F = {prec}$ and axioms
-  #table(
+  #grid(
     columns: 2,
     align: (right, left),
     stroke: none,
+    inset: 5pt,
     $forall x. forall y. (x prec y) imply exists z. thin ((x prec z) and (z prec y))$, [(dense)],
     $forall x. forall y. thin ((x prec y) or (y prec x) or (x eqq y))$, [(linear)],
     $forall x. thin not (x prec x) quad forall x. forall y. forall z. thin ((x prec y) and (y prec z) imply (x prec z))$,
@@ -277,23 +281,23 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
 
 == Common Theories in SMT
 
-SMT traditionally focuses on theories with decidable quantifier-free fragments.
+SMT traditionally focuses on theories with _decidable_ quantifier-free _fragments_.
 
-Recall: a formula $alpha$ is $cal(T)$-valid iff $not alpha$ is $cal(T)$-unsatisfiable.
+Recall: a formula $alpha$ is _$cal(T)$-valid_ iff $not alpha$ is _$cal(T)$-unsatisfiable_.
 
 Checking the (un)satisfiability of quantifier-free formulas in main background theories efficiently has a large number of applications in:
 #columns(2)[
-- hardware and software verification
-- model checking
-- symbolic execution
-- compiler validation
-- type checking
-#colbreak()
-- planning and scheduling
-- software synthesis
-- cyber-security
-- verifiable machine learning
-- analysis of biological systems
+  - hardware and software verification
+  - model checking
+  - symbolic execution
+  - compiler validation
+  - type checking
+  #colbreak()
+  - planning and scheduling
+  - software synthesis
+  - cyber-security
+  - verifiable machine learning
+  - analysis of biological systems
 ]
 
 Further, we are going to study:
@@ -307,13 +311,13 @@ The satisfiability of quantifier-free formulas in a theory $cal(T)$ is decidable
 We are going to study a general extension of DPLL to SMT that uses decision procedures for _conjunctions of literals_.
 Thus, we will mostly focus on _conjunctions of literals_.
 
-== Theory of Uninterpreted Functions: $cal(T)_"EUF"$
+== Theory of Uninterpreted Functions
 
 Given a signature $Sigma$, the most general theory consists of the class of _all_ $Sigma$-interpretations.
 
 In fact, this is a _family_ of theories parameterized by the signature $Sigma$.
 
-It is known as the theory of _equality with uninterpreted functions_ (EUF), or the _empty theory_, since it is axiomatized by the empty set of axioms.
+It is known as the theory of _equality with uninterpreted functions_ $cal(T)_"EUF"$, or the _empty theory_, since it is axiomatized by the empty set of axioms.
 
 Validity, and so satisfiability, in $cal(T)_"EUF"$ is only _semi-decidable_ (this is just a validity in FOL).
 
@@ -358,7 +362,7 @@ _Linear integer arithmetic_ (`LIA`, also known as _Presburger arithmetic_) is de
 
 == Theory of Arrays with Extensionality
 
-Theory of arrays $cal(T)_"A"$ is useful for modelling RAM or array data structures.
+The theory of arrays $cal(T)_"A"$ is useful for modelling RAM or array data structures.
 
 - $Sigma^S = {Sort("A"), Sort("I"), Sort("E")}$ (arrays, indices, elements)
 - $Sigma^F = {"read", "write"}$, where $rank("read") = angle.l Sort("A"), Sort("I"), Sort("E") angle.r$ and $rank("write") = angle.l Sort("A"), Sort("I"), Sort("E"), Sort("A") angle.r$
@@ -369,12 +373,14 @@ Let $a$ be a variable of sort $Sort("A")$, variable $i$ of sort $Sort("I")$, and
 
 #example[
   $"read"("write"(a, i, v), i) eqq_Sort("E") v$
-  - Is this formula valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
+  - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
+  // Valid
 ]
 
 #example[
   $forall i. thin ("read"(a, i) eqq_Sort("E") "read"(a', i)) imply (a eqq_Sort("A") a')$
-  - Is this formula valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
+  - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
+  // Valid
 ]
 
 #pagebreak()
