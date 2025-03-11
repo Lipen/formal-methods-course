@@ -22,8 +22,14 @@
 #let ArraySort = Sort("Array")
 #let StringSort = Sort("String")
 
-#let Green(x) = text(x, fill: green.darken(20%))
-#let Red(x) = text(x, fill: red.darken(20%))
+#let Green(x) = {
+  show emph: set text(green.darken(20%))
+  text(x, green.darken(20%))
+}
+#let Red(x) = {
+  show emph: set text(red.darken(20%))
+  text(x, red.darken(20%))
+}
 
 #let True = Green(`true`)
 #let False = Red(`false`)
