@@ -9,7 +9,6 @@
 )
 
 #show table.cell.where(y: 0): strong
-#show emph: set text(blue.lighten(20%))
 
 #let eqq = $scripts(eq^.)$
 #let rank = $op("rank")$

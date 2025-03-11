@@ -2,8 +2,6 @@
 
 #import ctheorems: *
 
-#let default-color = blue.darken(40%)
-
 #let layouts = (
   "small": ("height": 9cm, "space": 1.4cm),
   "medium": ("height": 10.5cm, "space": 1.6cm),
@@ -25,7 +23,6 @@
   authors: (),
   layout: "medium",
   ratio: 4 / 3,
-  title-color: none,
   dark: false,
 ) = {
   // Parsing
@@ -36,13 +33,13 @@
   let width = ratio * height
 
   // Colors
-  if title-color == none {
-    title-color = default-color
-  }
+  let title-color = blue.darken(40%)
+  let emph-color = blue.darken(20%)
 
   // Dark mode
   if dark {
-    title-color = title-color.lighten(30%)
+    title-color = title-color.lighten(40%)
+    emph-color = emph-color.lighten(40%)
   }
 
   // Common template
@@ -125,6 +122,9 @@
     ),
   )
   set enum(numbering: nums => text(fill: title-color)[*#nums.*])
+
+  // Colored emph
+  show emph: set text(emph-color) if emph-color != none
 
   // Make links underlined
   show link: underline
