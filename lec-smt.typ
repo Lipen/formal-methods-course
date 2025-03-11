@@ -171,7 +171,7 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 == Axiomatization
 
 #definition[Axiomatic theory][
-  A first-order axiomatic theory $cal(T)$ is defined by a signature $Sigma$ and a set $cal(A)$ of $Sigma$-sentences, or _axioms_.
+  A first-order _axiomatic theory_ $cal(T)$ is defined by a signature $Sigma$ and a set $cal(A)$ of $Sigma$-sentences, or _axioms_.
 ]
 
 In particular, an $Omega$-formula $alpha$ is _valid_ in an axiomatic theory $cal(T)$ if it is entailed by the axioms of $cal(T)$, that is, every $Omega$-interpretation $cal(I)$ that satisfies all axioms of $cal(T)$ also satisfies $alpha$.
