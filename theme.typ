@@ -183,18 +183,18 @@
   "proof",
   "Proof",
   inset: (x: 0em, y: 0em),
-  titlefmt: (it) => strong(it),
+  titlefmt: it => strong(it),
 )
 #let example = thmplain(
   "example",
   "Example",
   inset: (x: 0em, y: 0em),
-  titlefmt: (it) => strong(it),
+  titlefmt: it => strong(it),
 ).with(numbering: none)
 #let examples = example.with(title: "Examples")
 #let note = thmplain(
   "note",
   "Note",
   inset: (x: 0em, y: 0em),
-  titlefmt: (it) => strong(it),
+  titlefmt: it => strong(it),
 ).with(numbering: none)
