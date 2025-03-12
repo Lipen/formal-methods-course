@@ -500,11 +500,11 @@ $
 $
 
 Normalize the literals:
-- $(x - y = 5) &to (x - y lt.eq 5) and (y - x lt.eq -5)$
-- $(z - y gt.eq 2) &to (y - z lt.eq -2)$
-- $(z - x > 2) &to (x - z lt.eq -3)$
-- $(w - x = 2) &to (w - x lt.eq 2) and (x - w lt.eq -2)$
-- $(z - w < 0) &to (z - w lt.eq -1)$
+- $(x - y = 5) arrow.double.long (x - y lt.eq 5) and (y - x lt.eq -5)$
+- $(z - y gt.eq 2) arrow.double.long (y - z lt.eq -2)$
+- $(z - x > 2) arrow.double.long (x - z lt.eq -3)$
+- $(w - x = 2) arrow.double.long (w - x lt.eq 2) and (x - w lt.eq -2)$
+- $(z - w < 0) arrow.double.long (z - w lt.eq -1)$
 
 #place(bottom + right, dy: -1cm)[
   #import fletcher: diagram, node, edge
