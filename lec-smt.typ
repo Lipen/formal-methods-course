@@ -526,4 +526,4 @@ Normalize the literals:
   )
 ]
 
-*UNSAT* because of the negative cycle: $x arrow.squiggly.long^(-3) z arrow.squiggly.long^(-1) w arrow.squiggly.long^(2)$.
+*UNSAT* because of the negative cycle: $x to^(-3) z to^(-1) w to^(2) x$.
