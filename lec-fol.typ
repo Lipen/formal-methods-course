@@ -387,18 +387,19 @@ _Examples_:
   - $sigma$ is a sort from $Sigma^S$.
 
   #align(center)[
+    #import curryst: prooftree, rule
     #grid(
       columns: 2,
       column-gutter: 2em,
-      curryst.prooftree(
-        curryst.rule(
+      prooftree(
+        rule(
           label: smallcaps[Var],
           $Gamma entails x : sigma$,
           $x : sigma in Gamma$,
         ),
       ),
-      curryst.prooftree(
-        curryst.rule(
+      prooftree(
+        rule(
           label: smallcaps[Const],
           $Gamma entails c : sigma$,
           $c in Sigma^F$,
@@ -406,8 +407,8 @@ _Examples_:
         ),
       ),
     )
-    #curryst.prooftree(
-      curryst.rule(
+    #prooftree(
+      rule(
         label: smallcaps[Fun],
         $Gamma entails sexp(f, t_1, dots.c, t_n) : sigma$,
         $f in Sigma^F$,
