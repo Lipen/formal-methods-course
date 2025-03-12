@@ -493,36 +493,37 @@ A solver for difference logic consists of three steps:
 
 == Difference Logic Example
 
+Consider the following set of difference logic literals:
 $
   (x - y = 5) and (z - y gt.eq 2) and (z - x > 2) and (w - x = 2) and (z - w < 0)
 $
 
-#place(right)[
+Normalize the literals:
+- $(x - y = 5) &to (x - y lt.eq 5) and (y - x lt.eq -5)$
+- $(z - y gt.eq 2) &to (y - z lt.eq -2)$
+- $(z - x > 2) &to (x - z lt.eq -3)$
+- $(w - x = 2) &to (w - x lt.eq 2) and (x - w lt.eq -2)$
+- $(z - w < 0) &to (z - w lt.eq -1)$
+
+#place(bottom + right, dy: -1cm)[
   #import fletcher: diagram, node, edge
   #import fletcher.shapes: *
   #diagram(
     edge-stroke: 1pt,
+    node-outset: 2pt,
     spacing: 4em,
-    node((0, 0), shape: circle, width: 5pt, height: 5pt, fill: blue, name: <n1>),
-    node((1, -1), shape: circle, width: 5pt, height: 5pt, fill: blue, name: <n2>),
-    node((1, 1), shape: circle, width: 5pt, height: 5pt, fill: blue, name: <n3>),
-    node((2, 0), shape: circle, width: 5pt, height: 5pt, fill: blue, name: <n4>),
-    edge(<n1>, <n2>, "-}>", [$5$], label-side: center, bend: 30deg),
-    edge(<n2>, <n1>, "-}>", [$-5$], label-side: center, bend: 30deg),
-    edge(<n1>, <n3>, "-}>", [$-2$], label-side: center, bend: 30deg),
-    edge(<n3>, <n1>, "-}>", [$2$], label-side: center, bend: 30deg),
-    edge(<n1>, <n4>, "-}>", [$-3$], label-side: center),
-    edge(<n2>, <n4>, "-}>", [$-2$], label-side: center, bend: 30deg),
-    edge(<n4>, <n3>, "-}>", [$-1$], label-side: center, bend: 30deg),
+    node((0, 0), [$x$], shape: circle, fill: blue.lighten(80%), stroke: 1pt + blue.darken(20%), name: <x>),
+    node((1, -1), [$y$], shape: circle, fill: blue.lighten(80%), stroke: 1pt + blue.darken(20%), name: <y>),
+    node((1, 1), [$w$], shape: circle, fill: blue.lighten(80%), stroke: 1pt + blue.darken(20%), name: <w>),
+    node((2, 0), [$z$], shape: circle, fill: blue.lighten(80%), stroke: 1pt + blue.darken(20%), name: <z>),
+    edge(<x>, <y>, "-}>", [$5$], label-side: center, bend: 30deg),
+    edge(<y>, <x>, "-}>", [$-5$], label-side: center, bend: 30deg),
+    edge(<x>, <w>, "-}>", [$-2$], label-side: center, bend: 30deg),
+    edge(<w>, <x>, "-}>", [$2$], label-side: center, bend: 30deg),
+    edge(<x>, <z>, "-}>", [$-3$], label-side: center),
+    edge(<y>, <z>, "-}>", [$-2$], label-side: center, bend: 30deg),
+    edge(<z>, <w>, "-}>", [$-1$], label-side: center, bend: 30deg),
   )
 ]
 
-$
-  (x - y = 5) &to (x - y lt.eq 5) and (y - x lt.eq -5) \
-  (z - y gt.eq 2) &to y - z lt.eq -2 \
-  (z - x > 2) &to x - z lt.eq -3 \
-  (w - x = 2) &to (w - x lt.eq 2) and (x - w lt.eq -2) \
-  (z - w < 0) &to z - w lt.eq -1 \
-$
-
-*UNSAT* because of the negative cycle: $-3, -1, 2$.
+*UNSAT* because of the negative cycle: $x arrow.squiggly.long^(-3) z arrow.squiggly.long^(-1) w arrow.squiggly.long^(2)$.
