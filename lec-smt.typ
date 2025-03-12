@@ -11,6 +11,7 @@
 #show table.cell.where(y: 0): strong
 
 #let eqq = $scripts(eq^.)$
+#let neqq = $scripts(cancel(eq^.))$
 #let rank = $op("rank")$
 
 #let Sort(s) = $#raw(s)$
@@ -527,3 +528,297 @@ Normalize the literals:
 ]
 
 *UNSAT* because of the negative cycle: $x to^(-3) z to^(-1) w to^(2) x$.
+
+== Satisfiability Proof Systems
+
+#definition[
+  A literal is _flat_ if it if the form:
+  - $x eqq y$
+  - $not (x eqq y)$
+  - $x eqq f(bold(z))$
+  where $x$ and $y$ are variables, $f$ is a function symbol, and $bold(z)$ is a tuple of 0 or more variables.
+]
+
+#note[
+  Any set of literals can be converted to an equisatisfiable set of _flat_ literals by introducing _new_ variables and equating non-equational atoms to #True.
+]
+
+#example[
+  Consider the set of literals: ${ x + y > 0, y eqq f(g(z)) }$.
+
+  We can convert it to an equisatisfiable set of flat literals by introducing fresh variables $v_1$, $v_2$ and $v_3$:
+  $
+    {med v_1 eqq v_2 > v_3, quad v_1 eqq True, quad v_2 eqq x + y, quad v_3 eqq 0, quad y eqq f(v_4), quad v_4 eqq g(z) med}
+  $
+]
+
+Hereinafter, we will assume that all literals are _flat_.
+
+== Notation and Assumptions
+
+- We abbreviate $not (s eqq t)$ with $s neqq t$.
+
+- For tuples $bold(u) = angle.l u_1, dots, u_n angle.r$ and $bold(v) = angle.l v_1, dots, v_n angle.r$, we abbreviate $(u_1 eqq v_1) and dots and (u_n eqq v_n)$ with $bold(u) = bold(v)$.
+- $Gamma$ is used to refer to the "current" proof state in rule premises.
+- $Gamma, s eqq t$ is an abbreviation for $Gamma union {s eqq t}$.
+- If applying a rule $R$ does not change $Gamma$, then $R$ _is not applicable_ to $Gamma$, that is, $Gamma$ is _irreducible_ w.r.t. $R$.
+
+== A Satisfiability Proof System for `QF_UF`
+
+Let `QF_UF` be the quantifier-free fragment of FOL over some signature $Sigma$.
+
+Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
+#align(center)[
+  #import curryst: prooftree, rule
+  #grid(
+    columns: 2,
+    align: left,
+    column-gutter: 1cm,
+    row-gutter: 2em,
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Contr*],
+        [UNSAT],
+        $x eqq y in Gamma$,
+        $x neqq y in Gamma$,
+      ),
+    ),
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Refl*],
+        $Gamma := Gamma, x eqq x$,
+        [$x$ occurs in $Gamma$],
+      ),
+    ),
+
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Symm*],
+        $Gamma := Gamma, y eqq x$,
+        $x neqq y in Gamma$,
+      ),
+    ),
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Trans*],
+        $Gamma := Gamma, x eqq z$,
+        $x neqq y in Gamma$,
+        $y eqq z in Gamma$,
+      ),
+    ),
+
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Cong*],
+        $Gamma := Gamma, x eqq y$,
+        $x eqq f(bold(u)) in Gamma$,
+        $y eqq f(bold(v)) in Gamma$,
+        $bold(u) = bold(v) in Gamma$,
+      ),
+    ),
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*SAT*],
+        [SAT],
+        [No other rules apply],
+      ),
+    ),
+  )
+]
+
+Is $R_"UF"$ _sound_?
+
+Is $R_"UF"$ _terminating_?
+
+== Example Derivation in $R_"UF"$
+
+#align(center)[
+  #import curryst: prooftree, rule
+  #set text(size: 0.8em)
+  #show: box.with(inset: 1em, radius: 1em, stroke: 0.4pt)
+  #grid(
+    columns: 3,
+    align: left,
+    column-gutter: 1em,
+    row-gutter: 1em,
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Refl*],
+        $Gamma := Gamma, x eqq x$,
+        [$x$ occurs in $Gamma$],
+      ),
+    ),
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Contr*],
+        [UNSAT],
+        $x eqq y in Gamma$,
+        $x neqq y in Gamma$,
+      ),
+    ),
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Trans*],
+        $Gamma := Gamma, x eqq z$,
+        $x neqq y in Gamma$,
+        $y eqq z in Gamma$,
+      ),
+    ),
+
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Symm*],
+        $Gamma := Gamma, y eqq x$,
+        $x neqq y in Gamma$,
+      ),
+    ),
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Cong*],
+        $Gamma := Gamma, x eqq y$,
+        $x eqq f(bold(u)) in Gamma$,
+        $y eqq f(bold(v)) in Gamma$,
+        $bold(u) = bold(v) in Gamma$,
+      ),
+    ),
+    prooftree(
+      title-inset: 0.5em,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*SAT*],
+        [SAT],
+        [No other rules apply],
+      ),
+    ),
+  )
+]
+
+#example[
+  Determine the satisfiability of the following set of literals:
+  $a eqq f(f(a))$, $a eqq f(f(f(a)))$, $g(a, f(a)) neqq g(f(a), a)$.
+  Flatten the literals and construct the following proof:
+  #align(center)[
+    #import curryst: prooftree, rule
+    #prooftree(
+      rule(
+        name: [#smallcaps[Contr] applied to $a_3 eqq a_4, a_3 neqq a_4$],
+        [UNSAT],
+        rule(
+          name: [#smallcaps[Cong] applied to $a_3 eqq g(a, a_1), a_4 eqq g(a_1, a), a eqq a_1, a_1 eqq a$],
+          $a_3 eqq a_4$,
+          rule(
+            name: [#smallcaps[Symm]],
+            $a eqq a_1$,
+            rule(
+              name: [#smallcaps[Cong] applied to $a_1 eqq f(a), a eqq f(a_2), a eqq a_2$],
+              $a_1 eqq a$,
+              rule(
+                name: [#smallcaps[Cong] applied to $a eqq f(a_1), med a_2 eqq f(a_1), a_1 eqq a_1$],
+                $a eqq a_2$,
+                rule(
+                  name: [#smallcaps[Refl]],
+                  $a_1 eqq a_1$,
+                  $a eqq f(a_1), a_1 eqq f(a), a eqq f(a_2), a_2 eqq f(a_1), a_3 neqq a_4, a_3 eqq g(a, a_1), a_4 eqq g(a_1, a)$,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    )
+  ]
+]
+
+== Soundness
+
+#theorem[Refutation soundness][
+  A literal set $Gamma_0$ is unsatisfiable if $R_"UF"$ derives UNSAT from it.
+]
+#proof[
+  All rules except #smallcaps[SAT] are satisfiability-preserving.
+
+  If a derivation from $Gamma_0$ ends with UNSAT, then $Gamma_0$ must be unsatisfiable.
+]
+
+#theorem[Solution soundness][
+  A literal set $Gamma_0$ is satisfiable if $R_"UF"$ derives SAT from it.
+]
+#proof[
+  Let $Gamma$ be a proof state to which #smallcaps[SAT] applies.
+  From $Gamma$, we can construct an interpretation $cal(I)$ that satisfies $Gamma_0$.
+  Let $s tilde t$ iff $(s eqq t) in Gamma$.
+  One can show that $tilde$ is an equivalence relation.
+
+  Let the domain of $cal(I)$ be the equivalence classes $E_1, dots, E_k$ of $tilde$.
+  - For every variable or a constant $t$, let $t^cal(I) = E_i$ if $t in E_i$ for some $i$.
+    Otherwise, let $t^cal(I) = E_1$.
+  - For every unary function symbol $f$, and equivalence class $E_i$, let $f^cal(I)$ be such that $f^cal(I)(E_i) = E_j$ if #box[$f(t) in E_j$] for some $t in E_i$.
+    Otherwise, let $f^cal(I)(E_i) = E_1$.
+    Define $f^cal(I)$ for non-unary $f$ similarly.
+
+  We can show that $cal(I) models Gamma$.
+  This means that $cal(I)$ models $Gamma_0$ as well since $Gamma_0 subset.eq Gamma$.
+]
+
+== Termination
+
+#theorem[
+  Every derivation strategy for $R_"UF"$ terminates.
+]
+#proof[
+  $R_"UF"$ adds to the current state $Gamma$ only equalities between variables of $Gamma_0$.
+
+  So, at some point it will run out of new equalities to add.
+]
+
+== Completeness
+
+#theorem[Refutation completeness][
+  Every derivation strategy applied to an unsatisfiable state $Gamma_0$ ends with UNSAT.
+]
+#proof[
+  Let $Gamma_0$ be an unsatisfiable state.
+  Suppose there was a derivation from $Gamma_0$ that did not end with UNSAT.
+  Then, by the termination theorem, it would have to end with SAT.
+  But then $R_"UF"$ would be not be solution sound.
+]
+
+#theorem[Solution completeness][
+  Every derivation strategy applied to a satisfiable state $Gamma_0$ ends with SAT.
+]
+#proof[
+  Let $Gamma_0$ be a satisfiable state.
+  Suppose there was a derivation from $Gamma_0$ that did not end with SAT.
+  Then, by the termination theorem, it would have to end with UNSAT.
+  But then $R_"UF"$ would be not be refutation sound.
+]
+
+== TODO
+
+- theory of arrays $cal(T)_"A"$
+- satisfiability proof system for $cal(T)_"A"$
+- soundness, termination, completeness
+- LRA, Linear programming, Simplex algorithm
+- Strings solver
