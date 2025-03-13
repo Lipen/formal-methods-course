@@ -589,7 +589,7 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
     columns: 2,
     align: left,
     column-gutter: 1cm,
-    row-gutter: 2em,
+    inset: .5em,
     prooftree(
       title-inset: 0.5em,
       vertical-spacing: 2pt,
