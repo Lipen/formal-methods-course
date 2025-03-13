@@ -789,7 +789,7 @@ Is $R_"UF"$ _terminating_?
               name: [#smallcaps[Cong] applied to $a_1 eqq f(a), a eqq f(a_2), a eqq a_2$],
               $a_1 eqq a$,
               rule(
-                name: [#smallcaps[Cong] applied to $a eqq f(a_1), med a_2 eqq f(a_1), a_1 eqq a_1$],
+                name: [#smallcaps[Cong] applied to $a eqq f(a_1), a_2 eqq f(a_1), a_1 eqq a_1$],
                 $a eqq a_2$,
                 rule(
                   name: [#smallcaps[Refl]],
