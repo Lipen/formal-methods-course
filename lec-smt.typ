@@ -79,19 +79,19 @@ _Theories_ formalize this domain-specific reasoning: we talk about satisfiabilit
 Hereinafter, we assume that we have an infinite set of variables $X$.
 
 #definition[Theory][
-  A first-order _theory_ $cal(T)$ is a pair $angle.l Sigma, M angle.r$, where
+  A first-order _theory_ $cal(T)$ is a pair#footnote[Here, we use *bold* style for $bold(M)$ to denote that it is _not a single_ model, but a _collection_ of them.] $angle.l Sigma, bold(M) angle.r$, where
   - $Sigma = angle.l Sigma^S, Sigma^F angle.r$ is a first-order signature,
-  - $M$ is a class of $Sigma$-interpretations over $X$ that is _closed under variable re-assignment_.
+  - $bold(M)$ is a class#footnote[_Class_ is a generalization of a set.] of $Sigma$-interpretations over $X$ that is _closed under variable re-assignment_.
 ]
 
 #definition[
-  $M$ is _closed under variable re-assignment_ if every $Sigma$-interpretation that differs from one in $M$ in the way it interprets the variables in $X$ is also in $M$.
+  $bold(M)$ is _closed under variable re-assignment_ if every $Sigma$-interpretation that differs from one in $bold(M)$ in the way it interprets the variables in $X$ is also in $bold(M)$.
 ]
 
 #v(1em)
 #align(center)[
   #fancy-box[
-    A theory limits the interpretations of $Sigma$-formulas to those from $M$.
+    A theory limits the interpretations of $Sigma$-formulas to those from $bold(M)$.
   ]
 ]
 
@@ -105,7 +105,7 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 ]
 
 #example[
-  Theory of Ternary Strings $cal(T)_"TS" = angle.l Sigma_"TS", M_"TS" angle.r$:
+  Theory of Ternary Strings $cal(T)_"TS" = angle.l Sigma_"TS", bold(M)_"TS" angle.r$:
   - $Sigma^S_"TS" = {StringSort}$
   - $Sigma^F_"TS" = {thin dot thin, <} union {"a", "b", "c"}$
   - All $cal(I) in M_"TS"$ interpret $StringSort$ as the set ${"a", "b", "c"}^*$ of all finite strings over the characters {"a", "b", "c"}, symbol $dot$~as string concatenation (e.g., $"a" dot "b" = "ab"$), and $<$ as lexicographic order.
@@ -122,19 +122,19 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 ]
 
 #definition[$cal(T)$-interpretation][
-  Given a theory $cal(T) = angle.l Sigma, M angle.r$, a _$cal(T)$-interpretation_ is any #box[$Omega$-interpretation] $cal(I)$ for some signature $Omega supset.eq Sigma$ such that $cal(I)^Sigma in M$.
+  Given a theory $cal(T) = angle.l Sigma, bold(M) angle.r$, a _$cal(T)$-interpretation_ is any #box[$Omega$-interpretation] $cal(I)$ for some signature $Omega supset.eq Sigma$ such that $cal(I)^Sigma in bold(M)$.
 ]
 #note[
-  This definition allows us to consider the satisfiability in a theory $cal(T) = angle.l Sigma, M angle.r$ of formulas that contain sorts or function symbols not in $Sigma$.
+  This definition allows us to consider the satisfiability in a theory $cal(T) = angle.l Sigma, bold(M) angle.r$ of formulas that contain sorts or function symbols not in $Sigma$.
   These symbols are usually called _uninterpreted_ (in $cal(T)$).
 ]
 
 #pagebreak()
 
 #example[
-  Consider again the theory of real arithmetic $cal(T)_"RA" = angle.l Sigma_"RA", M_"RA" angle.r$.
+  Consider again the theory of real arithmetic $cal(T)_"RA" = angle.l Sigma_"RA", bold(M)_"RA" angle.r$.
 
-  All $cal(I) in M_"RA"$ interpret $RealSort$ as $RR$ and function symbols as usual.
+  All $cal(I) in bold(M)_"RA"$ interpret $RealSort$ as $RR$ and function symbols as usual.
 
   Which of the following interpretations are $cal(T)_"RA"$-interpretations?
   + $RealSort^(cal(I)_1) = QQ$, symbols in $Sigma^F_"RA"$ interpreted as usual. #NO
@@ -170,7 +170,7 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 
 == FOL vs Theory
 
-For every signature $Sigma$, entailment and validity in "pure" FOL can be seen as entailment and validity in the theory $cal(T)_"FOL" = angle.l Sigma, M_"FOL" angle.r$ where $M_"FOL"$ is the class of _all possible_ $Sigma$-interpretations.
+For every signature $Sigma$, entailment and validity in "pure" FOL can be seen as entailment and validity in the theory $cal(T)_"FOL" = angle.l Sigma, bold(M)_"FOL" angle.r$ where $bold(M)_"FOL"$ is the class of _all possible_ $Sigma$-interpretations.
 
 - Pure first-order logic = reasoning over _all_ possible interpretations.
 - Reasoning modulo a theory = _restricting_ interpretations with some domain constraints.
@@ -179,27 +179,42 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 == Axiomatization
 
 #definition[Axiomatic theory][
-  A first-order _axiomatic theory_ $cal(T)$ is defined by a signature $Sigma$ and a set $cal(A)$ of $Sigma$-sentences, or _axioms_.
+  A first-order _axiomatic theory_ $cal(T)$ is defined by a signature $Sigma$ and a set~$cal(A)$ of $Sigma$-sentences, or _axioms_.
 ]
 
-In particular, an $Omega$-formula $alpha$ is _valid_ in an axiomatic theory $cal(T)$ if it is entailed by the axioms of $cal(T)$, that is, every $Omega$-interpretation $cal(I)$ that satisfies all axioms of $cal(T)$ also satisfies $alpha$.
+#definition[$cal(T)$-validity in axiomatic theory][
+  An $Omega$-formula $alpha$ is _valid_ in an axiomatic theory $cal(T)$ if it is entailed by the axioms of $cal(T)$, that is, every $Omega$-interpretation $cal(I)$ that satisfies $cal(A)$ also satisfies $alpha$.
+]
 
 // TODO: mention that axiomatic theories are a special case of those defined on the previous slides. Also mention that the notion of "axiomatic theories" is LESS general (as shown below by the examples of "non-axiomatizable" theories).
-Given an axiomatic theory $cal(T)$ defined by $Sigma$ and $cal(A)$, we can define a theory $cal(T)' = angle.l Sigma, M angle.r$ where $M$ is the class of all $Sigma$-interpretations that satisfy all axioms in $cal(A)$.
+#note[
+  Axiomatic theories are a _special case_ of the general definition (via $bold(M)$) of theories.
+  - Given an axiomatic theory $cal(T)'$ defined by $Sigma$ and $cal(A)$, we can define a theory $cal(T) = angle.l Sigma, bold(M) angle.r$ where $bold(M)$ is the class of all $Sigma$-interpretations that satisfy all axioms in $cal(A)$.
+  - It is not hard to show that a formula $alpha$ is valid in $cal(T)$ _iff_ it is valid in $cal(T)'$.
+]
 
-It is not hard to show that a formula $alpha$ is valid in $cal(T)$ _iff_ it is valid in $cal(T)'$.
+#note[
+  Not all theories are first-order axiomatizable.
+]
 
 #pagebreak()
 #note[
   Not all theories are first-order axiomatizable.
+]
+#example[
+  Consider the theory $cal(T)_NatSort$ of the natural numbers, with signature $Sigma$ with $Sigma^S = {NatSort}$, $Sigma^F = {0,S,+,<}$, and $M = {cal(I)}$ where $NatSort^cal(I) = NN$ and $Sigma^F$ is interpreted as usual.
 
-  #example[
-    Consider the theory $cal(T)_NatSort$ of the natural numbers, with signature $Sigma$ with $Sigma^S = {NatSort}$, $Sigma^F = {0,S,+,<}$, and $M = {cal(I)}$ where $NatSort^cal(I) = NN$ and $Sigma^F$ is interpreted as usual.
+  _Any set of axioms_ (for example, Peano axioms) for this theory is satisfied by _non-standard models_, e.g., interpretations $cal(I)'$ where $NatSort^cal(I)'$ includes other chains of elements besides the natural numbers.
 
-    _Any set of axioms_ for this theory is satisfied by _non-standard models_, e.g., interpretations $cal(I)$ where $NatSort^cal(I)$ includes other chains of elements besides the natural numbers, e.g., $NN^cal(I) = {0,1,2,...} union {omega, omega+1, ...}$.
+  These models _falsify_ formulas that are _valid_ in $cal(T)_NatSort$.
 
-    These models _falsify_ formulas that are _valid_ in $cal(T)_NatSort$, e.g., $not exists x. thin (x < 0)$ or $forall x. thin ((x eqq 0) or exists y. thin (x eqq S(y)))$.
-  ]
+  For example, "every number is either zero or a successor": $forall x. thin (x eqq 0) or exists y. thin (x eqq S(y))$.
+  - #True in the _standard_ model, i.e. $NatSort^cal(I) = NN = {0, 1 := S(0), 2 := S(1), dots}$.
+  - #False in _non-standard_ models, e.g., $NatSort^cal(I)' = {0, 1, 2, dots} union {omega, omega+1, dots}$
+    - Intuitively, $omega$ is "an infinite element".
+    - The successor function still applies: $S(omega) = omega + 1$, $S(omega + 1) = omega + 2$, etc.
+    - Even the addition and multiplication still works: $omega + 3 = S(S(S(omega)))$, $omega times 2 = omega + omega$.
+    - But $omega$ is larger than all standard numbers: $omega > 0, omega > 1, dots$
 ]
 
 == Completeness of Theories
@@ -212,10 +227,9 @@ It is not hard to show that a formula $alpha$ is valid in $cal(T)$ _iff_ it is v
 ]
 
 #example[
-  Any theory $cal(T) = angle.l Sigma, M angle.r$ where all interpretations in $M$ only differ in how they interpret the variables (e.g., $cal(T)_"RA"$) is _complete_.
+  Any theory $cal(T) = angle.l Sigma, bold(M) angle.r$ where all interpretations in $M$ only differ in how they interpret the variables (e.g., $cal(T)_"RA"$) is _complete_.
 ]
 
-#pagebreak()
 #example[
   The axiomatic (mono-sorted) theory of _monoids_ with $Sigma^F = {dot, epsilon}$ and axioms
   $
@@ -226,8 +240,7 @@ It is not hard to show that a formula $alpha$ is valid in $cal(T)$ _iff_ it is v
     forall x. thin (epsilon dot x eqq x)
   $
   is _incomplete_.
-
-  For example, the sentence $forall x. forall y. thin (x dot y eqq y dot x)$ is #True in some monoids (e.g. the integers with addition) but #False in others (e.g. the strings with concatenation).
+  For example, the sentence $forall x. forall y. thin (x dot y eqq y dot x)$ is #True in some monoids (e.g. the addition of integers _is_ commutative) but #False in others (e.g. the concatenation of strings _is not_ commutative).
 ]
 
 #pagebreak()
@@ -253,7 +266,7 @@ It is not hard to show that a formula $alpha$ is valid in $cal(T)$ _iff_ it is v
 Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure that, given an input element $a$, returns (after _finite_ time) either "yes" if $a in A$ or "no" if $a notin A$.
 
 #definition[
-  A theory $cal(T) = angle.l Sigma, M angle.r$ is _decidable_ if the set of all _$cal(T)$-valid_ $Sigma$-formulas is decidable.
+  A theory $cal(T) = angle.l Sigma, bold(M) angle.r$ is _decidable_ if the set of all _$cal(T)$-valid_ $Sigma$-formulas is decidable.
 ]
 
 #definition[
