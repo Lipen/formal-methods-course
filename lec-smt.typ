@@ -245,12 +245,12 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 
 #pagebreak()
 #example[
-  The axiomatic (mono-sorted) theory of _dense linear orders without endpoints_ with $Sigma^F = {prec}$ and axioms
+  The axiomatic (mono-sorted) theory of _dense linear orders without endpoints_ with $Sigma^F = {prec}$ and the following axioms is _complete_.
   #grid(
     columns: 2,
     align: (right, left),
-    stroke: none,
-    inset: 5pt,
+    column-gutter: 1em,
+    row-gutter: 1em,
     $forall x. forall y. (x prec y) imply exists z. thin ((x prec z) and (z prec y))$, [(dense)],
     $forall x. forall y. thin ((x prec y) or (y prec x) or (x eqq y))$, [(linear)],
     $forall x. thin not (x prec x) quad forall x. forall y. forall z. thin ((x prec y) and (y prec z) imply (x prec z))$,
@@ -258,7 +258,6 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 
     $forall x. exists y. thin (y prec x) quad forall x. exists y. thin (x prec y)$, [(without endpoints)],
   )
-  is _complete_.
 ]
 
 == Decidability
