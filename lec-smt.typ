@@ -364,12 +364,13 @@ Further, we are going to study:
 - A few of those theories and their decision procedures.
 - Proof systems to reason modulo theories automatically.
 
-== From QF to Cubes
+== From QF to Conjunctions of Literals
 
-The satisfiability of quantifier-free formulas in a theory $cal(T)$ is decidable iff the satisfiability in $cal(T)$ of _conjunctions of literals (cubes)_ is decidable.
+#theorem[
+  The satisfiability of _quantifier-free_ formulas in a theory $cal(T)$ is _decidable_ iff the satisfiability in $cal(T)$ of _conjunctions of literals_ is decidable.
+]
 
-We are going to study a general extension of DPLL to SMT that uses decision procedures for _conjunctions of literals_.
-Thus, we will mostly focus on _conjunctions of literals_.
+We will study a general extension of DPLL to SMT that uses decision procedures for _conjunctions of literals_.
 
 == Theory of Uninterpreted Functions
 
