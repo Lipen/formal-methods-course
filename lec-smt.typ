@@ -204,9 +204,9 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 #example[
   Consider the theory $cal(T)_NatSort$ of the natural numbers, with signature $Sigma$ with $Sigma^S = {NatSort}$, $Sigma^F = {0,S,+,<}$, and $M = {cal(I)}$ where $NatSort^cal(I) = NN$ and $Sigma^F$ is interpreted as usual.
 
-  _Any set of axioms_ (for example, Peano axioms) for this theory is satisfied by _non-standard models_, e.g., interpretations $cal(I)'$ where $NatSort^cal(I)'$ includes other chains of elements besides the natural numbers.
+  _Any set of axioms_ (for example, _Peano axioms_) for this theory is satisfied by _non-standard models_, e.g., interpretations $cal(I)'$ where $NatSort^cal(I)'$ includes other chains of elements besides the natural numbers.
 
-  These models _falsify_ formulas that are _valid_ in $cal(T)_NatSort$.
+  However, these models _falsify_ formulas that are _valid_ in $cal(T)_NatSort$.
 
   For example, "every number is either zero or a successor": $forall x. thin (x eqq 0) or exists y. thin (x eqq S(y))$.
   - #True in the _standard_ model, i.e. $NatSort^cal(I) = NN = {0, 1 := S(0), 2 := S(1), dots}$.
@@ -215,6 +215,41 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
     - The successor function still applies: $S(omega) = omega + 1$, $S(omega + 1) = omega + 2$, etc.
     - Even the addition and multiplication still works: $omega + 3 = S(S(S(omega)))$, $omega times 2 = omega + omega$.
     - But $omega$ is larger than all standard numbers: $omega > 0, omega > 1, dots$
+]
+
+== Peano Arithmetic
+
+#definition[
+  _Peano arithmetic_ $cal(T)_"PA"$, or _first-order arithmetic_, is the axiomatic theory of natural numbers with signature $Sigma^F_"PA" = {0, S, +, times, =}$ and _Peano axioms_:
+  + $forall x. thin (S(x) neq 0)$ #h(1fr) (zero) #h(6cm)
+  + $forall x. forall y. thin (S(x) eq S(y)) imply (x eq y)$ #h(1fr) (successor) #h(6cm)
+  + $F[0] and (forall x. thin F[x] imply F[x+1]) imply forall x. thin F[x]$ #h(1fr) (induction) #h(6cm)
+  + $forall x. thin (x + 0 eq x)$ #h(1fr) (plus zero) #h(6cm)
+  + $forall x. forall y. thin (x + S(y) eq S(x + y))$ #h(1fr) (plus successor) #h(6cm)
+  + $forall x. thin (x times 0 eq 0)$ #h(1fr) (times zero) #h(6cm)
+  + $forall x. forall y. thin (x times S(y) eq (x times y) + x)$ #h(1fr) (times successor) #h(6cm)
+
+  Axiom (induction) is the _induction axiom schema_.
+  It stands for an _infinite_ set of axioms, one for each $Sigma_"PA"$-formula $F$ with one free variable.
+  The notation $F[alpha]$ means that $F$ contains $alpha$ as a sub-formula.
+
+  The _intended interpretation_ (_standard models_) of $cal(T)_"PA"$ have the domain $NN$ and the usual interpretations of the function symbols as $0_NN$, $S_NN$, $+_NN$, and $times_NN$.
+]
+
+== Presburger Arithmetic
+
+#note[
+  Satisfiability and validity in $cal(T)_"PA"$ is undecidable.
+  Therefore, we need a more restricted theory of arithmetic that does not include multiplication.
+]
+
+#definition[
+  _Presburger arithmetic_ $cal(T)_NN$ is the axiomatic theory of natural numbers with signature $Sigma^F_NN = {0, S, +, =}$ and the _subset_ of _Peano axioms_:
+  + $forall x. thin (S(x) neq 0)$ #h(1fr) (zero) #h(6cm)
+  + $forall x. forall y. thin (S(x) eq S(y)) imply (x eq y)$ #h(1fr) (successor) #h(6cm)
+  + $F[0] and (forall x. thin F[x] imply F[x+1]) imply forall x. thin F[x]$ #h(1fr) (induction) #h(6cm)
+  + $forall x. thin (x + 0 eq x)$ #h(1fr) (plus zero) #h(6cm)
+  + $forall x. forall y. thin (x + S(y) eq S(x + y))$ #h(1fr) (plus successor) #h(6cm)
 ]
 
 == Completeness of Theories
