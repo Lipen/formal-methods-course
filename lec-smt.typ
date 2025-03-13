@@ -470,7 +470,7 @@ There are several _decidable_ _fragments_ of $cal(T)_"A"$.
   columns: 6,
   stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
   table.header[Theory][Description][Full][QF][Full complexity][QFC complexity],
-  [PL], [Propositional logic], [yes], [yes], [NP-complete], [$Theta(n)$],
+  [PL], [Propositional logic], [---], [yes], [NP-complete], [$Theta(n)$],
   [$cal(T)_"E"$], [equality], [no], [yes], [undecidable], [$cal(O)(n log n)$],
   [$cal(T)_"PA"$], [Peano Arithmetic], [no], [no], [undecidable], [undecidable],
   [$cal(T)_NN$], [Presburger Arithmetic], [yes], [yes], [$Omega(2^2^n)$, $cal(O)(2^2^2^(k n))$], [NP-complete],
