@@ -486,7 +486,8 @@ There are several _decidable_ _fragments_ of $cal(T)_"A"$.
 - *"Full"* denotes the decidability of a complete theory _with_ quantifiers.
 - *"QF"* denotes the decidability of a _quantifier-free_ theory.
 - *"Full complexity"* denotes the complexity of the satisfiability in a complete theory _with_ quantifiers.
-- *"QFC complexity"* denotes the complexity of the satisfiability in a quantifier-free _conjunctive_ fragment of a theory.
+- *"QFC complexity"* denotes the complexity of the satisfiability in a quantifier-free _conjunctive_ fragment.
+- For complexities, $n$ is the size of the input formula, $k$ is some positive integer.
 - "_Not elementary recursive_" means the runtime cannot be bounded by a fixed-height stack of exponentials.
 
 = Theory Solvers
