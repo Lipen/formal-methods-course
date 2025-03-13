@@ -529,7 +529,9 @@ Normalize the literals:
 
 *UNSAT* because of the negative cycle: $x to^(-3) z to^(-1) w to^(2) x$.
 
-== Satisfiability Proof Systems
+= Satisfiability Proof Systems
+
+== Flattening
 
 #definition[
   A literal is _flat_ if it if the form:
@@ -751,7 +753,7 @@ Is $R_"UF"$ _terminating_?
   ]
 ]
 
-== Soundness
+== Soundness of $R_"UF"$
 
 #theorem[Refutation soundness][
   A literal set $Gamma_0$ is unsatisfiable if $R_"UF"$ derives UNSAT from it.
@@ -782,7 +784,7 @@ Is $R_"UF"$ _terminating_?
   This means that $cal(I)$ models $Gamma_0$ as well since $Gamma_0 subset.eq Gamma$.
 ]
 
-== Termination
+== Termination in $R_"UF"$
 
 #theorem[
   Every derivation strategy for $R_"UF"$ terminates.
@@ -793,7 +795,7 @@ Is $R_"UF"$ _terminating_?
   So, at some point it will run out of new equalities to add.
 ]
 
-== Completeness
+== Completeness of $R_"UF"$
 
 #theorem[Refutation completeness][
   Every derivation strategy applied to an unsatisfiable state $Gamma_0$ ends with UNSAT.
