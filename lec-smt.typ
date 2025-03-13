@@ -196,10 +196,12 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
   Not all theories are first-order axiomatizable.
 ]
 
-#pagebreak()
+== Non-Axiomaticizable Theories
+
 #note[
   Not all theories are first-order axiomatizable.
 ]
+
 #example[
   Consider the theory $cal(T)_NatSort$ of the natural numbers, with signature $Sigma$ with $Sigma^S = {NatSort}$, $Sigma^F = {0,S,+,<}$, and $M = {cal(I)}$ where $NatSort^cal(I) = NN$ and $Sigma^F$ is interpreted as usual.
 
@@ -249,6 +251,10 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
   + $F[0] and (forall x. thin F[x] imply F[x+1]) imply forall x. thin F[x]$ #h(1fr) (induction) #h(6cm)
   + $forall x. thin (x + 0 eq x)$ #h(1fr) (plus zero) #h(6cm)
   + $forall x. forall y. thin (x + S(y) eq S(x + y))$ #h(1fr) (plus successor) #h(6cm)
+]
+
+#note[
+  Presburger arithmetic is decidable.
 ]
 
 == Completeness of Theories
