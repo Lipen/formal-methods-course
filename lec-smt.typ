@@ -312,10 +312,10 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
   A _fragment_ of $cal(T)$ is a _syntactically-restricted subset_ of $cal(T)$-valid $Sigma$-formulas.
 ]
 #example[
-  The _quantifier-free_ fragment of $cal(T)$ is the set of all $cal(T)$-valid $Sigma$-formulas without any quantifiers.
+  The _quantifier-free_ fragment of $cal(T)$ is the set of all $cal(T)$-valid $Sigma$-formulas _without quantifiers_.
 ]
 #example[
-  The _linear_ fragment of $cal(T)_"RA"$ is the set of all $cal(T)$-valid $Sigma_"RA"$-formulas without multiplication ($*$).
+  The _linear_ fragment of $cal(T)_"RA"$ is the set of all $cal(T)$-valid $Sigma_"RA"$-formulas _without multiplication_ ($times$).
 ]
 
 == Axiomatizability
