@@ -393,7 +393,7 @@ However, the satisfiability of _conjunctions $cal(T)_"EUF"$-literals_ is _decida
 The theory of real arithmetic $cal(T)_"RA"$ is a theory of inequalities over the real numbers.
 
 - $Sigma^S = {RealSort}$
-- $Sigma^F = {+, -, *, <} union {q | q "is a decimal numeral"}$
+- $Sigma^F = {+, -, times, <} union {q | q "is a decimal numeral"}$
 - $M$ is the class of interpretations that interpret $RealSort$ as the set of _real numbers_ $RR$, and the function symbols in the usual way.
 
 Satisfiability in the full $cal(T)_"RA"$ is _decidable_ (in worst-case doubly-exponential time).
@@ -401,7 +401,7 @@ Satisfiability in the full $cal(T)_"RA"$ is _decidable_ (in worst-case doubly-ex
 Restricted fragments of $cal(T)_"RA"$ can be decided more efficiently.
 
 #example[
-  Quantifier-free linear real arithmetic (`QF_LRA`) is the theory of _linear_ inequalities over the reals, where $*$ can only be used in the form of _multiplication by constants (decimal numerals)_.
+  Quantifier-free linear real arithmetic (`QF_LRA`) is the theory of _linear_ inequalities over the reals, where $times$ can only be used in the form of _multiplication by constants (decimal numerals)_.
 ]
 
 The satisfiability of conjunctions of literals in `QF_LRA` is _decidable_ in _polynomial time_.
@@ -411,7 +411,7 @@ The satisfiability of conjunctions of literals in `QF_LRA` is _decidable_ in _po
 The theory of integer arithmetic $cal(T)_"IA"$ is a theory of inequalities over the integers.
 
 - $Sigma^S = {IntSort}$
-- $Sigma^F = {+, -, *, <} union {n | n "is an integer numeral"}$
+- $Sigma^F = {+, -, times, <} union {n | n "is an integer numeral"}$
 - $M$ is the class of interpretations that interpret $IntSort$ as the set of _integers_ $ZZ$, and the function symbols in the usual way.
 
 Satisfiability in $cal(T)_"IA"$ is _not even semi-decidable_!
