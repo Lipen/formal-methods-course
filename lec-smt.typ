@@ -628,9 +628,9 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
     columns: 2,
     align: left,
     column-gutter: 1cm,
-    inset: .5em,
+    inset: 5pt,
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Contr*],
@@ -640,7 +640,7 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
       ),
     ),
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Refl*],
@@ -650,7 +650,7 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
     ),
 
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Symm*],
@@ -659,7 +659,7 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
       ),
     ),
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Trans*],
@@ -670,7 +670,7 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
     ),
 
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Cong*],
@@ -681,7 +681,7 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
       ),
     ),
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*SAT*],
@@ -708,7 +708,7 @@ Is $R_"UF"$ _terminating_?
     column-gutter: 1em,
     row-gutter: 1em,
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Refl*],
@@ -717,7 +717,7 @@ Is $R_"UF"$ _terminating_?
       ),
     ),
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Contr*],
@@ -727,7 +727,7 @@ Is $R_"UF"$ _terminating_?
       ),
     ),
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Trans*],
@@ -738,7 +738,7 @@ Is $R_"UF"$ _terminating_?
     ),
 
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Symm*],
@@ -747,7 +747,7 @@ Is $R_"UF"$ _terminating_?
       ),
     ),
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*Cong*],
@@ -758,7 +758,7 @@ Is $R_"UF"$ _terminating_?
       ),
     ),
     prooftree(
-      title-inset: 0.5em,
+      title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
         label: smallcaps[*SAT*],
