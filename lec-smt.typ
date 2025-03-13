@@ -477,7 +477,7 @@ There are several _decidable_ _fragments_ of $cal(T)_"A"$.
   [$cal(T)_RR$], [reals (with $dot$)], [yes], [yes], [$cal(O)(2^2^(k n))$], [$cal(O)(2^2^(k n))$],
   [$cal(T)_QQ$], [rationals (without $dot$)], [yes], [yes], [$Omega(2^n)$, $cal(O)(2^2^(k n))$], [PTIME],
   [$cal(T)_"RDS"$], [recursive data structures], [no], [yes], [undecidable], [$cal(O)(n log n)$],
-  [$cal(T)^+_"RDS"$], [acyclic recursive data structures], [yes], [yes], [not elementary recursive], [$Theta(n)$],
+  [$cal(T)^+_"RDS"$], [acyclic RDS], [yes], [yes], [not elementary recursive], [$Theta(n)$],
   [$cal(T)_"A"$], [arrays], [no], [yes], [undecidable], [NP-complete],
   [$cal(T)^=_"A"$], [arrays with extensionality], [no], [yes], [undecidable], [NP-complete],
 )
