@@ -534,7 +534,7 @@ Normalize the literals:
 == Flattening
 
 #definition[
-  A literal is _flat_ if it if the form:
+  A literal is _flat_ if it is of the form:
   - $x eqq y$
   - $not (x eqq y)$
   - $x eqq f(bold(z))$
