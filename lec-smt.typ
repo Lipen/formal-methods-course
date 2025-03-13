@@ -271,7 +271,7 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 ]
 
 #example[
-  The axiomatic (mono-sorted) theory of _monoids_ with $Sigma^F = {dot, epsilon}$ and axioms
+  The axiomatic (mono-sorted) theory of _monoids_ with $Sigma^F = {thin dot thin, epsilon}$ and axioms
   $
     forall x. forall y. forall z. thin (x dot y) dot z eqq x dot (y dot z)
     quad quad
