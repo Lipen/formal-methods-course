@@ -186,7 +186,6 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
   An $Omega$-formula $alpha$ is _valid_ in an axiomatic theory $cal(T)$ if it is entailed by the axioms of $cal(T)$, that is, every $Omega$-interpretation $cal(I)$ that satisfies $cal(A)$ also satisfies $alpha$.
 ]
 
-// TODO: mention that axiomatic theories are a special case of those defined on the previous slides. Also mention that the notion of "axiomatic theories" is LESS general (as shown below by the examples of "non-axiomatizable" theories).
 #note[
   Axiomatic theories are a _special case_ of the general definition (via $bold(M)$) of theories.
   - Given an axiomatic theory $cal(T)'$ defined by $Sigma$ and $cal(A)$, we can define a theory $cal(T) = angle.l Sigma, bold(M) angle.r$ where $bold(M)$ is the class of all $Sigma$-interpretations that satisfy all axioms in $cal(A)$.
