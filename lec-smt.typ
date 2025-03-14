@@ -22,6 +22,9 @@
 #let RealSort = Sort("Real")
 #let ArraySort = Sort("Array")
 #let StringSort = Sort("String")
+#let ASort = Sort("A")
+#let ISort = Sort("I")
+#let ESort = Sort("E")
 #let USort = Sort("U")
 
 #let Green(x) = {
@@ -437,24 +440,24 @@ Its quantifier-free fragment (`QF_LIA`) is NP-complete.
 
 #definition[
   The theory of _arrays_ $cal(T)_"AX"$ is useful for modelling RAM or array data structures.
-  - $Sigma^S = {Sort("A"), Sort("I"), Sort("E")}$ (arrays, indices, elements)
-  - $Sigma^F = {"read", "write"}$, where $rank("read") = angle.l Sort("A"), Sort("I"), Sort("E") angle.r$ and $rank("write") = angle.l Sort("A"), Sort("I"), Sort("E"), Sort("A") angle.r$
+  - $Sigma^S = {ASort, ISort, ESort}$ (arrays, indices, elements)
+  - $Sigma^F = {"read", "write"}$, where $rank("read") = angle.l ASort, ISort, ESort angle.r$ and $rank("write") = angle.l ASort, ISort, ESort, ASort angle.r$
 
-  Let $a$ be a variable of sort $Sort("A")$, variable $i$ of sort $Sort("I")$, and variable $v$ of sort $Sort("E")$.
+  Let $a$ be a variable of sort $ASort$, variable $i$ of sort $ISort$, and variable $v$ of sort $ESort$.
   - $"read"(a, i)$ denotes the value stored in array $a$ at index $i$.
   - $"write"(a, i, v)$ denotes the array that stores value $v$ at index $i$ and is otherwise identical to $a$.
 ]
 
 #example[
-  $"read"("write"(a, i, v), i) eqq_Sort("E") v$
+  $"read"("write"(a, i, v), i) eqq_ESort v$
   - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
 ]
 #example[
-  $forall i. thin ("read"(a, i) eqq_Sort("E") "read"(a', i)) imply (a eqq_Sort("A") a')$
+  $forall i. thin ("read"(a, i) eqq_ESort "read"(a', i)) imply (a eqq_ASort a')$
   - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
 ]
 #example[
-  $forall a. thin (forall i. thin ("read"(a, i) eqq_Sort("E") "read"(a', i))) imply (a eqq_Sort("A") a')$
+  $forall a. thin (forall i. thin ("read"(a, i) eqq_ESort "read"(a', i))) imply (a eqq_ASort a')$
   - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
 ]
 
@@ -464,9 +467,9 @@ Its quantifier-free fragment (`QF_LIA`) is NP-complete.
   The theory of arrays $cal(T)_"AX" = angle.l Sigma, bold(M) angle.r$ is finitely axiomatizable.
 
   $bold(M)$ is the class of interpretations that satisfy the following axioms:
-  + $forall a. forall i. forall v. thin ("read"("write"(a, i, v), i) eqq_Sort("E") v)$
-  + $forall a. forall i. forall j. forall v. thin not (i eqq_Sort("I") j) imply ("read"("write"(a, i, v), j) eqq_Sort("E") "read"(a, j))$
-  + $forall a. forall b. thin (forall i. thin ("read"(a, i) eqq_Sort("E") "read"(b, i))) imply (a eqq_Sort("A") b)$
+  + $forall a. forall i. forall v. thin ("read"("write"(a, i, v), i) eqq_ESort v)$
+  + $forall a. forall i. forall j. forall v. thin not (i eqq_ISort j) imply ("read"("write"(a, i, v), j) eqq_ESort "read"(a, j))$
+  + $forall a. forall b. thin (forall i. thin ("read"(a, i) eqq_ESort "read"(b, i))) imply (a eqq_ASort b)$
 ]
 
 #note[
