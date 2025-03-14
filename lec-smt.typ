@@ -380,12 +380,11 @@ Further, we are going to study:
 
 == Theory of Uninterpreted Functions
 
-#definition[
-  Given a signature $Sigma$, the most general theory consists of the class of _all_ #box[$Sigma$-interpretations].
-  In fact, this is a _family_ of theories parameterized by the signature $Sigma$.
+Given a signature $Sigma$, the most general theory consists of the class of _all_ #box[$Sigma$-interpretations].
 
-  It is known as the theory of _equality with uninterpreted functions_ $cal(T)_"EUF"$, or the _empty theory_, since it contains no _sentences_.
-]
+In fact, this is a _family_ of theories parameterized by the signature $Sigma$.
+
+It is known as the theory of _equality with uninterpreted functions_ $cal(T)_"EUF"$, or the _empty theory_, since it contains no _sentences_.
 
 #example[
   $(a eqq b) and (f(a) eqq b) and not (g(a) eqq g(f(a)))$
