@@ -629,10 +629,10 @@ Hereinafter, we will assume that all literals are _flat_.
 - $Gamma, s eqq t$ is an abbreviation for $Gamma union {s eqq t}$.
 - If applying a rule $R$ does not change $Gamma$, then $R$ _is not applicable_ to $Gamma$, that is, $Gamma$ is _irreducible_ w.r.t. $R$.
 
-== Theory of Equiality with Uninterpreted Functions
+== Theory of Equality with Uninterpreted Functions
 
 #definition[
-  The theory of equality with uninterpreted functions $cal(T)_"EUF"$ is defined by the signature $Sigma^F = {eqq, f, g, h, dots}$ (_interpreted_ equiality and _uninterpreted_ functions) and the following axioms:
+  The theory of equality with uninterpreted functions $cal(T)_"EUF"$ is defined by the signature $Sigma^F = {eqq, f, g, h, dots}$ (_interpreted_ equality and _uninterpreted_ functions) and the following axioms:
   - $forall x. thin x eqq x$ #h(1fr) (reflexivity) #h(5cm)
   - $forall x. forall y. thin (x eqq y) imply (y eqq x)$ #h(1fr) (symmetry) #h(5cm)
   - $forall x. forall y. forall z. thin (x eqq y) and (y eqq z) imply (x eqq z)$ #h(1fr) (transitivity) #h(5cm)
