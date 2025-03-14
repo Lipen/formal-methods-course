@@ -432,7 +432,7 @@ _Linear integer arithmetic_ (`LIA`, also known as _Presburger arithmetic_) is de
 
 == Theory of Arrays with Extensionality
 
-The theory of arrays $cal(T)_"A"$ is useful for modelling RAM or array data structures.
+The theory of arrays $cal(T)_"AX"$ is useful for modelling RAM or array data structures.
 
 - $Sigma^S = {Sort("A"), Sort("I"), Sort("E")}$ (arrays, indices, elements)
 - $Sigma^F = {"read", "write"}$, where $rank("read") = angle.l Sort("A"), Sort("I"), Sort("E") angle.r$ and $rank("write") = angle.l Sort("A"), Sort("I"), Sort("E"), Sort("A") angle.r$
@@ -444,17 +444,18 @@ Let $a$ be a variable of sort $Sort("A")$, variable $i$ of sort $Sort("I")$, and
 #example[
   $"read"("write"(a, i, v), i) eqq_Sort("E") v$
   - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
-  // Valid
 ]
-
 #example[
   $forall i. thin ("read"(a, i) eqq_Sort("E") "read"(a', i)) imply (a eqq_Sort("A") a')$
   - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
-  // Valid
+]
+#example[
+  $forall a. thin (forall i. thin ("read"(a, i) eqq_Sort("E") "read"(a', i))) imply (a eqq_Sort("A") a')$
+  - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
 ]
 
 #pagebreak()
-The theory of arrays $cal(T)_"A" = angle.l Sigma, bold(M) angle.r$ is finitely axiomatizable.
+The theory of arrays $cal(T)_"AX" = angle.l Sigma, bold(M) angle.r$ is finitely axiomatizable.
 
 $bold(M)$ is the class of interpretations that satisfy the following axioms:
 + $forall a. forall i. forall v. thin ("read"("write"(a, i, v), i) eqq_Sort("E") v)$
@@ -464,14 +465,12 @@ $bold(M)$ is the class of interpretations that satisfy the following axioms:
 #note[
   The last axiom is called _extensionality_ axiom.
   It states that two arrays are equal if they have the same values at all indices.
-  It can be omitted to obtain a theory of arrays _without extensionality_.
+  It can be omitted to obtain a theory of arrays _without extensionality_ $cal(T)_"A"$.
 ]
 
-Satisfiability in $cal(T)_"A"$ is _undecidable_.
+Validity and satisfiability in $cal(T)_"AX"$ is _undecidable_.
 
 There are several _decidable_ _fragments_ of $cal(T)_"A"$.
-
-= Extra slides
 
 == Decidability and Complexity
 
@@ -483,20 +482,20 @@ There are several _decidable_ _fragments_ of $cal(T)_"A"$.
   [$cal(T)_"EUF"$], [Equality], [no], [yes], [undecidable], [$cal(O)(n log n)$],
   [$cal(T)_"PA"$], [Peano Arithmetic], [no], [no], [undecidable], [undecidable],
   [$cal(T)_NN$], [Presburger Arithmetic], [yes], [yes], [$Omega(2^2^n)$, $cal(O)(2^2^2^(k n))$], [NP-complete],
-  [$cal(T)_ZZ$], [Linear Integers], [yes], [yes], [$Omega(2^2^n)$, $cal(O)(2^2^2^(k n))$], [NP-complete],
-  [$cal(T)_RR$], [Reals (with $times$)], [yes], [yes], [$cal(O)(2^2^(k n))$], [$cal(O)(2^2^(k n))$],
-  [$cal(T)_QQ$], [Rationals (without $times$)], [yes], [yes], [$Omega(2^n)$, $cal(O)(2^2^(k n))$], [PTIME],
+  [$cal(T)_ZZ$], [Linear Integers (LIA)], [yes], [yes], [$Omega(2^2^n)$, $cal(O)(2^2^2^(k n))$], [NP-complete],
+  [$cal(T)_RR$], [Reals], [yes], [yes], [$cal(O)(2^2^(k n))$], [$cal(O)(2^2^(k n))$],
+  [$cal(T)_QQ$], [Linear Rationals], [yes], [yes], [$Omega(2^n)$, $cal(O)(2^2^(k n))$], [PTIME],
   [$cal(T)_"RDS"$], [Recursive Data Structures], [no], [yes], [undecidable], [$cal(O)(n log n)$],
-  [$cal(T)^+_"RDS"$], [Acyclic RDS], [yes], [yes], [not elementary recursive], [$Theta(n)$],
+  [$cal(T)_"ARDS"$], [Acyclic RDS], [yes], [yes], [not elementary recursive], [$Theta(n)$],
   [$cal(T)_"A"$], [Arrays], [no], [yes], [undecidable], [NP-complete],
-  [$cal(T)^=_"A"$], [Arrays with Extensionality], [no], [yes], [undecidable], [NP-complete],
+  [$cal(T)_"AX"$], [Arrays with Extensionality], [no], [yes], [undecidable], [NP-complete],
 )
 
 #pagebreak()
 - *"Full"* denotes the decidability of a complete theory _with_ quantifiers.
 - *"QF"* denotes the decidability of a _quantifier-free_ theory.
-- *"Full complexity"* denotes the complexity of the satisfiability in a complete theory _with_ quantifiers.
-- *"QFC complexity"* denotes the complexity of the satisfiability in a quantifier-free _conjunctive_ fragment.
+- *"Full complexity"* denotes the complexity of the satisfiability in a complete theory _with quantifiers_.
+- *"QFC complexity"* denotes the complexity of the satisfiability in a _quantifier-free conjunctive_ fragment.
 - For complexities, $n$ is the size of the input formula, $k$ is some positive integer.
 - "_Not elementary recursive_" means the runtime cannot be bounded by a fixed-height stack of exponentials.
 
