@@ -101,7 +101,7 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 #example[
   Theory of Real Arithmetic $cal(T)_"RA" = angle.l Sigma_"RA", bold(M)_"RA" angle.r$:
   - $Sigma^S_"RA" = {RealSort}$
-  - $Sigma^F_"RA" = {+, -, *, lt.eq} union {q | q "is a decimal numeral"}$
+  - $Sigma^F_"RA" = {+, -, times, lt.eq} union {q | q "is a decimal numeral"}$
   - All $cal(I) in bold(M)_"RA"$ interpret $RealSort$ as the set of _real numbers_ $RR$, each $q$ as the _decimal number_ that it denotes, and the function symbols in the usual way.
 ]
 
