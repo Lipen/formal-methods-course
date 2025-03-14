@@ -493,6 +493,7 @@ There are several _decidable_ _fragments_ of $cal(T)_"A"$.
 )
 
 #pagebreak()
+Legend for the table:
 - *"Full"* denotes the decidability of a complete theory _with_ quantifiers.
 - *"QF"* denotes the decidability of a _quantifier-free_ theory.
 - *"Full complexity"* denotes the complexity of the satisfiability in a complete theory _with quantifiers_.
