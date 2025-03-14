@@ -331,22 +331,20 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
 ]
 
 #theorem[
-  For every _complete_ and _recursively axiomatizable_ theory $cal(T)$, $cal(T)$-validity is decidable.
+  For every _complete_ and _recursively axiomatizable_ theory $cal(T)$, validity in $cal(T)$ is decidable.
 ]
 #proof[
   Given a formula $alpha$, use $E_cal(T)$ to enumerate all valid formulas.
   Since $cal(T)$ is complete, either $alpha$ or $not alpha$ will eventually (after _finite_ time) be produced by $E_cal(T)$.
 ]
 
-= Introduction to SMT
-
 == Common Theories in SMT
 
-SMT traditionally focuses on theories with _decidable_ quantifier-free _fragments_.
+Satisfiability Modulo Theories (SMT) traditionally focuses on theories with _decidable quantifier-free fragments_.
 
-Recall: a formula $alpha$ is _$cal(T)$-valid_ iff $not alpha$ is _$cal(T)$-unsatisfiable_.
+SMT is concerned with (un)satisfiability, but recall that a formula $alpha$ is _$cal(T)$-valid_ iff $not alpha$ is _$cal(T)$-unsatisfiable_.
 
-Checking the (un)satisfiability of quantifier-free formulas in main background theories efficiently has a large number of applications in:
+Checking the (un)satisfiability of quantifier-free formulas in main background theories _efficiently_ has a large number of applications in:
 #columns(2)[
   - hardware and software verification
   - model checking
@@ -365,30 +363,40 @@ Further, we are going to study:
 - A few of those theories and their decision procedures.
 - Proof systems to reason modulo theories automatically.
 
-== From QF to Conjunctions of Literals
+== From Quantifier-Free Formulas to Conjunctions of Literals
 
 #theorem[
   The satisfiability of _quantifier-free_ formulas in a theory $cal(T)$ is _decidable_ iff the satisfiability in $cal(T)$ of _conjunctions of literals_ is decidable.
+
+  Here, _literal_ is an atom or its negation.
+  For example: $(a eqq b)$, $not (a + 1 < b)$, $(f(b) eqq g(f(a)))$.
 ]
 
-We will study a general extension of DPLL to SMT that uses decision procedures for _conjunctions of literals_.
+#proof[
+  A quantifier-free formula can be transformed into disjunctive normal form (DNF), and its satisfiability reduces to checking satisfiability of conjunctions of literals.
+  Conversely, a conjunction of literals is a special case of a quantifier-free formula.
+  Thus, the two satisfiability problems are equivalent.
+]
 
 == Theory of Uninterpreted Functions
 
-Given a signature $Sigma$, the most general theory consists of the class of _all_ $Sigma$-interpretations.
+#definition[
+  Given a signature $Sigma$, the most general theory consists of the class of _all_ #box[$Sigma$-interpretations].
+  In fact, this is a _family_ of theories parameterized by the signature $Sigma$.
 
-In fact, this is a _family_ of theories parameterized by the signature $Sigma$.
-
-It is known as the theory of _equality with uninterpreted functions_ $cal(T)_"EUF"$, or the _empty theory_, since it is axiomatized by the empty set of axioms.
-
-Validity, and so satisfiability, in $cal(T)_"EUF"$ is only _semi-decidable_ (this is just a validity in FOL).
-
-However, the satisfiability of _conjunctions $cal(T)_"EUF"$-literals_ is _decidable_, in polynomial time, using the _congruence closure_ algorithm.
+  It is known as the theory of _equality with uninterpreted functions_ $cal(T)_"EUF"$, or the _empty theory_, since it contains no _sentences_.
+]
 
 #example[
   $(a eqq b) and (f(a) eqq b) and not (g(a) eqq g(f(a)))$
   Is this formula satisfiable in $cal(T)_"EUF"$?
 ]
+
+Both validity and satisfiability are undecidable in $cal(T)_"EUF"$.
+- Validity in $cal(T)_"EUF"$ is _semi-decidable_ --- this is just a validity in FOL.
+- Since a formula $alpha$ is $cal(T)$-satisfiable iff $not alpha$ is not $cal(T)$-valid, $cal(T)_"EUF"$-satisfiability is _co-recognizable_.
+
+However, the satisfiability of _conjunctions of $cal(T)_"EUF"$-literals_ is _decidable_, in polynomial time, using the _congruence closure_ algorithm.
 
 == Theory of Real Arithmetic
 
@@ -403,7 +411,7 @@ Satisfiability in the full $cal(T)_"RA"$ is _decidable_ (in worst-case doubly-ex
 Restricted fragments of $cal(T)_"RA"$ can be decided more efficiently.
 
 #example[
-  Quantifier-free linear real arithmetic (`QF_LRA`) is the theory of _linear_ inequalities over the reals, where $times$ can only be used in the form of _multiplication by constants (decimal numerals)_.
+  Quantifier-free linear real arithmetic (`QF_LRA`) is the theory of _linear_ inequalities over the reals, where $times$ can only be used in the form of _multiplication by constants_ (decimal numerals).
 ]
 
 The satisfiability of conjunctions of literals in `QF_LRA` is _decidable_ in _polynomial time_.
@@ -651,7 +659,6 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
         [$x$ occurs in $Gamma$],
       ),
     ),
-
     prooftree(
       title-inset: 5pt,
       vertical-spacing: 2pt,
@@ -661,6 +668,7 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
         $x neqq y in Gamma$,
       ),
     ),
+
     prooftree(
       title-inset: 5pt,
       vertical-spacing: 2pt,
@@ -671,7 +679,6 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
         $y eqq z in Gamma$,
       ),
     ),
-
     prooftree(
       title-inset: 5pt,
       vertical-spacing: 2pt,
@@ -683,6 +690,7 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
         $bold(u) = bold(v) in Gamma$,
       ),
     ),
+
     prooftree(
       title-inset: 5pt,
       vertical-spacing: 2pt,
