@@ -380,11 +380,12 @@ Further, we are going to study:
 
 == Theory of Uninterpreted Functions
 
-Given a signature $Sigma$, the most general theory consists of the class of _all_ #box[$Sigma$-interpretations].
+#definition[
+  Given a signature $Sigma$, the most general theory consists of the class of _all_ #box[$Sigma$-interpretations].
+  In fact, this is a _family_ of theories parameterized by the signature $Sigma$.
 
-In fact, this is a _family_ of theories parameterized by the signature $Sigma$.
-
-It is known as the theory of _equality with uninterpreted functions_ $cal(T)_"EUF"$, or the _empty theory_, since it contains no _sentences_.
+  It is known as the theory of _equality with uninterpreted functions_ $cal(T)_"EUF"$, or the _empty theory_, since it contains no _sentences_.
+]
 
 #example[
   $(a eqq b) and (f(a) eqq b) and not (g(a) eqq g(f(a)))$
@@ -399,11 +400,12 @@ However, the satisfiability of _conjunctions of $cal(T)_"EUF"$-literals_ is _dec
 
 == Theory of Real Arithmetic
 
-The theory of real arithmetic $cal(T)_"RA"$ is a theory of inequalities over the real numbers.
-
-- $Sigma^S = {RealSort}$
-- $Sigma^F = {+, -, times, <} union {q | q "is a decimal numeral"}$
-- $bold(M)$ is the class of interpretations that interpret $RealSort$ as the set of _real numbers_ $RR$, and the function symbols in the usual way.
+#definition[
+  The theory of _real arithmetic_ $cal(T)_"RA"$ is a theory of inequalities over the real numbers.
+  - $Sigma^S = {RealSort}$
+  - $Sigma^F = {+, -, times, <} union {q | q "is a decimal numeral"}$
+  - $bold(M)$ is the class of interpretations that interpret $RealSort$ as the set of _real numbers_ $RR$, and the function symbols in the usual way.
+]
 
 Satisfiability in the full $cal(T)_"RA"$ is _decidable_ (in worst-case doubly-exponential time).
 
@@ -417,11 +419,12 @@ The satisfiability of conjunctions of literals in `QF_LRA` is _decidable_ in _po
 
 == Theory of Integer Arithmetic
 
-The theory of integer arithmetic $cal(T)_"IA"$ is a theory of inequalities over the integers.
-
-- $Sigma^S = {IntSort}$
-- $Sigma^F = {+, -, times, <} union {n | n "is an integer numeral"}$
-- $bold(M)$ is the class of interpretations that interpret $IntSort$ as the set of _integers_ $ZZ$, and the function symbols in the usual way.
+#definition[
+  The theory of _integer arithmetic_ $cal(T)_"IA"$ is a theory of inequalities over the integers.
+  - $Sigma^S = {IntSort}$
+  - $Sigma^F = {+, -, times, <} union {n | n "is an integer numeral"}$
+  - $bold(M)$ is the class of interpretations that interpret $IntSort$ as the set of _integers_ $ZZ$, and the function symbols in the usual way.
+]
 
 Satisfiability in $cal(T)_"IA"$ is _not even semi-decidable_!
 
@@ -432,14 +435,15 @@ Its quantifier-free fragment (`QF_LIA`) is NP-complete.
 
 == Theory of Arrays with Extensionality
 
-The theory of arrays $cal(T)_"AX"$ is useful for modelling RAM or array data structures.
+#definition[
+  The theory of _arrays_ $cal(T)_"AX"$ is useful for modelling RAM or array data structures.
+  - $Sigma^S = {Sort("A"), Sort("I"), Sort("E")}$ (arrays, indices, elements)
+  - $Sigma^F = {"read", "write"}$, where $rank("read") = angle.l Sort("A"), Sort("I"), Sort("E") angle.r$ and $rank("write") = angle.l Sort("A"), Sort("I"), Sort("E"), Sort("A") angle.r$
 
-- $Sigma^S = {Sort("A"), Sort("I"), Sort("E")}$ (arrays, indices, elements)
-- $Sigma^F = {"read", "write"}$, where $rank("read") = angle.l Sort("A"), Sort("I"), Sort("E") angle.r$ and $rank("write") = angle.l Sort("A"), Sort("I"), Sort("E"), Sort("A") angle.r$
-
-Let $a$ be a variable of sort $Sort("A")$, variable $i$ of sort $Sort("I")$, and variable $v$ of sort $Sort("E")$.
-- $"read"(a, i)$ denotes the value stored in array $a$ at index $i$.
-- $"write"(a, i, v)$ denotes the array that stores value $v$ at index $i$ and is otherwise identical to $a$.
+  Let $a$ be a variable of sort $Sort("A")$, variable $i$ of sort $Sort("I")$, and variable $v$ of sort $Sort("E")$.
+  - $"read"(a, i)$ denotes the value stored in array $a$ at index $i$.
+  - $"write"(a, i, v)$ denotes the array that stores value $v$ at index $i$ and is otherwise identical to $a$.
+]
 
 #example[
   $"read"("write"(a, i, v), i) eqq_Sort("E") v$
@@ -455,12 +459,15 @@ Let $a$ be a variable of sort $Sort("A")$, variable $i$ of sort $Sort("I")$, and
 ]
 
 #pagebreak()
-The theory of arrays $cal(T)_"AX" = angle.l Sigma, bold(M) angle.r$ is finitely axiomatizable.
 
-$bold(M)$ is the class of interpretations that satisfy the following axioms:
-+ $forall a. forall i. forall v. thin ("read"("write"(a, i, v), i) eqq_Sort("E") v)$
-+ $forall a. forall i. forall j. forall v. thin not (i eqq_Sort("I") j) imply ("read"("write"(a, i, v), j) eqq_Sort("E") "read"(a, j))$
-+ $forall a. forall b. thin (forall i. thin ("read"(a, i) eqq_Sort("E") "read"(b, i))) imply (a eqq_Sort("A") b)$
+#definition[
+  The theory of arrays $cal(T)_"AX" = angle.l Sigma, bold(M) angle.r$ is finitely axiomatizable.
+
+  $bold(M)$ is the class of interpretations that satisfy the following axioms:
+  + $forall a. forall i. forall v. thin ("read"("write"(a, i, v), i) eqq_Sort("E") v)$
+  + $forall a. forall i. forall j. forall v. thin not (i eqq_Sort("I") j) imply ("read"("write"(a, i, v), j) eqq_Sort("E") "read"(a, j))$
+  + $forall a. forall b. thin (forall i. thin ("read"(a, i) eqq_Sort("E") "read"(b, i))) imply (a eqq_Sort("A") b)$
+]
 
 #note[
   The last axiom is called _extensionality_ axiom.
