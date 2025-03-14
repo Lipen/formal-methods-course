@@ -900,6 +900,34 @@ Is $R_"UF"$ _terminating_?
   But then $R_"UF"$ would be not be refutation sound.
 ]
 
+== Theory of Arrays
+
+#definition[
+  The theory of _arrays_ $cal(T)_"AX"$ is defined by the signature $Sigma^S = {ASort, ISort, ESort}$ (arrays, indices, elements), $Sigma^F = {"read", "write"}$ and the following axioms:
+  + $forall a. forall i. forall v. thin ("read"("write"(a, i, v), i) eqq_ESort v)$
+  + $forall a. forall i. forall j. forall v. thin not (i eqq_ISort j) imply ("read"("write"(a, i, v), j) eqq_ESort "read"(a, j))$
+  + $forall a. forall b. thin (forall i. thin ("read"(a, i) eqq_ESort "read"(b, i))) imply (a eqq_ASort b)$
+]
+
+== Example
+
+```c
+void ReadBlock(int data[], int x, int len) {
+  int i = 0;
+  int next = data[0];
+  for (; i < next && i < len; i = i + 1) {
+    if (data[i] == x)
+      break;
+    else
+      Process(data[i]);
+  }
+  assert(i < len);
+}
+```
+
+One pass through this code can be translated into the following $cal(T)_"A"$ formula:
+$ ("i" eqq 0) and ("next" eqq "read"("data", 0)) and ("i" < "next") and \ and ("i" < "len") and ("read"("data", "i") eqq x) and not ("i" < "len") $
+
 == TODO
 
 - theory of arrays $cal(T)_"A"$
