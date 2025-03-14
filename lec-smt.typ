@@ -197,7 +197,7 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
   Not all theories are first-order axiomatizable.
 ]
 
-== Non-Axiomaticizable Theories
+== Non-Axiomatizable Theories
 
 #note[
   Not all theories are first-order axiomatizable.
