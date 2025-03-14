@@ -99,17 +99,17 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 == Theory Examples
 
 #example[
-  Theory of Real Arithmetic $cal(T)_"RA" = angle.l Sigma_"RA", M_"RA" angle.r$:
+  Theory of Real Arithmetic $cal(T)_"RA" = angle.l Sigma_"RA", bold(M)_"RA" angle.r$:
   - $Sigma^S_"RA" = {RealSort}$
   - $Sigma^F_"RA" = {+, -, *, lt.eq} union {q | q "is a decimal numeral"}$
-  - All $cal(I) in M_"RA"$ interpret $RealSort$ as the set of _real numbers_ $RR$, each $q$ as the _decimal number_ that it denotes, and the function symbols in the usual way.
+  - All $cal(I) in bold(M)_"RA"$ interpret $RealSort$ as the set of _real numbers_ $RR$, each $q$ as the _decimal number_ that it denotes, and the function symbols in the usual way.
 ]
 
 #example[
   Theory of Ternary Strings $cal(T)_"TS" = angle.l Sigma_"TS", bold(M)_"TS" angle.r$:
   - $Sigma^S_"TS" = {StringSort}$
   - $Sigma^F_"TS" = {thin dot thin, <} union {"a", "b", "c"}$
-  - All $cal(I) in M_"TS"$ interpret $StringSort$ as the set ${"a", "b", "c"}^*$ of all finite strings over the characters {"a", "b", "c"}, symbol $dot$~as string concatenation (e.g., $"a" dot "b" = "ab"$), and $<$ as lexicographic order.
+  - All $cal(I) in bold(M)_"TS"$ interpret $StringSort$ as the set ${"a", "b", "c"}^*$ of all finite strings over the characters {"a", "b", "c"}, symbol $dot$~as string concatenation (e.g., $"a" dot "b" = "ab"$), and $<$ as lexicographic order.
 ]
 
 == $cal(T)$-interpretations
@@ -268,7 +268,7 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 ]
 
 #example[
-  Any theory $cal(T) = angle.l Sigma, bold(M) angle.r$ where all interpretations in $M$ only differ in how they interpret the variables (e.g., $cal(T)_"RA"$) is _complete_.
+  Any theory $cal(T) = angle.l Sigma, bold(M) angle.r$ where all interpretations in $bold(M)$ only differ in how they interpret the variables (e.g., $cal(T)_"RA"$) is _complete_.
 ]
 
 #example[
@@ -322,7 +322,7 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
 == Axiomatizability
 
 #definition[
-  A theory $cal(T) = angle.l Sigma, M angle.r$ is _recursively axiomatizable_ if $M$ is the class of all interpretations satisfying a _decidable set_ of first-order axioms $cal(A)$.
+  A theory $cal(T) = angle.l Sigma, bold(M) angle.r$ is _recursively axiomatizable_ if $bold(M)$ is the class of all interpretations satisfying a _decidable set_ of first-order axioms $cal(A)$.
 ]
 
 // TODO: replace #theorem with #lemma
@@ -396,7 +396,7 @@ The theory of real arithmetic $cal(T)_"RA"$ is a theory of inequalities over the
 
 - $Sigma^S = {RealSort}$
 - $Sigma^F = {+, -, times, <} union {q | q "is a decimal numeral"}$
-- $M$ is the class of interpretations that interpret $RealSort$ as the set of _real numbers_ $RR$, and the function symbols in the usual way.
+- $bold(M)$ is the class of interpretations that interpret $RealSort$ as the set of _real numbers_ $RR$, and the function symbols in the usual way.
 
 Satisfiability in the full $cal(T)_"RA"$ is _decidable_ (in worst-case doubly-exponential time).
 
@@ -414,7 +414,7 @@ The theory of integer arithmetic $cal(T)_"IA"$ is a theory of inequalities over 
 
 - $Sigma^S = {IntSort}$
 - $Sigma^F = {+, -, times, <} union {n | n "is an integer numeral"}$
-- $M$ is the class of interpretations that interpret $IntSort$ as the set of _integers_ $ZZ$, and the function symbols in the usual way.
+- $bold(M)$ is the class of interpretations that interpret $IntSort$ as the set of _integers_ $ZZ$, and the function symbols in the usual way.
 
 Satisfiability in $cal(T)_"IA"$ is _not even semi-decidable_!
 
@@ -446,9 +446,9 @@ Let $a$ be a variable of sort $Sort("A")$, variable $i$ of sort $Sort("I")$, and
 ]
 
 #pagebreak()
-The theory of arrays $cal(T)_"A" = angle.l Sigma, M angle.r$ is finitely axiomatizable.
+The theory of arrays $cal(T)_"A" = angle.l Sigma, bold(M) angle.r$ is finitely axiomatizable.
 
-$M$ is the class of interpretations that satisfy the following axioms:
+$bold(M)$ is the class of interpretations that satisfy the following axioms:
 + $forall a. forall i. forall v. thin ("read"("write"(a, i, v), i) eqq_Sort("E") v)$
 + $forall a. forall i. forall j. forall v. thin not (i eqq_Sort("I") j) imply ("read"("write"(a, i, v), j) eqq_Sort("E") "read"(a, j))$
 + $forall a. forall b. thin (forall i. thin ("read"(a, i) eqq_Sort("E") "read"(b, i))) imply (a eqq_Sort("A") b)$
