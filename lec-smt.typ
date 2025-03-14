@@ -473,7 +473,7 @@ Validity and satisfiability in $cal(T)_"AX"$ is _undecidable_.
 
 There are several _decidable_ _fragments_ of $cal(T)_"A"$.
 
-== Decidability and Complexity
+== Survey of Decidability and Complexity
 
 #table(
   columns: 6,
