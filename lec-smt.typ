@@ -109,7 +109,7 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
   Theory of Ternary Strings $cal(T)_"TS" = angle.l Sigma_"TS", bold(M)_"TS" angle.r$:
   - $Sigma^S_"TS" = {StringSort}$
   - $Sigma^F_"TS" = {thin dot thin, <} union {"a", "b", "c"}$
-  - All $cal(I) in bold(M)_"TS"$ interpret $StringSort$ as the set ${"a", "b", "c"}^*$ of all finite strings over the characters {"a", "b", "c"}, symbol $dot$~as string concatenation (e.g., $"a" dot "b" = "ab"$), and $<$ as lexicographic order.
+  - All $cal(I) in bold(M)_"TS"$ interpret $StringSort$ as the set ${"a", "b", "c"}^*$ of all finite strings over the characters ${"a", "b", "c"}$, symbol $dot$~as string concatenation (e.g., $"a" dot "b" = "ab"$), and $<$ as lexicographic order.
 ]
 
 == $cal(T)$-interpretations
