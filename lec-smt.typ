@@ -639,7 +639,7 @@ Hereinafter, we will assume that all literals are _flat_.
   - $forall bold(x). forall bold(y). thin (and.big_(i = 1)^n x_i eqq y_i) imply (f(bold(x)) eqq f(bold(y)))$ #h(1fr) (function congruence) #h(5cm)
 ]
 
-== A Satisfiability Proof System for `QF_UF`
+== Satisfiability Proof System for `QF_UF`
 
 Let `QF_UF` be the quantifier-free fragment of FOL over some signature $Sigma$.
 
