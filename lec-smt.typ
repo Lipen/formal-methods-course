@@ -429,6 +429,7 @@ Satisfiability in $cal(T)_"IA"$ is _not even semi-decidable_!
 Satisfiability of quantifier-free $Sigma$-formulas in $cal(T)_"IA"$ is _undecidable_ as well.
 
 _Linear integer arithmetic_ (`LIA`, also known as _Presburger arithmetic_) is decidable, but not efficiently (in~worst-case triply-exponential time).
+Its quantifier-free fragment (`QF_LIA`) is NP-complete.
 
 == Theory of Arrays with Extensionality
 
