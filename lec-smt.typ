@@ -480,10 +480,6 @@ Its quantifier-free fragment (`QF_LIA`) is NP-complete.
   $forall i. thin ("read"(a, i) eqq_ESort "read"(a', i)) imply (a eqq_ASort a')$
   - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
 ]
-#example[
-  $forall a. thin (forall i. thin ("read"(a, i) eqq_ESort "read"(a', i))) imply (a eqq_ASort a')$
-  - Is this formula _intuitively_ valid/satisfiable/unsatisfiable in $cal(T)_"A"$?
-]
 
 #pagebreak()
 
