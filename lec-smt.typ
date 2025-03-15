@@ -601,7 +601,7 @@ Normalize the literals:
 
 *UNSAT* because of the negative cycle: $x to^(-3) z to^(-1) w to^(2) x$.
 
-= Quantifier-Free Equiality
+= Equiality
 
 == Theory of Equality with Uninterpreted Functions
 
@@ -901,6 +901,8 @@ Is $R_"UF"$ _terminating_?
   Then, by the termination theorem, it would have to end with UNSAT.
   But then $R_"UF"$ would be not be refutation sound.
 ]
+
+= Arrays
 
 == Theory of Arrays
 
