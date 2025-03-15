@@ -341,6 +341,8 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
   Since $cal(T)$ is complete, either $alpha$ or $not alpha$ will eventually (after _finite_ time) be produced by $E_cal(T)$.
 ]
 
+= Introduction to SMT
+
 == Common Theories in SMT
 
 Satisfiability Modulo Theories (SMT) traditionally focuses on theories with _decidable quantifier-free fragments_.
