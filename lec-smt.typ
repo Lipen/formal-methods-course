@@ -645,7 +645,7 @@ Hereinafter, we will assume that all literals are _flat_.
   + $forall x. thin x eqq x$ #h(1fr) (reflexivity) #h(5cm)
   + $forall x. forall y. thin (x eqq y) imply (y eqq x)$ #h(1fr) (symmetry) #h(5cm)
   + $forall x. forall y. forall z. thin (x eqq y) and (y eqq z) imply (x eqq z)$ #h(1fr) (transitivity) #h(5cm)
-  + $forall bold(x). forall bold(y). thin (and.big_(i = 1)^n x_i eqq y_i) imply (f(bold(x)) eqq f(bold(y)))$ #h(1fr) (function congruence) #h(5cm)
+  + $forall bold(x). forall bold(y). thin (bold(x) = bold(y)) imply (f(bold(x)) eqq f(bold(y)))$ #h(1fr) (function congruence) #h(5cm)
 ]
 
 == Satisfiability Proof System for `QF_UF`
