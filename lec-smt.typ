@@ -1244,6 +1244,82 @@ $
   Optimal solution remains optimal for the new problem.
 ]
 
+= CDCL($cal(T)$)
+
+== CDCL($cal(T)$) Architecture
+
+#fancy-box[
+  $
+    "CDCL"(cal(T)) = "CDCL"(X) + #[$cal(T)$-solver]
+  $
+]
+
+CDCL($X$):
+- Very _similar to a SAT solver_, enumerates Boolean models.
+- Not allowed: pure literal rule (and other SAT specific heuristics).
+- Required: incremental addition of clauses.
+- Desirable: partial model detection.
+
+$cal(T)$-solver:
+- Checks the $cal(T)$-satisfiability of conjunctions of literals.
+- Computes _theory propagations_.
+- Produces _explanations_ of $cal(T)$-unsatisfiability/propagation.
+- Must be _incremental_ and _backtrackable_.
+
+== Typical SMT Solver Architecture
+
+#[
+  #import fletcher: diagram, node, edge
+  #import fletcher.shapes: *
+  #diagram(
+    // debug: true,
+    edge-stroke: 1pt,
+    node-corner-radius: 3pt,
+    node-outset: 3pt,
+    blob((0cm, 0cm), [*SAT Solver* \ DPLL], name: <sat>, tint: green),
+    blob((5cm, 0cm), [*Core*], name: <core>, tint: orange, shape: circle),
+    blob((8.5cm, 1cm), [*UF*], name: <uf>, tint: blue),
+    blob((8.5cm, 0cm), [*Arithmetic*], name: <arith>, tint: blue),
+    blob((8.5cm, -1cm), [*Arrays*], name: <array>, tint: blue),
+    blob((8.5cm, -2cm), [*Bit-Vectors*], name: <bv>, tint: blue),
+    edge(<sat>, <core>, "-|>", stroke: green.darken(20%), shift: 5pt)[
+      assertions
+    ],
+    edge(<core>, <sat>, "-|>", stroke: orange.darken(20%), shift: 5pt, label-side: left)[
+      explanations, \
+      conflicts, lemmas, \
+      propagations
+    ],
+    edge(<core>, <uf.west>, "<{-}>", bend: 20deg),
+    edge(<core>, <arith.west>, "<{-}>", bend: 5deg),
+    edge(<core>, <array.west>, "<{-}>", bend: -10deg),
+    edge(<core>, <bv.west>, "<{-}>", bend: -25deg),
+    node((2.5cm, 2.5cm), name: <sat-text>, shape: rect, stroke: green.darken(20%))[
+      #set align(left)
+      *SAT Solver*:
+      - Only sees _Boolean skeleton_ of a problem.
+      - Builds _partial model_ by assigning truth values to literals
+      - Sends these literals to the core as _assertions_
+    ],
+    node((2.2cm, -3.5cm), name: <core-text>, shape: rect, stroke: orange.darken(20%))[
+      #set align(left)
+      *Core*:
+      - Sends each assertion to the appropriate theory
+      - Sends deduced literals to other theories/SAT solver
+      - Handles _theory combination_
+    ],
+    node((12.5cm, -0.5cm), name: <th2-text>, shape: rect, stroke: blue.darken(20%))[
+      #set align(left)
+      *Theory Solvers*:
+      - Check $cal(T)$-satisfiability \ of sets of theory literals
+      - Incremental
+      - Backtrackable
+      - Conflict generation
+      - Theory propagation
+    ],
+  )
+]
+
 
 == TODO
 #show: cheq.checklist
