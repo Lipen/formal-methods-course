@@ -1132,6 +1132,121 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
   The _optimal solution_ for a bounded LP lies on a _vertex_ of the polytope.
 ]
 
+== Satisfiability as Linear Programming
+
+Our goal is to use LP to check the satisfiability of _sets of linear $cal(T)_"RA"$-literals_.
+
+*Step 1:* Convert equialities to inequalities.
+
+- A linear $cal(T)_"RA"$-equiality can be written to have the form $bold(a)^T bold(x) = bold(b)$.
+- We rewrite this further as $bold(a)^T bold(x) gt.eq bold(b)$ and $bold(a)^T bold(x) lt.eq bold(b)$.
+- And finally to $-bold(a)^T bold(x) lt.eq -bold(b)$ and $bold(a)^T bold(x) lt.eq bold(b)$.
+
+*Step 2:* Handle inequalities.
+
+- A $cal(T)_"RA"$-literal of the form $bold(a)^T bold(x) lt.eq bold(b)$ is already in the desired form.
+- A $cal(T)_"RA"$-literal of the form $not (bold(a)^T bold(x) lt.eq bold(b))$ is transformed as follows:
+  $
+    not (bold(a)^T bold(x) lt.eq bold(b)) to (bold(a)^T bold(x) > bold(b)) to (-bold(a)^T bold(x) < -bold(b)) to (-bold(a)^T bold(x) + y lt.eq -bold(b)), (y > 0)
+  $
+  where $y$ is a fresh variable used for all negated inequalities.
+  #example[
+    $not (2 x_1 - x_2 lt.eq 3)$ rewrites to $-2 x_1 + x_2 + y lt.eq -3, thick y > 0$
+  ]
+- If there are no negated inequalities, add the inequality $y lt.eq 1$, where $y$ is a fresh variable.
+- In either case, we end up with a set of the form $bold(a)^T bold(x) lt.eq bold(b) union {y > 0}$
+
+*Step 3:* Check the satisfiability of $bold(a)^T bold(x) lt.eq bold(b) union {y > 0}$.
+
+Encode it as LP: maximize $y$ subject to $bold(a)^T bold(x) lt.eq bold(b)$.
+
+The final system is _satisfiable_ iff the _optimal value_ for $y$ is _positive_.
+
+== Methods for Solving LP
+
+- _Simplex_ (Dantzig, 1947) --- exponential time $cal(O)(2^n)$
+- _Ellipsoid_ (Khachiyan, 1979) --- polynomial time $cal(O)(n^6)$
+- _Projective_ (Karmarkar, 1984) --- polynomial time $cal(O)(n^3.5)$
+- And many more tricky algorithms approaching $cal(O)(n^2.5)$
+
+#note[
+  Although the Simplex method is the _oldest_ and the _least efficient in theory_, it can be implemented to be _quite efficient in practice_.
+  It remains the most popular and we will focus on it next.
+]
+
+== Standard Form
+
+Any LP can be transformed to _standard form_:
+$
+  "maximize" & sum_(j=1)^n c_j x_j \
+  "such that" & sum_(j=1)^m a_{i j} x_j lt.eq b_i "for" i = 1, dots, m \
+  & x_j gt.eq 0 "for" j = 1, dots, n
+$
+
+#example[
+  Next, we are going to use the following running example LP:
+  $
+    "maximize" & 5 x_1 + 4 x_2 + 3 x_3 \
+    "such that" & cases(
+      2 x_1 + 3 x_2 + x_3 lt.eq 5,
+      4 x_1 + x_2 + 2 x_3 lt.eq 11,
+      3 x_1 + 4 x_2 + 2 x_3 lt.eq 8,
+      x_1\, x_2\, x_3 gt.eq 0,
+    )
+  $
+]
+
+== Slack Variables
+
+- Observe the first inequality:
+  $2 x_1 + 3 x_2 + x_3 lt.eq 5$
+- Define a _new variable_ to represent the _slack_:
+  $
+    x_4 = 5 - 2 x_1 - 3 x_2 - x_3, quad x_4 gt.eq 0
+  $
+- Do this for each constraint, so that everything becomes _equalities_.
+- Define a new variable to represent the _objective value_:
+  $z = 5 x_1 + 4 x_2 + 3 x_3$
+
+#align(center)[
+  #import fletcher: diagram, node, edge
+  #diagram(
+    // debug: true,
+    edge-stroke: 1pt,
+    node-corner-radius: 5pt,
+    node-outset: 3pt,
+    blob((0, 0))[
+      $
+        max & 5 x_1 + 4 x_2 + 3 x_3 \
+        "s.t." & cases(
+          2 x_1 + 3 x_2 + x_3 lt.eq 5,
+          4 x_1 + x_2 + 2 x_3 lt.eq 11,
+          3 x_1 + 4 x_2 + 2 x_3 lt.eq 8,
+          x_1\, x_2\, x_3 gt.eq 0,
+        )
+      $
+    ],
+    edge("-|>"),
+    blob((1, 0))[
+      $
+        max & z \
+        "s.t." & cases(
+          x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
+          x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
+          x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
+          z = 5 x_1 + 4 x_2 + 3 x_3,
+          x_1\, x_2\, x_3\, x_4\, x_5\, x_6 gt.eq 0,
+        )
+      $
+    ],
+  )
+]
+
+#note[
+  Optimal solution remains optimal for the new problem.
+]
+
+
 == TODO
 #show: cheq.checklist
 - [x] theory of arrays $cal(T)_"A"$
