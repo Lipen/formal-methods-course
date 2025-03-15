@@ -1030,9 +1030,10 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
 ]
 
 == TODO
-
-- theory of arrays $cal(T)_"A"$
-- satisfiability proof system for $cal(T)_"A"$
-- soundness, termination, completeness
-- LRA, Linear programming, Simplex algorithm
-- Strings solver
+#show: cheq.checklist
+- [x] theory of arrays $cal(T)_"A"$
+- [x] satisfiability proof system for $cal(T)_"A"$
+- [ ] example of derivation in $R_"AX"$
+- [ ] soundness, termination, completeness of $R_"AX"$
+- [ ] LRA, Linear programming, Simplex algorithm
+- [ ] Strings solver
