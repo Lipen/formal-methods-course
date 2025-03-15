@@ -1051,7 +1051,7 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
 
   Let $bold(x)$ be a vector of $n$ variables.
 
-  *Goal:* Find a solution $bold(x)$ that _maximizes_ $bold(c)^T bold(x)$ subject to the linear constraints $bold(A) bold(x) lt.eq bold(b)$ and $bold(x) gt.eq bold(0)$.
+  *Goal:* Find a solution $bold(x)$ that _maximizes_ $bold(c)^T bold(x)$ subject to the linear constraints $bold(A) bold(x) lt.eq bold(b)$ (and #footnote[The constraint $bold(x) gt.eq bold(0)$ is introduced when LP is expressed in _standard form_, explained later in these slides.] $bold(x) gt.eq bold(0)$).
 ]
 
 #note[
