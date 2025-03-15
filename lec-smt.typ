@@ -809,6 +809,7 @@ Is $R_"UF"$ _terminating_?
   #align(center)[
     #import curryst: prooftree, rule
     #prooftree(
+      title-inset: 5pt,
       rule(
         name: [#smallcaps[Contr] applied to $a_3 eqq a_4, a_3 neqq a_4$],
         [UNSAT],
