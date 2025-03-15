@@ -1031,6 +1031,107 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
   $
 ]
 
+= Arithmetic
+
+== Theory of Real Arithmetic
+
+#definition[
+  The theory of _real arithmetic_ $cal(T)_"RA"$ is defined by the signature #box[$Sigma^S_"RA" = {RealSort}$], #box[$Sigma^F_"RA" = {+, -, times, lt.eq} union {q | q "is a decimal numeral"}$] and the class of interpretations $bold(M)_"RA"$ that interpret $RealSort$ as the set of _real numbers_ $RR$, and the function symbols in the usual way.
+]
+
+_Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear inequalities_ over the reals, where $times$ can only be used in the form of _multiplication by constants (decimal numerals)_.
+
+== Linear Programming
+
+#definition[
+  A _linear program_ (LP) consists of:
+  + An $m times n$ matrix $bold(A)$, the _contraint matrix_.
+  + An $m$-dimensional vector $bold(b)$.
+  + An $n$-dimensional vector $bold(c)$, the _objective function_.
+
+  Let $bold(x)$ be a vector of $n$ variables.
+
+  *Goal:* Find a solution $bold(x)$ that _maximizes_ $bold(c)^T bold(x)$ subject to the linear constraints $bold(A) bold(x) lt.eq bold(b)$ and $bold(x) gt.eq bold(0)$.
+]
+
+#note[
+  All *bold*-styled symbols denote _vectors_ or _matrices_.
+]
+
+== Example and Terminology
+
+#example[
+  Maximize $2 x_2 - x_1$ subject to:
+  $
+    x_1 + x_2 &lt.eq 3 \
+    2 x_1 - x_2 &lt.eq -5 \
+  $
+
+  #set math.vec(delim: "[")
+  #set math.mat(delim: "[")
+
+  Here, $bold(x) = vec(x_1, x_2)$, $bold(A) = mat(1, 1; 2, -1)$, $bold(b) = vec(3, -5)$, $bold(c) = vec(-1, 2)$.
+
+  Find $bold(x)$ that maximizes $bold(c)^T bold(x)$ subject to $bold(A) bold(x) lt.eq bold(b)$.
+]
+
+#definition[
+  An assignment of $bold(x)$ is a _feasible solution_ if it satisfies $bold(A) bold(x) lt.eq bold(b)$.
+  // Otherwise, it is an _infeasible solution_.
+]
+
+- Is $bold(x) = angle.l 0, 0 angle.r$ a feasible solution? #NO
+- Is $bold(x) = angle.l -2, 1 angle.r$ a feasible solution? #YES
+
+#definition[
+  For a given assignment $bold(x)$, the value $bold(c)^T bold(x)$ is the _objective value_, or _cost_, of $bold(x)$.
+]
+
+- What is the objective value of $bold(x) = angle.l -2, 1 angle.r$? // 4
+
+#definition[
+  An _optimal solution_ is a feasible solution with a _maximal_ objective value among all feasible solutions.
+]
+
+#definition[
+  If a linear program has no feasible solutions, it is _infeasible_.
+]
+
+#definition[
+  The linear program is _unbounded_ if the objective value of the optimal solution is $infinity$.
+]
+
+== Geometric Interpretation
+
+#definition[
+  A _polytope_ is a generalization of 3-dimensional polyhedra to higher dimensions.
+]
+
+#definition[
+  // A polytope $P$ is _convex_ if for each pair of points in $P$, the line segment connecting them is contained within $P$.
+  A polytope $P$ is _convex_ if every point on the line segment connecting any two points in $P$ is also within $P$.
+
+  Formally, for all $a, b in RR^n intersect P$, and for all $lambda in [0; 1]$, it holds that $lambda a + (1-lambda) b in P$.
+]
+
+#note[
+  For an $m times n$ constraint matrix $bold(A)$, the set of points $P = {bold(x) | bold(A) bold(x) lt.eq bold(b)}$ forms a _convex polytope_ in $n$-dimensional space.
+]
+
+*LP goal:* find a point $bold(x)$ _inside the polytope_ that maximizes $bold(c)^T bold(x)$ for a given $bold(c)$.
+
+#note[
+  LP is _infeasible_ iff the polytope is _empty_.
+]
+
+#note[
+  LP is _unbounded_ iff the polytope is _open_ in the direction of the objective function.
+]
+
+#note[
+  The _optimal solution_ for a bounded LP lies on a _vertex_ of the polytope.
+]
+
 == TODO
 #show: cheq.checklist
 - [x] theory of arrays $cal(T)_"A"$
