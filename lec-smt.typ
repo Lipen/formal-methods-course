@@ -630,7 +630,7 @@ Normalize the literals:
 #example[
   Consider the set of literals: ${ x + y > 0, y eqq f(g(z)) }$.
 
-  We can convert it to an equisatisfiable set of flat literals by introducing fresh variables $v_1$, $v_2$, $v_3$ and $v_4$:
+  We can convert it to an equisatisfiable set of flat literals by introducing fresh variables $v_i$:
   $
     {med v_1 eqq v_2 > v_3, quad v_1 eqq True, quad v_2 eqq x + y, quad v_3 eqq 0, quad y eqq f(v_4), quad v_4 eqq g(z) med}
   $
