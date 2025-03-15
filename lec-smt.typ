@@ -1101,6 +1101,10 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
 
 == Geometric Interpretation
 
+#place(bottom + right, dy: -1em)[
+  #image("assets/Dodecahedron.png", width: 3cm)
+]
+
 #definition[
   A _polytope_ is a generalization of 3-dimensional polyhedra to higher dimensions.
 ]
