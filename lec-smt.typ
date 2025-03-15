@@ -731,13 +731,12 @@ Is $R_"UF"$ _terminating_?
 
 #align(center)[
   #import curryst: prooftree, rule
+  #show: box.with(inset: 5pt, radius: 5pt, stroke: 0.4pt)
   #set text(size: 0.8em)
-  #show: box.with(inset: 1em, radius: 1em, stroke: 0.4pt)
-  #grid(
-    columns: 3,
-    align: left,
-    column-gutter: 1em,
-    row-gutter: 1em,
+  #set align(left)
+  #stack(
+    dir: ltr,
+    spacing: 2em,
     prooftree(
       title-inset: 5pt,
       vertical-spacing: 2pt,
@@ -751,23 +750,26 @@ Is $R_"UF"$ _terminating_?
       title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
-        label: smallcaps[*Contr*],
-        [UNSAT],
-        $x eqq y in Gamma$,
-        $x neqq y in Gamma$,
-      ),
-    ),
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
         label: smallcaps[*Trans*],
         $Gamma := Gamma, x eqq z$,
         $x neqq y in Gamma$,
         $y eqq z in Gamma$,
       ),
     ),
-
+    prooftree(
+      title-inset: 5pt,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Contr*],
+        [UNSAT],
+        $x eqq y in Gamma$,
+        $x neqq y in Gamma$,
+      ),
+    ),
+  )
+  #stack(
+    dir: ltr,
+    spacing: 2em,
     prooftree(
       title-inset: 5pt,
       vertical-spacing: 2pt,
