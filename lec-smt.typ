@@ -1138,5 +1138,9 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
 - [x] satisfiability proof system for $cal(T)_"A"$
 - [ ] example of derivation in $R_"AX"$
 - [ ] soundness, termination, completeness of $R_"AX"$
-- [ ] LRA, Linear programming, Simplex algorithm
-- [ ] Strings solver
+- [ ] RDS solver
+- [ ] Bit-vector solver
+- [ ] String solver
+- [x] LRA
+- [/] Linear programming
+- [ ] Simplex algorithm
