@@ -47,7 +47,6 @@
     blob(
       (0, 0),
       content,
-      shape: fletcher.shapes.rect,
       tint: tint,
       ..blob-style,
     ),
