@@ -673,26 +673,6 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
       title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
-        label: smallcaps[*Symm*],
-        $Gamma := Gamma, y eqq x$,
-        $x neqq y in Gamma$,
-      ),
-    ),
-
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*Trans*],
-        $Gamma := Gamma, x eqq z$,
-        $x neqq y in Gamma$,
-        $y eqq z in Gamma$,
-      ),
-    ),
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
         label: smallcaps[*Cong*],
         $Gamma := Gamma, x eqq y$,
         $x eqq f(bold(u)) in Gamma$,
@@ -705,10 +685,30 @@ Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
       title-inset: 5pt,
       vertical-spacing: 2pt,
       rule(
+        label: smallcaps[*Symm*],
+        $Gamma := Gamma, y eqq x$,
+        $x neqq y in Gamma$,
+      ),
+    ),
+    prooftree(
+      title-inset: 5pt,
+      vertical-spacing: 2pt,
+      rule(
         label: smallcaps[*Contr*],
         [UNSAT],
         $x eqq y in Gamma$,
         $x neqq y in Gamma$,
+      ),
+    ),
+
+    prooftree(
+      title-inset: 5pt,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Trans*],
+        $Gamma := Gamma, x eqq z$,
+        $x neqq y in Gamma$,
+        $y eqq z in Gamma$,
       ),
     ),
     prooftree(
