@@ -1301,7 +1301,7 @@ $cal(T)$-solver:
       - Builds _partial model_ by assigning truth values to literals
       - Sends these literals to the core as _assertions_
     ],
-    node((2.2cm, -3.5cm), name: <core-text>, shape: rect, stroke: orange.darken(20%))[
+    node((2.5cm, -3.5cm), name: <core-text>, shape: rect, stroke: orange.darken(20%))[
       #set align(left)
       *Core*:
       - Sends each assertion to the appropriate theory
