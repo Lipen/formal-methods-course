@@ -928,7 +928,106 @@ void ReadBlock(int data[], int x, int len) {
 ```
 
 One pass through this code can be translated into the following $cal(T)_"A"$ formula:
-$ ("i" eqq 0) and ("next" eqq "read"("data", 0)) and ("i" < "next") and \ and ("i" < "len") and ("read"("data", "i") eqq x) and not ("i" < "len") $
+$
+  ("i" eqq 0) and ("next" eqq "read"("data", 0)) and ("i" < "next") and \ and ("i" < "len") and ("read"("data", "i") eqq x) and not ("i" < "len")
+$
+
+== Satisfiability Proof System for `QF_AX`
+
+The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof system $R_"UF"$ for $cal(T)_"UF"$ with the following rules:
+
+#align(center)[
+  #import curryst: prooftree, rule
+  #prooftree(
+    title-inset: 5pt,
+    vertical-spacing: 2pt,
+    rule(
+      label: smallcaps[*RIntro1*],
+      $Gamma := Gamma, v eqq "read"(b, i)$,
+      $b eqq "write"(a, i, v) in Gamma$,
+    ),
+  )
+  #prooftree(
+    title-inset: 5pt,
+    vertical-spacing: 2pt,
+    rule(
+      label: smallcaps[*RIntro2*],
+      $Gamma := Gamma, i eqq j quad quad Gamma := Gamma, i neqq j, u eqq "read"(a, j), u eqq "read"(b, j)$,
+      $b eqq "write"(a, i, v) in Gamma$,
+      $u eqq "read"(x, j) in Gamma$,
+      $x in {a, b}$,
+    ),
+  )
+  #prooftree(
+    title-inset: 5pt,
+    vertical-spacing: 2pt,
+    rule(
+      label: smallcaps[*Ext*],
+      $Gamma := Gamma, u neqq v, u eqq "read"(a, k), v eqq "read"(b, k)$,
+      $a neqq b in Gamma$,
+      [$a$ and $b$ are arrays],
+    ),
+  )
+]
+
+- #smallcaps[*RIntro1*]: After writing $v$ at index $i$, the reading at the same index $i$ gives us back the value $v$.
+- #smallcaps[*RIntro2*]: After writing $v$ in $a$ at index $i$, the reading from $a$ or $b$ at index $j$ results in two cases: (1)~$i$~equals~$j$, (2)~$a$~and~$b$ have the same value $u$ at position $j$.
+- #smallcaps[*Ext*]: If two arrays $a$ and $b$ are distinct, they must differ at some index $k$.
+
+== Example Derivation in $R_"AX"$
+
+#align(center)[
+  #import curryst: prooftree, rule
+  #show: box.with(inset: 1em, radius: 1em, stroke: 0.4pt)
+  #set text(size: 0.8em)
+  #set align(left)
+  #stack(
+    dir: ltr,
+    spacing: 1em,
+    prooftree(
+      title-inset: 5pt,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*RIntro1*],
+        $Gamma := Gamma, v eqq "read"(b, i)$,
+        $b eqq "write"(a, i, v) in Gamma$,
+      ),
+    ),
+    prooftree(
+      title-inset: 5pt,
+      vertical-spacing: 2pt,
+      rule(
+        label: smallcaps[*Ext*],
+        $Gamma := Gamma, u neqq v, u eqq "read"(a, k), v eqq "read"(b, k)$,
+        $a neqq b in Gamma$,
+        [$a$ and $b$ are arrays],
+      ),
+    ),
+  )
+
+  #prooftree(
+    title-inset: 5pt,
+    vertical-spacing: 2pt,
+    rule(
+      label: smallcaps[*RIntro2*],
+      $Gamma := Gamma, i eqq j quad quad Gamma := Gamma, i neqq j, u eqq "read"(a, j), u eqq "read"(b, j)$,
+      $b eqq "write"(a, i, v) in Gamma$,
+      $u eqq "read"(x, j) in Gamma$,
+      $x in {a, b}$,
+    ),
+  )
+]
+
+#example[
+  Determine the satisfiability of ${ "write"(a_1, i, "read"(a_1, i)) eqq "write"(a_2, i, "read"(a_2, i)), a_1 neqq a_2 }$.
+
+  First, flatten the literals:
+  $
+    & { "write"(a_1, i, "read"(a_1, i)) eqq "write"(a_2, i, "read"(a_2, i)) } to \
+    & to {a'_1 eqq a'_2, a'_1 eqq "write"(a_1, i, "read"(a_2, i)), a'_2 eqq "write"(a_2, i, "read"(a_1, i)), a_1 neqq a_2} to \
+    & to {a'_1 eqq a'_2, a'_1 eqq "write"(a_1, i, v_2), v_2 eqq "read"(a_2, i), a'_2 eqq "write"(a_2, i, v_1), v_1 eqq "read"(a_1, i), a_1 neqq a_2}
+  $
+]
 
 == TODO
 
