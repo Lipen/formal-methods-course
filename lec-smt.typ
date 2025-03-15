@@ -1055,7 +1055,7 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
 ]
 
 #note[
-  All *bold*-styled symbols denote _vectors_ or _matrices_.
+  All *bold*-styled symbols denote _vectors_ or _matrices_, e.g., $bold(x)$, $bold(A)$, $bold(0)$.
 ]
 
 == Example and Terminology
