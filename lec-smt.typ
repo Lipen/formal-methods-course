@@ -1320,6 +1320,12 @@ $cal(T)$-solver:
   )
 ]
 
+= Combining Theories
+
+== Motivation
+
+TODO
+
 
 == TODO
 #show: cheq.checklist
@@ -1332,4 +1338,5 @@ $cal(T)$-solver:
 - [ ] String solver
 - [x] LRA
 - [/] Linear programming
-- [ ] Simplex algorithm
+- [/] Simplex algorithm
+- [ ] Combination of theories
