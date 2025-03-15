@@ -365,8 +365,8 @@ Checking the (un)satisfiability of quantifier-free formulas in main background t
 ]
 
 Further, we are going to study:
-- A few of those theories and their decision procedures.
-- Proof systems to reason modulo theories automatically.
+- A few of those _theories_ and their _decision procedures_.
+- _Proof systems_ to reason _modulo theories_ automatically.
 
 == From Quantifier-Free Formulas to Conjunctions of Literals
 
