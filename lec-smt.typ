@@ -381,6 +381,30 @@ Further, we are going to study:
   Thus, the two satisfiability problems are equivalent.
 ]
 
+== Theory Solvers
+
+#definition[$cal(T)$-solver][
+  A _theory solver_, or _$cal(T)$-solver_, is a specialized decision procedure for the satisfiability of conjunctions of literals in a theory $cal(T)$.
+]
+
+#align(center)[
+  #import fletcher: diagram, node, edge
+  #import fletcher.shapes: *
+  #diagram(
+    // debug: true,
+    edge-stroke: 1pt,
+    node-corner-radius: 3pt,
+
+    blob((0, 0), [Set of literals], name: <input>, shape: rect, tint: teal, height: 2em),
+    edge("-|>"),
+    blob((1, 0), [$cal(T)$-solver], name: <solver>, shape: hexagon, tint: purple, height: 2em),
+    blob((2, -0.5), [Consistent \ (SAT)], name: <sat>, shape: rect, tint: green, height: 3em),
+    blob((2, 0.5), [Inconsistent \ (UNSAT)], name: <unsat>, shape: rect, tint: red, height: 3em),
+    edge(<solver>, <sat>, "-|>"),
+    edge(<solver>, <unsat>, "-|>"),
+  )
+]
+
 == Theory of Uninterpreted Functions
 
 #definition[
@@ -510,37 +534,12 @@ Legend for the table:
 - For complexities, $n$ is the size of the input formula, $k$ is some positive integer.
 - "_Not elementary recursive_" means the runtime cannot be bounded by a fixed-height stack of exponentials.
 
-= Theory Solvers
-
-== Theory Solvers
-
-#definition[$cal(T)$-solver][
-  A _theory solver_, or _$cal(T)$-solver_, is a specialized decision procedure for the satisfiability of conjunctions of literals in a theory $cal(T)$.
-]
-
-#[
-  #import fletcher: diagram, node, edge
-  #import fletcher.shapes: *
-  #set align(center)
-  #diagram(
-    // debug: true,
-    edge-stroke: 1pt,
-    node-corner-radius: 3pt,
-
-    blob((0, 0), [Set of literals], name: <input>, shape: rect, tint: teal, height: 2em),
-    edge("-|>"),
-    blob((1, 0), [$cal(T)$-solver], name: <solver>, shape: hexagon, tint: purple, height: 2em),
-    blob((2, -0.5), [Consistent \ (SAT)], name: <sat>, shape: rect, tint: green, height: 3em),
-    blob((2, 0.5), [Inconsistent \ (UNSAT)], name: <unsat>, shape: rect, tint: red, height: 3em),
-    edge(<solver>, <sat>, "-|>"),
-    edge(<solver>, <unsat>, "-|>"),
-  )
-]
+= Difference Logic
 
 == Difference Logic
 
 #definition[
-  _Difference logic_ is a fragment of linear integer arithmetic consisting of conjunctions of literals of the very restricted form:
+  _Difference logic_ (DL) is a fragment of linear integer arithmetic consisting of conjunctions of literals of the very restricted form:
   $ x - y join c $
   where $x$ and $y$ are integer variables, $c$ is a numeral, and $join in {eq, lt, lt.eq, gt, gt.eq}$.
 ]
@@ -550,7 +549,7 @@ A solver for difference logic consists of three steps:
 + Conversion to a graph.
 + Cycle detection.
 
-#pagebreak()
+== Decision Procedure for DL
 
 *Step 1:* Rewrite each literal using $lt.eq$ by applying the following rules:
 + $(x - y = c) to (x - y lt.eq c) and (x - y gt.eq c)$
@@ -602,7 +601,17 @@ Normalize the literals:
 
 *UNSAT* because of the negative cycle: $x to^(-3) z to^(-1) w to^(2) x$.
 
-= Satisfiability Proof Systems
+= Quantifier-Free Equiality
+
+== Theory of Equality with Uninterpreted Functions
+
+#definition[
+  The theory of equality with uninterpreted functions $cal(T)_"EUF"$ is defined by the signature $Sigma^F = {eqq, f, g, h, dots}$ (_interpreted_ equality and _uninterpreted_ functions) and the following axioms:
+  + $forall x. thin x eqq x$ #h(1fr) (reflexivity) #h(6cm)
+  + $forall x. forall y. thin (x eqq y) imply (y eqq x)$ #h(1fr) (symmetry) #h(6cm)
+  + $forall x. forall y. forall z. thin (x eqq y) and (y eqq z) imply (x eqq z)$ #h(1fr) (transitivity) #h(6cm)
+  + $forall bold(x). forall bold(y). thin (bold(x) = bold(y)) imply (f(bold(x)) eqq f(bold(y)))$ #h(1fr) (function congruence) #h(6cm)
+]
 
 == Flattening
 
@@ -638,21 +647,11 @@ Hereinafter, we will assume that all literals are _flat_.
 - $Gamma, s eqq t$ is an abbreviation for $Gamma union {s eqq t}$.
 - If applying a rule $R$ does not change $Gamma$, then $R$ _is not applicable_ to $Gamma$, that is, $Gamma$ is _irreducible_ w.r.t. $R$.
 
-== Theory of Equality with Uninterpreted Functions
-
-#definition[
-  The theory of equality with uninterpreted functions $cal(T)_"EUF"$ is defined by the signature $Sigma^F = {eqq, f, g, h, dots}$ (_interpreted_ equality and _uninterpreted_ functions) and the following axioms:
-  + $forall x. thin x eqq x$ #h(1fr) (reflexivity) #h(6cm)
-  + $forall x. forall y. thin (x eqq y) imply (y eqq x)$ #h(1fr) (symmetry) #h(6cm)
-  + $forall x. forall y. forall z. thin (x eqq y) and (y eqq z) imply (x eqq z)$ #h(1fr) (transitivity) #h(6cm)
-  + $forall bold(x). forall bold(y). thin (bold(x) = bold(y)) imply (f(bold(x)) eqq f(bold(y)))$ #h(1fr) (function congruence) #h(6cm)
-]
-
 == Satisfiability Proof System for `QF_UF`
 
 Let `QF_UF` be the quantifier-free fragment of FOL over some signature $Sigma$.
 
-Below is a simple satisfiability proof system $R_"UF"$ for `QF_UF`:
+Below is a simple _satisfiability proof system_ $R_"UF"$ for `QF_UF`:
 #align(center)[
   #import curryst: prooftree, rule
   #grid(
