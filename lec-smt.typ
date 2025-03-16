@@ -1247,6 +1247,249 @@ $
   Optimal solution remains optimal for the new problem.
 ]
 
+== The Simplex Strategy
+
+- Start with a feasible solution.
+  - For our example, assign 0 to all variables. \
+    $x_1 maps 0, x_2 maps 0, x_3 maps 0$
+  - Assign the introduced variables their computed values. \
+    $x_4 maps 5, x_5 maps 11, x_6 maps 8, z maps 0$
+- Iteratively improve the objective value.
+  - Go from $bold(x)$ to $bold(x)'$ only if $z(bold(x)) lt.eq z(bold(x)')$.
+
+#place(right)[
+  $
+    cases(
+      x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
+      x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
+      x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
+      z = 5 x_1 + 4 x_2 + 3 x_3,
+    )
+  $
+]
+
+What can we improve here?
+
+One option is to make $x_1$ larger, leaving $x_2$ and $x_3$ unchanged:
+- $x_1 = 1 quad to quad x_4 = 3, x_5 = 7, x_6 = 1, z = 5$ #YES
+- $x_1 = 2 quad to quad x_4 = 1, x_5 = 3, x_6 = 2, z = 10$ #YES
+- $x_1 = 3 quad to quad x_4 = -1, dots$ #NO _no longer feasible!_
+
+#pagebreak()
+
+We can't increase $x_1$ _too much_.
+Let's increase it as much as possible, _without compromising feasibility_.
+
+#align(center)[
+  #import fletcher: diagram, node, edge
+  #diagram(
+    // debug: true,
+    edge-stroke: 1pt,
+    node-corner-radius: 5pt,
+    node-outset: 3pt,
+    blob((0, 0))[
+      $
+        x_1 maps 0, x_2 maps 0, x_3 maps 0 \
+        cases(
+          x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
+          x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
+          x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
+          z = 5 x_1 + 4 x_2 + 3 x_3,
+        )
+      $
+    ],
+    edge("-|>"),
+    blob((1, 0))[
+      $
+        cases(
+          x_1 lt.eq 5/2,
+          x_1 lt.eq 11/4,
+          x_1 lt.eq 8/3,
+        )
+      $
+    ],
+  )
+]
+
+Select the _tightest bound_, $x_1 lt.eq 5/2$.
+- New assignment: $x_1 maps 5/2, x_2 maps x_3 maps x_4 maps 0, x_5 maps 1, x_6 maps 1/2, z maps 25/2$
+- This indeed improves the objective value $z$.
+
+#pagebreak()
+
+Current assignment:
+- $x_1 maps 5 / 2, x_2 maps x_3 maps x_4 maps 0, x_5 maps 1, x_6 maps 1 / 2, z maps 25 / 2$
+
+How do we continue?
+
+For the first iteration we had:
+- A _feasible solution_.
+- An _equation system_ where the variables with positive values \ are expressed in terms of variables with 0 value.
+
+#place(right)[
+  $
+    cases(
+      x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
+      x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
+      x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
+      z = 5 x_1 + 4 x_2 + 3 x_3,
+    )
+  $
+]
+
+Does the current _equation system_ satisfy this property?
+_No_ #NO
+
+#pagebreak()
+
+#place(right)[
+  $
+    & x_1 maps 5 / 2, x_2 maps x_3 maps x_4 maps 0 \
+    & cases(
+      x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
+      x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
+      x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
+      z = 5 x_1 + 4 x_2 + 3 x_3,
+    )
+  $
+]
+
+What should we change?
+- Initially, $x_1$ was 0 and $x_4$ was positive.
+- Now, $x_1$ is positive and $x_4$ is 0.
+
+Isolate $x_1$ and _eliminate_ it from right-hand-side:
+- $x_4 = 5 - 2 x_1 - 3 x_2 - x_3 quad to quad x_1 = 5 / 2 - 3 / 2 x_2 - 1 / 2 x_3 - 1 / 2 x_4$
+
+#v(1em)
+#align(center)[
+  #import fletcher: diagram, node, edge
+  #diagram(
+    // debug: true,
+    edge-stroke: 1pt,
+    node-corner-radius: 5pt,
+    node-outset: 3pt,
+    blob((0, 0))[
+      $
+        cases(
+          x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
+          x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
+          x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
+          z = 5 x_1 + 4 x_2 + 3 x_3,
+        )
+      $
+    ],
+    edge("-|>"),
+    blob((1, 0))[
+      $
+        cases(
+          x_1 = 5/2 - 3/2 x_2 - 1/2 x_3 - 1/2 x_4,
+          x_5 = 1 + 5 x_2 + #hide[$+ 0 x_3$] + 2 x_4,
+          x_6 = 1/2 + 1/2 x_2 - 1/2 x_3 + 3/2 x_4,
+          z = 25/2 - 7/2 x_2 + 1/2 x_3 - 5/2 x_4,
+        )
+      $
+    ],
+  )
+]
+
+#pagebreak()
+
+#place(right)[
+  $
+    & x_1 maps 5 / 2, x_2 maps 0, x_3 maps 0, x_4 maps 0 \
+    & cases(
+      x_1 = 5/2 - 3/2 x_2 - 1/2 x_3 - 1/2 x_4,
+      x_5 = 1 + 5 x_2 + #hide[$+ 0 x_3$] + 2 x_4,
+      x_6 = 1/2 + 1/2 x_2 - 1/2 x_3 + 3/2 x_4,
+      z = 25/2 - 7/2 x_2 + 1/2 x_3 - 5/2 x_4,
+    )
+  $
+]
+
+How can we improve $z$ further?
+- *Option 1*: decrease $x_2$ or $x_4$, but we can't since $x_2, x_4 gt.eq 0$.
+- *Option 2*: increase $x_3$. _By how much?_
+
+$x_3$'s bounds: $x_3 lt.eq 5$, $x_3 lt.eq infinity$, $x_3 lt.eq 1$.
+
+We increase $x_3$ to its tightest bound 1.
+- New assignment: $x_1 maps 2, x_2 maps 0, x_3 maps 1, x_4 maps 0, x_5 maps 0, x_6 maps 0$.
+- This gives $z = 13$, which is again an improvement.
+
+As before, we switch $x_6$ and $x_3$, and _eliminate_ $x_3$ from the right-hand-side:
+
+#align(center)[
+  #import fletcher: diagram, node, edge
+  #diagram(
+    // debug: true,
+    edge-stroke: 1pt,
+    node-corner-radius: 5pt,
+    node-outset: 3pt,
+    blob((0, 0))[
+      $
+        cases(
+          x_1 = 5/2 - 3/2 x_2 - 1/2 x_3 - 1/2 x_4,
+          x_5 = 1 + 5 x_2 + #hide[$+ 0 x_3$] + 2 x_4,
+          x_6 = 1/2 + 1/2 x_2 - 1/2 x_3 + 3/2 x_4,
+          z = 25/2 - 7/2 x_2 + 1/2 x_3 - 5/2 x_4,
+        )
+      $
+    ],
+    edge("-|>"),
+    blob((1, 0))[
+      $
+        cases(
+          x_1 = 2 - 2 x_2 - 2 x_4 + x_6,
+          x_5 = 1 + 5 x_2 + 2 x_4,
+          x_3 = 1 + x_2 + 3 x_4 - 2 x_6,
+          z = 13 - 3 x_2 - x_4 - x_6,
+        )
+      $
+    ],
+  )
+]
+
+#pagebreak()
+
+#place(right)[
+  $
+    & x_1 maps 2, x_2 maps 0, x_3 maps 1, \
+    & x_4 maps 0, x_6 maps 0 \
+    & cases(
+      x_1 = 2 - 2 x_2 - 2 x_4 + x_6,
+      x_5 = 1 + 5 x_2 + 2 x_4,
+      x_3 = 1 + x_2 + 3 x_4 - 2 x_6,
+      z = 13 - 3 x_2 - x_4 - x_6,
+    )
+  $
+]
+
+Can we improve $z$ again?
+- No, because $x_2, x_4, x_6 gt.eq 0$, and \ all _appear with negative signs_ in the objective function.
+
+So, we are done, and the optimal value of $z$ is 13.
+
+#fancy-box[
+  The optimal solution is then $x_1 maps 2, x_2 maps 0, x_3 maps 1$.
+]
+
+== The Simplex Algorithm
+
+$
+  "maximize" & sum_(j=1)^n c_j x_j \
+  "such that" & sum_(j=1)^m a_{i j} x_j lt.eq b_i "for" i = 1, dots, m \
+  & x_j gt.eq 0 "for" j = 1, dots, n
+$
+
++ Introduce slack variables $x_(n+1), dots, x_(n+m)$.
++ Set $x_(n+i) = b_i - sum_(j=1)^n a_(i j) x_j$ for $i = 1, dots, m$.
++ Start with initial, _feasible_ solution. (commonly, $x_1 maps 0, dots, x_n maps 0$)
++ While some summands in the current objective function have _positive coefficients_, update the feasible solution to improve the objective value. Otherwise, stop.
++ Update the equations to _maintain the invariant_ that all right-hand-side values have value 0.
++ Go to 4.
+
+
 = CDCL($cal(T)$)
 
 == CDCL($cal(T)$) Architecture
