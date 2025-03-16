@@ -1110,7 +1110,6 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
 ]
 
 #definition[
-  // A polytope $P$ is _convex_ if for each pair of points in $P$, the line segment connecting them is contained within $P$.
   A polytope $P$ is _convex_ if every point on the line segment connecting any two points in $P$ is also within $P$.
 
   Formally, for all $a, b in RR^n intersect P$, and for all $lambda in [0; 1]$, it holds that $lambda a + (1-lambda) b in P$.
