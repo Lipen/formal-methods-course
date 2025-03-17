@@ -36,7 +36,7 @@ Formal languages are classified by _Chomsky hierarchy_:
 - Type 2: Context-Free
 - Type 3: Regular
 
-#v(1cm, weak: true)
+#v(1.5cm, weak: true)
 _Examples_:
 - $L = { a^n | n geq 0 }$
 - $L = { a^n b^n | n geq 0 }$
