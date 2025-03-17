@@ -95,7 +95,7 @@ _Examples_:
     content((0, 1.55))[Context-Free]
     content((0, 2.3))[Context-Sensitive]
     content((0, 3.2))[#set text(fill: purple); Decidable = $"RE" intersect "co-RE"$]
-    content((0, 4.4))[#set text(fill: blue); Computably Enumerable (RE)]
+    content((0, 4.4))[#set text(fill: blue); Recursively Enumerable (RE)]
     content((0, -1))[#set text(fill: red); co-RE]
     circle((2.5, 2.5), radius: 3pt, fill: yellow)
     content((2.5, 2.5), anchor: "north-west", padding: 5pt)[SAT]
@@ -701,10 +701,8 @@ An alternative formulation of PCP is a collection of _dominoes_, each with a _to
 
 == Semi-decidability
 
-Suppose we want to determine $Sigma models alpha$ where $Sigma$ is infinite.
-In general, it is undecidable.
-
-However, it is possible to obtain a weaker result.
+Suppose we want to determine $Sigma models alpha$, where $Sigma$ is infinite.
+In general, it is _undecidable_.
 
 #definition[Semi-decidable set][
   A set $S$ is _computably enumerable_ if there is an _enumeration procedure_ which lists, in some order, every member of $S$: $s_1, s_2, s_3 dots$
@@ -712,11 +710,19 @@ However, it is possible to obtain a weaker result.
   Equivalently (see @enumerable), a set $S$ is _semi-decidable_ if there is an algorithm such that the set of inputs for which the algorithm halts is exactly $S$.
 ]
 
-Note that if $S$ is infinite, the enumeration procedure will _never_ finish, but every member of $S$ will be listed _eventually_, after some finite amount of time.
+#note[
+  There are more synonyms for _computably enumerable_, such as _effectively enumerable_, _recursively enumerable_ (do not confuse with just _recursive_!), and _Turing-recognizable_, or simply _recorgizable_.
+]
 
-*Some properties:*
-- Decidable sets are closed under union, intersection, Cartesian product, and complement.
-- Semi-decidable sets are closed under union, intersection, and Cartesian product.
+#note[
+  If $S$ is infinite, the enumeration procedure will _never_ finish, but every member of $S$ will be listed _eventually_, after some finite amount of time.
+]
+
+#note[
+  Some properties of _decidable_ and _semi-decidable_ sets:
+  - Decidable sets are closed under union, intersection, Cartesian product, and complement.
+  - Semi-decidable sets are closed under union, intersection, and Cartesian product.
+]
 
 == Enumerability and Semi-decidability
 
