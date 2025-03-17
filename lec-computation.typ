@@ -62,7 +62,7 @@ _Examples_:
 #definition[Decision problem][
   A _decision problem_ is a question with a "yes" or "no" answer.
 
-  Formally, set of inputs for which the problem has an answer "yes" corresponds to a subset $L subset.eq Sigma^ast$, where $Sigma$ is an alphabet.
+  Formally, the set of inputs for which the problem has an answer "yes" corresponds to a subset $L subset.eq Sigma^ast$, where $Sigma$ is an alphabet.
 ]
 
 #example[
