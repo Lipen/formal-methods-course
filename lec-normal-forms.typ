@@ -80,7 +80,7 @@ Any propositional formula can be converted to NNF by the repeated application of
   columns: 2,
   stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
   table.header[*Description*][*Rewrite rule*],
-  [Eliminate implications], [$(A implies B) rewrite (not A or B)$],
+  [Eliminate implications], [$(A imply B) rewrite (not A or B)$],
   [Eliminate bi-implications], [$(A iff B) rewrite (not A or B) and (A or not B)$],
   [Push negation inside conjunctions], [$not (A and B) rewrite (not A or not B)$],
   [Push negation inside disjunctions], [$not (A or B) rewrite not A and not B$],
