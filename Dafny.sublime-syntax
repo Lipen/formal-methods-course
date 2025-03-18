@@ -1,0 +1,140 @@
+%YAML 1.2
+---
+name: Dafny
+file_extensions: [dfy]
+scope: source.dafny
+folding:
+  start: '(?x)\{\s*(//.*)?$|^\s*// \{\{\{'
+  end: '^\s*(\}|// \}\}\}$)'
+contexts:
+  main:
+    - include: comments
+    - include: strings
+    - include: attributes
+    - include: preprocessor
+    - include: declarations
+    - include: types
+    - include: keywords
+    - include: numbers
+    - include: operators
+    - include: entities
+    - include: punctuation
+
+  declarations:
+    - match: '\b(method|function|lemma|predicate|copredicate|datatype|codatatype|class|trait|iterator|module|constructor|comethod)\s+([a-zA-Z_]\w*)'
+      captures:
+        1: keyword.declaration.dafny
+        2: entity.name.type.dafny
+
+    - match: '\b(const|ghost|var|static|abstract|opaque|twostate)\s+([a-zA-Z_]\w*)'
+      captures:
+        1: keyword.modifier.dafny
+        2: variable.other.dafny
+
+    - match: '\b(requires|ensures|modifies|reads|decreases|invariant|yield|yields|returns|refines)\b'
+      scope: keyword.specification.dafny
+
+  types:
+    - match: '\b(int|nat|real|bool|string|char|set|seq|multiset|map|array|object|any)\b'
+      scope: storage.type.dafny
+
+    - match: '<([a-zA-Z_]\w*)>'
+      captures:
+        1: storage.type.parameter.dafny
+
+  keywords:
+    - match: >
+        \b(if|else|while|for|match|case|break|continue|return|then|where|
+        in|is|new|this|null|fresh|choose|old|calc|label|print|parallel|as|
+        default|import|opened|throw|try|catch|finally)\b
+      scope: keyword.control.dafny
+
+    - match: '\b(assert|assume|expect|forall|exists)\b'
+      scope: keyword.operator.dafny
+
+    - match: '\b(class|datatype|codatatype|type|module|iterator)\b'
+      scope: keyword.declaration.type.dafny
+
+  numbers:
+    - match: '\b0[xX][0-9a-fA-F_]+\b'
+      scope: constant.numeric.hex.dafny
+
+    - match: '\b\d[\d_]*(?:\.\d[\d_]*)?(?:[eE][+-]?\d[\d_]*)?\b'
+      scope: constant.numeric.dafny
+
+  operators:
+    - match: '(==>|<==|&&|\|\||!)'
+      scope: keyword.operator.logical.dafny
+
+    - match: '(\+|-|\*|/|%|mod|div|\^)'
+      scope: keyword.operator.arithmetic.dafny
+
+    - match: '(==|!=|<=|>=|<|>|!in)'
+      scope: keyword.operator.comparison.dafny
+
+    - match: '(:=|::|->|-->|\.|\?|:|\-\-|\+\+)'
+      scope: keyword.operator.dafny
+
+  entities:
+    - match: '\b([A-Z][a-zA-Z0-9_]*)\b'
+      scope: entity.name.type.dafny
+
+    - match: '(\w+)\s*\('
+      captures:
+        1: entity.name.function.dafny
+
+  comments:
+    - match: '/\*\*/'
+      scope: comment.block.empty.dafny
+
+    - match: '//'
+      scope: punctuation.definition.comment.dafny
+      push: line_comment
+
+    - match: '/\*'
+      scope: punctuation.definition.comment.begin.dafny
+      push: block_comment
+
+  block_comment:
+    - meta_scope: comment.block.dafny
+    - match: \*/
+      scope: punctuation.definition.comment.end.dafny
+      pop: true
+    - match: /\*
+      scope: invalid.illegal.nested-comments.dafny
+
+  line_comment:
+    - meta_scope: comment.line.double-slash.dafny
+    - match: $\n?
+      pop: true
+
+  strings:
+    - match: '"'
+      scope: punctuation.definition.string.begin.dafny
+      push: string_double
+
+  string_double:
+    - meta_scope: string.quoted.double.dafny
+    - match: '"'
+      scope: punctuation.definition.string.end.dafny
+      pop: true
+    - match: \\(\\|"|n|t|r)
+      scope: constant.character.escape.dafny
+
+  attributes:
+    - match: '(\{:[^}]*\})'
+      scope: meta.annotation.dafny
+      captures:
+        0: constant.other.attribute.dafny
+
+  preprocessor:
+    - match: '^\s*include\s+"([^"]+)"'
+      scope: meta.include.dafny
+      captures:
+        1: string.quoted.double.include.dafny
+
+  punctuation:
+    - match: ';'
+      scope: punctuation.terminator.dafny
+    - match: '[(){}\[\].,]'
+      scope: punctuation.delimiter.dafny
