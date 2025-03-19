@@ -1031,35 +1031,49 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
 
 #pagebreak()
 
-- $a'_1 eqq a'_2, a'_1 eqq "write"(a_1, i, v_2), v_2 eqq "read"(a_2, i), a'_2 eqq "write"(a_2, i, v_1), v_1 eqq "read"(a_1, i), a_1 neqq a_2$
-- (by Refl) $a_1 eqq a_1$
-- (by Refl) $a_2 eqq a_2$
-- (by Ext) $u_1 neqq u_2, u_1 eqq "read"(a_1, n), u_2 eqq "read"(a_2 , n)$
-- (by RIntro2) split:
-#columns(2)[
-  1. $i eqq n$
-    - (by Cong) $v_1 eqq u_1$
-    - (by Symm) $u_1 eqq v_1$
-    - (by Cong) $v_2 eqq u_2$
-    - (by RIntro1) $v_2 eqq "read"(a'_1, i)$
-    - (by RIntro1) $v_1 eqq "read"(a'_2, i)$
-    - (by Refl) $i eqq i$
-    - (by Cong) $v_1 eqq v_2$
-    - (by Trans) $u_1 eqq u_2$
-    - (by Contr) $"UNSAT"$
-  #colbreak()
-  2. $i neqq n, u_1 eqq "read"(a'_1, n)$
-    - (by RIntro2) split:
-  #columns(2)[
-    1. $i eqq n$
-      - (by Contr) $"UNSAT"$
-    #colbreak()
-    2. $i neqq n, u_2 eqq "read"(a'_2, n)$
-      - (by Relf) $n eqq n$
-      - (by Cong) $u_1 eqq u_2$
-      - (by Contr) $"UNSAT"$
-  ]
-]
++ $a'_1 eqq a'_2, a'_1 eqq "write"(a_1, i, v_2), v_2 eqq "read"(a_2, i), a'_2 eqq "write"(a_2, i, v_1), v_1 eqq "read"(a_1, i), a_1 neqq a_2$
++ (by Refl) $a_1 eqq a_1$
++ (by Refl) $a_2 eqq a_2$
++ (by Ext) $u_1 neqq u_2, u_1 eqq "read"(a_1, n), u_2 eqq "read"(a_2 , n)$
++ (by RIntro2) split
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  stroke: (top: 0.8pt),
+  inset: (top: 5pt),
+  [
+    6. $i eqq n$
+    + (by Cong) $v_1 eqq u_1$
+    + (by Symm) $u_1 eqq v_1$
+    + (by Cong) $v_2 eqq u_2$
+    + (by RIntro1) $v_2 eqq "read"(a'_1, i)$
+    + (by RIntro1) $v_1 eqq "read"(a'_2, i)$
+    + (by Refl) $i eqq i$
+    + (by Cong) $v_1 eqq v_2$
+    + (by Trans) $u_1 eqq u_2$
+    + (by Contr) $"UNSAT"$
+  ],
+  [
+    6. $i neqq n, u_1 eqq "read"(a'_1, n)$
+    + (by RIntro2) split
+    #grid(
+      columns: 2,
+      column-gutter: 2em,
+  stroke: (top: 0.8pt),
+  inset: (top: 5pt),
+      [
+        8. $i eqq n$
+        + (by Contr) $"UNSAT"$
+      ],
+      [
+        8. $i neqq n, u_2 eqq "read"(a'_2, n)$
+        + (by Relf) $n eqq n$
+        + (by Cong) $u_1 eqq u_2$
+        + (by Contr) $"UNSAT"$
+      ],
+    )
+  ],
+)
 
 = Arithmetic
 
