@@ -971,7 +971,7 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
 ]
 
 - #smallcaps[*RIntro1*]: After writing $v$ at index $i$, the reading at the same index $i$ gives us back the value $v$.
-- #smallcaps[*RIntro2*]: After writing $v$ in $a$ at index $i$, the reading from $a$ or $b$ at index $j$ results in two cases: (1)~$i$~equals~$j$, (2)~$a$~and~$b$ have the same value $u$ at position $j$.
+- #smallcaps[*RIntro2*]: After writing $v$ in $a$ at index $i$, the reading from $a$ or $b$ at index $j$ _splits_ in two cases: (1)~$i$~equals~$j$, (2)~$a$~and~$b$ have the same value $u$ at position $j$.
 - #smallcaps[*Ext*]: If two arrays $a$ and $b$ are distinct, they must differ at some index $k$.
 
 == Example Derivation in $R_"AX"$
