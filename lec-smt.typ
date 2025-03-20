@@ -1039,7 +1039,7 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
 #grid(
   columns: 2,
   column-gutter: 2em,
-  stroke: (top: 0.8pt),
+  stroke: (top: 0.4pt),
   inset: (top: 5pt),
   [
     6. $i eqq n$
@@ -1059,7 +1059,7 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
     #grid(
       columns: 2,
       column-gutter: 2em,
-  stroke: (top: 0.8pt),
+  stroke: (top: 0.4pt),
   inset: (top: 5pt),
       [
         8. $i eqq n$
