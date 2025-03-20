@@ -1623,12 +1623,12 @@ TODO
 #show: cheq.checklist
 - [x] theory of arrays $cal(T)_"A"$
 - [x] satisfiability proof system for $cal(T)_"A"$
-- [ ] example of derivation in $R_"AX"$
+- [x] example of derivation in $R_"AX"$
 - [ ] soundness, termination, completeness of $R_"AX"$
 - [ ] RDS solver
 - [ ] Bit-vector solver
 - [ ] String solver
 - [x] LRA
-- [/] Linear programming
+- [x] Linear programming
 - [/] Simplex algorithm
 - [ ] Combination of theories
