@@ -1226,7 +1226,7 @@ The final system is _satisfiable_ iff the _optimal value_ for $y$ is _positive_.
 Any LP can be transformed to _standard form_:
 $
   "maximize" & sum_(j=1)^n c_j x_j \
-  "such that" & sum_(j=1)^m a_{i j} x_j lt.eq b_i "for" i = 1, dots, m \
+  "such that" & sum_(j=1)^m a_(i j) x_j lt.eq b_i "for" i = 1, dots, m \
   & x_j gt.eq 0 "for" j = 1, dots, n
 $
 
@@ -1524,7 +1524,7 @@ So, we are done, and the optimal value of $z$ is 13.
 
 $
   "maximize" & sum_(j=1)^n c_j x_j \
-  "such that" & sum_(j=1)^m a_{i j} x_j lt.eq b_i "for" i = 1, dots, m \
+  "such that" & sum_(j=1)^m a_(i j) x_j lt.eq b_i "for" i = 1, dots, m \
   & x_j gt.eq 0 "for" j = 1, dots, n
 $
 
