@@ -952,7 +952,7 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
     vertical-spacing: 2pt,
     rule(
       label: smallcaps[*RIntro2*],
-      $Gamma := Gamma, i eqq j quad quad Gamma := Gamma, i neqq j, u eqq "read"(a, j), u eqq "read"(b, j)$,
+      $Gamma := Gamma, i eqq j #h(3em) Gamma := Gamma, i neqq j, u eqq "read"(a, j), u eqq "read"(b, j)$,
       $b eqq "write"(a, i, v) in Gamma$,
       $u eqq "read"(x, j) in Gamma$,
       $x in {a, b}$,
