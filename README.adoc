@@ -25,6 +25,8 @@ image:https://github.com/Lipen/formal-methods-course/actions/workflows/ci.yml/ba
 
 |image:https://img.shields.io/badge/Lecture-SMT-blue?style=social&logo=gitbook["Lecture: Satisfiability Modulo Theories", link="https://lipen.github.io/formal-methods-course/lec-smt.pdf"]
 
+|image:https://img.shields.io/badge/Lecture-Dafny-blue?style=social&logo=gitbook["Lecture: Dafny", link="https://lipen.github.io/formal-methods-course/lec-dafny.pdf"]
+
 |===
 
 == Build
