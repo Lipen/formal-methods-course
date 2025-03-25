@@ -520,7 +520,7 @@ $
   { P } quad x := E quad { exists n. thin P[x := n] and x = E[x := n] }
 $
 
-== $WP and SP$
+== $WP$ and $SP$
 
 Let $P$ be a predicate on the pre-state of a program $S$ and let $Q$ be a predicate on the post-state of $S$.
 
