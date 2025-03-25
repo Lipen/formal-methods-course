@@ -311,7 +311,9 @@ Write an appropriate precondition for the method that allows you to implement it
     align: center,
     column-gutter: 1em,
     row-gutter: 0.5em,
-    image("assets/Robert_Floyd.jpg", height: 3cm), image("assets/Tony_Hoare.jpg", height: 3cm),
+    link("https://en.wikipedia.org/wiki/Robert_W._Floyd", image("assets/Robert_Floyd.jpg", height: 3cm)),
+    link("https://en.wikipedia.org/wiki/Tony_Hoare", image("assets/Tony_Hoare.jpg", height: 3cm)),
+
     [Robert Floyd], [Tony Hoare],
   )
   #let body = [
