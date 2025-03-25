@@ -25,6 +25,9 @@
 #let YES = Green(sym.checkmark)
 #let NO = Red(sym.crossmark)
 
+#let WP = $cal(W P)$
+#let SP = $cal(S P)$
+
 #set raw(syntaxes: "Dafny.sublime-syntax")
 
 = Program Verification
@@ -71,8 +74,8 @@ _"Given *positive* integers $a$ and $b$, the program computes and stores in $x$ 
 == Design by Contract
 
 Specification of a program can be seen as a _contract_:
-- _Preconditions_ define what is _required_ to get a meaningful result.
-- _Postconditions_ define what is _guaranteed_ to return when the precondition is met.
+- _Pre-conditions_ define what is _required_ to get a meaningful result.
+- _Post-conditions_ define what is _guaranteed_ to return when the precondition is met.
 
 #align(center)[
   #box[
@@ -246,7 +249,7 @@ method MyMethod(x: int) returns (y: int)
 
 The last constructed condition _implies_ the required postcondition:
 $
-  (x gt.eq 10) and (a = x + 3) and (b = 12) and (y = a + b) imply (y gt.eq 25)
+  (x >= 10) and (a = x + 3) and (b = 12) and (y = a + b) imply (y >= 25)
 $
 
 #pagebreak()
@@ -270,7 +273,7 @@ method MyMethod(x: int) returns (y: int)
 
 The last calculated condition is _implied_ by the given precondition:
 $
-  (x + 3 + 12 >= 25) implied (x gt.eq 10)
+  (x + 3 + 12 >= 25) implied (x >= 10)
 $
 
 == Exercise \#1
@@ -323,9 +326,9 @@ Write an appropriate precondition for the method that allows you to implement it
 
     A formal framework for doing this was developed by Tony Hoare, formalizing a reasoning technique by Robert Floyd.
 
-    It is based on the notion of a Hoare triple.
+    It is based on the notion of a _Hoare triple_.
 
-    Dafny is based on Floyd-Hoare Logic.
+    _Dafny_ is based on Floyd-Hoare Logic.
   ]
   #wrap-it.wrap-content(fig, body, align: top + right)
 ]
@@ -339,14 +342,218 @@ Write an appropriate precondition for the method that allows you to implement it
 ]
 
 #examples[
+  #block(spacing: 1em)[
+    $
+      { x = 1 } &quad x := 20 &quad& {x = 2} \
+      { x < 18 } &quad y := 18 - x &quad& { y >= 0 } \
+      { x < 18 } &quad y := 5 &quad& { y >= 0 } \
+    $
+  ]
+]
+
+#example(title: "Non-examples")[
+  #block(spacing: 1em)[
+    $
+      { x < 18 } &quad x := y &quad& { y >= 0 }
+    $
+  ]
+]
+
+== Forward Reasoning
+
+#definition[
+  _Forward reasoning_ is a construction of a post-condition from a given pre-condition.
+]
+
+#note[
+  In general, there are _many_ possible post-conditions.
+]
+
+#examples[
+  #block(spacing: 1em)[
+    $
+      { x = 0 } &quad y := x + 3 &quad& { y < 100 } \
+      { x = 0 } &quad y := x + 3 &quad& { x = 0 } \
+      { x = 0 } &quad y := x + 3 &quad& { 0 <= x, y = 3 } \
+      { x = 0 } &quad y := x + 3 &quad& { 3 <= y } \
+      { x = 0 } &quad y := x + 3 &quad& { #`true` } \
+    $
+  ]
+]
+
+== Strongest Postcondition
+
+Forward reasoning constructs the _strongest_ (i.e., _the most specific_) postcondition.
+
+$
+  { x = 0 } &quad y := x + 3 &quad& { 0 <= x and y = 3 }
+$
+
+#definition[
+  $A$ is _stronger_ than $B$ if $A imply B$ is a valid formula.
+]
+
+#definition[
+  A formula is _valid_ if it is true for any valuation of its free variables.
+]
+
+== Backward Reasoning
+
+#definition[
+  _Backward reasoning_ is a construction of a pre-condition for a given post-condition.
+]
+
+#note[
+  Again, there are _many_ possible pre-conditions.
+]
+
+#examples[
+  #block(spacing: 1em)[
+    $
+      { x <= 70 } &quad y := x + 3 &quad& { y <= 80 } \
+      { x = 65, y < 21 } &quad y := x + 3 &quad& { y <= 80 } \
+      { x <= 77 } &quad y := x + 3 &quad& { y <= 80 } \
+      { x dot x + y dot y <= 2500 } &quad y := x + 3 &quad& { y <= 80 } \
+      { #`false` } &quad y := x + 3 &quad& { y <= 80 } \
+    $
+  ]
+]
+
+== Weakest Precondition
+
+Backward reasoning constructs the _weakest_ (i.e., _the most general_) pre-condition.
+
+$
+  { x <= 77 } &quad y := x + 3 &quad& { y <= 80 }
+$
+
+#definition[
+  $A$ is _weaker_ than $B$ if $B imply A$ is a valid formula.
+]
+
+== Weakest Precondition for Assignment
+
+#definition[
+  The weakest pre-condition for an assignment statement $x := E$ with a post-condition $Q$, is constructed by replacing each $x$ in $Q$ with $E$, denoted $Q[x := E]$.
   $
-    { x = 1 } &quad x := 20 &quad {x = 2} \
-    { x < 18 } &quad y := 18 - x &quad { y gt.eq 0 } \
-    { x < 18 } &quad y := 5 &quad { y gt.eq 0 } \
+    { Q[x := E] } quad x := E quad { Q }
   $
 ]
 
-*Non-example*: ${ x < 18 } quad x := y quad { y gt.eq 0 }$
+#example[
+  Given a Hoare triple ${ "?" } thick y := a + b thick { 25 <= y }$, we construct a pre-condition ${ 25 <= a + b }$.
+]
+#examples[
+  #block(spacing: 1em)[
+    $
+      { 25 <= x + 3 + 12 } &quad y := x + 3 &quad& { 25 <= a + 12 } \
+      { x + 1 <= y } &quad y := x + 1 &quad& { x <= y } \
+      { 3 dot 2 dot x + 5 y < 100 } &quad y := 2 dot x &quad& { 3 x + 5 y < 100 } \
+    $
+  ]
+]
+
+== Simultaneous Assignment
+
+Dafny allows simultaneous assignment of multiple variables in a single statement.
+
+#examples[
+  #grid(
+    columns: 2,
+    gutter: 1em,
+    [`x, y := 3, 10;`], [sets $x$ to $3$ and $y$ to $10$],
+    [`x, y = x + y, x - y;`], [sets $x$ to the sum of $x$ and $y$ and $y$ to their difference],
+  )
+]
+
+All right-hand sides are evaluated _before_ any variables are assigned.
+
+#note[
+  The last example is _different_ from the two statements `x = x + y; y = x - y;`
+]
+
+== Weakest Precondition for Simultaneous Assignment
+
+#definition[
+  The weakest pre-condition for a simultaneous assignment $x_1, x_2 := E_1, E_2$ is constructed by replacing each $x_1$ with $E_1$ and each $x_2$ with $E_2$ in post-condition $Q$.
+  $
+    Q[x_1 := E_1, x_2 := E_2] &quad x_1, x_2 := E_1, E_2 quad { Q }
+  $
+]
+
+#example[
+  ```dafny
+  // { x == X, y == Y }
+  // { y == Y, x == X }
+  x, y = y, x
+  // { x == Y, y == X }
+  ```
+]
+
+== Weakest Precondition for Variable Introduction
+
+#note[
+  The statement `var x := tmp;` is actually _two_ statements: `var x; x := tmp;`
+]
+
+What is true about $x$ in the post-condition, must have been true for all $x$ before the variable introduction.
+
+$
+  { forall x. thin Q } &quad #`var` x quad& { Q }
+$
+
+#examples[
+  - ${ forall x. thin 0 <= x } quad #`var` x quad { 0 <= x }$
+  - ${ forall x : #`int`. thin 0 <= x dot x } quad #`var` x quad { 0 <= x dot x }$
+]
+
+== Strongest Postcondition for Variable Introduction
+
+Consider the Hoare triple ${ w < x, x < y } thick x := 100 thick { "?" }$.
+
+Obviously, $x = 100$ is a post-condition, however it is _not the strongest_.
+
+Something _more_ is implied by the pre-condition: there exists an $n$ such that $(w < n) and (n < y)$, which is equivalent to $w + 1 < y$.
+
+In general:
+$
+  { P } quad x := E quad { exists n. thin P[x := n] and x = E[x := n] }
+$
+
+== $WP and SP$
+
+Let $P$ be a predicate on the pre-state of a program $S$ and let $Q$ be a predicate on the post-state of $S$.
+
+$WP[S, Q]$ denotes the weakest precondition of $S$ w.r.t. $Q$.
+- $WP[x := E, Q] = Q[x := E]$
+
+$SP[S, P]$ denotes the strongest postcondition of $S$ w.r.t. $P$.
+- $SP[x := E, P] = exists n. thin P[x := n] and x = E[x := n]$
+
+== Control Flow
+
+- Assignment: `x := E`
+- Variable introduction: `var x`
+- Sequential composition: `S ; T`
+- Conditions: `if B { S } else { T }`
+- Method calls: `r := M(E)`
+- Loops: `while B { S }`
+
+== Sequential Composition
+
+$
+  S ; T \
+  { P } S { Q } T { R } \
+  { P } S { Q } quad "and" quad { Q } T { R }
+$
+
+Strongest post-condition:
+- Let $Q = SP[S, P]$
+- $SP[#`S;T`, P] = SP[T, Q] = SP[T, SP[S, P]]$
+
+Weakest pre-condition:
+- Let $Q = WP[T, R]$
+- $WP[#`S;T`, R] = WP[S, Q] = WP[S, WP[T, R]]$
 
 
 == TODO
