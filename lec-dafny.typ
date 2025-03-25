@@ -362,7 +362,7 @@ Write an appropriate precondition for the method that allows you to implement it
 == Forward Reasoning
 
 #definition[
-  _Forward reasoning_ is a construction of a post-condition from a given pre-condition.
+  _Forward reasoning_ is a construction of a _post-condition_ from a given pre-condition.
 ]
 
 #note[
@@ -400,7 +400,7 @@ $
 == Backward Reasoning
 
 #definition[
-  _Backward reasoning_ is a construction of a pre-condition for a given post-condition.
+  _Backward reasoning_ is a construction of a _pre-condition_ for a given post-condition.
 ]
 
 #note[
@@ -434,7 +434,7 @@ $
 == Weakest Precondition for Assignment
 
 #definition[
-  The weakest pre-condition for an assignment statement $x := E$ with a post-condition $Q$, is constructed by replacing each $x$ in $Q$ with $E$, denoted $Q[x := E]$.
+  The weakest pre-condition for an _assignment_ statement $x := E$ with a post-condition $Q$, is constructed by replacing each $x$ in $Q$ with $E$, denoted $Q[x := E]$.
   $
     { Q[x := E] } quad x := E quad { Q }
   $
@@ -475,7 +475,7 @@ All right-hand sides are evaluated _before_ any variables are assigned.
 == Weakest Precondition for Simultaneous Assignment
 
 #definition[
-  The weakest pre-condition for a simultaneous assignment $x_1, x_2 := E_1, E_2$ is constructed by replacing each $x_1$ with $E_1$ and each $x_2$ with $E_2$ in post-condition $Q$.
+  The weakest pre-condition for a _simultaneous assignment_ $x_1, x_2 := E_1, E_2$ is constructed by replacing each $x_1$ with $E_1$ and each $x_2$ with $E_2$ in post-condition $Q$.
   $
     Q[x_1 := E_1, x_2 := E_2] &quad x_1, x_2 := E_1, E_2 quad { Q }
   $
