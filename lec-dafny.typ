@@ -314,7 +314,10 @@ Write an appropriate pre-condition for the method that allows you to implement i
     column-gutter: 1em,
     row-gutter: 0.5em,
     link("https://en.wikipedia.org/wiki/Robert_W._Floyd", image("assets/Robert_Floyd.jpg", height: 3cm)),
-    link("https://en.wikipedia.org/wiki/Tony_Hoare", box(clip: true, inset: (x: -8pt), image("assets/Tony_Hoare.jpg", height: 3cm))),
+    link(
+      "https://en.wikipedia.org/wiki/Tony_Hoare",
+      box(clip: true, inset: (x: -8pt), image("assets/Tony_Hoare.jpg", height: 3cm)),
+    ),
 
     [Robert Floyd], [Tony Hoare],
   )
