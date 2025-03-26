@@ -16,8 +16,8 @@ method {:test} TestSwap(a: array, i: int, j: int)
   requires 0 <= j < a.Length
 {
   // Save original values at i and j
-  var old_i := a[i];
-  var old_j := a[j];
+  ghost var old_i := a[i];
+  ghost var old_j := a[j];
   Swap(a, i, j);
   // Assert that elements at i and j are swapped
   assert a[i] == old_j;
