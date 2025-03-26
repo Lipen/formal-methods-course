@@ -474,22 +474,25 @@ Let's prove that it indeed swaps the values, by performing the backward reasonin
 First, we need a way to refer to the initial values of $x$ and $y$ in the post-condition.
 For this, we use _logical variables_ that stand for some values (initially, $x = X$ and $y = Y$) in our proof, yet cannot be used in the program itself.
 
-#place(dx: -1em)[
-  #cetz.canvas({
-    import cetz.draw: *
-    line((0, 0), (0, -3.4), mark: (start: "stealth"), stroke: 0.5pt)
-  })
+#context [
+  #let program = ```dafny
+  // { x == X, y == Y }
+  // { ? }
+  var tmp := x;
+  // { ? }
+  x := y;
+  // { ? }
+  y := tmp
+  // { y == Y, x == X }
+  ```
+  #place(dx: -1em)[
+    #cetz.canvas({
+      import cetz.draw: *
+      line((0, 0), (0, measure(program).height + 2pt), mark: (end: "stealth"))
+    })
+  ]
+  #program
 ]
-```dafny
-// { x == X, y == Y }
-// { ? }
-var tmp := x;
-// { ? }
-x := y;
-// { ? }
-y := tmp
-// { y == Y, x == X }
-```
 
 == Simultaneous Assignment
 
@@ -521,18 +524,22 @@ All right-hand sides are evaluated _before_ any variables are assigned.
 
 #example[
   Going _backward_ in the following "swap" program:
-  #place(dx: -1em)[
-    #cetz.canvas({
-      import cetz.draw: *
-      line((0, 0), (0, -1.6), mark: (start: "stealth"), stroke: 0.5pt)
-    })
+
+  #context [
+    #let program = ```dafny
+    // { x == X, y == Y } -- initial state
+    // { y == Y, x == X } -- weakest pre-condition
+    x, y = y, x
+    // { x == Y, y == X } -- final "swapped" state
+    ```
+    #place(dx: -1em)[
+      #cetz.canvas({
+        import cetz.draw: *
+        line((0, 0), (0, measure(program).height + 2pt), mark: (end: "stealth"))
+      })
+    ]
+    #program
   ]
-  ```dafny
-  // { x == X, y == Y } -- initial state
-  // { y == Y, x == X } -- weakest pre-condition
-  x, y = y, x
-  // { x == Y, y == X } -- final "swapped" state
-  ```
 ]
 
 == Weakest Pre-condition for Variable Introduction
