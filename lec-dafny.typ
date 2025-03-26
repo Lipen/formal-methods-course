@@ -490,6 +490,7 @@ All right-hand sides are evaluated _before_ any variables are assigned.
 ]
 
 #example[
+  Going _backward_ in the following "swap" program:
   ```dafny
   // { x == X, y == Y }
   // { y == Y, x == X }
