@@ -32,6 +32,7 @@
 #let SP(S, P) = $#SPsym bracket.double.l thin #S, #P thin bracket.double.r$
 
 #let ITE(B, S, T) = $"if" #B "then" { #S } "else" { #T }$
+#let WHILE(B, S) = $"while" #B "do" { #S }$
 
 #set raw(syntaxes: "Dafny.sublime-syntax")
 
@@ -555,12 +556,19 @@ $SP(S, P)$ denotes the _strongest post-condition_ of $S$ w.r.t. $P$.
 
 == Control Flow
 
-- Assignment: `x := E`
-- Variable introduction: `var x`
-- Sequential composition: `S ; T`
-- Conditions: `if B { S } else { T }`
-- Method calls: `r := M(E)`
-- Loops: `while B { S }`
+#table(
+  columns: 2,
+  stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+  table.header[Statement][Program],
+  [Assignment], $x := E$,
+  [Local variable], $"var" x$,
+  [Composition], $S ; T$,
+  [Condition], $ITE(B, S, T)$,
+  [Method call], $r := M(E)$,
+  [Loop], $WHILE(B, S)$,
+  [Assumption], $"assume" P$,
+  [Assertion], $"assert" P$,
+)
 
 == Sequential Composition
 
