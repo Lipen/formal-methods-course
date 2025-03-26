@@ -505,7 +505,7 @@ All right-hand sides are evaluated _before_ any variables are assigned.
 == Weakest Pre-condition for Variable Introduction
 
 #note[
-  The statement `var x := tmp;` is actually _two_ statements: `var x; x := tmp;`
+  The statement `var x := tmp;` is actually _two_ statements: `var x; x := tmp`.
 ]
 
 What is true about $x$ in the post-condition, must have been true for all $x$ before the variable introduction.
@@ -515,8 +515,8 @@ $
 $
 
 #examples[
-  - ${ forall x. thin 0 <= x } quad #`var` x quad { 0 <= x }$
-  - ${ forall x : #`int`. thin 0 <= x dot x } quad #`var` x quad { 0 <= x dot x }$
+  - ${ forall x. thin 0 <= x } quad #`var x` quad { 0 <= x }$
+  - ${ forall x. thin 0 <= x dot x } quad #`var x` quad { 0 <= x dot x }$
 ]
 
 == Strongest Post-condition for Assignment
@@ -537,10 +537,13 @@ $
 Let $P$ be a predicate on the pre-state of a program $S$ and let $Q$ be a predicate on the post-state of $S$.
 
 $WP[S, Q]$ denotes the weakest pre-condition of $S$ w.r.t. $Q$.
-- $WP[x := E, Q] = Q[x := E]$
+- $WP[#`var x`, Q] = forall x. thin Q$
+- $WP[#`x := E`, Q] = Q[x := E]$
+- $WP[#`x_1, x_2 := E_1, E_2`, Q]$
 
 $SP[S, P]$ denotes the strongest post-condition of $S$ w.r.t. $P$.
-- $SP[x := E, P] = exists n. thin P[x := n] and x = E[x := n]$
+- $SP[#`var x`, P] = exists x. thin P$
+- $SP[#`x := E`, P] = exists n. thin P[x := n] and x = E[x := n]$
 
 == Control Flow
 
