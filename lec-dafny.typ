@@ -500,11 +500,17 @@ All right-hand sides are evaluated _before_ any variables are assigned.
 
 #example[
   Going _backward_ in the following "swap" program:
+  #place(dx: -1em)[
+    #cetz.canvas({
+      import cetz.draw: *
+      line((0, 0), (0, -1.6), mark: (start: "stealth"), stroke: 0.5pt)
+    })
+  ]
   ```dafny
-  // { x == X, y == Y }
-  // { y == Y, x == X }
+  // { x == X, y == Y } -- initial state
+  // { y == Y, x == X } -- weakest pre-condition
   x, y = y, x
-  // { x == Y, y == X }
+  // { x == Y, y == X } -- final "swapped" state
   ```
 ]
 
