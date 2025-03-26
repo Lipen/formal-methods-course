@@ -515,7 +515,7 @@ $
   - ${ forall x : #`int`. thin 0 <= x dot x } quad #`var` x quad { 0 <= x dot x }$
 ]
 
-== Strongest Postcondition for Variable Introduction
+== Strongest Post-condition for Assignment
 
 Consider the Hoare triple ${ w < x, x < y } thick x := 100 thick { "?" }$.
 
