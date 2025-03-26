@@ -526,7 +526,10 @@ $
 
 == Strongest Post-condition for Assignment
 
-Consider the Hoare triple ${ w < x, x < y } thick x := 100 thick { "?" }$.
+Consider the Hoare triple
+$
+  { w < x, x < y } quad x := 100 quad { "?" }
+$
 
 Obviously, $x = 100$ is a post-condition, however it is _not the strongest_.
 
