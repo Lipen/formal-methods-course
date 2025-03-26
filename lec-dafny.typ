@@ -542,14 +542,14 @@ $
 
 == $WPsym$ and $SPsym$
 
-Let $P$ be a predicate on the pre-state of a program $S$ and let $Q$ be a predicate on the post-state of $S$.
+Let $P$ be a predicate on the _pre-state_ of a program $S$, and let $Q$ be a predicate on the _post-state_ of $S$.
 
-$WP(S, Q)$ denotes the weakest pre-condition of $S$ w.r.t. $Q$.
+$WP(S, Q)$ denotes the _weakest pre-condition_ of $S$ w.r.t. $Q$.
 - $WP("var" x, Q) = forall x. thin Q$
 - $WP(x := E, Q) = Q[x := E]$
 - $WP((x_1, x_2 := E_1, E_2), Q) = Q[x_1 := E_1, x_2 := E_2]$
 
-$SP(S, P)$ denotes the strongest post-condition of $S$ w.r.t. $P$.
+$SP(S, P)$ denotes the _strongest post-condition_ of $S$ w.r.t. $P$.
 - $SP("var" x, P) = exists x. thin P$
 - $SP(x := E, P) = exists n. thin P[x := n] and x = E[x := n]$
 
