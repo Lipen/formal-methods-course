@@ -307,7 +307,6 @@ Write an appropriate precondition for the method that allows you to implement it
 
 == From Contracts to Floyd-Hoare Logic
 
-
 #[
   #let fig = grid(
     columns: 2,
@@ -344,7 +343,7 @@ Write an appropriate precondition for the method that allows you to implement it
 #examples[
   #block(spacing: 1em)[
     $
-      { x = 1 } &quad x := 20 &quad& {x = 2} \
+      { x = 1 } &quad x := 20 &quad& { x = 20 } \
       { x < 18 } &quad y := 18 - x &quad& { y >= 0 } \
       { x < 18 } &quad y := 5 &quad& { y >= 0 } \
     $
@@ -446,12 +445,22 @@ $
 #examples[
   #block(spacing: 1em)[
     $
-      { 25 <= x + 3 + 12 } &quad y := x + 3 &quad& { 25 <= a + 12 } \
-      { x + 1 <= y } &quad y := x + 1 &quad& { x <= y } \
-      { 3 dot 2 dot x + 5 y < 100 } &quad y := 2 dot x &quad& { 3 x + 5 y < 100 } \
+      { 25 <= x + 3 + 12 } &quad a := x + 3 &quad& { 25 <= a + 12 } \
+      { x + 1 <= y } &quad x := x + 1 &quad& { x <= y } \
+      { 6 x + 5 y < 100 } &quad x := 2 dot x &quad& { 3 x + 5 y < 100 } \
     $
   ]
 ]
+
+== Swap Example
+
+TODO
+
+```dafny
+var tmp := x;
+x := y;
+y := tmp;
+```
 
 == Simultaneous Assignment
 
