@@ -25,8 +25,13 @@
 #let YES = Green(sym.checkmark)
 #let NO = Red(sym.crossmark)
 
-#let WP = $cal(W P)$
-#let SP = $cal(S P)$
+#let WPsym = $cal(W P)$
+#let SPsym = $cal(S P)$
+
+#let WP(S, Q) = $#WPsym bracket.double thin #S, #Q thin bracket.double.r$
+#let SP(S, P) = $#SPsym bracket.double.l thin #S, #P thin bracket.double.r$
+
+#let ITE(B, S, T) = $"if" #B "then" { #S } "else" { #T }$
 
 #set raw(syntaxes: "Dafny.sublime-syntax")
 
@@ -337,7 +342,7 @@ Write an appropriate pre-condition for the method that allows you to implement i
 == Hoare Triples
 
 #definition[
-  For predicates $P$ and $Q$, and a problem $S$, the Hoare triple ${P} S {Q}$ describes how the execution of a piece of code changes the state of the computation.
+  For predicates $P$ and $Q$, and a problem $S$, the Hoare triple ${P} thick S thick {Q}$ describes how the execution of a piece of code changes the state of the computation.
 
   It can be read as "if $S$ is started in any state that satisfies $P$, then $S$ will terminate (and does not crash) in a state that satisfies $Q$".
 ]
@@ -532,18 +537,18 @@ $
   { P } quad x := E quad { exists n. thin P[x := n] and x = E[x := n] }
 $
 
-== $WP$ and $SP$
+== $WPsym$ and $SPsym$
 
 Let $P$ be a predicate on the pre-state of a program $S$ and let $Q$ be a predicate on the post-state of $S$.
 
-$WP[S, Q]$ denotes the weakest pre-condition of $S$ w.r.t. $Q$.
-- $WP[#`var x`, Q] = forall x. thin Q$
-- $WP[#`x := E`, Q] = Q[x := E]$
-- $WP[#`x_1, x_2 := E_1, E_2`, Q]$
+$WP(S, Q)$ denotes the weakest pre-condition of $S$ w.r.t. $Q$.
+- $WP("var" x, Q) = forall x. thin Q$
+- $WP(x := E, Q) = Q[x := E]$
+- $WP((x_1, x_2 := E_1, E_2), Q) = Q[x_1 := E_1, x_2 := E_2]$
 
-$SP[S, P]$ denotes the strongest post-condition of $S$ w.r.t. $P$.
-- $SP[#`var x`, P] = exists x. thin P$
-- $SP[#`x := E`, P] = exists n. thin P[x := n] and x = E[x := n]$
+$SP(S, P)$ denotes the strongest post-condition of $S$ w.r.t. $P$.
+- $SP("var" x, P) = exists x. thin P$
+- $SP(x := E, P) = exists n. thin P[x := n] and x = E[x := n]$
 
 == Control Flow
 
@@ -558,17 +563,168 @@ $SP[S, P]$ denotes the strongest post-condition of $S$ w.r.t. $P$.
 
 $
   S ; T \
-  { P } S { Q } T { R } \
-  { P } S { Q } quad "and" quad { Q } T { R }
+  { P } thick S thick { Q } thick T thick { R } \
+  { P } thick S thick { Q } quad "and" quad { Q } thick T thick { R }
 $
 
 Strongest post-condition:
-- Let $Q = SP[S, P]$
-- $SP[#`S;T`, P] = SP[T, Q] = SP[T, SP[S, P]]$
+- Let $Q = SP(S, P)$
+- $SP((S ; T), P) = SP(T, Q) = SP(T, SP(S, P))$
 
 Weakest pre-condition:
-- Let $Q = WP[T, R]$
-- $WP[#`S;T`, R] = WP[S, Q] = WP[S, WP[T, R]]$
+- Let $Q = WP(T, R)$
+- $WP((S ; T), R) = WP(S, Q) = WP(S, WP(T, R))$
+
+== Conditional Control Flow
+
+#let condition-flow-diagram(P, B, nB, V, W, S, T, X, Y, Q) = {
+  import fletcher: diagram, node, edge
+  diagram(
+    // debug: 3,
+    node-corner-radius: 5pt,
+    edge-stroke: 1pt,
+    blob((0cm, 0cm), P, name: <p>, tint: green),
+    blob((-1.5cm, -1.5cm), V, name: <v>, tint: green),
+    blob((1.5cm, -1.5cm), W, name: <w>, tint: green),
+    blob((-1.5cm, -3cm), S, name: <s>, tint: blue, shape: fletcher.shapes.circle),
+    blob((1.5cm, -3cm), T, name: <t>, tint: blue, shape: fletcher.shapes.circle),
+    blob((-1.5cm, -4.5cm), X, name: <x>, tint: green),
+    blob((1.5cm, -4.5cm), Y, name: <y>, tint: green),
+    blob((0cm, -6cm), Q, name: <q>, tint: green),
+    edge(<p>, <v>, "-}>", $B$, label-pos: .8),
+    edge(<p>, <w>, "-}>", $not B$, label-pos: .8),
+    edge(<v>, <s>, "-"),
+    edge(<w>, <t>, "-"),
+    edge(<s>, <x>, "-}>"),
+    edge(<t>, <y>, "-}>"),
+    edge(<x>, <q>, "-}>"),
+    edge(<y>, <q>, "-}>"),
+  )
+}
+
+#grid(
+  columns: (6cm, 1fr),
+  align: (center, left),
+  column-gutter: 2em,
+  condition-flow-diagram(
+    ${ P }$,
+    $B$,
+    $not B$,
+    ${ V }$,
+    ${ W }$,
+    $S$,
+    $T$,
+    ${ X }$,
+    ${ Y }$,
+    ${ Q }$,
+  ),
+  [
+    ${ P } quad ITE(B, S, T) quad { Q }$
+
+    #v(1em)
+
+    + $(P and B) imply V$
+    + $(P and not B) imply W$
+    + ${ V } thick S thick { X }$
+    + ${ W } thick T thick { Y }$
+    + $X imply Q$
+    + $Y imply Q$
+  ],
+)
+
+== Strongest Post-condition for Condition
+
+#grid(
+  columns: (6cm, 1fr),
+  align: (center, left),
+  column-gutter: 2em,
+  condition-flow-diagram(
+    ${ P }$,
+    $B$,
+    $not B$,
+    ${ P and B }$, // V
+    ${ P and not B }$, // W
+    $S$,
+    $T$,
+    ${ X }$,
+    ${ Y }$,
+    ${ X or Y }$,
+  ),
+  [
+    ${ P } quad ITE(B, S, T) quad { Q }$
+
+    #v(1em)
+
+    #place(
+      dx: -2em,
+      cetz.canvas({
+        import cetz.draw: *
+        line((0, 0), (0, -5), mark: (end: "stealth", scale: 2))
+      }),
+    )
+
+    $V = P and B$ \
+    $W = P and not B$
+
+    #v(1em)
+
+    $X = SP(S, P and B)$ \
+    $Y = SP(T, P and not B)$
+
+    #v(2em)
+
+    $SP(ITE(B, S, T), P) = \
+      = X or Y = \
+      = SP(S, P and B) or SP(T, P and not B)$
+  ],
+)
+
+== Weakest Pre-condition for Condition
+
+#grid(
+  columns: (6cm, 1fr),
+  align: (center, left),
+  column-gutter: 2em,
+  condition-flow-diagram(
+    ${ (B imply V) and (not B imply W) }$,
+    $B$,
+    $not B$,
+    ${ V }$,
+    ${ W }$,
+    $S$,
+    $T$,
+    ${ Q }$, // X
+    ${ Q }$, // Y
+    ${ Q }$,
+  ),
+  [
+    ${ P } quad ITE(B, S, T) quad { Q }$
+
+    #v(1em)
+
+    #place(
+      dx: -2em,
+      cetz.canvas({
+        import cetz.draw: *
+        line((0, 0), (0, -5), mark: (start: "stealth", scale: 2))
+      }),
+    )
+
+    $WP(ITE(B, S, T), Q) = \
+      = (B imply V) and (not B imply W) = \
+      = (B imply WP(S, Q)) and (not B imply WP(T, Q))$
+
+    #v(1em)
+
+    $V = WP(S, Q)$ \
+    $W = WP(T, Q)$
+
+    #v(1em)
+
+    $X = Q$ \
+    $Y = Q$
+  ],
+)
 
 
 == TODO
