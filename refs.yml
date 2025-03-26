@@ -134,3 +134,41 @@ turing1937:
     type: periodical
     title: Proceedings of the London Mathematical Society
     issue: 1
+
+leino2023:
+  type: book
+  title: Program Proofs
+  author: Leino, K. Rustan M.
+  date: 2023
+  publisher:
+    name: MIT Press
+    location: Cambridge, Massachusetts
+  page-total: 474
+
+floyd1967:
+  type: anthos
+  title: Assigning Meanings to Programs
+  author: Floyd, Robert W.
+  date: 1967
+  page-range: 19-32
+  serial-number:
+    isbn: 0-8218-6728-8
+  parent:
+    type: anthology
+    title: Mathematical Aspects of Computer Science
+    publisher: American Mathematical Society
+    volume: 19
+
+hoare1969:
+  type: article
+  title: An Axiomatic Basis for Computer Programming
+  author: Hoare, C. A. R.
+  date: 1969
+  page-range: 576-580
+  serial-number:
+    doi: 10.1145/363235.363259
+  parent:
+    type: periodical
+    title: Communications of the ACM
+    issue: 10
+    volume: 12

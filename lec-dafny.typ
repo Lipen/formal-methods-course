@@ -314,16 +314,15 @@ Write an appropriate precondition for the method that allows you to implement it
     column-gutter: 1em,
     row-gutter: 0.5em,
     link("https://en.wikipedia.org/wiki/Robert_W._Floyd", image("assets/Robert_Floyd.jpg", height: 3cm)),
-    link("https://en.wikipedia.org/wiki/Tony_Hoare", image("assets/Tony_Hoare.jpg", height: 3cm)),
+    link("https://en.wikipedia.org/wiki/Tony_Hoare", box(clip: true, inset: (x: -8pt), image("assets/Tony_Hoare.jpg", height: 3cm))),
 
     [Robert Floyd], [Tony Hoare],
   )
   #let body = [
     In the design-by-contract methodology, contracts are usually assigned to procedures or modules.
-
     In general, it is possible to assign contracts to each statement of a program.
 
-    A formal framework for doing this was developed by Tony Hoare, formalizing a reasoning technique by Robert Floyd.
+    A formal framework for doing this was developed by Tony Hoare @hoare1969, formalizing a reasoning technique introduced by Robert Floyd @floyd1967.
 
     It is based on the notion of a _Hoare triple_.
 
