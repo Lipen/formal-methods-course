@@ -462,12 +462,33 @@ $
 
 == Swap Example
 
-TODO
+Consider the following program that swaps the values of $x$ and $y$ using a temporary variable.
 
 ```dafny
 var tmp := x;
 x := y;
 y := tmp;
+```
+
+Let's prove that it indeed swaps the values, by performing the backward reasoning on it.
+First, we need a way to refer to the initial values of $x$ and $y$ in the post-condition.
+For this, we use _logical variables_ that stand for some values (initially, $x = X$ and $y = Y$) in our proof, yet cannot be used in the program itself.
+
+#place(dx: -1em)[
+  #cetz.canvas({
+    import cetz.draw: *
+    line((0, 0), (0, -3.4), mark: (start: "stealth"), stroke: 0.5pt)
+  })
+]
+```dafny
+// { x == X, y == Y }
+// { ? }
+var tmp := x;
+// { ? }
+x := y;
+// { ? }
+y := tmp
+// { y == Y, x == X }
 ```
 
 == Simultaneous Assignment
