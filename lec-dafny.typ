@@ -75,7 +75,7 @@ _"Given *positive* integers $a$ and $b$, the program computes and stores in $x$ 
 
 Specification of a program can be seen as a _contract_:
 - _Pre-conditions_ define what is _required_ to get a meaningful result.
-- _Post-conditions_ define what is _guaranteed_ to return when the precondition is met.
+- _Post-conditions_ define what is _guaranteed_ to return when the pre-condition is met.
 
 #align(center)[
   #box[
@@ -230,7 +230,7 @@ The program variables `x`, `y`, `a`, and `b`, together the method's _state_.
 
 == Floyd Logic
 
-Let's propagate the precondition _forward_:
+Let's propagate the pre-condition _forward_:
 
 ```dafny
 method MyMethod(x: int) returns (y: int)
@@ -247,14 +247,14 @@ method MyMethod(x: int) returns (y: int)
 }
 ```
 
-The last constructed condition _implies_ the required postcondition:
+The last constructed condition _implies_ the required post-condition:
 $
   (x >= 10) and (a = x + 3) and (b = 12) and (y = a + b) imply (y >= 25)
 $
 
 #pagebreak()
 
-Now, let's go _backward_ starting with a postcondition at the last statement:
+Now, let's go _backward_ starting with a post-condition at the last statement:
 
 ```dafny
 method MyMethod(x: int) returns (y: int)
@@ -271,7 +271,7 @@ method MyMethod(x: int) returns (y: int)
 }
 ```
 
-The last calculated condition is _implied_ by the given precondition:
+The last calculated condition is _implied_ by the given pre-condition:
 $
   (x + 3 + 12 >= 25) implied (x >= 10)
 $
@@ -286,12 +286,12 @@ method MaxSum(x: int, y: int)
   ensures ...
 ```
 
-Write the postcondition specification for this method.
+Write the post-condition specification for this method.
 
 == Exercise \#2
 
 Consider a method that attempts to reconstruct the arguments `x` and `y` from the return values of `MaxSum`.
-In~other words, in other words, consider a method with the following type signature and the same postcondition as in Exercise~1:
+In~other words, in other words, consider a method with the following type signature and _the same post-condition_ as in Exercise~1:
 
 ```dafny
 method ReconstructFromMaxSum(s: int, m: int)
@@ -301,7 +301,7 @@ method ReconstructFromMaxSum(s: int, m: int)
 ```
 
 This method cannot be implemented as is. \
-Write an appropriate precondition for the method that allows you to implement it.
+Write an appropriate pre-condition for the method that allows you to implement it.
 
 = Floyd-Hoare Logic
 
@@ -379,9 +379,9 @@ Write an appropriate precondition for the method that allows you to implement it
   ]
 ]
 
-== Strongest Postcondition
+== Strongest Post-condition
 
-Forward reasoning constructs the _strongest_ (i.e., _the most specific_) postcondition.
+Forward reasoning constructs the _strongest_ (i.e., _the most specific_) post-condition.
 
 $
   { x = 0 } &quad y := x + 3 &quad& { 0 <= x and y = 3 }
@@ -417,7 +417,7 @@ $
   ]
 ]
 
-== Weakest Precondition
+== Weakest Pre-condition
 
 Backward reasoning constructs the _weakest_ (i.e., _the most general_) pre-condition.
 
@@ -429,7 +429,7 @@ $
   $A$ is _weaker_ than $B$ if $B imply A$ is a valid formula.
 ]
 
-== Weakest Precondition for Assignment
+== Weakest Pre-condition for Assignment
 
 #definition[
   The weakest pre-condition for an _assignment_ statement $x := E$ with a post-condition $Q$, is constructed by replacing each $x$ in $Q$ with $E$, denoted $Q[x := E]$.
@@ -480,7 +480,7 @@ All right-hand sides are evaluated _before_ any variables are assigned.
   The last example is _different_ from the two statements `x = x + y; y = x - y;`
 ]
 
-== Weakest Precondition for Simultaneous Assignment
+== Weakest Pre-condition for Simultaneous Assignment
 
 #definition[
   The weakest pre-condition for a _simultaneous assignment_ $x_1, x_2 := E_1, E_2$ is constructed by replacing each $x_1$ with $E_1$ and each $x_2$ with $E_2$ in post-condition $Q$.
@@ -498,7 +498,7 @@ All right-hand sides are evaluated _before_ any variables are assigned.
   ```
 ]
 
-== Weakest Precondition for Variable Introduction
+== Weakest Pre-condition for Variable Introduction
 
 #note[
   The statement `var x := tmp;` is actually _two_ statements: `var x; x := tmp;`
@@ -532,10 +532,10 @@ $
 
 Let $P$ be a predicate on the pre-state of a program $S$ and let $Q$ be a predicate on the post-state of $S$.
 
-$WP[S, Q]$ denotes the weakest precondition of $S$ w.r.t. $Q$.
+$WP[S, Q]$ denotes the weakest pre-condition of $S$ w.r.t. $Q$.
 - $WP[x := E, Q] = Q[x := E]$
 
-$SP[S, P]$ denotes the strongest postcondition of $S$ w.r.t. $P$.
+$SP[S, P]$ denotes the strongest post-condition of $S$ w.r.t. $P$.
 - $SP[x := E, P] = exists n. thin P[x := n] and x = E[x := n]$
 
 == Control Flow
