@@ -55,3 +55,4 @@ This course is heavily based on the following courses and books:
 - D. Kroening and O. Strichman, _Decision Procedures_, 2016.
 - B. C. Pierce et al., link:https://softwarefoundations.cis.upenn.edu/lf-current/index.html[_Logical Foundations_], in Software Foundations, vol. 1. Electronic textbook, 2025.
 - E. C. R. Hehner, link:https://www.cs.toronto.edu/~hehner/aPToP/[_a Practical Theory of Programming_]. Electronic textbook, 2025.
+- K. R. M. Leino, _Program proofs_, 2023.
