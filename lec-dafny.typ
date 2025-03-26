@@ -478,8 +478,8 @@ Dafny allows simultaneous assignment of multiple variables in a single statement
   #grid(
     columns: 2,
     gutter: 1em,
-    [`x, y := 3, 10;`], [sets $x$ to $3$ and $y$ to $10$],
-    [`x, y = x + y, x - y;`], [sets $x$ to the sum of $x$ and $y$ and $y$ to their difference],
+    $x, y := 3, 10$, [sets $x$ to $3$ and $y$ to $10$],
+    $x, y = x + y, x - y$, [sets $x$ to the sum of $x$, and $y$ and $y$ to their difference],
   )
 ]
 
