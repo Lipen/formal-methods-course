@@ -596,6 +596,14 @@ $
   { P } quad x := E quad { exists n. thin P[x := n] and x = E[x := n] }
 $
 
+== Exercises
+
+Replace the "?" in the following Hoare triples by computing _strongest post-conditions_.
++ ${ y = 10 } quad x := 12 quad { "?" }$ // { x = 12, y = 10 }
++ ${ 98 <= y } quad x := x + 1 quad { "?" }$ // { exists n. thin (98 <= y) and x = n + 1 } === { 98 <= y }
++ ${ 98 <= x } quad x := x + 1 quad { "?" }$ // { exists n. thin (98 <= x) and x = n + 1 }
++ ${ 98 <= y < x } quad x := 3 y + x quad { "?" }$ // { exists n. thin (98 <= y < x) and x = 3 y + n }
+
 == $WPsym$ and $SPsym$
 
 Let $P$ be a predicate on the _pre-state_ of a program $S$, and let $Q$ be a predicate on the _post-state_ of $S$.
@@ -608,6 +616,22 @@ $WP(S, Q)$ denotes the _weakest pre-condition_ of $S$ w.r.t. $Q$.
 $SP(S, P)$ denotes the _strongest post-condition_ of $S$ w.r.t. $P$.
 - $SP("var" x, P) = exists x. thin P$
 - $SP(x := E, P) = exists n. thin P[x := n] and x = E[x := n]$
+
+#exercise[
+  Compute the following pre- and post-conditions:
+  #columns(2)[
+    - $WP(x := y, x + y <= 100)$
+    - $WP(x := -x, x + y <= 100)$
+    - $WP(x := x + y, x + y <= 100)$
+    - $WP(z := x + y, x + y <= 100)$
+    - $WP("var" x, x <= 100)$
+    - $SP(x := 5, x + y <= 100)$
+    - $SP(x := x + 1, x + y <= 100)$
+    - $SP(x := 2 y, x + y <= 100)$
+    - $SP(z := x + y, x + y <= 100)$
+    - $SP("var" x, x <= 100)$
+  ]
+]
 
 == Control Flow
 
