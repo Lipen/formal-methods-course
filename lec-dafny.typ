@@ -619,10 +619,10 @@ $SP(S, P)$ denotes the _strongest post-condition_ of $S$ w.r.t. $P$.
   [Local variable], $"var" x$,
   [Composition], $S ; T$,
   [Condition], $ITE(B, S, T)$,
-  [Method call], $r := M(E)$,
-  [Loop], $WHILE(B, S)$,
   [Assumption], $"assume" P$,
   [Assertion], $"assert" P$,
+  [Method call], $r := M(E)$,
+  [Loop], $WHILE(B, S)$,
 )
 
 == Sequential Composition
