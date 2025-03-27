@@ -470,12 +470,12 @@ $
   + ${ x = 3 } quad x := x + 1 quad { x = 4 }$
   + ${ 0 <= x < 100 } quad x := x + 1 quad { 0 < x <= 100 }$
 
-+ For each of the following Hoare triples, find the (strongest) post-condition:
++ For each of the following Hoare triples, find the _strongest post-condition_:
   + ${ 0 <= x < 100 } quad x := 2 x quad { "?" }$ // { 0 < x <= 198 }
   + ${ 0 <= x <= y < 100 } quad z := y - x quad { "?" }$ // 0 <= z < 100
   + ${ 0 <= x < N } quad x := x + 1 quad { "?" }$ // 0 < x <= N
 
-+ For each of the following Hoare triples, find the (weakest) pre-condition:
++ For each of the following Hoare triples, find the _weakest pre-condition_:
   + ${ "?" } quad b := (y < 10) quad { b imply (x < y) }$ // (y < 10) -> (x < y) === (y >= 10) or (y > x)
   + ${ "?" } quad x, y := 2 x, x+y quad { 0 <= x <= 100 && y <= x }$ // 0 <= x <= 50 and y <= x
   + ${ "?" } quad x := 2 y quad { 10 <= x <= y }$ // 10 <= 2y and 2 y <= y === y >= 5 and y <= 0 === false
