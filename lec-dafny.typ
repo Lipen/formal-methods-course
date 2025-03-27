@@ -460,6 +460,27 @@ $
   ]
 ]
 
+== Exercises
+
++ Explain rigorously why each of these Hoare triples holds:
+  + ${ x = y } quad z := x - y quad { z = 0 }$
+  + ${ "true" } quad x := 100 quad { x = 100 }$
+  + ${ "true" } quad x := 2 * y quad { x "is even" }$
+  + ${ x = 89 } quad y := x - 34 quad { x = 89 }$
+  + ${ x = 3 } quad x := x + 1 quad { x = 4 }$
+  + ${ 0 <= x < 100 } quad x := x + 1 quad { 0 < x <= 100 }$
+
++ For each of the following Hoare triples, find the (strongest) post-condition:
+  + ${ 0 <= x < 100 } quad x := 2 x quad { "?" }$ // { 0 < x <= 198 }
+  + ${ 0 <= x <= y < 100 } quad z := y - x quad { "?" }$ // 0 <= z < 100
+  + ${ 0 <= x < N } quad x := x + 1 quad { "?" }$ // 0 < x <= N
+
++ For each of the following Hoare triples, find the (weakest) pre-condition:
+  + ${ "?" } quad b := (y < 10) quad { b imply (x < y) }$ // (y < 10) -> (x < y) === (y >= 10) or (y > x)
+  + ${ "?" } quad x, y := 2 x, x+y quad { 0 <= x <= 100 && y <= x }$ // 0 <= x <= 50 and y <= x
+  + ${ "?" } quad x := 2 y quad { 10 <= x <= y }$ // 10 <= 2y and 2 y <= y === y >= 5 and y <= 0 === false
+
+
 == Swap Example
 
 Consider the following program that swaps the values of $x$ and $y$ using a temporary variable.
