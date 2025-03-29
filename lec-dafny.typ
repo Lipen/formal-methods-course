@@ -816,6 +816,34 @@ Weakest pre-condition:
   ],
 )
 
+== Example
+
+// TODO: re-check
+#context [
+  #let program = ```dafny
+  // { (x < 3 ==> x == 89) && (x >= 3 ==> x == 50) }
+  if x < 3 {
+    // { x == 89 }
+    // { x + 1 + 10 == 100 }
+    x, y := x + 1, 10;
+    // { x + y == 100 }
+  } else {
+    // { x == 50 }
+    // { x + x == 100 }
+    y := x;
+    // { x + y == 100 }
+  }
+  // { x + y == 100 }
+  ```
+  #place(dx: -1em)[
+    #cetz.canvas({
+      import cetz.draw: *
+      line((0, 0), (0, measure(program).height + 2pt), mark: (end: "stealth"))
+    })
+  ]
+  #program
+]
+
 
 == TODO
 #show: cheq.checklist
