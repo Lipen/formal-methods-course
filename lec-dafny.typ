@@ -856,6 +856,151 @@ Weakest pre-condition:
   $
 ]
 
+== Method Correctness
+
+Given
+```dafny
+method M(x: Tx) returns (y: Ty)
+  requires P
+  ensures Q
+{
+  B
+}
+```
+we need to prove $P imply WP(B, Q)$.
+
+== Method Calls
+
+Methods are _opaque_, i.e., we reason in terms of their _specifications_, not their implementations.
+
+#example[
+  Given the following definition (or rather, declaration):
+  ```dafny
+  method Triple(x: int) returns (y: int)
+    ensures y == 3 * x
+  ```
+  we expect to be able to prove, for example, the following method call:
+  $
+    { #`true` } quad v := #`Triple`;(u + 4) quad { v = 3 dot (u + 4) }
+  $
+]
+
+== Parameters
+
+We need to _relate_ the _actual_ parameters (arguments of the method call) with the _formal_ parameters (of the method).
+
+To avoid any name slashes, we first _rename_ the formal parameters to _fresh_ variables:
+
+```dafny
+method Triple(x1: int) returns (y1: int)
+  ensures y1 == 3 * x1
+```
+
+Then, for a call ```dafny v := Triple(u + 1)``` we have:
+```dafny
+x1 := u + 1;
+v := y1;
+```
+
+== Assumptions
+
+The called can assume that the method's post-condition holds.
+
+We introduce a new statement, ```dafny assume E```, to capture this:
+$
+  SP("assume" E, P) &= P and E \
+  WP("assume" E, Q) &= E imply Q \
+$
+
+The semantics of ```dafny v := Triple(u + 1)``` is then given by
+```dafny
+var x1; var y1;
+x1 := u + 1;
+assume y1 == 3 * x1;
+v := y1;
+```
+
+#place(right)[
+  ```dafny
+  method Triple(x1: int)
+  returns (y1: int)
+    ensures y1 == 3 * x1
+  ```
+]
+
+== Weakest Pre-condition for Method Calls
+
+```dafny
+method M(x: X) returns (y: Y) ensures R[x, y]
+```
+
+#box[
+  $
+    & WP(r := M(E), Q) = \
+    &= WP("var" x_E\; "var" y_E\; x_E := E\; "assume" R[x,y := x_E,y_r]\; r := y_r, Q) = \
+    &= WP("var" x_E, WP("var" y_r, WP(x_E := E, WP("assume" R[x,y := x_E,y_r], WP(r := y_r, Q))))) = \
+    &= WP("var" x_E, WP("var" y_r, WP(x_E := E, WP("assume" R[x,y := x_E,y_r], Q[r := y_r])))) = \
+    &= WP("var" x_E, WP("var" y_r, WP(x_E := E, R[x,y := x_E,y_r] imply Q[r := y_r]))) = \
+    &= WP("var" x_E, forall x_E. thin R[x,y := x_E,y_r] imply Q[r := y_r]) = \
+    &= forall y_r. forall x_E. thin R[x,y := x_E,y_r] imply Q[r := y_r]
+  $
+]
+
+Overall:
+$
+  WP(r := M(E), Q) = forall y_r. thin R[x,y := E,y_r] imply Q[r := y_r]
+$
+where $x$ is $M$'s input, $y$ is $M$'s output, and $R$ is $M$'s post-condition.
+
+== Example
+
+#example[
+  ```dafny
+  method Triple(x: int) returns (y: int)
+    ensures y == 3 * x
+  ```
+  Consider calling this method with $Q = { x = 48 }$.
+  Backward reasoning:
+  #context [
+    #let program = ```dafny
+    // { u == 15 }
+    // { 3 * (u + 1) == 48 }
+    // { forall y1 :: y1 == 3 * (u + 1) ==> y1 == 48 }
+    v := Triple(u + 1);
+    // { v == 48 }
+    ```
+    #place(dx: -1em)[
+      #cetz.canvas({
+        import cetz.draw: *
+        line((0, 0), (0, measure(program).height + 2pt), mark: (end: "stealth"))
+      })
+    ]
+    #program
+  ]
+]
+
+== Method Calls with Pre-conditions
+
+Given a method with a pre-condition:
+```dafny
+method M(x: X) returns (y: Y)
+  requires P
+  ensures R
+```
+
+The semantics of ```dafny r := M(E)``` is:
+```dafny
+var x_E; var y_r;
+x_E := E;
+assert P[x := x_E];
+assume R[x,y := x_E,y_r];
+r := y_r;
+```
+
+$
+  WP(r := M(E), Q) = P[x := E] and forall y_r. thin R[x,y := E,y_r] imply Q[r := y_r]
+$
+
 
 == TODO
 #show: cheq.checklist
