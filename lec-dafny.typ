@@ -465,7 +465,7 @@ $
 + Explain rigorously why each of these Hoare triples holds:
   + ${ x = y } quad z := x - y quad { z = 0 }$
   + ${ "true" } quad x := 100 quad { x = 100 }$
-  + ${ "true" } quad x := 2 * y quad { x "is even" }$
+  + ${ "true" } quad x := 2 y quad { x "is even" }$
   + ${ x = 89 } quad y := x - 34 quad { x = 89 }$
   + ${ x = 3 } quad x := x + 1 quad { x = 4 }$
   + ${ 0 <= x < 100 } quad x := x + 1 quad { 0 < x <= 100 }$
@@ -1137,8 +1137,8 @@ Function may have pre-conditions, making calls to them _partial_.
   + ${0 <= x} quad x := x + 1 quad { -2 <= x } quad y := 0 quad {-10 <= x}$
   + ${0 <= x} quad x := x + 1 quad { #`true` } quad x := x + 1 quad {2 <= x}$
   + ${0 <= x} quad x := x + 1; quad x := x + 1 quad {2 <= x}$
-  + ${0 <= x} quad x := 3x; quad x := x + 1 quad {3 <= x}$
-  + ${x < 2} quad y := x + 5; quad x := 2x quad {x < y}$
+  + ${0 <= x} quad x := 3 x; quad x := x + 1 quad {3 <= x}$
+  + ${x < 2} quad y := x + 5; quad x := 2 x quad {x < y}$
 
 #pagebreak()
 
