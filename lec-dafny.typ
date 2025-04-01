@@ -1079,6 +1079,99 @@ Function may have pre-conditions, making calls to them _partial_.
   The call ```dafny z := MinusOne(y + 1)``` has an implicit assertion ```dafny assert 0 < y + 1```.
 ]
 
+== Exercises
+
+1. Suppose you want $x + y = 22$ to hold after the statement
+  $
+    "if" x < 20 "then" { y := 3 } "else" { y := 2 }
+  $
+  In which states can you start the statement?
+  (Compute the weakest pre-condition.)
+
+2. Compute the weakest pre-condition for the following statement with respect to $y < 10$. Simplify
+  ```dafny
+  if x < 8 {
+    if x == 5 { y := 10; } else { y := 2; }
+  } else {
+    y := 0;
+  }
+  ```
+
+#pagebreak()
+
+3. Compute the weakest pre-condition for the following statement with respect to ```dafny y % 2 == 0```.
+
+  ```dafny
+  if x < 10 {
+    if x < 20 { y := 1; } else { y := 2; }
+  } else {
+    y := 4;
+  }
+  ```
+
+4. Compute the weakest pre-condition for the following statement with respect to ```dafny y % 2 == 0```.
+
+  ```dafny
+  if x < 8 {
+    if x < 4 { x := x + 1; } else { y := 2; }
+  } else {
+    if x < 32 { y := 1; } else { }
+  }
+  ```
+
+#pagebreak()
+
+5. Determine under which circumstances the following program establishes $0 <= y < 100$.
+  Try first to do that in your head.
+  Write down the answer you come up with, and then write out the full computations to check that you got the right answer.
+
+  ```dafny
+  if x < 34 {
+    if x == 2 { y := x + 1; } else { y := 233; }
+  } else {
+    if x < 55 { y := 21; } else { y := 144; }
+  }
+  ```
+
+6. Which of the following Hoare-triple combinations are valid?
+  + ${0 <= x} quad x := x + 1 quad { -2 <= x } quad y := 0 quad {-10 <= x}$
+  + ${0 <= x} quad x := x + 1 quad { #`true` } quad x := x + 1 quad {2 <= x}$
+  + ${0 <= x} quad x := x + 1; quad x := x + 1 quad {2 <= x}$
+  + ${0 <= x} quad x := 3x; quad x := x + 1 quad {3 <= x}$
+  + ${x < 2} quad y := x + 5; quad x := 2x quad {x < y}$
+
+#pagebreak()
+
+7. Compute the weakest pre-conditions with respect to the post-condition $x + y < 100$.
+  + ```dafny x := 32; y := 40;```
+  + ```dafny x := x + 2; y := y - 3 * x;```
+
+8. Compute the weakest pre-conditions with respect to the post-condition $x < 10$.
+  + ```dafny if x % 2 == 0 { y := y + 3; } else { y := 4; }```
+  + ```dafny if y < 10 { y := x + y; } else { x := 8; }```
+
+9. Compute the weakest pre-conditions with respect to the post-condition $x < 100$.
+  + ```dafny assert y == 25;```
+  + ```dafny assert 0 <= x;```
+  + ```dafny assert x < 200;```
+  + ```dafny assert x <= 100;```
+  + ```dafny assert 0 <= x < 100;```
+
+#pagebreak()
+
+10. If $x_1$ does not appear in the desired post-condition Q$$, then prove that $x_1:= E; "assert" P[x := x_1]$ is the same as $P[x := E]$ by showing that the weakest pre-conditions of these two statements with respect to~$Q$ are the same.
+
+11. What implicit assertions are associated with the following expressions?
+  + ```dafny x / (y + z)```
+  + ```dafny arr[2 * i]```
+  + ```dafny MinusOne(MinusOne(y))```
+
+12. What implicit assertions are associated with the following expressions?
+  *Note:* the right-hand expression in a conjunction is only evaluated when the left-hand conjunction holds.
+  + ```dafny a / b < c / d```
+  + ```dafny a / b < 10 && c / d < 100```
+  + ```dafny MinusOne(y) = 8 ==> arr[y] = 2```
+
 
 == TODO
 #show: cheq.checklist
