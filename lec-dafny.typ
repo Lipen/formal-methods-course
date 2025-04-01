@@ -1001,6 +1001,84 @@ $
   WP(r := M(E), Q) = P[x := E] and forall y_r. thin R[x,y := E,y_r] imply Q[r := y_r]
 $
 
+== Function Calls
+
+```dafny
+function Average(a: int, b: int): int {
+  (a + b) / 2
+}
+```
+
+Differences from method calls:
+- No output parameters, just a single output.
+- The body is an _expression_, not a statement.
+- Functions are _transparent_: we reason about them in terms of their definition by _unfolding_ it.
+
+#align(center)[
+  #import fletcher: diagram, node, edge
+  #diagram(
+    // debug: true,
+    edge-stroke: 1pt,
+    node-corner-radius: 3pt,
+    spacing: 2em,
+    blob((0, 0))[
+      ```dafny
+      method Triple(x: int) return (r: int)
+        ensures r == 3 * x
+      { r := Average(2*x, 4*x); }
+      ```
+    ],
+    edge("-}>"),
+    blob((.5, 1))[
+      ```dafny
+      method Triple(x: int) return (r: int)
+        ensures r == 3 * x
+      { r := (2*x + 4*x) / 2; }
+      ```
+    ],
+  )
+]
+
+== Ghost Functions
+
+In _Dafny_, functions are part of the _code_.
+
+If you want to use a function in a _specification_, you need to use a _ghost function_.
+
+```dafny
+ghost function Average(a: int, b: int): int {
+  (a + b) / 2
+}
+method Triple(x: int) returns (r: int)
+  ensures r == Average(2*x, 4*x)
+```
+
+== Partial Expressions
+
+An expression may be not always well-defined, e.g., $c slash d$ when $d$ evaluates to $0$.
+
+Associated with such _partial expressions_ are _implicit assertions_.
+
+#example[
+  ```dafny
+  assert d != 0 && v != 0;
+  if c/d < u/v {
+    assert 0 <= i < a.Length;
+    x := a[i];
+  }
+  ```
+]
+
+Function may have pre-conditions, making calls to them _partial_.
+
+#example[
+  ```dafny
+  function MinusOne(x: int): int
+    requires 0 < x
+  ```
+  The call ```dafny z := MinusOne(y + 1)``` has an implicit assertion ```dafny assert 0 < y + 1```.
+]
+
 
 == TODO
 #show: cheq.checklist
