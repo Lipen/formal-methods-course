@@ -531,7 +531,7 @@ Dafny allows simultaneous assignment of multiple variables in a single statement
 All right-hand sides are evaluated _before_ any variables are assigned.
 
 #note[
-  The last example is _different_ from the two statements `x = x + y; y = x - y;`
+  The last example is _different_ from the two statements: ```dafny x = x + y; y = x - y;```
 ]
 
 == Weakest Pre-condition for Simultaneous Assignment
@@ -566,7 +566,7 @@ All right-hand sides are evaluated _before_ any variables are assigned.
 == Weakest Pre-condition for Variable Introduction
 
 #note[
-  The statement `var x := tmp;` is actually _two_ statements: `var x; x := tmp`.
+  The statement ```dafny var x := tmp;``` is actually _two_ statements: ```dafny var x; x := tmp```.
 ]
 
 What is true about $x$ in the post-condition, must have been true for all $x$ before the variable introduction.
