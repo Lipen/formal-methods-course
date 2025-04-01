@@ -818,9 +818,10 @@ Weakest pre-condition:
 
 == Example
 
-// TODO: re-check
 #context [
   #let program = ```dafny
+  // { x == 50 }
+  // ... (see right)
   // { (x < 3 ==> x == 89) && (x >= 3 ==> x == 50) }
   if x < 3 {
     // { x == 89 }
@@ -842,6 +843,17 @@ Weakest pre-condition:
     })
   ]
   #program
+]
+
+#place(horizon + right)[
+  $
+    &((x < 3) imply (x = 89)) and ((x >= 3) imply (x = 50)) equiv \
+    equiv & ((x >= 3) or (x = 89)) and ((x < 3) or (x = 50)) equiv \
+    equiv & ((x >= 3) and (x < 3)) or ((x >= 3) and (x = 50)) or \
+    & or ((x = 89) and (x < 3)) or ((x = 89) and (x = 50)) equiv \
+    equiv & (bot or (x = 50) or bot or bot) equiv \
+    equiv & (x = 50)
+  $
 ]
 
 
