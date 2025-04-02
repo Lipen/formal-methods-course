@@ -979,6 +979,28 @@ where $x$ is $M$'s input, $y$ is $M$'s output, and $R$ is $M$'s post-condition.
   ]
 ]
 
+== Assertions
+
+```dafny assert E``` does nothing when $E$ holds, otherwise it crashes the program.
+
+```dafny
+method Triple(x: int) returns (r: int)
+{
+  var y := 2 * x;
+  r := x + y;
+  assert r == 3 * x;
+}
+```
+
+$
+  SP("assert" E, P) &= P and E \
+  WP("assert" E, Q) &= E and Q \
+$
+
+#note[
+  Both $SPsym$ and $WPsym$ are conjunctions, contrary to ```dafny assume```!
+]
+
 == Method Calls with Pre-conditions
 
 Given a method with a pre-condition:
