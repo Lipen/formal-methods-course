@@ -959,7 +959,7 @@ where $x$ is $M$'s input, $y$ is $M$'s output, and $R$ is $M$'s post-condition.
   method Triple(x: int) returns (y: int)
     ensures y == 3 * x
   ```
-  Consider calling this method with $Q = { x = 48 }$.
+  Consider calling this method with $Q = { v = 48 }$.
   Backward reasoning:
   #context [
     #let program = ```dafny
