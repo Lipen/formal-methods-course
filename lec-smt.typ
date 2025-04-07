@@ -599,7 +599,7 @@ Normalize the literals:
 
 *UNSAT* because of the negative cycle: $x to^(-3) z to^(-1) w to^(2) x$.
 
-= Equiality
+= Equality
 
 == Theory of Equality with Uninterpreted Functions
 
@@ -1183,9 +1183,9 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
 
 Our goal is to use LP to check the satisfiability of _sets of linear $cal(T)_"RA"$-literals_.
 
-*Step 1:* Convert equialities to inequalities.
+*Step 1:* Convert equalities to inequalities.
 
-- A linear $cal(T)_"RA"$-equiality can be written to have the form $bold(a)^T bold(x) = bold(b)$.
+- A linear $cal(T)_"RA"$-equality can be written to have the form $bold(a)^T bold(x) = bold(b)$.
 - We rewrite this further as $bold(a)^T bold(x) gt.eq bold(b)$ and $bold(a)^T bold(x) lt.eq bold(b)$.
 - And finally to $-bold(a)^T bold(x) lt.eq -bold(b)$ and $bold(a)^T bold(x) lt.eq bold(b)$.
 
