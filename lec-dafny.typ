@@ -228,7 +228,7 @@ method MyMethod(x: int) returns (y: int)
 }
 ```
 
-The program variables `x`, `y`, `a`, and `b`, together the method's _state_.
+The program variables `x`, `y`, `a`, and `b` together form the method's _state_.
 
 #note[
   Not all program variables are in scope the whole time.
