@@ -1194,6 +1194,412 @@ Function may have pre-conditions, making calls to them _partial_.
   + ```dafny a / b < 10 && c / d < 100```
   + ```dafny MinusOne(y) = 8 ==> arr[y] = 2```
 
+= Recusion and Termination
+
+== Recursive Methods
+
+#text(size: 0.9em)[
+  ```dafny
+  method Double(x: int) returns (y: int)
+    requires x >= 0
+    ensures r == 2 * x
+  {
+    // { x != 0 ==> x > 0 }
+    // { (x == 0) ==> (0 == 2 * x)  &&  (x != 0) ==> (x - 1 >= 0) }
+    if x == 0 {
+      // { 0 == 2 * x }
+      y := 0;
+      // { y == 2 * x }
+    } else {
+      // { forall t :: x - 1 >= 0 }
+      var t;
+      // { x - 1 >= 0  &&  forall r :: (r == 2 * (x - 1)) ==> (r + 2 == 2 * x) }
+      t := Double(x - 1);
+      // { t + 2 == 2 * x }
+      y := t + 2;
+      // { y == 2 * x }
+    }
+    // { y == 2 * x }
+  }
+  ```
+]
+
+#place(bottom + right, dy: -1em)[
+  #fancy-box[
+    #set align(left)
+    _Recursive methods_ can be analyzed like any methods \ that call other methods... *if they terminate*.
+  ]
+]
+
+== Problematic Recursion
+
+```dafny
+method BadDouble(x: int) returns (y: int)
+  requires x >= 0
+  ensures y == 2 * x
+{
+  var t := BadDouble(x - 1);  // Infinite recursion, does not terminate!
+  y := t + 2;
+}
+```
+
+#h(1em)
+
+```dafny
+method PartialIdentity(x: int) returns (y: int)
+  ensures y == x
+{
+  if x % 2 == 2 {
+    y := x;
+  } else {
+    y := PartialIdentity(x);  // Infinite recursion, does not terminate!
+  }
+}
+```
+
+== Avoiding Infinite Recursion
+
+#box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
+  #set text(0.8em)
+  ```dafny
+  function Fib(n: nat): nat
+    decreases n  // suggestion for Dafny
+  {
+    if n < 2 then n else Fib(n - 2) + Fib(n - 1)
+  }
+  ```
+]
+
+#h(3em)
+#box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
+  #set text(0.8em)
+  ```dafny
+  function Ack(m: nat, n: nat): nat
+    decreases m, n  // tuples can also be used
+  {
+    if m == 0 then n + 1
+    else if n == 0 then Ack(m - 1, 1)
+    else Ack(m - 1, Ack(m, n - 1))
+  }
+  ```
+]
+
+#h(6em)
+#box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
+  #set text(0.8em)
+  ```dafny
+  function SeqSum(s: seq<int>, lo: nat, hi: nat): int
+    requires 0 <= lo <= hi <= |s|
+    decreases hi - lo  // complex expressions can be used!
+  {
+    if lo == hi then 0 else s[lo] + SeqSum(s, lo + 1, hi)
+  }
+  ```
+]
+
+== Exercises
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function F(x: int): int {
+    if x < 10 then x else F(x - 1)
+  }
+  ```
+]
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function G(x: int): int {
+    if 0 <= x then G(x - 2) else x
+  }
+  ```
+]
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function H(x: int): int {
+    if x < -60 then x else H(x - 1)
+  }
+  ```
+]
+
+#pagebreak()
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function I(x: nat, y: nat): int {
+    if x == 0 || y == 0 then 12
+    else if x % 2 == y % 2 then I(x - 1, y)
+  }
+  ```
+]
+
+#box[
+  #exercise[
+    Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+    ```dafny
+    function I(x: nat, y: nat): int {
+      if x == 0 || y == 0 then 12
+      else if x % 2 == y % 2 then I(x - 1, y)
+    }
+    ```
+  ]
+]
+
+#pagebreak()
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function J(x: nat, y: nat): int {
+    if x == 0 then y
+    else if y == 0 then J(x - 1, 3)
+    else J(x, y - 1)
+  }
+  ```
+]
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function K(x: nat, y: nat, z: nat): int {
+    if x < 10 || y < 5 then x + y
+    else if z == 0 then K(x - 1, y, 5)
+    else K(x, y - 1, z - 1)
+  }
+  ```
+]
+
+#pagebreak()
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function L(x: int): int {
+    if x < 100 then L(x + 1) + 10 else x
+  }
+  ```
+]
+
+#exercise[
+  The following function computes the _Hofstadter $G$ sequence_:
+
+  ```dafny
+  function G(n: nat): nat {
+    if n == 0 then 0 else n - G(G(n - 1))
+  }
+  ```
+
+  Find an appropriate ```dafny decreases``` clause to prove that $G$ terminates.
+]
+
+== Termination Metric
+
+#definition[
+  _Termination metrics_ in Dafny, which are declared by ```dafny decreases``` clauses, are lexicographic tuples of expressions.
+  At each _recursive_ (or mutually recursive) call to a function or method, Dafny checks that the effective ```dafny decreases``` clause of the callee is _strictly smaller_ than the effective ```dafny decreases``` clause of the caller.
+]
+
+- _Termination metrics_ do not have to be natural numbers.
+- Any set of values with a _well-founded order_ can be used.
+- An order $succ$ is well-founded when:
+  - $succ$ is _irreflexive_: $a succ a$ never holds
+  - $succ$ is _transitive_: if $a succ b$ and $b succ c$ then $a succ c$
+  - there is _no infinite descending chain_: $a_0 succ a_1 succ a_2 succ dots$
+
+== Well-Founded Orders in Dafny
+
+#align(center)[
+  #table(
+    columns: 2,
+    align: (center, left),
+    stroke: (x, y) => if y == 0 { (bottom: .8pt) },
+    table.header[Type][$X succ y$ ("$X$ decreases to $y$") iff...],
+    ```dafny bool```, [$X and not y$ \ (#true decreases to #false)],
+    ```dafny int```, [$(y < X) and (0 <= X)$ \ (note: _negative_ integers are _not ordered_)],
+    ```dafny real```, [$(y <= X - 1.0) and (0.0 <= X)$ \ (note: _negative_ reals are _not ordered_)],
+    ```dafny set<T>```, [$y$ is a proper subset of $X$ \ (e.g. ```dafny {a,b,c} > {a,c}```)],
+    ```dafny seq<T>```, [$y$ is a consecutive proper sub-sequence of $X$ \ (e.g., ```dafny [a,b,c] > [b,c]```)],
+    [inductive \ datatypes], [$y$ is structurally included in $X$ \ (e.g. ```dafny Cons(42, Cons(5, Nil)) > 5```)],
+  )
+]
+
+== Exercises
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function M(x: int, b: bool): int {
+    if b then x else M(x + 25, true)
+  }
+  ```
+]
+
+#exercise[
+  Write a ```dafny decreases``` clause that proves the termination of the following function:
+
+  ```dafny
+  function N(x: int, y: int, b: bool): int {
+    if x <= 0 || y <= 0 then
+      x + y
+    else if b then
+      N(x, y + 3, !b)
+    else
+      N(x - 1, y, true)
+  }
+  ```
+]
+
+
+== Lexicographic Tuples
+
+#definition[
+  The _lexicographic order_ on tuples is a component-wise comparison where earlier components are treated as more significant.
+]
+
+#examples[
+  - ```dafny 4, 12 > 4, 2 > 3, 5256``` (first component is more significant)
+  - ```dafny 4, 12 > 4, 12, 365, 0``` (_shorter_ tuples exceed, _if prefixes are equal_)
+  - ```dafny 2, 5 > 1``` (prefix ```dafny 2``` exceeds ```dafny 1```)
+  - ```dafny 12, true, 1.9 > 12, false, 57.3```
+]
+
+#exercise[
+  Determine if the first tuple exceeds the second.
+  #grid(
+    columns: 2,
+    column-gutter: 4em,
+    [
+      + ```dafny 2,5``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 1,7```
+      + ```dafny 1,7``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 7,1```
+      + ```dafny 5,0,8``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 4,93```
+      + ```dafny 4,9,3``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 4,93```
+      + ```dafny 4,93``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 4,9,3```
+    ],
+    [
+      6. ```dafny 3``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 2,9```
+      + ```dafny true,80``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny false,66```
+      + ```dafny true,2``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 19,1```
+      + ```dafny 4,true,50``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 4,false,800```
+      + ```dafny 7.0,{3,4,9},false,10``` #box(stroke: .1pt, width: 1.2em, height: .8em, baseline: 1pt) ```dafny 7.0,{3,9},true,10```
+    ],
+  )
+]
+
+== Ackermanm Function
+
+```dafny
+function Ack(m: nat, n: nat): nat
+  decreases m, n
+{
+  if m == 0 then
+    n + 1
+  else if n == 0 then
+    Ack(m - 1, 1)
+  else
+    Ack(m - 1, Ack(m, n - 1))
+}
+```
+
+On each recursive call, the ordered pair $(m, n)$ decreases.
+
+== Mutually Recursive Functions
+
+```dafny
+method StudyPlan(n: nat)
+  requires n <= 40
+  decreases 40 - n
+{
+  if n == 40 { /* done */ }
+  else {
+    var hours := RequiredStudyTime(n);
+    Learn(n, hours);
+  }
+}
+
+method Learn(n: nat, h: nat)
+  requires n < 40
+  decreases 40 - n, h
+{
+  if h == 0 { StudyPlan(n + 1); }
+  else { Learn(n, h - 1); }
+}
+```
+
+#place(bottom + right, dy: -1em)[
+  #set align(top)
+  #table(
+    columns: 2,
+    align: (right, left),
+    stroke: (x, y) => if y == 0 { (bottom: .8pt) },
+    table.header[Call][Proof obligation for termination],
+    [`StudyPlan` calls `Learn`], [$40 - n succ (40-n, h)$ \ ($40-n$ is a proper prefix of $(40-n, h)$)],
+    [`Learn` calls `StudyPlan`], [$(40 - n, h) succ 40 - (n+1)$ \ (first component is decreased)],
+    [`Learn` calls `Learn`], [$(40 - n, h) succ (40 - n, h - 1)$ \ (second component is decreased)],
+  )
+]
+
+== Exercises
+
+#exercise[
+  Add ```dafny decreases``` clauses to prove termination of the following program.
+
+  ```dafny
+  method Outer(a: nat) {
+    if a != 0 {
+      var b := RequiredStudyTime(a - 1);
+      Inner(a, b);
+    }
+  }
+
+  method Inner(a: nat, b: nat)
+    requires 1 <= a
+  {
+    if b == 0 {
+      Outer(a - 1);
+    } else {
+      Inner(a, b - 1);
+    }
+  }
+  ```
+]
+
+#pagebreak()
+
+#exercise[
+  Add ```dafny decreases``` clauses to prove termination of the following program.
+
+  ```dafny
+  method Outer(a: nat) {
+    if a != 0 {
+      var b := RequiredStudyTime(a - 1);
+      Inner(a - 1, b);
+    }
+  }
+
+  method Inner(a: nat, b: nat) {
+    if b == 0 {
+      Outer(a);
+    } else {
+      Inner(a, b - 1);
+    }
+  }
+  ```
+]
+
 
 == TODO
 #show: cheq.checklist
