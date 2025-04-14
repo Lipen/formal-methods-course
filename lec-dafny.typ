@@ -1601,6 +1601,185 @@ method Learn(n: nat, h: nat)
   ```
 ]
 
+= Loops
+
+== Loops in Dafny
+
+```dafny
+while G
+  decreases M
+  invariant J
+{
+  Body
+}
+```
+
+- $G$ is the _loop guard_, a Boolean expression
+- $M$ is the _termination measure_, an expression that _decreases_ in each iteration
+- $J$ is the _loop invariant_, a condition that _holds_ in each iteration
+
+#note[
+  While loops are _opaque_, they are always abstracted by their invariant.
+
+  ```dafny
+  ...
+  while G
+    invariant J
+    // Look ma, no body!
+  ...
+  ```
+]
+
+== Examples
+
+```dafny
+while x < 300
+  invariant x % 2 == 0
+```
+
+```dafny
+while x % 2 == 1
+  invariant 0 <= x <= 100
+```
+
+```dafny
+x := 2;
+while x < 50
+  invariant x % 2 == 0
+// After the loop, the invariant and
+// the negation of the guard hold:
+assert x >= 50 && x % 2 == 0;
+```
+
+```dafny
+x := 0;
+while x % 2 == 0
+  invariant 0 <= x <= 20
+assert x == 19; // not provable!
+```
+
+== Attaining Equality
+
+```dafny
+i := 0;
+while i != 100
+  invariant 0 <= i <= 100
+assert i == 100;
+```
+
+Assertion is provable from just the negation of the guard.
+
+#v(1em)
+
+```dafny
+i := 0;
+while i < 100
+  invariant 0 <= i <= 100
+assert i == 100;
+```
+
+Assertion requires the invariant _and_ the negation of the guard to hold.
+
+#pagebreak()
+
+```dafny
+i := 0;
+while i != 100
+  invariant true  // note!
+assert i == 100;
+```
+
+Assertion is provable from just the negation of the guard.
+
+#v(1em)
+
+```dafny
+i := 0;
+while i < 100
+  invariant true  // note!
+assert i == 100;  // not provable
+```
+
+Assertion requires the invariant _and_ the negation of the guard to hold.
+
+== Relations Between Variables
+
+```dafny
+x, y := 0, 0;
+while x < 300
+  invariant 2 * x == 3 * y;
+assert 200 <= y;
+```
+
+#v(1em)
+
+```dafny
+x, y := 0, 191;
+while !(y < 7)
+  invariant 0 <= y && 7 * x + y == 191
+assert x == 191 / 7 && y == 191 % 7;
+```
+
+#v(1em)
+
+```dafny
+n, s := 0, 0;
+while n != 33
+  invariant s == n * (n - 1) / 2
+assert s == 33 * 32 / 2;
+```
+
+== Hoare Triples for Loops
+
+```dafny
+// { J }
+while G
+  invariant J
+// { J && !G }
+```
+
+#example[
+  ```dafny
+  r := 0;
+  N := 104;
+  while (r+1)*(r+1) <= N
+    invariant 0 <= r && r*r <= N
+  assert 0 <= r && r*r <= N < (r+1)*(r+1);
+  ```
+]
+
+== Floyd-Hoare Logic for Loop Body
+
+To prove the _partial_ correctness of a loop
+```dafny
+while G
+  invariant J
+{
+  Body
+}
+```
+we need to prove the validity of
+```dafny
+// { J && G }
+Body
+// { J }
+```
+
+== Example: Quotient Modulus
+
+```dafny
+x := 0;
+y := 191;
+while !(y < 7)
+  invariant 0 <= y && 7*x + y == 191
+{
+  // Body?
+}
+assert x == 191 / 7 && y == 191 % 7;
+```
+
+// TODO: continue example
+
 
 == TODO
 #show: cheq.checklist
