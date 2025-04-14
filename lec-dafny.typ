@@ -1269,6 +1269,7 @@ method PartialIdentity(x: int) returns (y: int)
   }
   ```
 ]
+// TODO: fib tree
 
 #h(3em)
 #box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
