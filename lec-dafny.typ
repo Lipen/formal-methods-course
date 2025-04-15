@@ -1772,15 +1772,15 @@ Let's write a program (using a loop) that computes the quotient and modulus of 1
 Here is the specification:
 
 ```dafny
-x, y := 0, 191;
-while !(y < 7)
-  invariant 0 <= y && 7*x + y == 191
-{
-  // { 0 <= y && 7*x + y == 191 && 7 <= y }
-  // ... body?
-  // { 0 <= y && 7*x + y == 191 }
-}
-assert x == 191 / 7 && y == 191 % 7;
+  x, y := 0, 191;
+  while !(y < 7)
+    invariant 0 <= y && 7*x + y == 191
+  {
+    // { 0 <= y && 7*x + y == 191 && 7 <= y }
+    // ... body?
+    // { 0 <= y && 7*x + y == 191 }
+  }
+  assert x == 191 / 7 && y == 191 % 7;
 ```
 
 #pagebreak()
@@ -1826,11 +1826,11 @@ How about we try to combine two loop bodies into one?
 Instead of incrementing $x$ by 1 and decrementing $y$ by 7, let's try incrementing $x$ by 2 and decrementing $y$ by 14.
 
 ```dafny
-// { 0 <= y && 7*x + y == 191 && 7 <= y }
-// { 14 <= y && 7 * x + 2 == 191 } -- error: does not follow from above!
-// { 0 <= 14 - y && 7*(x + 2) + (y - 14) == 191 }
-x, y := x + 2, y - 14;
-// { 0 <= y && 7*x + y == 191 }
+  // { 0 <= y && 7*x + y == 191 && 7 <= y }
+  // { 14 <= y && 7 * x + 2 == 191 } -- error: does not follow from above!
+  // { 0 <= 14 - y && 7*(x + 2) + (y - 14) == 191 }
+  x, y := x + 2, y - 14;
+  // { 0 <= y && 7*x + y == 191 }
 ```
 
 Here, ```dafny 14 <= y``` does not follow from the top line, so this loop body is not correct.
@@ -1844,19 +1844,19 @@ Here, ```dafny 14 <= y``` does not follow from the top line, so this loop body i
 
 To prove the _total_ correctness of a loop
 ```dafny
-while G
-  invariant J
-  decreases D
-{
-  Body
-}
+  while G
+    invariant J
+    decreases D
+  {
+    Body
+  }
 ```
 we also need to prove the validity of
 ```dafny
-// { J && G }
-ghost var d := D;
-Body
-// { d > D }
+  // { J && G }
+  ghost var d := D;
+  Body
+  // { d > D }
 ```
 
 #note[
@@ -1909,12 +1909,12 @@ x := 27;
 
 If the loop guard is an arithmetic comparison of the form ```dafny E < F``` or ```dafny E <= F```, then the default is
 ```dafny
-decreases F – E
+  decreases F – E
 ```
 
 If the loop guard is an arithmetic comparison of the form ```dafny E != F```, then the default is the absolute difference between ```dafny E``` and ```dafny F```:
 ```dafny
-decreases if E < F then F - E else E - F
+  decreases if E < F then F - E else E - F
 ```
 
 == Complete Loop Rule
@@ -1930,7 +1930,9 @@ while G
 // { J && !G }
 ```
 
-```
+#v(1em)
+
+```dafny
 // { J && G }
 ghost var d := D;
 Body
@@ -2002,16 +2004,77 @@ Need to choose initial values of ```dafny n``` and ```dafny s``` to establish in
   Consider the following program fragment:
 
   ```dafny
-  x := 0;
-  while x < 100
-  {
-    x := x + 3;
-  }
-  assert x == 102;
+    x := 0;
+    while x < 100
+    {
+      x := x + 3;
+    }
+    assert x == 102;
   ```
 
   Write a loop invariant that holds initially, is maintained by the loop body, and allows you to prove the assertion after the loop.
 ]
+
+== Integer Square Root
+
+#definition[Loop design technique 1 --- _"Omit a conjuct"_][
+  For a post-condition ```dafny A && B```, use ```dafny A``` as the invariant and ```dafny !B``` as the guard.
+  That is, use a loop specification:
+  ```dafny
+  while !B
+    invariant A
+  ```
+]
+
+```dafny
+method SquareRoot(N: nat) returns (r: nat)
+  ensures r*r <= N && N < (r+1)*(r+1)
+{
+  r := 0;
+  while (r+1)*(r+1) <= N
+    invariant r*r <= N
+  { r := r + 1; }
+}
+```
+
+== More Efficient Algorithm
+
+Rather than calculate ```dafny (r + 1)*(r + 1)``` on each iteration, add a new variable ```dafny s``` and maintain the invariant
+```dafny
+s == (r + 1)*(r + 1)
+```
+
+Then we have ```dafny s``` initially 1, loop guard ```dafny s <= N``` and invariant ```dafny s == (r + 1)*(r + 1)```.
+
+```dafny
+// { s == (r + 1)*(r + 1) }
+// { s + 2*r + 3 == (r + 1)*(r + 1) + 2*r + 3 }
+s := s + 2*r + 3;
+// { s == (r + 1)*(r + 1) + 2*r + 3}
+// { s == r*r + 2*r + 1 + 2*r + 3 }
+// { s == r*r + 4*r + 4}
+// { s == (r + 1 + 1)*(r + 1 + 1)}
+r := r + 1
+// { s == (r + 1)*(r + 1) }
+```
+
+== Full Program
+
+```dafny
+method SquareRoot(N: nat) returns (r: nat)
+  ensures r*r <= N < (r+1)*(r+1)
+{
+  r := 0;
+  var s := 1;
+  while s <= N
+    invariant r*r <= N
+    invariant s == (r+1)*(r+1)
+  {
+    s := s + 2*r + 3;
+    r := r + 1;
+  }
+}
+```
 
 
 == TODO
