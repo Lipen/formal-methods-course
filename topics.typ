@@ -14,7 +14,7 @@ You can pick any topic or suggest your own to research and prepare a presentatio
 - Hoare Logic and Program Verification
 - Separation Logic for Memory Safety Verification
 - Modal Logic Variants: Epistemic, Deontic, and Doxastic
-- Alternative-time Temporal Logic (ATL)
+- Alternating-time Temporal Logic (ATL)
 - Temporal Logic Extensions: CTL\*, Probabilistic CTL
 - Non-Monotonic Logic in AI Reasoning
 - Description Logics and Ontology Engineering
