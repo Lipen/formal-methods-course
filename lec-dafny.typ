@@ -1874,7 +1874,11 @@ while 7 <= y
   y := y - 7;
   x := x + 1;
 }
+```
 
+#v(1em)
+
+```dafny
 // { 0 <= y && 7 * x + y == 191 && 7 <= y }
 ghost var d := y;
 y := y - 7;
