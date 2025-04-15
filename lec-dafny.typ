@@ -1937,6 +1937,83 @@ Body
 // { J && d > D }
 ```
 
+== Computing Sums
+
+```dafny
+while n != 33
+  invariant s == n * (n - 1) / 2
+{
+  // { s == n * (n - 1) / 2 && n != 33 }
+  // { s == n * (n - 1) / 2 }
+  s := s + n;
+  // { s = n * (n - 1) / 2 + n }
+  // { s = (n*n – n) / 2 + 2*n / 2 }
+  // { s == (n*n – n + 2*n) / 2 }
+  // { s == (n*n + n) / 2 }
+  // { s == (n + 1) * n / 2 }
+  // { s == (n + 1) * (n + 1 - 1) / 2 }
+  n := n + 1;
+  // { s == n * (n - 1) / 2 }
+}
+assert s == 33 * 32 / 2;
+```
+
+== Full Program
+
+Need to choose initial values of ```dafny n``` and ```dafny s``` to establish invariant.
+
+```dafny
+  n, s := 0, 0;
+  while n != 33
+    invariant s == n * (n - 1) / 2
+  {
+    s := s + n;
+    n := n + 1;
+  }
+```
+
+#exercise[
+  Write a different (but still correct) initializing assignment for the loop above.
+]
+
+#exercise[
+  Write an initializing assignment and a loop implementation for the following loop specifications:
+  #grid(
+    columns: 2,
+    column-gutter: 1cm,
+    ```dafny
+      x := ???;
+      while x < 300
+        invariant x % 2 == 0
+      { ??? }
+    ```,
+    ```dafny
+      x := ???;
+      while x % 2 == 1
+        invariant 0 <= x <= 100
+      { ??? }
+    ```,
+  )
+]
+
+#pagebreak()
+
+#exercise[
+  Consider the following program fragment:
+
+  ```dafny
+  x := 0;
+  while x < 100
+  {
+    x := x + 3;
+  }
+  assert x == 102;
+  ```
+
+  Write a loop invariant that holds initially, is maintained by the loop body, and allows you to prove the assertion after the loop.
+]
+
+
 == TODO
 #show: cheq.checklist
 - [ ] ...
