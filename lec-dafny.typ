@@ -1767,19 +1767,175 @@ Body
 
 == Example: Quotient Modulus
 
+Let's write a program (using a loop) that computes the quotient and modulus of 191 and 7.
+
+Here is the specification:
+
 ```dafny
-x := 0;
-y := 191;
+x, y := 0, 191;
 while !(y < 7)
   invariant 0 <= y && 7*x + y == 191
 {
-  // Body?
+  // { 0 <= y && 7*x + y == 191 && 7 <= y }
+  // ... body?
+  // { 0 <= y && 7*x + y == 191 }
 }
 assert x == 191 / 7 && y == 191 % 7;
 ```
 
-// TODO: continue example
+#pagebreak()
 
+```dafny
+x, y := 0, 191;
+while !(y < 7)
+  invariant 0 <= y && 7*x + y == 191
+{
+  // { 0 <= y && 7*x + y == 191 && 7 <= y }
+  // { 0 <= y - 7 && 7*x + 7 + (y - 7) == 191 }
+  y := y - 7;
+  // { 0 <= y && 7*x + 7 + y == 191 }
+  // { 0 <= y && 7*(x + 1) + y == 191 }
+  x := x + 1;
+  // { 0 <= y && 7*x + y == 191 }
+}
+assert x == 191 / 7 && y == 191 % 7;
+```
+
+== Leap to the Answer
+
+There's more than one way to implement the loop body for the quotient-modulus program.
+
+```dafny
+x, y := 0, 191;
+while !(y < 7)
+  invariant 0 <= y && 7*x + y == 191
+{
+  // { 0 <= y && 7*x + y == 191 && 7 <= y }
+  // { true }
+  // { 0 <= 2 && 7*27 + 2 == 191 }
+  x, y := 27, 2;
+  // { 0 <= y && 7*x + y == 191 }
+}
+assert x == 191 / 7 && y == 191 % 7;
+```
+
+== Going Twice as Fast
+
+Let's dwell on this first program with a loop body some more, to consider something that _does not work_.
+How about we try to combine two loop bodies into one?
+Instead of incrementing $x$ by 1 and decrementing $y$ by 7, let's try incrementing $x$ by 2 and decrementing $y$ by 14.
+
+```dafny
+// { 0 <= y && 7*x + y == 191 && 7 <= y }
+// { 14 <= y && 7 * x + 2 == 191 } -- error: does not follow from above!
+// { 0 <= 14 - y && 7*(x + 2) + (y - 14) == 191 }
+x, y := x + 2, y - 14;
+// { 0 <= y && 7*x + y == 191 }
+```
+
+Here, ```dafny 14 <= y``` does not follow from the top line, so this loop body is not correct.
+
+#exercise[
+  Introduce an ```dafny if``` statement in the body of the loop, where one branch is ```dafny x, y := x + 2, y - 14``` and the other is ```dafny x, y := x + 1, y - 7```.
+  What guard condition do you need in the ```dafny if``` statement to make the loop correct?
+]
+
+== Loop Termination
+
+To prove the _total_ correctness of a loop
+```dafny
+while G
+  invariant J
+  decreases D
+{
+  Body
+}
+```
+we also need to prove the validity of
+```dafny
+// { J && G }
+ghost var d := D;
+Body
+// { d > D }
+```
+
+#note[
+  ```dafny ghost``` variables are for reasoning only, they are not part of the compiled code.
+]
+
+== Termination of the Quotient-Modulus Program
+
+```dafny
+var x, y := 0, 191;
+while 7 <= y
+  invariant 0 <= y && 7 * x + y == 191
+  decreases y
+{
+  y := y - 7;
+  x := x + 1;
+}
+
+// { 0 <= y && 7 * x + y == 191 && 7 <= y }
+ghost var d := y;
+y := y - 7;
+x := x + 1;
+// { d > y && d >= 0 }
+//   -- {d > y} follows from y := y - 7
+//   -- {d >= 0} follows from 0 <= y in invariant
+```
+
+== Quick Body
+
+```dafny
+var x, y := 0, 191;
+while 7 <= y
+  invariant 0 <= y && 7 * x + y == 191
+  decreases y
+{
+  y := 2;
+  x := 27;
+}
+
+// { 0 <= y && 7 * x + y == 191 && 7 <= y }
+ghost var d := y;
+y := 2;
+x := 27;
+// { d > y && d >= 0 }
+//   -- {d > y} follows from 7 <= y in invariant
+//   -- {d >= 0} follows from 0 <= y in invariant
+```
+
+== Default ```dafny decreases``` Clauses for Loops in Dafny
+
+If the loop guard is an arithmetic comparison of the form ```dafny E < F``` or ```dafny E <= F```, then the default is
+```dafny
+decreases F – E
+```
+
+If the loop guard is an arithmetic comparison of the form ```dafny E != F```, then the default is the absolute difference between ```dafny E``` and ```dafny F```:
+```dafny
+decreases if E < F then F - E else E - F
+```
+
+== Complete Loop Rule
+
+```dafny
+// { J }
+while G
+  invariant J
+  decreases D
+{
+  Body
+}
+// { J && !G }
+```
+
+```
+// { J && G }
+ghost var d := D;
+Body
+// { J && d > D }
+```
 
 == TODO
 #show: cheq.checklist
