@@ -97,9 +97,9 @@ The pure literal rule is defined as follows:
   - Let $N$ be the set of all clauses that contain $not p$.
 + Perform the resolution step:
   - For each pair of clauses $C_P in P$ and $C_N in N$, construct the _resolvent_ by removing $p$ and $not p$, then merging the remaining literals:
-  $ C_P times.circle_p C_N = (C_P setminus {p}) union (C_N setminus {not p}) $
+  $ C_P times.o_p C_N = (C_P setminus {p}) union (C_N setminus {not p}) $
   #example[
-    $(a or b or not c) times.circle_b (a or not b or d or not e) = (a or not c or d or not e)$
+    $(a or b or not c) times.o_b (a or not b or d or not e) = (a or not c or d or not e)$
   ]
 + Update the formula:
   - Remove all clauses in $P$ and $N$.

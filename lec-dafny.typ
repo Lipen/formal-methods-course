@@ -28,8 +28,8 @@
 #let WPsym = $cal(W P)$
 #let SPsym = $cal(S P)$
 
-#let WP(S, Q) = $#WPsym bracket.double thin #S, #Q thin bracket.double.r$
-#let SP(S, P) = $#SPsym bracket.double.l thin #S, #P thin bracket.double.r$
+#let WP(S, Q) = $#WPsym bracket.stroked.l thin #S, #Q thin bracket.stroked.r$
+#let SP(S, P) = $#SPsym bracket.stroked.l thin #S, #P thin bracket.stroked.r$
 
 #let ITE(B, S, T) = $"if" #B "then" { #S } "else" { #T }$
 #let WHILE(B, S) = $"while" #B "do" { #S }$

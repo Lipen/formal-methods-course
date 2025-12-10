@@ -46,11 +46,11 @@
 
 == Motivation
 
-Consider the signature $Sigma = angle.l Sigma^S, Sigma^F angle.r$ for a fragment of number theory:
+Consider the signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ for a fragment of number theory:
 - $Sigma^S = {NatSort}$, $Sigma^F = {0, 1, +, <}$
-- $rank(0) = rank(1) = angle.l NatSort angle.r$
-- $rank(+) = angle.l NatSort, NatSort, NatSort angle.r$
-- $rank(<) = angle.l NatSort, NatSort, BoolSort angle.r$
+- $rank(0) = rank(1) = chevron.l NatSort chevron.r$
+- $rank(+) = chevron.l NatSort, NatSort, NatSort chevron.r$
+- $rank(<) = chevron.l NatSort, NatSort, BoolSort chevron.r$
 
 + Consider the $Sigma$-sentence: $forall x : NatSort. thin not (x < x)$ \
   - Is it _valid_, that is, true under _all_ interpretations?
@@ -83,8 +83,8 @@ _Theories_ formalize this domain-specific reasoning: we talk about satisfiabilit
 Hereinafter, we assume that we have an infinite set of variables $X$.
 
 #definition[Theory][
-  A first-order _theory_ $cal(T)$ is a pair#footnote[Here, we use *bold* style for $bold(M)$ to denote that it is _not a single_ model, but a _collection_ of them.] $angle.l Sigma, bold(M) angle.r$, where
-  - $Sigma = angle.l Sigma^S, Sigma^F angle.r$ is a first-order signature,
+  A first-order _theory_ $cal(T)$ is a pair#footnote[Here, we use *bold* style for $bold(M)$ to denote that it is _not a single_ model, but a _collection_ of them.] $chevron.l Sigma, bold(M) chevron.r$, where
+  - $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ is a first-order signature,
   - $bold(M)$ is a class#footnote[_Class_ is a generalization of a set.] of $Sigma$-interpretations over $X$ that is _closed under variable re-assignment_.
 ]
 
@@ -102,14 +102,14 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 == Theory Examples
 
 #example[
-  Theory of Real Arithmetic $cal(T)_"RA" = angle.l Sigma_"RA", bold(M)_"RA" angle.r$:
+  Theory of Real Arithmetic $cal(T)_"RA" = chevron.l Sigma_"RA", bold(M)_"RA" chevron.r$:
   - $Sigma^S_"RA" = {RealSort}$
   - $Sigma^F_"RA" = {+, -, times, lt.eq} union {q | q "is a decimal numeral"}$
   - All $cal(I) in bold(M)_"RA"$ interpret $RealSort$ as the set of _real numbers_ $RR$, each $q$ as the _decimal number_ that it denotes, and the function symbols in the usual way.
 ]
 
 #example[
-  Theory of Ternary Strings $cal(T)_"TS" = angle.l Sigma_"TS", bold(M)_"TS" angle.r$:
+  Theory of Ternary Strings $cal(T)_"TS" = chevron.l Sigma_"TS", bold(M)_"TS" chevron.r$:
   - $Sigma^S_"TS" = {StringSort}$
   - $Sigma^F_"TS" = {thin dot thin, <} union {"a", "b", "c"}$
   - All $cal(I) in bold(M)_"TS"$ interpret $StringSort$ as the set ${"a", "b", "c"}^*$ of all finite strings over the characters ${"a", "b", "c"}$, symbol $dot$~as string concatenation (e.g., $"a" dot "b" = "ab"$), and $<$ as lexicographic order.
@@ -126,17 +126,17 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 ]
 
 #definition[$cal(T)$-interpretation][
-  Given a theory $cal(T) = angle.l Sigma, bold(M) angle.r$, a _$cal(T)$-interpretation_ is any #box[$Omega$-interpretation] $cal(I)$ for some signature $Omega supset.eq Sigma$ such that $cal(I)^Sigma in bold(M)$.
+  Given a theory $cal(T) = chevron.l Sigma, bold(M) chevron.r$, a _$cal(T)$-interpretation_ is any #box[$Omega$-interpretation] $cal(I)$ for some signature $Omega supset.eq Sigma$ such that $cal(I)^Sigma in bold(M)$.
 ]
 #note[
-  This definition allows us to consider the satisfiability in a theory $cal(T) = angle.l Sigma, bold(M) angle.r$ of formulas that contain sorts or function symbols not in $Sigma$.
+  This definition allows us to consider the satisfiability in a theory $cal(T) = chevron.l Sigma, bold(M) chevron.r$ of formulas that contain sorts or function symbols not in $Sigma$.
   These symbols are usually called _uninterpreted_ (in $cal(T)$).
 ]
 
 #pagebreak()
 
 #example[
-  Consider again the theory of real arithmetic $cal(T)_"RA" = angle.l Sigma_"RA", bold(M)_"RA" angle.r$.
+  Consider again the theory of real arithmetic $cal(T)_"RA" = chevron.l Sigma_"RA", bold(M)_"RA" chevron.r$.
 
   All $cal(I) in bold(M)_"RA"$ interpret $RealSort$ as $RR$ and function symbols as usual.
 
@@ -174,7 +174,7 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
 
 == FOL vs Theory
 
-For every signature $Sigma$, entailment and validity in "pure" FOL can be seen as entailment and validity in the theory $cal(T)_"FOL" = angle.l Sigma, bold(M)_"FOL" angle.r$ where $bold(M)_"FOL"$ is the class of _all possible_ $Sigma$-interpretations.
+For every signature $Sigma$, entailment and validity in "pure" FOL can be seen as entailment and validity in the theory $cal(T)_"FOL" = chevron.l Sigma, bold(M)_"FOL" chevron.r$ where $bold(M)_"FOL"$ is the class of _all possible_ $Sigma$-interpretations.
 
 - Pure first-order logic = reasoning over _all_ possible interpretations.
 - Reasoning modulo a theory = _restricting_ interpretations with some domain constraints.
@@ -192,7 +192,7 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 
 #note[
   Axiomatic theories are a _special case_ of the general definition (via $bold(M)$) of theories.
-  - Given an axiomatic theory $cal(T)'$ defined by $Sigma$ and $cal(A)$, we can define a theory $cal(T) = angle.l Sigma, bold(M) angle.r$ where $bold(M)$ is the class of all $Sigma$-interpretations that satisfy all axioms in $cal(A)$.
+  - Given an axiomatic theory $cal(T)'$ defined by $Sigma$ and $cal(A)$, we can define a theory $cal(T) = chevron.l Sigma, bold(M) chevron.r$ where $bold(M)$ is the class of all $Sigma$-interpretations that satisfy all axioms in $cal(A)$.
   - It is not hard to show that a formula $alpha$ is valid in $cal(T)$ _iff_ it is valid in $cal(T)'$.
 ]
 
@@ -271,7 +271,7 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 ]
 
 #example[
-  Any theory $cal(T) = angle.l Sigma, bold(M) angle.r$ where all interpretations in $bold(M)$ only differ in how they interpret the variables (e.g., $cal(T)_"RA"$) is _complete_.
+  Any theory $cal(T) = chevron.l Sigma, bold(M) chevron.r$ where all interpretations in $bold(M)$ only differ in how they interpret the variables (e.g., $cal(T)_"RA"$) is _complete_.
 ]
 
 #example[
@@ -309,7 +309,7 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
 Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure that, given an input element $a$, returns (after _finite_ time) either "yes" if $a in A$ or "no" if $a notin A$.
 
 #definition[
-  A theory $cal(T) = angle.l Sigma, bold(M) angle.r$ is _decidable_ if the set of all _$cal(T)$-valid_ $Sigma$-formulas is decidable.
+  A theory $cal(T) = chevron.l Sigma, bold(M) chevron.r$ is _decidable_ if the set of all _$cal(T)$-valid_ $Sigma$-formulas is decidable.
 ]
 
 #definition[
@@ -325,7 +325,7 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
 == Axiomatizability
 
 #definition[
-  A theory $cal(T) = angle.l Sigma, bold(M) angle.r$ is _recursively axiomatizable_ if $bold(M)$ is the class of all interpretations satisfying a _decidable set_ of first-order axioms $cal(A)$.
+  A theory $cal(T) = chevron.l Sigma, bold(M) chevron.r$ is _recursively axiomatizable_ if $bold(M)$ is the class of all interpretations satisfying a _decidable set_ of first-order axioms $cal(A)$.
 ]
 
 // TODO: replace #theorem with #lemma
@@ -467,7 +467,7 @@ Its quantifier-free fragment (`QF_LIA`) is NP-complete.
 #definition[
   The theory of _arrays_ $cal(T)_"AX"$ is useful for modelling RAM or array data structures.
   - $Sigma^S = {ASort, ISort, ESort}$ (arrays, indices, elements)
-  - $Sigma^F = {"read", "write"}$, where $rank("read") = angle.l ASort, ISort, ESort angle.r$ and $rank("write") = angle.l ASort, ISort, ESort, ASort angle.r$
+  - $Sigma^F = {"read", "write"}$, where $rank("read") = chevron.l ASort, ISort, ESort chevron.r$ and $rank("write") = chevron.l ASort, ISort, ESort, ASort chevron.r$
 
   Let $a$ be a variable of sort $ASort$, variable $i$ of sort $ISort$, and variable $v$ of sort $ESort$.
   - $"read"(a, i)$ denotes the value stored in array $a$ at index $i$.
@@ -486,7 +486,7 @@ Its quantifier-free fragment (`QF_LIA`) is NP-complete.
 #pagebreak()
 
 #definition[
-  The theory of arrays $cal(T)_"AX" = angle.l Sigma, bold(M) angle.r$ is finitely axiomatizable.
+  The theory of arrays $cal(T)_"AX" = chevron.l Sigma, bold(M) chevron.r$ is finitely axiomatizable.
 
   $bold(M)$ is the class of interpretations that satisfy the following axioms:
   + $forall a. forall i. forall v. thin ("read"("write"(a, i, v), i) eqq_ESort v)$
@@ -640,7 +640,7 @@ Hereinafter, we will assume that all literals are _flat_.
 
 - We abbreviate $not (s eqq t)$ with $s neqq t$.
 
-- For tuples $bold(u) = angle.l u_1, dots, u_n angle.r$ and $bold(v) = angle.l v_1, dots, v_n angle.r$, we abbreviate $(u_1 eqq v_1) and dots and (u_n eqq v_n)$ with $bold(u) = bold(v)$.
+- For tuples $bold(u) = chevron.l u_1, dots, u_n chevron.r$ and $bold(v) = chevron.l v_1, dots, v_n chevron.r$, we abbreviate $(u_1 eqq v_1) and dots and (u_n eqq v_n)$ with $bold(u) = bold(v)$.
 - $Gamma$ is used to refer to the "current" proof state in rule premises.
 - $Gamma, s eqq t$ is an abbreviation for $Gamma union {s eqq t}$.
 - If applying a rule $R$ does not change $Gamma$, then $R$ _is not applicable_ to $Gamma$, that is, $Gamma$ is _irreducible_ w.r.t. $R$.
@@ -1124,14 +1124,14 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
   // Otherwise, it is an _infeasible solution_.
 ]
 
-- Is $bold(x) = angle.l 0, 0 angle.r$ a feasible solution? #NO
-- Is $bold(x) = angle.l -2, 1 angle.r$ a feasible solution? #YES
+- Is $bold(x) = chevron.l 0, 0 chevron.r$ a feasible solution? #NO
+- Is $bold(x) = chevron.l -2, 1 chevron.r$ a feasible solution? #YES
 
 #definition[
   For a given assignment $bold(x)$, the value $bold(c)^T bold(x)$ is the _objective value_, or _cost_, of $bold(x)$.
 ]
 
-- What is the objective value of $bold(x) = angle.l -2, 1 angle.r$? // 4
+- What is the objective value of $bold(x) = chevron.l -2, 1 chevron.r$? // 4
 
 #definition[
   An _optimal solution_ is a feasible solution with a _maximal_ objective value among all feasible solutions.

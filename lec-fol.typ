@@ -51,7 +51,7 @@
 #let ma = $op("ma")$
 #let sp = $op("sp")$
 
-#let term(x) = $angle.l #x angle.r$
+#let term(x) = $chevron.l #x chevron.r$
 
 = Introduction to FOL
 
@@ -156,7 +156,7 @@ First-order language is specified by its _parameters_.
 
 #definition[Signature][
   A _vocabulary_ (also known as _signature_) of a language is a collection of symbols used to construct sentences in that language.
-  A signature $Sigma = angle.l cal(V), cal(F), cal(R) angle.r$ consists of:
+  A signature $Sigma = chevron.l cal(V), cal(F), cal(R) chevron.r$ consists of:
   - A set of _variables_ $cal(V)$, e.g., $x$, $y$, $z$, $dots$
   - A set of _function symbols_ $cal(F)$, e.g., $S$, $plus$, $times$, $dots$
   - A set of _relation symbols_ $cal(R)$, e.g., $eq$, $lt$, $in$, $dots$
@@ -207,7 +207,7 @@ $
 #definition[Model][
   A _possible world_ (also known as _model_, or _structure_, or _interpretation_) is a mathematical object that gives meaning to the symbols of a language.
 
-  A _first-order model_ $cal(M) = angle.l cal(U), nu, cal(I) angle.r$ for $Sigma = angle.l cal(V), cal(F), cal(R) angle.r$ consists of:
+  A _first-order model_ $cal(M) = chevron.l cal(U), nu, cal(I) chevron.r$ for $Sigma = chevron.l cal(V), cal(F), cal(R) chevron.r$ consists of:
   - A _domain_ $cal(U)$ is a non-empty set of objects (_universe of disclosure_).
   - A _variable valuation_ $nu : cal(V) to cal(U)$ assigning to each variable $x in cal(V)$ an element of $cal(U)$.
   - An _interpretation_ function $cal(I)$ for the function and relation symbols in $Sigma$.
@@ -216,7 +216,7 @@ $
 ]
 
 #definition[
-  The _term valuation_ induced by a model $cal(M) = angle.l cal(U), nu, cal(I) angle.r$ is defined as follows:
+  The _term valuation_ induced by a model $cal(M) = chevron.l cal(U), nu, cal(I) chevron.r$ is defined as follows:
   - $nu(t) = nu(x)$ if $t$ is a variable $x$.
   - $nu(t) = (cal(I)(f))(nu(t_1), dots, nu(t_n))$ if $t$ is a term $f(t_1, dots, t_n)$.
 ]
@@ -227,7 +227,7 @@ $
   - $cal(M) models.not bot$.
   - $cal(M) models not phi$ iff $cal(M) models.not phi$.
   - $cal(M) models (alpha and beta)$ iff $cal(M) models alpha$ and $cal(M) models beta$. Similar for $or$, $imply$, and $iff$.
-  - $cal(M) models exists x. thin phi$ iff $cal(M') models phi$ for some $cal(M') = angle.l cal(U), cal(I), nu' angle.r$ with $nu'(y) = nu(y)$ for all $y neq x$.
+  - $cal(M) models exists x. thin phi$ iff $cal(M') models phi$ for some $cal(M') = chevron.l cal(U), cal(I), nu' chevron.r$ with $nu'(y) = nu(y)$ for all $y neq x$.
   - $cal(M) models forall x. thin phi$ iff $cal(M') models phi$ for all $cal(M')$ which differ from $cal(M)$ at most in the valuation of $x$.
 ]
 
@@ -241,28 +241,28 @@ The _syntax_ of a logic consists of _symbols_ and _rules_ for combining them.
 The _symbols_ of a first-order language include:
 + Logical symbols: $($, $)$, $not$, $and$, $or$, $imply$, $iff$, $forall$, $exists$
 + Infinite set of variables: $x$, $y$, $z$, $dots$
-+ Signature $Sigma = angle.l Sigma^S, Sigma^F angle.r$, where:
++ Signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$, where:
   - $Sigma^S$ is a set of _sorts_ (also called _types_), e.g. $BoolSort$, $"Int"$, $"Real"$, $SetSort$.
   - $Sigma^F$ is a set of _function symbols_, e.g. $=$, $+$, $<$, $dots$
 
 == Signatures
 
 #definition[
-  Signature $Sigma = angle.l Sigma^S, Sigma^F angle.r$ consists of:
+  Signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ consists of:
   - $Sigma^S$ is a set of _sorts_ #strike[(also called _types_)], e.g. $BoolSort$, $IntSort$, $RealSort$, $SetSort$
   - $Sigma^F$ is a set of _function symbols_, e.g. $=$, $+$, $<$
 ]
 
 #definition[
-  Each _function symbol_ $f in Sigma^F$ is associated with an _arity_ $n$ (number of arguments) and a _rank_, $(n+1)$-tuple of sorts: $rank(f) = angle.l sigma_1, sigma_2, dots, sigma_(n+1) angle.r$.
+  Each _function symbol_ $f in Sigma^F$ is associated with an _arity_ $n$ (number of arguments) and a _rank_, $(n+1)$-tuple of sorts: $rank(f) = chevron.l sigma_1, sigma_2, dots, sigma_(n+1) chevron.r$.
   Intuitively, $f$ denotes a function that takes $n$ values of sorts $sigma_1, dots, sigma_n$ and returns an output of sort $sigma_(n+1)$.
-  - Functions of arity 0 are called _constants_, which are said to have sort $sigma$ if $rank(f) = angle.l sigma angle.r$.
+  - Functions of arity 0 are called _constants_, which are said to have sort $sigma$ if $rank(f) = chevron.l sigma chevron.r$.
   - Functions that _return_ sort $BoolSort$ are called _predicates_.
 ]
 
-For every signature $Sigma = angle.l Sigma^S, Sigma^F angle.r$, we assume that:
+For every signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$, we assume that:
 - $Sigma^S$ includes a distinguished sort $BoolSort$.
-- $Sigma^F$ contains distinguished constants $top$ and $bot$ of sort $BoolSort$, and distinguished predicate symbol $eqq$ with #box[$rank(eqq) = angle.l sigma, sigma, BoolSort angle.r$] for every sort $sigma in Sigma^S$.
+- $Sigma^F$ contains distinguished constants $top$ and $bot$ of sort $BoolSort$, and distinguished predicate symbol $eqq$ with #box[$rank(eqq) = chevron.l sigma, sigma, BoolSort chevron.r$] for every sort $sigma in Sigma^S$.
 
 == Equality
 
@@ -273,40 +273,40 @@ TODO: axioms of equality
 
 == First-Order Languages
 
-A first-order language is defined w.r.t. a signature $Sigma = angle.l Sigma^S, Sigma^F angle.r$.
+A first-order language is defined w.r.t. a signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$.
 
 #columns(2)[
   *Number Theory*:
   - $Sigma^S = {NatSort} union {BoolSort}$
   - $Sigma^F = {0, S, <, +, times} union {top, bot, eqq_BoolSort, eqq_NatSort}$
-    - $rank(0) = angle.l NatSort angle.r$
-    - $rank(S) = angle.l NatSort, NatSort angle.r$
-    - $rank(<) = angle.l NatSort, NatSort, BoolSort angle.r$
-    - $rank(+) = rank(times) = angle.l NatSort, NatSort, NatSort angle.r$
+    - $rank(0) = chevron.l NatSort chevron.r$
+    - $rank(S) = chevron.l NatSort, NatSort chevron.r$
+    - $rank(<) = chevron.l NatSort, NatSort, BoolSort chevron.r$
+    - $rank(+) = rank(times) = chevron.l NatSort, NatSort, NatSort chevron.r$
 
   *Set Theory*:
   - $Sigma^S = {SetSort} union {BoolSort}$
   - $Sigma^F = {emptyset, in, union, inter} union {top, bot, eqq_BoolSort, eqq_SetSort}$
-    - $rank(emptyset) = angle.l SetSort angle.r$
-    - $rank(in) = angle.l SetSort, SetSort, BoolSort angle.r$
-    - $rank(union) = rank(inter) = angle.l SetSort, SetSort, SetSort angle.r$
+    - $rank(emptyset) = chevron.l SetSort chevron.r$
+    - $rank(in) = chevron.l SetSort, SetSort, BoolSort chevron.r$
+    - $rank(union) = rank(inter) = chevron.l SetSort, SetSort, SetSort chevron.r$
 
   #colbreak()
 
   *Propositional Logic*:
   - $Sigma^S = {BoolSort}$
   - $Sigma^F = {not, and, or, dots, p_1, p_2, dots} union {top, bot, eqq_BoolSort}$
-    - $rank(p_i) = angle.l BoolSort angle.r$
-    - $rank(not) = angle.l BoolSort, BoolSort angle.r$
-    - $rank(and) = rank(or) = angle.l BoolSort, BoolSort, BoolSort angle.r$
+    - $rank(p_i) = chevron.l BoolSort chevron.r$
+    - $rank(not) = chevron.l BoolSort, BoolSort chevron.r$
+    - $rank(and) = rank(or) = chevron.l BoolSort, BoolSort, BoolSort chevron.r$
 
   *Arrays Theory*:
-  - $Sigma^S = {ArraySort_(angle.l XSort,YSort angle.r)} union {BoolSort}$
+  - $Sigma^S = {ArraySort_(chevron.l XSort,YSort chevron.r)} union {BoolSort}$
     - $XSort$ is a sort of _indices_.
     - $YSort$ is a sort of _values_.
   - $Sigma^F = {"read", "write"} union {top, bot, eqq_BoolSort, eqq_ArraySort}$
-    - $rank("read") = angle.l ArraySort_(angle.l XSort,YSort angle.r), XSort, YSort angle.r$
-    - $rank("write") = angle.l ArraySort_(angle.l XSort,YSort angle.r), XSort, YSort, ArraySort_(angle.l XSort,YSort angle.r) angle.r$
+    - $rank("read") = chevron.l ArraySort_(chevron.l XSort,YSort chevron.r), XSort, YSort chevron.r$
+    - $rank("write") = chevron.l ArraySort_(chevron.l XSort,YSort chevron.r), XSort, YSort, ArraySort_(chevron.l XSort,YSort chevron.r) chevron.r$
 ]
 
 == Expressions
@@ -403,7 +403,7 @@ _Examples_:
           label: smallcaps[Const],
           $Gamma entails c : sigma$,
           $c in Sigma^F$,
-          $rank(c) = angle.l sigma angle.r$,
+          $rank(c) = chevron.l sigma chevron.r$,
         ),
       ),
     )
@@ -412,7 +412,7 @@ _Examples_:
         label: smallcaps[Fun],
         $Gamma entails sexp(f, t_1, dots.c, t_n) : sigma$,
         $f in Sigma^F$,
-        $rank(f) = angle.l sigma_1, dots, sigma_n, sigma angle.r$,
+        $rank(f) = chevron.l sigma_1, dots, sigma_n, sigma chevron.r$,
         $Gamma entails t_1 : sigma_1$,
         $dots.c$,
         $Gamma entails t_n : sigma_n$,
@@ -429,10 +429,10 @@ _Examples_:
 == Examples of Well-sorted Terms
 
 Let $Sigma^S = {NatSort} union {BoolSort}$ and $Sigma^F = {0, S, <, +, times, eqq_NatSort} union {top, bot, eqq_BoolSort}$.
-- $rank(0) = angle.l NatSort angle.r$
-- $rank(S) = angle.l NatSort, NatSort angle.r$
-- $rank(<) = rank(eqq_NatSort) = angle.l NatSort, NatSort, BoolSort angle.r$
-- $rank(+) = rank(times) = angle.l NatSort, NatSort, NatSort angle.r$
+- $rank(0) = chevron.l NatSort chevron.r$
+- $rank(S) = chevron.l NatSort, NatSort chevron.r$
+- $rank(<) = rank(eqq_NatSort) = chevron.l NatSort, NatSort, BoolSort chevron.r$
+- $rank(+) = rank(times) = chevron.l NatSort, NatSort, NatSort chevron.r$
 
 Are these well-formed terms also well-sorted in the context $Gamma = {x_1 : BoolSort, x_2 : NatSort, x_3 : NatSort}$?
 + $sexp(+, 0, x_2)$ #YES
@@ -578,7 +578,7 @@ A variable $x$ may occur _free_ or _bound_ in a $Sigma$-formula.
 
 == FOL Semantics
 
-*Recall:* The _syntax_ of a first-order language is defined w.r.t. a signature $Sigma = angle.l Sigma^S, Sigma^F angle.r$, where:
+*Recall:* The _syntax_ of a first-order language is defined w.r.t. a signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$, where:
 - $Sigma^S$ is a set of _sorts_.
 - $Sigma^F$ is a set of _function symbols_.
 
@@ -595,7 +595,7 @@ Let $alpha$ be a $Sigma$-formula and let $Gamma$ be a sort context that includes
 
 The truth of $alpha$ is determined by _interpretations_ $cal(I)$ of $Sigma$ and $Gamma$ consisting of:
 - An interpretation $sigma^cal(I)$ of each $sigma in Sigma^S$, as a non-empty set, the _domain_ of $sigma$.
-- An interpretation $f^cal(I)$ of each $f in Sigma^F$ of rank $angle.l sigma_1, dots, sigma_n, sigma_(n+1) angle.r$, as an $n$-ary total function from~#box[$sigma_1^cal(I) times dots.c times sigma_n^cal(I)$] to $sigma_(n+1)^cal(I)$.
+- An interpretation $f^cal(I)$ of each $f in Sigma^F$ of rank $chevron.l sigma_1, dots, sigma_n, sigma_(n+1) chevron.r$, as an $n$-ary total function from~#box[$sigma_1^cal(I) times dots.c times sigma_n^cal(I)$] to $sigma_(n+1)^cal(I)$.
 - An interpretation $x^cal(I)$ of each $x : sigma in Gamma$, as an element of $sigma^cal(I)$.
 
 #note[
@@ -606,9 +606,9 @@ The truth of $alpha$ is determined by _interpretations_ $cal(I)$ of $Sigma$ and 
 
 == Semantics: Example
 
-Consider a signature $Sigma = angle.l Sigma^S, Sigma^F angle.r$ for a fragment of a set theory with non-set elements (ur-elements):
+Consider a signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ for a fragment of a set theory with non-set elements (ur-elements):
 - $Sigma^S = {ElemSort, SetSort}$,
-- $Sigma^F = {emptyset, epsilon}$ with $rank(emptyset) = angle.l SetSort angle.r$, $rank(epsilon) = angle.l ElemSort, SetSort, BoolSort angle.r$,
+- $Sigma^F = {emptyset, epsilon}$ with $rank(emptyset) = chevron.l SetSort chevron.r$, $rank(epsilon) = chevron.l ElemSort, SetSort, BoolSort chevron.r$,
 - $Gamma = {e_i : ElemSort | i gt.eq 0} union {s_i : SetSort | i gt.eq 0}$
 
 #grid(
@@ -652,7 +652,7 @@ $
 $
 
 #example[
-  Let $Sigma^S = {PersonSort}$, $Sigma^F = {pa, ma, sp}$, $Gamma = {x:PersonSort, y:PersonSort}$, #box[$rank(pa) = rank(ma) = angle.l PersonSort, PersonSort angle.r$], $rank(sp) = angle.l PersonSort, PersonSort, BoolSort angle.r$.
+  Let $Sigma^S = {PersonSort}$, $Sigma^F = {pa, ma, sp}$, $Gamma = {x:PersonSort, y:PersonSort}$, #box[$rank(pa) = rank(ma) = chevron.l PersonSort, PersonSort chevron.r$], $rank(sp) = chevron.l PersonSort, PersonSort, BoolSort chevron.r$.
 
   Let $cal(I)$ be an interpretation of $Sigma$ and $Gamma$ such that:
   - $ma^cal(I) = {"Jim" maps "Jill", "Joe" maps "Jen", dots}$
@@ -700,7 +700,7 @@ A $Sigma$-formula $alpha$ is _valid_, denoted $models alpha$, if $emptyset model
 #pagebreak()
 
 #example[
-  Let $Sigma^S = {ASort}$, $Sigma^F = {p, q}$, $rank(p) = angle.l ASort, BoolSort angle.r$, $rank(q) = angle.l ASort, ASort, BoolSort angle.r$, and all variables have sort $ASort$.
+  Let $Sigma^S = {ASort}$, $Sigma^F = {p, q}$, $rank(p) = chevron.l ASort, BoolSort chevron.r$, $rank(q) = chevron.l ASort, ASort, BoolSort chevron.r$, and all variables have sort $ASort$.
   Do the following entailments hold?
   + $forall x. thin p(x) models p(y)$ #YES
   + $p(x) models forall x. thin p(x)$ #NO
@@ -714,7 +714,7 @@ A $Sigma$-formula $alpha$ is _valid_, denoted $models alpha$, if $emptyset model
 
 Let $alpha$ be a $Sigma$-formula and let $Gamma$ be a sort context that includes all free variables of $alpha$.
 
-Consider the signature where $Sigma^S = {sigma}$, $Sigma^F = {Q, eqq_sigma}$, $Gamma = {x:sigma, y:sigma}$, $rank(Q) = angle.l sigma, sigma, BoolSort angle.r$.
+Consider the signature where $Sigma^S = {sigma}$, $Sigma^F = {Q, eqq_sigma}$, $Gamma = {x:sigma, y:sigma}$, $rank(Q) = chevron.l sigma, sigma, BoolSort chevron.r$.
 
 For each of the following $Sigma$-formulas, describe an interpretation that satisfies it.
 + $forall x:sigma. thin forall y:sigma. thin x eqq y$
@@ -995,7 +995,7 @@ Intuitevely, terms are expressions that evaluate to values.
   The $Sigma$-terms over $X$, or simply _terms_, are defined inductively:
   - Each variable $x$ in $X$ is a term of sort $sigma$.
   - If $c in Sigma^F$ is a constant symbol of sort $sigma$, then $c$ is a term of sort $sigma$.
-  - If $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $f$ is a function symbol with $rank(f) = angle.l sigma_1, dots, sigma_n, sigma angle.r$, then $sexp(f, t_1, dots.c, t_n)$ is a term of sort $sigma$.
+  - If $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $f$ is a function symbol with $rank(f) = chevron.l sigma_1, dots, sigma_n, sigma chevron.r$, then $sexp(f, t_1, dots.c, t_n)$ is a term of sort $sigma$.
   - _(Nothing else is a term.)_
 ]
 
@@ -1005,7 +1005,7 @@ Based on terms, we can build _atoms_.
 Intuitevely, atoms are expressions that evaluate Boolean values.
 
 #definition[Atoms][
-  The $Sigma$-atoms over $X$, or simply _atoms_, are terms of the form $sexp(p, t_1, dots.c, t_n)$, where $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $p$ is a predicate with $rank(p) = angle.l sigma_1, dots, sigma_n, BoolSort angle.r$.
+  The $Sigma$-atoms over $X$, or simply _atoms_, are terms of the form $sexp(p, t_1, dots.c, t_n)$, where $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $p$ is a predicate with $rank(p) = chevron.l sigma_1, dots, sigma_n, BoolSort chevron.r$.
 ]
 
 In addition to sorted $Sigma$-variables $X$, also consider _propositional variables_ $cal(B)$.
@@ -1022,7 +1022,7 @@ In addition to sorted $Sigma$-variables $X$, also consider _propositional variab
 
 #definition[Vocabulary][
   A _vocabulary_ (also known as _signature_) of a language is a collection of symbols used to construct sentences in that language.
-  A vocabulary $cal(V) = angle.l cal(C), cal(F), cal(P) angle.r$ consists of:
+  A vocabulary $cal(V) = chevron.l cal(C), cal(F), cal(P) chevron.r$ consists of:
   - A set of _constant symbols_ $cal(C)$, e.g., $0$, $bot$, $emptyset$, $dots$
   - A set of _function symbols_ $cal(F)$, e.g., $S$, $plus$, $times$, $dots$
   - A set of _predicate symbols_ $cal(P)$, e.g., $eq$, $lt$, $in$, $dots$
@@ -1086,7 +1086,7 @@ First basic computational problem in predicate logic is _Model Checking_.
 #definition[
   Model checking problem for first-order logic is the problem of determining whether a given first-order formula $phi$ is satisfied by a given structure $cal(M)$, formally, $cal(M) models phi$.
 
-  $ "MCFO" = { angle.l cal(M), phi angle.r | cal(M) models phi } $
+  $ "MCFO" = { chevron.l cal(M), phi chevron.r | cal(M) models phi } $
 ]
 
 #note[

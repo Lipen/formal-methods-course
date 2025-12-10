@@ -16,7 +16,8 @@
 #import curryst: rule, prooftree
 
 // semantical evaluation
-#let Eval(x) = $bracket.l.double #x bracket.r.double_nu$
+#let EvalWith(phi, inter) = $bracket.stroked.l phi bracket.stroked.r_(inter)$
+#let Eval(phi) = EvalWith(phi, $nu$)
 
 // smash
 #let smash(it) = box(width: 0pt, align(center, box(width: float.inf * 1pt, it)))

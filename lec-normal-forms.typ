@@ -48,9 +48,9 @@ Every propositional formula can be converted to an _equivalent_ formula in any o
 
 *Grammar* for NNF formulas:
 $
-  angle.l "Atom" angle.r &::= top | bot | angle.l "Variable" angle.r \
-  angle.l "Literal" angle.r &::= angle.l "Atom" angle.r | not angle.l "Atom" angle.r \
-  angle.l "Formula" angle.r &::= angle.l "Literal" angle.r | angle.l "Formula" angle.r and angle.l "Formula" angle.r | angle.l "Formula" angle.r or angle.l "Formula" angle.r \
+  chevron.l "Atom" chevron.r &::= top | bot | chevron.l "Variable" chevron.r \
+  chevron.l "Literal" chevron.r &::= chevron.l "Atom" chevron.r | not chevron.l "Atom" chevron.r \
+  chevron.l "Formula" chevron.r &::= chevron.l "Literal" chevron.r | chevron.l "Formula" chevron.r and chevron.l "Formula" chevron.r | chevron.l "Formula" chevron.r or chevron.l "Formula" chevron.r \
 $
 
 == Literals
@@ -128,10 +128,10 @@ The NNF of formulas containing $iff$ can grow _exponentially_ in size.
 
 *Grammar* for DNF formulas:
 $
-  angle.l "Atom" angle.r &::= top | bot | angle.l "Variable" angle.r \
-  angle.l "Literal" angle.r &::= angle.l "Atom" angle.r | not angle.l "Atom" angle.r \
-  angle.l "Cube" angle.r &::= angle.l "Literal" angle.r | angle.l "Literal" angle.r and angle.l "Cube" angle.r \
-  angle.l "Formula" angle.r &::= angle.l "Cube" angle.r | angle.l "Cube" angle.r or angle.l "Formula" angle.r \
+  chevron.l "Atom" chevron.r &::= top | bot | chevron.l "Variable" chevron.r \
+  chevron.l "Literal" chevron.r &::= chevron.l "Atom" chevron.r | not chevron.l "Atom" chevron.r \
+  chevron.l "Cube" chevron.r &::= chevron.l "Literal" chevron.r | chevron.l "Literal" chevron.r and chevron.l "Cube" chevron.r \
+  chevron.l "Formula" chevron.r &::= chevron.l "Cube" chevron.r | chevron.l "Cube" chevron.r or chevron.l "Formula" chevron.r \
 $
 
 == Cubes and Clauses
