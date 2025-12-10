@@ -46,9 +46,8 @@
   show: template.with(dark: dark)
 
   // Setup
-  if title != none {
-    set document(title: title, author: authors)
-  }
+  set document(author: authors)
+  set document(title: title) if title != none
   set page(
     width: width,
     height: height,
