@@ -45,8 +45,8 @@ jobs:
       - run: typst compile --font-path ~/.fontist/fonts lec-smt.typ
       - run: typst compile --font-path ~/.fontist/fonts lec-dafny.typ
 
-      - name: List all PDFs
-        run: ls -lh **/*.pdf
+      - name: List PDFs
+        run: ls -lh *.pdf
 
       - name: Upload PDFs as artifact
         uses: actions/upload-artifact@v4
