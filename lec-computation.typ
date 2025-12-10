@@ -179,7 +179,7 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
     edge(<tm>, <reject>, "-|>"),
 
     render: (grid, nodes, edges, options) => {
-      // cetz is also exported as fletcher.cetz
+      import fletcher: cetz
       cetz.canvas({
         // this is the default code to render the diagram
         fletcher.draw-diagram(grid, nodes, edges, debug: options.debug)
