@@ -1,17 +1,28 @@
 default:
     @just --list
 
-all: \
-    (compile "syllabus.typ") \
-    (compile "lec-prop-logic.typ") \
-    (compile "lec-normal-forms.typ") \
-    (compile "lec-sat.typ") \
-    (compile "lec-dpll.typ") \
-    (compile "lec-computation.typ") \
-    (compile "lec-fol.typ") \
-    (compile "lec-smt.typ") \
-    (compile "lec-alloy.typ") \
-    (compile "lec-dafny.typ")
+files := """
+    syllabus.typ
+    lec-prop-logic.typ
+    lec-normal-forms.typ
+    lec-sat.typ
+    lec-dpll.typ
+    lec-computation.typ
+    lec-fol.typ
+    lec-smt.typ
+    lec-dafny.typ
+"""
+
+all:
+    #!/usr/bin/env sh
+    set -e
+    for file in {{replace(files, "\n", ' ')}}; do
+        if [ -f $file ]; then
+            just compile $file
+        else
+            echo "File '$file' does not exist!"
+        fi
+    done
 
 compile target:
     typst compile {{target}}
