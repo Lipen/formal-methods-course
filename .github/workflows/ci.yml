@@ -23,6 +23,7 @@ jobs:
       - uses: fontist/setup-fontist@v2
         with:
           fontist-version: "^1.21"
+          cache-dependency-path: manifest.yml
       - run: fontist manifest-install manifest.yml
 
       - name: Setup Typst
