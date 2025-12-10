@@ -20,12 +20,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: fontist/setup-fontist@v2
+      - run: fontist manifest-install manifest.yml
+
       - name: Setup Typst
         uses: typst-community/setup-typst@v4
         with:
+          typst-version: ^0.14
           cache-dependency-path: requirements.typ
 
+      - run: rm -f typst/requirements.pdf
       - run: typst --version
+      - run: typst fonts --font-path ~/.fontist/fonts
+
       - run: typst compile syllabus.typ
       - run: typst compile lec-prop-logic.typ
       - run: typst compile lec-normal-forms.typ
@@ -36,19 +43,14 @@ jobs:
       - run: typst compile lec-smt.typ
       - run: typst compile lec-dafny.typ
 
+      - name: List all PDFs
+        run: ls -lh **/*.pdf
+
       - name: Upload PDFs as artifact
         uses: actions/upload-artifact@v4
         with:
           name: PDF
           path: "*.pdf"
-
-      - name: Upload PDFs as release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: current
-          name: Latest PDFs
-          body: Current state of PDFs
-          files: "*.pdf"
 
       - name: Prepare files for gh-pages
         run: |
@@ -60,3 +62,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
+          force_orphan: true
