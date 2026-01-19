@@ -1,0 +1,161 @@
+%YAML 1.2
+---
+name: SMTLIB
+file_extensions: [smt2]
+scope: source.smtlib2
+
+variables:
+  ident:       '[^\(\)\s]+'
+  hexadecimal: '#x[\dA-Fa-f]+'
+  binary:      '#b[01]+'
+
+contexts:
+  main:
+    - include: comments
+    - match: \b(?:assert|echo|eval|push|pop|reset|reset-assertions|exit|check-sat|check-sat-assuming|get-(?:model|assertions|assignment|info|option|proof|unsat-assumptions|unsat-core|value)|set-(?:info|logic|option))\b
+      scope: keyword.control.smtlib2
+    - match: '"'
+      push: string
+    - match: \(\s*(>=|<=|=>|\+|-|\*|=|>|<)
+      captures:
+        1: keyword.operator.smtlib2
+    - match: \(\s*(or|and|not)\b
+      captures:
+        1: variable.function.builtin.smtlib2
+    - match: \b(forall|exists)\b
+      scope: variable.function.smtlib2
+      push: arglist
+    - match: '(\b\d+|{{hexadecimal}}|{{binary}})\b'
+      scope: constant.numeric.smtlib2
+    - match: \b(declare-const)\s+({{ident}})
+      captures:
+        1: keyword.control.smtlib2
+        2: entity.name.function
+      push: sort
+    - match: \b(declare-sort)\s+({{ident}})
+      captures:
+        1: keyword.control.smtlib2
+        2: entity.name.sort
+    - match: \b(define-sort)\s+({{ident}})
+      captures:
+        1: keyword.control.smtlib2
+        2: entity.name.sort
+      push: [sort, paramlist]
+    - match: \b(declare-datatypes?)\b
+      captures:
+        1: keyword.control.smtlib2
+    - match: \b(declare-fun)\s+({{ident}})
+      captures:
+        1: keyword.control.smtlib2
+        2: entity.name.function
+      push: [sort, sortlist]
+    - match: \b(define-fun)\s+({{ident}})
+      captures:
+        1: keyword.control.smtlib2
+        2: entity.name.function
+      push: [sort, arglist]
+
+  comments:
+    - match: ;.*$
+      scope: comment.smtlib2
+
+  # While there is a single regex that can match a whole SMT-LIB string at
+  # once, Sublime will never never match a regex across lines.  To support
+  # multi-line strings, we need an extra scope.
+  string:
+    - meta_scope: string.quoted.double.smtlib2
+    - match: '""' # escaped quote---stay in this scope
+    - match: '"'
+      pop: true
+
+  endparen:
+    - include: comments
+    - match: \)
+      pop: true
+    - match: \S+
+      scope: invalid.smtlib2
+
+  param:
+    - include: comments
+    - match: '{{ident}}'
+      scope: variable.parameter.smtlib2
+      pop: true
+    - match: \S+
+      scope: invalid.smtlib2
+
+  paramlist:
+    - include: comments
+    - match: \(
+      set: paramlist_inner
+    - match: \S+
+      scope: invalid.smtlib2
+
+  paramlist_inner:
+    - include: comments
+    - match: '{{ident}}'
+      scope: variable.parameter.smtlib2
+    - match: \)
+      pop: true
+    - match: \S+
+      scope: invalid.smtlib2
+
+  # '(' ( '(' id sort ')' )* ')'
+  arglist:
+    - include: comments
+    - match: \(
+      set: arglist_inner
+    - match: \S+
+      scope: invalid.smtlib2
+
+  # ( '(' id sort ')' )* ')'
+  arglist_inner:
+    - include: comments
+    - meta_scope: debug.arglist_inner.smtlib2
+    - match: \(
+      push: [endparen, sort, param]
+    - match: \)
+      pop: true
+    - match: \S+
+      scope: invalid.smtlib2
+
+  sort:
+    - include: comments
+    - meta_scope: debug.sort.smtlib2
+    - match: \b(Int|Bool|Real)\b
+      scope: storage.type.smtlib2
+      pop: true
+    - match: '{{ident}}'
+      pop: true
+    - match: \(\s*(Array)
+      captures:
+        1: storage.type.smtlib2
+      set: [endparen, sort, sort]
+    - match: \(
+      set: sortlist_inner
+    - match: \S+
+      scope: invalid.smtlib2
+
+  # '(' sort* ')'
+  sortlist:
+    - include: comments
+    - meta_scope: debug.sortlist.smtlib2
+    - match: \(
+      set: sortlist_inner
+    - match: \S+
+      scope: invalid.smtlib2
+
+  # sort* ')'
+  sortlist_inner:
+    - include: comments
+    - meta_scope: debug.sortlist_inner.smtlib2
+    - match: \b(Int|Bool|Real)\b
+      scope: storage.type.smtlib2
+    - match: '{{ident}}'
+    - match: \(\s*(Array)
+      captures:
+        1: storage.type.smtlib2
+      push: [endparen, sort, sort]
+    - match: \)
+      pop: true
+    - match: \S+
+      scope: invalid.smtlib2
