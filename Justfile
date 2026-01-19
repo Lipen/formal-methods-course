@@ -1,6 +1,11 @@
-default:
-    @just --list
+root := justfile_directory()
+export TYPST_ROOT := root
 
+[private]
+default:
+    @just --list --unsorted
+
+# All Typst files to compile
 files := """
     syllabus.typ
     lec-prop-logic.typ
@@ -13,6 +18,11 @@ files := """
     lec-dafny.typ
 """
 
+# Compile a single file
+compile target:
+    typst compile {{target}}
+
+# Compile all files
 all:
     #!/usr/bin/env sh
     set -e
@@ -24,8 +34,6 @@ all:
         fi
     done
 
-compile target:
-    typst compile {{target}}
-
+# Compile all files _in parallel_
 parallel:
     parallel -k -- just compile {} ::: {{replace(files, "\n", ' ')}}
