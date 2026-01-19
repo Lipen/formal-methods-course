@@ -25,6 +25,7 @@ jobs:
           fontist-version: "^1.21"
           cache-dependency-path: manifest.yml
       - run: fontist manifest-install manifest.yml
+      - run: echo "TYPST_FONT_PATHS=$HOME/.fontist/fonts" >> $GITHUB_ENV
 
       - name: Setup Typst
         uses: typst-community/setup-typst@v4
@@ -34,17 +35,17 @@ jobs:
 
       - run: rm -f typst/requirements.pdf
       - run: typst --version
-      - run: typst fonts --font-path ~/.fontist/fonts
+      - run: typst fonts
 
-      - run: typst compile --font-path ~/.fontist/fonts syllabus.typ
-      - run: typst compile --font-path ~/.fontist/fonts lec-prop-logic.typ
-      - run: typst compile --font-path ~/.fontist/fonts lec-normal-forms.typ
-      - run: typst compile --font-path ~/.fontist/fonts lec-sat.typ
-      - run: typst compile --font-path ~/.fontist/fonts lec-dpll.typ
-      - run: typst compile --font-path ~/.fontist/fonts lec-computation.typ
-      - run: typst compile --font-path ~/.fontist/fonts lec-fol.typ
-      - run: typst compile --font-path ~/.fontist/fonts lec-smt.typ
-      - run: typst compile --font-path ~/.fontist/fonts lec-dafny.typ
+      - run: typst compile syllabus.typ
+      - run: typst compile lec-prop-logic.typ
+      - run: typst compile lec-normal-forms.typ
+      - run: typst compile lec-sat.typ
+      - run: typst compile lec-dpll.typ
+      - run: typst compile lec-computation.typ
+      - run: typst compile lec-fol.typ
+      - run: typst compile lec-smt.typ
+      - run: typst compile lec-dafny.typ
 
       - name: List PDFs
         run: ls -lh *.pdf
