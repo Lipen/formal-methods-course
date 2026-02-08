@@ -58,7 +58,7 @@
       let heading = headings.rev().find(x => x.location().page() <= page)
       if heading != none {
         set align(bottom)
-        set text(1.4em, weight: "bold", fill: title-color)
+        set text(1.4em, weight: "bold", fill: title-color, font: "Libertinus Sans")
         let body = {
           heading.body
           if not heading.location().page() == page {
@@ -94,7 +94,7 @@
       inset: 1em,
       align: (right, left),
       fill: (title-color, none),
-      [#block(height: 100%)], [#text(size: 1.2em, weight: "bold", fill: title-color)[#x]],
+      [#block(height: 100%)], [#text(size: 1.2em, weight: "bold", fill: title-color, font: "Libertinus Sans")[#x]],
     )
   }
   show heading.where(level: 2): pagebreak(weak: true)
@@ -132,7 +132,7 @@
       authors = (authors,)
     }
     title-slide[
-      #text(2em, weight: "bold", fill: title-color, title)
+      #text(2em, weight: "bold", fill: title-color, font: "Libertinus Sans", title)
       #v(1.4em, weak: true)
       #if subtitle != none {
         text(1.1em, weight: "bold", subtitle)
