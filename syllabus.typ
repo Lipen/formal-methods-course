@@ -21,21 +21,19 @@
 
 = Annotation
 
-_Ever dreamed of writing perfect, bug-free code?_
-In this course, you'll dive into the depths of formal methods: explore propositional and first-order logic, master SAT and SMT solvers, and discover the fundamentals of verification --- from transition systems and Kripke models to specification and temporal logics (LTL, CTL, ATL).
-We'll examine SAT- and BDD-based verification approaches, look at bounded model checking (BMC) and property-directed reachability (IC3/PDR), and show how to systematically ensure reliability and correctness (safety and liveness properties) in complex systems.
-All theoretical concepts are reinforced through hands-on examples using academic tools such as NuSMV, Alloy/Forge, and Dafny, so you can see exactly how research ideas become practical solutions.
-This course is ideal for anyone seeking to understand the core principles of verification and apply them in real projects, aiming for the highest standards of software quality and reliability.
+In this course, you will master the logical foundations and decision procedures that underpin modern software verification.
+Starting from propositional and first-order logic, we advance through SAT and SMT solving, study the theory of computation to understand the limits of automated reasoning, and culminate in deductive program verification using Hoare logic and Dafny.
+Every theoretical concept is reinforced through hands-on work with industrial-strength tools --- CaDiCaL, Z3, and Dafny --- so you can translate formal guarantees into practice.
 
 = Learning Outcomes
 
 By the end of the semester, students should be able to:
-- Demonstrate fluency in propositional and first-order logic for use in formal specification.
-- Encode verification problems in SAT/SMT formulations and effectively utilize modern solvers (e.g., Cadical, Z3).
-- Model reactive systems using transition systems and Kripke structures, and specify correctness properties in temporal logics (LTL, CTL, ATL).
-- Employ a range of model checking techniques --- including SAT-based, BDD-based, bounded model checking, and IC3/PDR --- to verify safety and liveness properties.
-- Use software tools (NuSMV, Alloy/Forge, Dafny) to perform model checking and automated reasoning on simplified but realistic software systems.
-- Critically assess industrial and academic literature on formal verification, synthesizing insights into a final project or case study presentation.
+- Apply propositional and first-order logic for formal specification: syntax, semantics, normal forms, proof systems.
+- Encode combinatorial and verification problems as SAT instances in CNF and solve them using modern SAT solvers (CaDiCaL).
+- Formulate problems in first-order theories and solve them using SMT solvers (Z3) via the SMT-LIB language.
+- Classify decision problems by decidability and complexity (P, NP, co-NP, PSPACE), and explain why program verification is undecidable in general.
+- Specify and verify programs using Design by Contract, Hoare logic, weakest preconditions, and Dafny.
+- Critically assess industrial and academic applications of formal methods.
 
 = Prerequisites
 
@@ -49,65 +47,68 @@ Experience with software engineering or systems design is helpful but not requir
 
 = Course Format
 
+- 12 weeks, 1 lecture + 1 practice session per week (all groups together).
 - *Lectures*: Present theoretical foundations and methods.
-- *Seminars*: Discuss research papers, advanced topics, and industrial cases.
-- *Assignments*: Reinforce core concepts via problem sets and tool-based labs.
-- *Project*: Undertake a substantial verification or modeling task.
+- *Practices*: Hands-on exercises, tool demos, and problem solving.
+- *Assignments*: Four homework sets reinforcing core concepts via tool-based labs.
 - *Exam*: Assess understanding of theoretical and applied aspects of formal methods.
 
 = Course Structure
 
-== Overview
+== Propositional Logic, Normal Forms, and SAT (Weeks 1--2)
 
-- *Introduction to Formal Methods*: Motivation, applications, and core concepts.
+- PL recap: syntax, semantics, validity, satisfiability, entailment.
+- Normal forms: NNF, CNF, DNF. Tseitin transformation and equisatisfiability.
+- SAT problem. Cook--Levin theorem. SAT encodings. DIMACS format.
+- Algorithms: DPLL, CDCL. Modern SAT solvers.
 
-== Propositional Logic
+== First-Order Logic & Theories (Weeks 3--4)
 
-- *Content:* Syntax, semantics, normal forms (CNF), tautologies, satisfiability.
-- *Applications:* Encoding simple constraints, forming the basis for SAT solving.
-- *In-class/Lab:* Translating small puzzles or system properties into propositional logic.
+- FOL syntax: signatures, terms, formulas, free vs bound variables.
+- FOL semantics: structures, variable assignments, evaluation.
+- First-order theories: T-satisfiability, T-validity. Decidability landscape.
+- Gödel's completeness and incompleteness theorems (stated).
+- Decision problems as languages. Decidable vs recognizable.
 
-== SAT
+== Computation Theory & SMT (Weeks 5--6)
 
-- *Content:* SAT-solving fundamentals, DPLL backtracking, conflict-driven clause learning (CDCL).
-- *Tools and Demos:* MiniSAT, short solver experiments.
-- *Assignments:* Students encode a small problem (e.g., Sudoku or scheduling) and run a solver to find solutions or detect unsatisfiability.
+- Complexity classes: P, NP, co-NP, PSPACE. NP-completeness.
+- Halting problem, Rice's theorem, reductions.
+- Satisfiability Modulo Theories: QF_UF, QF_LIA, QF_LRA, QF_IDL, QF_AX, QF_BV.
+- DPLL(T) architecture. Theory solvers. Nelson--Oppen combination.
+- SMT-LIB v2 language. Z3 solver.
 
-== First-Order Logic
+== Program Verification & Dafny (Weeks 7--10)
 
-- *Content:* Syntax, semantics, quantifiers, free vs. bound variables, theories in FOL.
-- *Deduction in FOL:* Natural deduction, sequent calculus (at a high level).
-- *Relevance:* Understanding how real software specifications require more expressive logic than propositional alone.
+- Program correctness, Design by Contract.
+- Floyd--Hoare logic: Hoare triples, weakest preconditions.
+- Loop invariants and termination.
+- Dafny: `requires`, `ensures`, `invariant`, `decreases`, recursive functions, lemmas, algebraic data types, arrays, sequences, sorting.
 
-== SMT
+== Advanced Topics & Applications (Weeks 11--12)
 
-- *Content:* Extending SAT to Satisfiability Modulo Theories (linear arithmetic, arrays, bitvectors).
-- *Standard Formats:* SMT-LIB language for specifying problems.
-- *Tools and Frameworks:* Z3 usage.
-- *Nelson-Oppen Framework:* Combining theories for more complex verifications.
+- Bounded model checking, verification pipelines (VCGen → SMT).
+- Model checking overview: transition systems, temporal logic.
+- Formal methods in industry: seL4, CompCert, AWS (TLA+), Intel.
+- Student presentations.
 
-== Model Checking
+= Assignments
 
-- *Transition Systems and Kripke Structures:* Modeling program states, transitions, labeling atomic propositions.
-- *Temporal Logics:* Safety, liveness, fairness; LTL, CTL, ATL for specifying system properties.
-- *NuSMV Tutorial:* Creating models, writing properties, interpreting counterexamples.
-- *Alloy / Forge:* Relational modeling, generating instances or counterexamples.
-- *Dafny:* A language+tool that integrates specification, verification, and proof-like checks.
+#[
+  #set align(center)
+  #table(
+    columns: 5,
+    align: (center, left, left, center, center),
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header[*\#*][*Topic*][*Tools*][*Weight*][*Due*],
+    [1], [SAT Encodings], [DIMACS, CaDiCaL], [25%], [Week 3],
+    [2], [SMT Solving], [SMT-LIB, Z3], [25%], [Week 6],
+    [3], [Program Verification], [Dafny], [25%], [Week 10],
+    [4], [Advanced Dafny], [Dafny], [25%], [Week 12],
+  )
+]
 
-== Advanced Model Checking Techniques
-
-- *SAT-based Model Checking:* Bounded model checking (BMC) with unrolling.
-- *BDD-based Model Checking:* Using binary decision diagrams for state-space representation.
-- *k-Induction and Inductive Invariants:* Proving properties beyond a fixed bound.
-- *IC3 / PDR:* Incremental construction of inductive proofs, property-directed reachability.
-- *Comparisons and Trade-Offs:* When each technique excels or struggles.
-
-= Projects and Assignments
-
-Students will complete:
-1. *Lab Exercises:* Applying each method or tool in small-scale examples --- e.g., encoding a puzzle in SAT, verifying a simple concurrency protocol in NuSMV, exploring an Alloy model.
-2. *Major Course Project:* A deeper verification or specification task selected from instructor-provided ideas (e.g., verifying a distributed cache algorithm in NuSMV or Alloy, experimenting with Dafny for array safety proofs).
-3. *Literature Reviews and Presentations:* Groups research an industrial or academic use of formal methods (e.g., hardware verification at Intel, flight software checks at NASA). They present both the methodology and lessons learned.
+Students also prepare a literature review presentation on an industrial or academic application of formal methods.
 
 = Grading and Evaluation
 
@@ -121,33 +122,28 @@ Students will complete:
     edge-corner-radius: 5pt,
     mark-scale: 150%,
 
-    blob((0, 0), [Homework (20%)], shape: rect, tint: green),
+    blob((0, 0), [Homework (40%)], shape: rect, tint: green),
     blob((1, 0), [Review (20%)], shape: rect, tint: green),
-    blob((2, 0), [Project (30%)], shape: rect, tint: green),
-    blob((3, 0), [Exam (20%)], shape: rect, tint: blue),
-    blob((4, 0), [Participation (10%)], shape: rect, tint: purple),
+    blob((2, 0), [Exam (30%)], shape: rect, tint: blue),
+    blob((3, 0), [Participation (10%)], shape: rect, tint: purple),
   )
 ]
 
-== Homework Assignments (20%)
+== Homework Assignments (40%)
 
-Assignments focusing on each logic or tool introduced.
+Four assignments covering SAT encodings, SMT solving, and program verification with Dafny.
 
 == Literature Review & Presentation (20%)
 
-Students analyze a real case study, synthesizing insights from papers or technical reports.
+Students analyze a real case study of formal methods in industry or research.
 
-== Term Project (30%)
+== Final Exam (30%)
 
-A substantial modeling/verification effort that integrates multiple techniques from the course. Includes a written report and final presentation.
-
-== Final Exam (20%)
-
-Tests both theoretical understanding (logic, model checking principles) and tool-based reasoning (e.g., how to encode properties in NuSMV).
+Tests theoretical understanding (logic, complexity, Hoare logic) and tool-based reasoning (SAT/SMT encoding, Dafny specifications).
 
 == Participation (10%)
 
-Evaluates discussion contributions, attendance, engagement in peer reviews, and collaboration in labs.
+Attendance, engagement in practice sessions, and collaboration.
 
 = Course Policies
 
@@ -158,7 +154,3 @@ Evaluates discussion contributions, attendance, engagement in peer reviews, and 
 = Resources
 
 Lecture notes, slides, and additional readings will be uploaded in the course GitHub repo: https://github.com/Lipen/formal-methods-course.
-
-= Contacts
-
-...
