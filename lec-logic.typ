@@ -236,11 +236,15 @@ $
   $alpha$ is valid $quad iff quad not alpha$ is unsatisfiable.
 ]
 
-Checking SAT by truth tables takes $cal(O)(2^n)$ time.
-Is there a better way? _This is the million-dollar question_ (P vs NP).
-
 #example[
   $P or not P$ is valid $iff$ $not (P or not P) equiv P and not P$ is unsatisfiable.
+]
+
+#Block(color: teal)[
+  Checking SAT by truth tables takes $cal(O)(2^n)$ time.
+
+  Is there a better way?
+  _This is the million-dollar question_ (P vs NP).
 ]
 
 == Fundamental Equivalence Laws
