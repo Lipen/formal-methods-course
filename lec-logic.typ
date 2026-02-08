@@ -761,42 +761,804 @@ _Fitch notation_ is a linear format for writing natural deduction proofs:
   Completeness guarantees that _every_ true property _can_ be proven --- at least in principle.
 ]
 
-= Connecting to SAT
+== Proof Strategies
+
+Two fundamental approaches to proving $Gamma models alpha$:
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Forward reasoning* (bottom-up):
+    - Start from premises $Gamma$
+    - Apply rules to derive new facts
+    - Continue until $alpha$ is derived
+    - Natural for humans
+  ],
+  [
+    *Refutation* (top-down):
+    - Assume $not alpha$ together with $Gamma$
+    - Derive a contradiction ($bot$)
+    - Conclude that $alpha$ must hold
+    - Natural for _machines_
+  ],
+)
+
+#Block(color: yellow)[
+  *Refutation* is the basis for _automated_ reasoning: SAT solving, resolution, and tableaux all work by searching for contradictions.
+]
+
+== Semantic Tableaux
+
+_Semantic tableaux_ (analytic tableaux, _truth trees_) systematically search for a _counterexample_.
+
+#Block(color: blue)[
+  *Idea:* To prove $Gamma models alpha$, assume $Gamma union {not alpha}$ and _decompose_ formulas into simpler ones. If every branch closes (reaches a contradiction), then $alpha$ is valid.
+]
+
+The tree branches represent _alternative_ truth assignments.
+Each branch is a _partial interpretation_ that satisfies all formulas along it.
+
+#definition[Closed Branch][
+  A branch is _closed_ if it contains both $phi$ and $not phi$ for some formula $phi$ (marked $times$).
+  A tableau is _closed_ if _every_ branch is closed.
+]
+
+#definition[Open Branch][
+  A branch is _open_ if it is fully expanded but not closed --- it provides a _satisfying assignment_ (counterexample).
+]
+
+== Tableaux Decomposition Rules
+
+Formulas are classified as $alpha$-type (conjunctive) or $beta$-type (disjunctive):
+
+#align(center)[
+  #grid(
+    columns: 2,
+    column-gutter: 3em,
+    [
+      *$alpha$-rules* (no branching):
+      #table(
+        columns: 3,
+        stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+        table.header[$alpha$][$alpha_1$][$alpha_2$],
+        [$A and B$], [$A$], [$B$],
+        [$not (A or B)$], [$not A$], [$not B$],
+        [$not (A imply B)$], [$A$], [$not B$],
+        [$not not A$], [$A$], [],
+      )
+    ],
+    [
+      *$beta$-rules* (branching):
+      #table(
+        columns: 3,
+        stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+        table.header[$beta$][$beta_1$][$beta_2$],
+        [$A or B$], [$A$], [$B$],
+        [$not (A and B)$], [$not A$], [$not B$],
+        [$A imply B$], [$not A$], [$B$],
+      )
+    ],
+  )
+]
+
+$alpha$-rules _extend_ the current branch (conjunction --- both must hold). \
+$beta$-rules _split_ into two branches (disjunction --- at least one must hold).
+
+== Tableaux: Worked Example
+
+*Prove:* $models (P imply Q) imply (not Q imply not P)$ #h(1em) (contraposition is valid).
+
+*Method:* Negate and try to satisfy. If all branches close --- valid.
+
+#align(center)[
+  #cetz.canvas(length: 0.9cm, {
+    import cetz.draw: *
+    let nd(pos, label, ..args) = content(pos, label, ..args.named())
+    let closed(pos) = content(pos, text(red, $times$))
+
+    nd((4, 0), [$1. thin not ((P imply Q) imply (not Q imply not P))$], anchor: "west")
+    nd((4, -1), [$2. thin P imply Q$], anchor: "west")
+    nd((4, -2), [$3. thin not (not Q imply not P)$], anchor: "west")
+    nd((4, -3), [$4. thin not Q$], anchor: "west")
+    nd((4, -4), [$5. thin not not P$], anchor: "west")
+    nd((4, -5), [$6. thin P$], anchor: "west")
+
+    line((5.5, -5.5), (3.5, -6.5), stroke: 0.6pt)
+    line((5.5, -5.5), (7.5, -6.5), stroke: 0.6pt)
+
+    nd((3.5, -7), [$7. thin not P$], anchor: "center")
+    nd((7.5, -7), [$7. thin Q$], anchor: "center")
+
+    closed((3.5, -7.8))
+    content((3.5, -8.4), text(0.65em, red)[$P, not P$])
+    closed((7.5, -7.8))
+    content((7.5, -8.4), text(0.65em, red)[$Q, not Q$])
+  })
+]
+
+Both branches close $arrow.double$ the formula is valid. $square$
+
+== Tableaux: Counterexample Discovery
+
+*Test:* Is $P imply (Q imply P)$ a tautology? (Spoiler: _yes._)
+*Test:* Is $P imply Q$ a tautology? (Spoiler: _no._)
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    Negate $P imply Q$:
+    + $not (P imply Q)$ #h(5em) _negate_
+    + $P$ #h(9.6em) _$alpha$-rule on 1_
+    + $not Q$ #h(7.6em) _$alpha$-rule on 1_
+
+    No complementary pair --- branch is *open*. \
+    *Counterexample:* $nu(P) = 1, nu(Q) = 0$.
+  ],
+  [
+    #Block(color: green)[
+      *Key property of tableaux:*
+      - Closed tableau $arrow.double$ formula is valid.
+      - Open branch $arrow.double$ read off a counterexample from the literals on the branch.
+    ]
+  ],
+)
+
+#theorem[
+  Propositional semantic tableaux are _sound_ and _complete_:
+  a closed tableau can be constructed for $alpha$ if and only if $alpha$ is valid.
+]
+
+== Resolution
+
+_Resolution_ is a proof system based on a single powerful inference rule, operating on formulas in CNF.
+
+#definition[Resolution Rule][
+  Given two clauses containing complementary literals:
+  $
+    C_1 = (ell_1 or dots or ell_m or p) quad "and" quad C_2 = (ell'_1 or dots or ell'_k or not p)
+  $
+  derive the _resolvent_:
+  $
+    C = ell_1 or dots or ell_m or ell'_1 or dots or ell'_k
+  $
+  The variable $p$ is called the _pivot_.
+]
+
+#example[
+  $(not P or Q)$ and $(P or R)$ resolve on $P$ to produce $(Q or R)$.
+]
+
+Resolution is a _refutation_ system: to prove $Gamma models alpha$, convert $Gamma union {not alpha}$ to CNF and derive the _empty clause_ $square$.
+
+#place[
+  #v(0.8em)
+  #Block(color: yellow)[
+    *Why resolution matters:* It is the _theoretical foundation_ of SAT solving. DPLL and CDCL solvers essentially perform resolution (with clever heuristics).
+  ]
+]
+
+== Resolution Refutation: Example
+
+*Prove by resolution:* ${P, thin P imply Q} models Q$.
+
+Add $not Q$ (negation of goal) and convert to clauses:
+
+$
+  C_1 & = {P}             &                          "(from " P ")" \
+  C_2 & = {not P, Q} quad & "(from " P imply Q equiv not P or Q ")" \
+  C_3 & = {not Q}         &                    "(negation of goal)"
+$
+
+Derive:
+
+$
+  C_4 & = {Q}    & "resolve" C_1 "and" C_2 "on" P \
+  C_5 & = square & "resolve" C_4 "and" C_3 "on" Q
+$
+
+The empty clause $square$ is derived $arrow.double$ the original entailment holds. $square$
+
+#theorem[Completeness of Resolution][
+  Resolution is _refutation-complete_: a set of clauses $S$ is unsatisfiable if and only if the empty clause $square$ can be derived from $S$ by resolution.
+]
+
+== Proof Systems: Comparison
+
+#align(center)[
+  #table(
+    columns: 5,
+    align: (left, center, center, center, center),
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header[*System*][*Human-friendly*][*Automateable*][*For SAT*][*Certify UNSAT*],
+    [Truth tables], [Medium], [Trivial], [No], [No],
+    [Natural Deduction], [High], [Low], [No], [No],
+    [Fitch Notation], [High], [Low], [No], [No],
+    [Semantic Tableaux], [Medium], [Medium], [Partial], [Yes],
+    [Resolution], [Low], [High], [Yes], [Yes],
+  )
+]
+
+#Block(color: green)[
+  *Thread:* Natural deduction captures _human_ mathematical reasoning.
+  Resolution captures _machine_ reasoning.
+  SAT solvers are _resolution engines on steroids_.
+]
+
+= First-Order Logic
+
+== Why First-Order Logic?
+
+Propositional logic is _not expressive enough_ for many reasoning tasks:
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *In PL, we cannot express:*
+    - "Every even number $> 2$ is a sum #box[of two primes]"
+    - "If a program terminates, its output is correct"
+    - "There exists a shortest path from $u$ to $v$"
+    - Properties of _infinite_ domains
+  ],
+  [
+    *FOL adds:*
+    - _Variables_ ranging over objects in a domain
+    - _Quantifiers_ ($forall$, $exists$) for generalization
+    - _Functions_ and _predicates_ for structure
+    - _Domains_ of discourse
+  ],
+)
+
+#example[
+  "Every student who studies passes":
+  $ forall x. thin ("Student"(x) and "Studies"(x)) imply "Passes"(x) $
+  In PL, we would need a separate proposition for each student --- impossible for infinite domains.
+]
+
+#Block(color: blue)[
+  FOL is the _lingua franca_ of mathematics, specification languages, and automated theorem proving.
+]
+
+== FOL Syntax: Signatures
+
+#definition[Signature][
+  A _first-order signature_ $Sigma = angle.l cal(F), cal(R) angle.r$ consists of:
+  - A set of _function symbols_ $cal(F)$, each with an arity $n gt.eq 0$.
+  - A set of _relation symbols_ (predicates) $cal(R)$, each with an arity $n gt.eq 1$.
+
+  Functions of arity 0 are _constants_. We assume a countably infinite set of _variables_ $cal(V) = {x, y, z, x_1, x_2, dots}$.
+]
+
+#example[
+  *Arithmetic:* $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$ \
+  where $0$ is a constant, $S$ is unary, $+, times$ are binary functions; $<, =$ are binary relations.
+
+  *Graph theory:* $Sigma = angle.l emptyset, {"Edge", "Path"} angle.r$ \
+  where $"Edge"$ and $"Path"$ are binary predicates (no function symbols).
+]
+
+== FOL Syntax: Terms and Formulas
+
+#definition[Term][
+  _Terms_ over signature $Sigma$ are defined inductively:
+  - Every variable $x in cal(V)$ is a term.
+  - If $f in cal(F)$ has arity $n$ and $t_1, dots, t_n$ are terms, then $f(t_1, dots, t_n)$ is a term.
+]
+
+#definition[Formula][
+  _Formulas_ over $Sigma$ are defined inductively:
+  - If $R in cal(R)$ has arity $n$ and $t_1, dots, t_n$ are terms, then $R(t_1, dots, t_n)$ is an _atomic formula_ (atom).
+  - If $phi, psi$ are formulas: $not phi$, $(phi and psi)$, $(phi or psi)$, $(phi imply psi)$, $(phi iff psi)$ are formulas.
+  - If $phi$ is a formula and $x in cal(V)$: $forall x. thin phi$ and $exists x. thin phi$ are formulas.
+]
+
+#example[
+  $forall x. thin (x = 0 or exists y. thin S(y) = x)$ --- "every natural number is $0$ or a successor."
+]
+
+== Free and Bound Variables
+
+The _scope_ of $forall x$ (or $exists x$) is the subformula immediately following it.
+
+#definition[Free Variables][
+  The set $op("FV")(phi)$ of _free variables_ of $phi$ is defined inductively:
+  - $op("FV")(R(t_1, dots, t_n)) = op("Vars")(t_1) union dots union op("Vars")(t_n)$
+  - $op("FV")(not phi) = op("FV")(phi)$; #h(1em) $op("FV")(phi circle.small psi) = op("FV")(phi) union op("FV")(psi)$ for $circle.small in {and, or, imply, iff}$
+  - $op("FV")(forall x. thin phi) = op("FV")(exists x. thin phi) = op("FV")(phi) setminus {x}$
+]
+
+A formula with no free variables is a _sentence_ (closed formula).
+
+#example[
+  In $forall x. thin P(x, y)$: $x$ is _bound_ (in scope of $forall x$), $y$ is _free_. Not a sentence.
+]
+
+#note[
+  Only _sentences_ have a definite truth value in a structure.
+  Formulas with free variables are like "open predicates" --- they become true/false once you fix values for the free variables.
+]
+
+== Substitution
+
+Substitution replaces free occurrences of a variable with a term.
+
+#definition[Substitution][
+  $phi[t \/ x]$ denotes the formula obtained from $phi$ by replacing every _free_ occurrence of $x$ with the term $t$.
+
+  A substitution $[t \/ x]$ is _capture-free_ in $phi$ if no free variable in $t$ becomes bound after substitution.
+]
+
+#example[
+  $forall y. thin (x < y) thin [S(0) \/ x] = forall y. thin (S(0) < y)$ --- correct substitution.
+
+  $exists y. thin (x < y) thin [y + 1 \/ x] = exists y. thin (y + 1 < y)$ --- *variable capture!* \
+  The free $y$ in the substituted term becomes bound.
+  Fix: rename bound variable first: $exists z. thin (y + 1 < z)$.
+]
+
+#Block(color: orange)[
+  *Warning:* Capture-free substitution is essential for correctness of FOL proof systems. Always check for name clashes before substituting.
+]
+
+== FOL Semantics: Structures
+
+#definition[Structure (Model)][
+  A _structure_ $frak(A)$ for signature $Sigma = angle.l cal(F), cal(R) angle.r$ consists of:
+  - A non-empty _domain_ (universe) $A$ --- the set of objects we reason about.
+  - For each $n$-ary function symbol $f in cal(F)$: a function $f^frak(A) : A^n arrow A$.
+  - For each $n$-ary relation symbol $R in cal(R)$: a relation $R^frak(A) subset.eq A^n$.
+
+  A _variable assignment_ $sigma : cal(V) arrow A$ maps each variable to a domain element.
+]
+
+#example[
+  For the arithmetic signature $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$:
+  - $frak(N) = (NN, 0, S, +, times, <, =)$ --- the _standard_ (intended) model.
+  - $frak(Z) = (ZZ, 0, S, +, times, <, =)$ --- a different, equally valid structure.
+  - The sentence $forall x. thin exists y. thin x = S(y) or x = 0$ is true in $frak(N)$ but false in $frak(Z)$ (e.g. $x = -1$).
+]
+
+== Evaluating FOL Formulas
+
+Given a structure $frak(A)$ and a variable assignment $sigma$:
+
+#definition[Satisfaction Relation][
+  The relation $frak(A), sigma models phi$ is defined inductively:
+  - $frak(A), sigma models R(t_1, dots, t_n)$ iff $(t_1^(frak(A),sigma), dots, t_n^(frak(A),sigma)) in R^frak(A)$
+  - Boolean connectives: as in PL.
+  - $frak(A), sigma models forall x. thin phi$ iff $frak(A), sigma[x arrow.bar a] models phi$ for _every_ $a in A$.
+  - $frak(A), sigma models exists x. thin phi$ iff $frak(A), sigma[x arrow.bar a] models phi$ for _some_ $a in A$.
+
+  Here $sigma[x arrow.bar a]$ maps $x$ to $a$ and agrees with $sigma$ on all other variables.
+]
+
+For _sentences_ (no free variables), the truth value depends only on the structure: we write $frak(A) models phi$.
+
+== Validity and Satisfiability in FOL
+
+The semantic classification extends naturally from PL:
+
+#definition[
+  Let $phi$ be an FOL sentence.
+  - $phi$ is _valid_ ($models phi$) if $frak(A) models phi$ for _every_ structure $frak(A)$.
+  - $phi$ is _satisfiable_ if $frak(A) models phi$ for _some_ structure $frak(A)$.
+  - $phi$ is _unsatisfiable_ if no structure satisfies it.
+]
+
+#Block(color: orange)[
+  *Critical difference from PL:* In PL, the space of interpretations is _finite_ ($2^n$ truth assignments). In FOL, structures can have _infinite_ domains of _any_ cardinality --- decision procedures are fundamentally harder.
+]
+
+#example[
+  - $forall x. thin (P(x) or not P(x))$ --- valid (instance of LEM, holds in every structure).
+  - $forall x. thin P(x) and exists x. thin not P(x)$ --- unsatisfiable.
+  - $exists x. thin P(x)$ --- satisfiable (in any non-empty structure with $P$ non-empty) but not valid.
+]
+
+== Quantifier Equivalences
+
+Many useful equivalences govern quantifiers:
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  row-gutter: 0.5em,
+  [
+    *De Morgan duality for quantifiers:*
+    - $not forall x. thin phi equiv exists x. thin not phi$
+    - $not exists x. thin phi equiv forall x. thin not phi$
+
+    *Distribution:*
+    - $forall x. thin (phi and psi) equiv (forall x. thin phi) and (forall x. thin psi)$
+    - $exists x. thin (phi or psi) equiv (exists x. thin phi) or (exists x. thin psi)$
+  ],
+  [
+    *Vacuous quantification* (if $x$ not free in $psi$):
+    - $forall x. thin psi equiv psi$, #h(1em) $exists x. thin psi equiv psi$
+
+    *Commutativity of like quantifiers:*
+    - $forall x. thin forall y. thin phi equiv forall y. thin forall x. thin phi$
+    - $exists x. thin exists y. thin phi equiv exists y. thin exists x. thin phi$
+
+    *Prenex pulling* (if $x$ not free in $psi$):
+    - $psi and forall x. thin phi equiv forall x. thin (psi and phi)$
+    - $psi or exists x. thin phi equiv exists x. thin (psi or phi)$
+  ],
+)
+
+#Block(color: orange)[
+  *Warning:* $exists x. thin forall y. thin R(x, y)$ is generally _not_ equivalent to $forall y. thin exists x. thin R(x, y)$.
+  The former is stronger --- it asserts a _single_ $x$ that works for _all_ $y$.
+]
+
+== Prenex Normal Form
+
+#definition[Prenex Normal Form (PNF)][
+  A formula is in _prenex normal form_ if it has the shape:
+  $ Q_1 x_1. thin Q_2 x_2. thin dots thin Q_n x_n. thin psi $
+  where each $Q_i in {forall, exists}$ and $psi$ is _quantifier-free_ (the _matrix_).
+]
+
+#theorem[
+  Every FOL formula can be converted to an equivalent formula in PNF (after renaming bound variables to avoid capture if necessary).
+]
+
+#example[
+  $forall x. thin P(x) imply exists y. thin Q(x, y)$ \
+  $equiv forall x. thin (not P(x) or exists y. thin Q(x, y))$ #h(1em) _(eliminate $imply$)_ \
+  $equiv forall x. thin exists y. thin (not P(x) or Q(x, y))$ #h(1em) _(pull $exists y$ out)_
+]
+
+PNF separates the _quantifier prefix_ (describing alternation structure) from the _propositional skeleton_ (the matrix).
+The _quantifier alternation depth_ ($forall exists forall dots$) determines the formula's complexity.
+
+== FOL Proof Rules: Quantifiers
+
+Natural deduction extends to FOL with four quantifier rules:
+
+#rules-grid(
+  rule(
+    name: [$forall$-intro],
+    $Gamma entails forall x. thin phi(x)$,
+    $Gamma entails phi(y)$,
+  ),
+  rule(
+    name: [$forall$-elim],
+    $Gamma entails phi(t)$,
+    $Gamma entails forall x. thin phi(x)$,
+  ),
+)
+
+#rules-grid(
+  rule(
+    name: [$exists$-intro],
+    $Gamma entails exists x. thin phi(x)$,
+    $Gamma entails phi(t)$,
+  ),
+  rule(
+    name: [$exists$-elim],
+    $Gamma entails psi$,
+    $Gamma entails exists x. thin phi(x)$,
+    $Gamma, phi(y) entails psi$,
+  ),
+)
+
+*Side conditions:*
+- $forall$-intro: $y$ must be _arbitrary_ --- not free in any undischarged assumption in $Gamma$.
+- $forall$-elim: $t$ can be any term (universal _instantiation_).
+- $exists$-intro: give a _witness_ term $t$.
+- $exists$-elim: $y$ must be _fresh_ --- not free in $psi$ or any undischarged assumption besides $phi(y)$.
+
+== FOL Soundness and Completeness
+
+#theorem[Gödel's Completeness Theorem (1930)][
+  First-order logic with standard proof rules is both _sound_ and _complete_:
+  $ Gamma entails phi quad iff quad Gamma models phi $
+  Every valid FOL sentence is provable, and every provable sentence is valid.
+]
+
+#proof[
+  (Sketch of completeness.)
+  Suppose $Gamma models.not.r phi$ is not provable.
+  Then $Gamma union {not phi}$ is _consistent_ (no proof of $bot$).
+  By Henkin's construction, extend to a _maximally consistent_ set with witnesses.
+  Build a _term model_ where domain elements are equivalence classes of terms.
+  This model satisfies $Gamma union {not phi}$, so $Gamma models.not phi$.
+  Contrapositive: if $Gamma models phi$, then $Gamma entails phi$.
+]
+
+#Block(color: yellow)[
+  *Key:* This is _not_ the famous "incompleteness theorem."
+  Here, "complete" means the _proof system_ can derive everything that is semantically true in _all_ structures.
+]
+
+== FOL Validity is Undecidable
+
+Despite completeness, there is _no algorithm_ that always terminates and correctly decides FOL validity.
+
+#theorem[Church--Turing Theorem (1936)][
+  The _validity problem_ for first-order logic is _undecidable_:
+  there is no Turing machine that, given an arbitrary FOL sentence $phi$, decides whether $models phi$.
+]
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Decidable (PL):*
+    - Finite search space ($2^n$ interpretations)
+    - Truth tables always terminate
+    - SAT is NP-complete, VALID is co-NP-complete
+  ],
+  [
+    *Undecidable (FOL):*
+    - Infinite/unbounded structures
+    - Proof search may not terminate
+    - Valid = semi-decidable (r.e.)
+    - Satisfiable = semi-decidable (co-r.e.)
+  ],
+)
+
+#Block(color: green)[
+  FOL validity is *semi-decidable*: if $phi$ is valid, a systematic proof search _will_ find a proof (by completeness). But if $phi$ is _not_ valid, the search may run forever.
+]
+
+This is why SMT solvers restrict to _decidable fragments_ of FOL --- specific first-order theories where satisfiability _can_ be decided algorithmically.
+
+= Metatheorems and \ the Limits of Logic
+
+== The Compactness Theorem
+
+#theorem[Compactness Theorem][
+  A (possibly infinite) set of FOL sentences $Gamma$ is satisfiable if and only if every _finite_ subset of $Gamma$ is satisfiable.
+]
+
+#proof[
+  (Sketch.)
+  ($arrow.double$) Trivial: any model of $Gamma$ satisfies every finite subset.
+
+  ($arrow.double.l$) If $Gamma$ is unsatisfiable, then by completeness there is a proof of $bot$ from $Gamma$.
+  Every proof uses only _finitely many_ premises, so some finite $Gamma_0 subset.eq Gamma$ is already unsatisfiable.
+]
+
+#example[
+  *Non-standard models of arithmetic:*
+  Let $Gamma = op("Th")(NN) union {c > 0, c > 1, c > 2, dots}$ where $c$ is a fresh constant.
+  Every finite subset is satisfiable (interpret $c$ as a large enough number).
+  By compactness, $Gamma$ is satisfiable --- in a model with an "infinite" element $c$ larger than all standard naturals. This is a _non-standard model_ of arithmetic.
+]
+
+#Block(color: blue)[
+  *Consequence:* "The domain is finite" _cannot_ be expressed by a single FOL sentence.
+  Compactness is why FOL cannot fully capture finiteness --- a deep limitation.
+]
+
+== The Löwenheim--Skolem Theorem
+
+#theorem[Löwenheim--Skolem Theorem][
+  If an FOL sentence (or countable set of sentences) has an _infinite_ model, then it has a model of _every_ infinite cardinality.
+]
+
+#note[
+  This means FOL cannot pin down the cardinality of infinite structures.
+  For example, the axioms of set theory (ZFC) have both countable and uncountable models --- even though ZFC proves uncountable sets exist! (Skolem's paradox.)
+]
+
+Combined with compactness, this reveals the fundamental _expressive limitations_ of first-order logic:
+- Cannot define "exactly the natural numbers" (up to isomorphism).
+- Cannot express "the domain is finite" or "the domain is countable."
+- Cannot distinguish between structures of different infinite cardinalities.
+
+These limitations motivate _stronger_ logics (second-order, infinitary) and _weaker but decidable_ fragments (the basis of SMT solving).
+
+== Gödel's Incompleteness Theorems
+
+// The most profound results in mathematical logic:
+
+#theorem[First Incompleteness Theorem][
+  Any _consistent_ formal system $cal(T)$ capable of expressing elementary arithmetic contains sentences that are _true_ (in the standard model $NN$) but _unprovable_ in $cal(T)$.
+]
+
+#theorem[Second Incompleteness Theorem][
+  If $cal(T)$ is consistent and sufficiently powerful, then $cal(T)$ _cannot prove its own consistency_:
+  $ cal(T) tack.r.not op("Con")(cal(T)) $
+]
+
+#note(title: "Sufficiently powerful")[
+  $cal(T)$ must be capable of representing all computable functions --- essentially, $cal(T)$ must contain Robinson arithmetic ($Q$) or stronger.
+]
+
+#Block(color: orange)[
+  *Confusion warning:* Gödel's _completeness_ theorem says FOL proof systems are complete w.r.t. semantic consequence.
+  His _incompleteness_ theorems say specific _theories_ (like arithmetic) have true-but-unprovable sentences.
+  These are about different notions of "completeness"!
+]
+
+== Incompleteness: The Key Idea
+
+The proof uses _self-reference_ via _arithmetization_.
+
+*Gödel numbering:* Encode formulas, proofs, and the provability predicate as natural numbers and arithmetic predicates.
+Then construct a sentence $G$ that essentially says:
+
+$ G quad equiv quad "\"I am not provable in " cal(T) "\"" $
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *If $G$ is provable in $cal(T)$:*
+    - $cal(T)$ proves $G$
+    - $G$ says "$G$ is not provable"
+    - So $cal(T)$ proves something false
+    - Contradicts _consistency_ of $cal(T)$
+  ],
+  [
+    *If $G$ is not provable:*
+    - $G$'s assertion is _true_
+    - So $G$ is true but unprovable
+    - $cal(T)$ is _incomplete_
+  ],
+)
+
+#Block(color: blue)[
+  *For software verification:* Incompleteness means _no_ verification system can prove _all_ true program properties.
+  But this does not prevent us from verifying _specific_ programs  ---
+  and in practice, automated tools are remarkably effective.
+]
+
+== The Landscape of Logics
+
+Different logics extend classical PL and FOL in different directions:
+
+#align(center)[
+  #import fletcher: diagram, edge, node, shapes
+  #let vertex(pos, label, color, ..args) = blob(
+    pos,
+    label,
+    shape: rect,
+    tint: color,
+    ..args.named(),
+  )
+  #diagram(
+    spacing: (4em, 1.5em),
+    node-stroke: 1pt,
+    edge-stroke: 1pt,
+    node-corner-radius: 2pt,
+
+    vertex((0, 0), [Propositional\ Logic], green, name: <pl>),
+    vertex((2, 0), [First-Order\ Logic], blue, name: <fol>),
+    vertex((4, 0), [Higher-Order\ Logic], purple, name: <hol>),
+
+    vertex((0, 2), [Modal\ Logic], orange, name: <modal>),
+    vertex((2, 2), [Temporal\ Logic], orange, name: <temporal>),
+    vertex((4, 2), [Separation\ Logic], red, name: <sep>),
+
+    edge(<pl>, <fol>, "-}>", label: [\+ quantifiers]),
+    edge(<fol>, <hol>, "-}>", label: [\+ higher types]),
+    edge(<pl>, <modal>, "-}>", label: [\+ $square, diamond$]),
+    edge(<modal>, <temporal>, "-}>", label: [\+ time]),
+    edge(<fol>, <sep>, "-}>", label: [\+ heap], label-angle: auto),
+  )
+]
+
+#grid(
+  columns: 3,
+  column-gutter: 1em,
+  [
+    *Modal Logic:*
+    $square phi$ ("necessarily~$phi$") and $diamond phi$ ("possibly~$phi$").
+    Kripke semantics.
+    Used in distributed systems verification.
+  ],
+  [
+    *Temporal Logic:*
+    LTL, CTL, CTL\*.
+    Used in _model checking_: "the server _always eventually_ responds."
+  ],
+  [
+    *Separation Logic:*
+    Reasons about heap memory.
+    Used in program analysis (e.g. Meta Infer, VeriFast).
+  ],
+)
+
+== Decidability Landscape
+
+The computational complexity of logical decision problems varies dramatically:
+
+#align(center)[
+  #table(
+    columns: 4,
+    align: (left, center, center, left),
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header[*Logic / Fragment*][*SAT*][*Validity*][*Complexity*],
+    [Propositional], [Decidable], [Decidable], [NP-c / co-NP-c],
+    [Modal (K, S4, S5)], [Decidable], [Decidable], [PSPACE-complete],
+    [FOL (general)], [Undecidable], [Undecidable], [Semi-decidable],
+    [FOL monadic], [Decidable], [Decidable], [NEXPTIME-complete],
+    [Presburger ($NN, +$)], [Decidable], [Decidable], [2-EXPTIME],
+    [Arithmetic ($NN, +, times$)], [Undecidable], [Undecidable], [Not even semi-dec.],
+  )
+]
+
+#Block(color: yellow)[
+  *The sweet spot for verification:* SMT solvers operate on _decidable fragments_ of FOL
+  (QF_LIA, QF_LRA, QF_BV, QF_AX, ...) --- powerful enough for software verification, yet algorithmically tractable.
+  This is where theory meets practice.
+]
+
+= Connecting to Automated Reasoning
 
 == From Logic to SAT Solving
 
-Everything in this lecture feeds into the SAT problem:
+Everything in this lecture feeds into automated reasoning:
 
-+ *Formulas* express constraints about a system's behavior.
-+ *Normal forms* (especially CNF) provide the _input format_ for automated solvers.
-+ *Equisatisfiability* (Tseitin) ensures compact encodings.
-+ *Proof systems* explain _why_ a formula is unsatisfiable (resolution proofs).
++ *Formulas* express constraints about system behavior and specifications.
++ *Normal forms* (especially CNF) provide the _input format_ for SAT solvers.
++ *Equisatisfiability* (Tseitin) ensures compact, polynomial-size encodings.
++ *Resolution* is the _theoretical backbone_ of DPLL and CDCL solvers.
++ *FOL and theories* motivate SMT solvers --- SAT + specialized theory reasoning.
 
 #Block(color: green)[
-  *SAT Problem:* Given a CNF formula $phi$, does there exist an interpretation $nu$ such that $nu models phi$?
+  *The SAT Problem:* Given a CNF formula $phi$, does there exist an interpretation $nu$ such that $nu models phi$?
 
-  SAT is *NP-complete* (Cook--Levin, 1971) --- the canonical hard problem.
-  Yet modern solvers handle formulas with _millions_ of variables.
+  SAT is *NP-complete* (Cook--Levin, 1971) --- yet modern solvers handle formulas with _millions_ of variables.
 ]
 
-*Next lecture:* We will study SAT encodings, the DPLL algorithm, and conflict-driven clause learning (CDCL) --- the engine behind all modern SAT solvers.
+*Next lectures:* SAT encodings, DPLL, CDCL --- the engines behind modern SAT solvers. Then FOL theories and SMT.
 
-== Exercises
+== Exercises: Propositional Logic
 
-+ Show that ${imply, bot}$ is a functionally complete set of connectives.
++ Show that ${imply, bot}$ is a functionally complete set of connectives. \
+  _Hint_: Express $not p$ and $p and q$ using only $imply$ and $bot$.
 
 + Convert the formula $(P imply Q) imply R$ to:
   - NNF
-  - CNF (using distributive law)
-  - Clausal form (using Tseitin transformation)
+  - CNF (using the distributive law)
+  - Clausal form (using the Tseitin transformation)
 
-+ Prove the following using natural deduction (Fitch notation):
-  - $a imply b, thin not b thin entails thin not a$ (modus tollens)
-  - $entails thin (a imply b) or (b imply a)$
-  - $p imply not p thin entails thin not p$
-
-+ For a formula with $n$ biconditionals in a chain $p_1 iff p_2 iff dots iff p_(n+1)$:
-  - How many clauses does the equivalent CNF have?
-  - How many clauses does the Tseitin encoding produce?
++ For a chain of $n$ biconditionals $p_1 iff p_2 iff dots iff p_(n+1)$:
+  - How many clauses does the _equivalent_ CNF have?
+  - How many clauses does the _Tseitin_ encoding produce? Explain the asymptotic difference.
 
 + Show that the satisfiability problem for DNF formulas is solvable in polynomial time.
+
++ $star$ Show that _any_ propositional proof system has a _tautology_ whose shortest proof is exponential in the formula size (assuming NP $eq.not$ co-NP). What does this imply about the possibility of efficient general-purpose provers?
+
+== Exercises: Proof Systems
+
++ Prove the following using natural deduction (Fitch notation):
+  - $A imply B, thin not B thin entails thin not A$ #h(1em) _(modus tollens)_
+  - $entails thin (A imply B) or (B imply A)$
+  - $P imply not P thin entails thin not P$
+  - $not (A and B) thin entails thin not A or not B$ #h(1em) _(De Morgan, requires classical reasoning)_
+
++ Construct a semantic tableau to test the validity of:
+  $P imply (Q imply R) thin models thin (P imply Q) imply (P imply R)$
+
++ Use resolution refutation to show that ${P or Q, thin not P or R, thin not Q or R} models R$.
+
++ $star$ Prove that resolution is _not_ polynomially bounded: the _pigeonhole principle_ $"PHP"_n^(n+1)$ (in CNF) requires exponentially long resolution proofs. _(State the formulation and explain why this matters for SAT solving.)_
+
+== Exercises: First-Order Logic
+
++ Formalize the following in FOL:
+  - "Every prime number greater than 2 is odd."
+  - "There is no largest natural number."
+  - "If $f$ is injective and $A subset.eq B$, then $f(A) subset.eq f(B)$."
+
++ Determine free and bound variables, and whether each formula is a sentence:
+  - $forall x. thin (P(x) imply exists y. thin Q(x, y))$
+  - $exists x. thin (x = y + 1)$
+  - $forall x. thin forall y. thin (R(x, y) imply R(y, x))$
+
++ Convert to prenex normal form:
+  $(forall x. thin P(x)) imply (exists y. thin Q(y))$
+
++ Explain informally: why does $exists x. thin forall y. thin R(x, y) thin models thin forall y. thin exists x. thin R(x, y)$ hold, but $forall y. thin exists x. thin R(x, y) thin models.not thin exists x. thin forall y. thin R(x, y)$?
+  Give a concrete counterexample for the latter.
+
++ $star$ Using compactness, show that "the domain is finite" cannot be expressed by any _single_ FOL sentence (or even by any _set_ of FOL sentences).
