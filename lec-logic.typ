@@ -20,69 +20,142 @@
 // Rewrite
 #let rewrite = $arrow.double.long$
 
+
 = Why Formal Methods?
 
 == Motivation
+
+Before we define verification formally, here is _why_ it matters.
 
 #Block(color: orange, inset: 0.8em)[
   Software bugs have caused deaths, \$billion losses, and mission failures --- even when tests passed.
 ]
 
 #[
-  #set text(0.9em)
+  #set text(0.85em)
   #grid(
     columns: 2,
     column-gutter: 2em,
-    row-gutter: 1em,
+    row-gutter: 0.8em,
     [
-      *Ariane 5 (1996)*
-      - Overflow in 64-bit → 16-bit conversion
-      - \$370 million rocket destroyed 37 seconds after launch
-      - Root cause: reused code from Ariane 4 without #box[re-verification]
+      *Ariane 5 (1996)* --- Overflow in 64→16-bit conversion destroyed a \$370M rocket 37 s after launch. Reused code from Ariane 4 _without re-verification_.
     ],
     [
-      *Intel FDIV Bug (1994)*
-      - Pentium floating-point division error
-      - Incorrect results in rare cases
-      - \$475 million recall; discovered by a mathematician
+      *Intel FDIV (1994)* --- Pentium division error in rare cases. \$475M recall; discovered by a mathematician, not by Intel's tests.
     ],
 
     [
-      *Therac-25 (1985--87)*
-      - Radiation therapy machine
-      - Race condition caused massive overdoses
-      - At least 3 deaths, several severe injuries
+      *Therac-25 (1985--87)* --- Race condition in radiation machine caused massive overdoses. At least 3 deaths.
     ],
     [
-      *Knight Capital (2012)*
-      - Faulty deployment of trading software
-      - Lost \$440 million in 45 minutes
-      - Bankrupt within days
+      *Knight Capital (2012)* --- Faulty trading software deployment. Lost \$440M in 45 minutes. Bankrupt within days.
     ],
   )
 ]
+
+In each case, the system's behavior was never _proven_ to match its specification.
 
 #Block(color: yellow, inset: 0.8em)[
   *Formal methods* turn correctness into a _mathematical question_ that machines can help answer.
   Instead of checking _some_ executions, we reason about _all_ of them.
 ]
 
+== Formal Reasoning: A Taste
+
+Before we define verification formally, here is the _kind_ of reasoning formal methods make precise.
+
+*Scenario:* A server has three properties documented in its specification:
++ If authentication succeeds, a session is created.
++ If a session is created, the user can access the resource.
++ Authentication succeeded.
+
+In logical notation, with propositions $A$ = "auth succeeds", $S$ = "session created", $R$ = "resource accessible":
+
+$
+  underbrace(A imply S, "premise 1") quad
+  underbrace(S imply R, "premise 2") quad
+  underbrace(A, "premise 3")
+$
+
+*Derivation:* From $A$ and $A imply S$ we get $S$ (modus ponens). \
+From $S$ and $S imply R$ we get $R$ (modus ponens again). \
+*Conclusion:* the user can access the resource.
+
+#Block(color: blue)[
+  This is a _proof_ --- a finite chain of justified steps from premises to a conclusion.
+  Formal methods scale this idea to entire programs: premises are code + preconditions, and we prove that postconditions follow.
+]
+
+== What Is Verification?
+
+Software verification is the process of establishing that a system _meets its specification_.
+Three ingredients are needed:
+
+#definition[
+  A _model_ is a mathematical representation of a system --- a finite-state machine, a logical formula, a program abstraction.
+  It captures _what the system does_ (or can do), abstracting away irrelevant details.
+]
+
+#definition[
+  A _specification_ is a precise, formal statement of _desired behavior_: a precondition/postcondition pair, an invariant, a temporal property.
+  It captures _what the system should do_.
+]
+
+#definition[
+  _Verification_ is checking whether a model satisfies a specification: $"Model" models "Spec"$.
+]
+
+#pagebreak()
+
+#align(center)[
+  #import fletcher: diagram, edge, node, shapes
+  #let blob = blob.with(shape: shapes.rect)
+  #diagram(
+    spacing: (3em, 1.5em),
+    node-stroke: 1pt,
+    edge-stroke: 1pt,
+    node-corner-radius: 3pt,
+
+    blob((0, 0), [Real\ System], tint: orange, name: <sys>),
+    blob((2, 0), [Model\ (abstraction)], tint: blue, name: <model>),
+    blob((3, 0), [Verification\ $"Model" models "Spec"$?], tint: green, name: <verify>),
+    blob((4, 0), [Specification\ (requirements)], tint: purple, name: <spec>),
+
+    edge(<sys>, <model>, "=>", label: [_modeling_]),
+    edge(<model>, <verify>, "-}>"),
+    edge(<spec>, <verify>, "-}>"),
+  )
+]
+
+#example[
+  Consider a function `abs(x)` that should return $|x|$. \
+  *Model:* the program code (or its logical encoding). \
+  *Specification:* $"result" gt.eq 0$ and $("result" = x or "result" = -x)$. \
+  *Verification:* prove that for _all_ inputs $x$, the model satisfies the specification.
+]
+
+#Block(color: yellow, inset: 0.8em)[
+  *Formal methods =* build a model + write a specification + prove that $"Model" models "Spec"$.
+]
+
+The three ingredients are inseparable: a model without a spec is meaningless, a spec without verification is wishful thinking.
+
 == The Verification Spectrum
 
 #align(center)[
   #table(
-    columns: 4,
-    align: (left, center, center, center),
+    columns: 5,
+    align: (left, center, center, center, center),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
-    table.header[*Method*][*Rigor*][*Coverage*][*Cost*],
-    [Testing], [Low], [Partial], [Low],
-    [Static analysis], [Medium], [Heuristic], [Low],
-    [Model checking], [High], [Exhaustive (bounded)], [Medium],
-    [Deductive verification], [Highest], [Complete], [High],
+    table.header[*Method*][*Rigor*][*Coverage*][*Cost*][*Proves $"M" models "S"$?*],
+    [Testing], [Low], [Partial], [Low], [No],
+    [Static analysis], [Medium], [Heuristic], [Low], [Partially],
+    [Model checking], [High], [Exhaustive (bounded)], [Medium], [Yes (bounded)],
+    [Deductive verification], [Highest], [Complete], [High], [Yes],
   )
 ]
 
-This course focuses on the _formal_ end: logic-based reasoning, decision procedures, and deductive verification.
+This course moves from left to right, ending with deductive verification in Dafny.
 
 #Block(color: teal)[
   _"Testing shows the presence, not the absence of bugs."_ --- Edsger W. Dijkstra (1969)
@@ -139,12 +212,56 @@ This course focuses on the _formal_ end: logic-based reasoning, decision procedu
 
 = Propositional Logic Refresher
 
-== Syntax and Semantics
+== Syntax vs Semantics: Why Two Perspectives?
 
-Propositional logic (PL) underpins everything that follows: SAT solving, SMT, Hoare logic.
-The definitions here fix notation and terminology for the course.
+Logic has two faces: _syntax_ (the strings we write and transform) and _semantics_ (what they _mean_).
 
-=== Syntax
+#align(center)[
+  #grid(
+    columns: 2,
+    align: left,
+    column-gutter: 2em,
+    [
+      *Syntactic World ($entails$)*
+      - Formulas, rewriting rules
+      - Proof systems, derivations
+      - _"I can derive $alpha$ from $Gamma$"_
+      - Symbol: $Gamma entails alpha$
+    ],
+    [
+      *Semantic World ($models$)*
+      - Interpretations, truth values
+      - Truth tables, models
+      - _"$alpha$ is true whenever $Gamma$ is"_
+      - Symbol: $Gamma models alpha$
+    ],
+  )
+]
+
+For propositional logic, these two worlds are _perfectly aligned_ --- soundness + completeness gives us $entails <==> models$.
+So why bother distinguishing them?
+
+*Reason 1 --- Different algorithms:*
+Semantics gives _truth tables_ ($2^n$ rows --- brute force).
+Syntax gives _proof search_ (sometimes exponentially shorter).
+For 300 variables, a truth table has $2^300$ rows (more than atoms in the universe), but a proof might take 50 lines.
+Same question, vastly different computational cost.
+
+*Reason 2 --- The gap appears later:*
+For first-order logic over arithmetic, Gödel's Incompleteness Theorem shows there are true statements that _no_ proof system can derive: $entails subset.neq models$.
+When this gap opens, confusing the two perspectives leads to fundamental errors.
+
+#Block(color: yellow)[
+  *Bottom line:*
+  - Semantics asks _"Is it true?"_ (check all interpretations).
+  - Syntax asks _"Can I derive it?"_ (apply inference rules mechanically).
+
+  For PL, both always give the same answer.
+
+  However, we _train the distinction now_ so it is natural when it matters.
+]
+
+== PL Syntax
 
 #definition[Well-Formed Formula (WFF)][
   Given propositional variables $P, Q, R, dots$ and constants $top, bot$, the set of _well-formed formulas_ is defined inductively:
@@ -157,24 +274,40 @@ The definitions here fix notation and terminology for the course.
 Operator precedence: $not thick > thick and thick > thick or thick > thick imply thick > thick iff$. \
 Outer parentheses omitted. Associativity: $and$, $or$ left-to-right; $imply$ right-to-left.
 
-=== Semantics
+#example[
+  A Boolean guard `if (x > 0 && !done)` in a program corresponds to the propositional formula $P and not Q$, where $P$ stands for `x > 0` and $Q$ for `done`.
+  This is a WFF by rule 2.
+]
 
-#definition[Interpretation][
+== PL Semantics
+
+#definition[
   An _interpretation_ (valuation) $nu: V to {0, 1}$ assigns a truth value to each propositional variable.
 ]
 
 The _evaluation_ $Eval(alpha)$ of a formula $alpha$ under $nu$ is defined recursively:
 $
-  Eval(top) &= 1, quad Eval(bot) = 0, quad Eval(P) = nu(P) \
-  Eval(not alpha) &= 1 - Eval(alpha) \
-  Eval(alpha and beta) &= min(Eval(alpha), Eval(beta)) \
-  Eval(alpha or beta) &= max(Eval(alpha), Eval(beta)) \
-  Eval(alpha imply beta) &= max(1 - Eval(alpha), Eval(beta))
+               Eval(top) & = 1, quad Eval(bot) = 0, quad Eval(P) = nu(P) \
+         Eval(not alpha) & = 1 - Eval(alpha) \
+    Eval(alpha and beta) & = min(Eval(alpha), Eval(beta)) \
+     Eval(alpha or beta) & = max(Eval(alpha), Eval(beta)) \
+  Eval(alpha imply beta) & = max(1 - Eval(alpha), Eval(beta))
 $
 
 #example[
   Let $nu(P) = 1, nu(Q) = 0$.
   Then $Eval(P imply Q) = max(1 - 1, 0) = 0$ and $Eval(not P or Q) = max(0, 0) = 0$. Both agree, as expected from the equivalence $(P imply Q) equiv (not P or Q)$.
+]
+
+#pagebreak()
+
+#example[
+  Let $nu(A) = 1, nu(B) = 0, nu(C) = 1$. Evaluate $A and (B or C)$:
+  $
+            Eval(B or C) & = max(0, 1) = 1 \
+    Eval(A and (B or C)) & = min(1, 1) = 1
+  $
+  The formula is _satisfied_ by this interpretation.
 ]
 
 == Semantic Classification
@@ -244,6 +377,11 @@ Formulas are classified by their truth behavior across _all_ interpretations:
   ${P, P imply Q} models Q$ #h(2em) (modus ponens as entailment)
 
   Equivalently: $P and (P imply Q) imply Q$ is a tautology.
+]
+
+#Block(color: orange)[
+  *Common mistake:* writing $P models Q$ when you mean $P imply Q$, or vice versa.
+  One ($imply$) is a formula inside the logic; the other ($models$) is a claim _about_ formulas.
 ]
 
 #note[
@@ -414,11 +552,11 @@ $
 Convert $(P imply Q) imply R$ to NNF step by step:
 
 $
-  & (P imply Q) imply R \
-  rewrite quad & not (P imply Q) or R                        & "(eliminate outer" imply")"\
-  rewrite quad & not (not P or Q) or R                        & "(eliminate inner" imply")"\
-  rewrite quad & (not not P and not Q) or R                   & "(De Morgan)"\
-  rewrite quad & (P and not Q) or R                           & "(Double negation)"
+               & (P imply Q) imply R \
+  rewrite quad & not (P imply Q) or R       & "(eliminate outer" imply")" \
+  rewrite quad & not (not P or Q) or R      & "(eliminate inner" imply")" \
+  rewrite quad & (not not P and not Q) or R &               "(De Morgan)" \
+  rewrite quad & (P and not Q) or R         &         "(Double negation)"
 $
 
 Result: $(P and not Q) or R$ --- negations only on atoms.
@@ -578,6 +716,7 @@ The resulting formula is _equisatisfiable_ with the original:
   $
 
   Each biconditional definition produces a constant number of clauses (4 clauses for $iff$).
+
   *Equisatisfiable CNF*: $16$ clauses, 3 fresh variables. _Linear growth._
 ]
 
@@ -615,18 +754,311 @@ A clever proof can be _exponentially shorter_ than brute-force enumeration.
 
 Three main traditions:
 - *Hilbert-style:* many axiom schemas, one rule (modus ponens). Compact to define, hard to use.
-- *Natural deduction* (Gentzen, 1934): no axioms, symmetric intro/elim rules per connective.
-- *Sequent calculus* (Gentzen, 1934): manipulates _sequents_ $Gamma entails Delta$. Foundation of proof search.
+- *Natural deduction* (Gentzen, 1934): no axioms, symmetric intro/elim rules per connective. _Our primary tool._
+- *Sequent calculus* (Gentzen, 1934): manipulates structured judgments. Foundation of automated proof search.
 
 == Natural Deduction
 
-A proof system with _no axioms_ --- only inference rules.
-Each connective has _introduction_ rules (how to prove it) and _elimination_ rules (how to use it).
+#import frederic: assume, fitch, premise, step, subproof
 
-// #Block(color: teal)[
-//   Introduced by Gerhard Gentzen (1934).
-//   The intro/elim symmetry mirrors the Curry--Howard correspondence between proofs and programs.
-// ]
+A proof system with _no axioms_ --- only inference rules.
+Each connective has _introduction_ rules (*how to build* a compound formula) and _elimination_ rules (*how to use* one).
+
+We present proofs in *Fitch notation*: a numbered list of steps.
+Each step contains a formula and a _justification_ (the rule applied + referenced line numbers).
+
+_Subproofs_ (indented blocks) introduce a _temporary assumption_.
+Everything derived inside a subproof depends on that assumption.
+When the subproof closes, the assumption is _discharged_ --- you may no longer cite its internal lines, but you can reference the subproof _as a whole_.
+
+#Block(color: yellow)[
+  *Mental model:* A subproof says _"if I temporarily assume $alpha$, I can derive $beta$."_ \
+  When it closes, you conclude $alpha imply beta$ --- without assuming $alpha$ anymore.
+]
+
+== Conjunction and Implication Rules
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *$and$-introduction* ($and$i): \
+    From $alpha$ and $beta$ on separate lines, \
+    conclude $alpha and beta$.
+
+    #fitch(
+      premise(1, $alpha$),
+      premise(2, $beta$),
+      step(3, $alpha and beta$, rule: [$and$i 1, 2]),
+    )
+  ],
+  [
+    *$and$-elimination* ($and$e): \
+    From $alpha and beta$, conclude $alpha$ (or $beta$).
+
+    #fitch(
+      premise(1, $alpha and beta$),
+      step(2, $alpha$, rule: [$and$e 1]),
+      step(3, $beta$, rule: [$and$e 1]),
+    )
+  ],
+)
+
+#pagebreak()
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *$imply$-introduction* ($imply$i): \
+    Open a subproof assuming $alpha$, derive $beta$. \
+    Close subproof, conclude $alpha imply beta$.
+
+    #fitch(
+      subproof(
+        assume(1, $alpha$, rule: [assumption]),
+        step(2, $dots.v$),
+        step(3, $beta$, rule: [$dots.v$]),
+      ),
+      step(4, $alpha imply beta$, rule: [$imply$i 1--3]),
+    )
+  ],
+  [
+    *$imply$-elimination* ($imply$e): \
+    Modus ponens. \
+    From $alpha$ and $alpha imply beta$, conclude $beta$.
+
+    #fitch(
+      premise(1, $alpha$),
+      premise(2, $alpha imply beta$),
+      step(3, $beta$, rule: [$imply$e 1, 2]),
+    )
+  ],
+)
+
+== Disjunction Rules
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *$or$-introduction* ($or$i): \
+    From $alpha$, conclude $alpha or beta$ (or $beta or alpha$).
+
+    #fitch(
+      premise(1, $alpha$),
+      step(2, $alpha or beta$, rule: [$or$i 1]),
+    )
+  ],
+  [
+    *$or$-elimination* ($or$e): \
+    From $alpha or beta$, with subproofs deriving $gamma$ from each disjunct, conclude $gamma$.
+
+    #fitch(
+      premise(1, $alpha or beta$),
+      subproof(
+        assume(2, $alpha$, rule: [assumption]),
+        step(3, $gamma$, rule: [$dots.v$]),
+      ),
+      subproof(
+        assume(4, $beta$, rule: [assumption]),
+        step(5, $gamma$, rule: [$dots.v$]),
+      ),
+      step(6, $gamma$, rule: [$or$e 1, 2--3, 4--5]),
+    )
+  ],
+)
+
+== Negation and Absurdity Rules
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *$not$-introduction* ($not$i): \
+    Assume $alpha$, derive $bot$ (contradiction). \
+    Close subproof, conclude $not alpha$.
+
+    #fitch(
+      subproof(
+        assume(1, $alpha$, rule: [assumption]),
+        step(2, $dots.v$),
+        step(3, $bot$, rule: [$dots.v$]),
+      ),
+      step(4, $not alpha$, rule: [$not$i 1--3]),
+    )
+  ],
+  [
+    *$not$-elimination* ($not$e): \
+    From $alpha$ and $not alpha$, derive $bot$.
+
+    #fitch(
+      premise(1, $alpha$),
+      premise(2, $not alpha$),
+      step(3, $bot$, rule: [$not$e 1, 2]),
+    )
+  ],
+)
+
+#pagebreak()
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *$bot$-elimination* (ex falso quodlibet, $bot$e): \
+    From $bot$, derive _any_ formula.
+
+    #fitch(
+      premise(1, $bot$),
+      step(2, $alpha$, rule: [$bot$e 1]),
+    )
+  ],
+  [
+    *Reductio ad absurdum* (RAA): \
+    Assume $not alpha$, derive $bot$. Conclude $alpha$.
+
+    #fitch(
+      subproof(
+        assume(1, $not alpha$, rule: [assumption]),
+        step(2, $dots.v$),
+        step(3, $bot$, rule: [$dots.v$]),
+      ),
+      step(4, $alpha$, rule: [RAA 1--3]),
+    )
+  ],
+)
+
+#note[
+  *Classical vs Intuitionistic:* RAA and LEM ($alpha or not alpha$) are _classical_ rules.
+  Dropping them gives _intuitionistic_ logic, where $P or not P$ is not provable --- relevant in constructive type theory (Curry--Howard correspondence).
+]
+
+#Block(color: yellow)[
+  *Two key proof patterns* that cover the majority of ND proofs: \
+  --- To prove $not phi$: assume $phi$, derive $bot$, apply $not$i. \
+  --- To prove $alpha imply beta$: assume $alpha$, derive $beta$, apply $imply$i.
+]
+
+== Fitch Proofs: Basic Examples
+
+#example[
+  *Conjunction rearrangement:* $p and q, thin r entails q and r$
+
+  #align(center)[
+    #fitch(
+      premise(1, $p and q$),
+      premise(2, $r$),
+      step(3, $q$, rule: [$and$e 1]),
+      step(4, $q and r$, rule: [$and$i 3, 2]),
+    )
+  ]
+
+  Each step cites the rule and the line numbers it depends on.
+  Line 3 _eliminates_ the conjunction to extract $q$; line 4 _introduces_ a new conjunction.
+]
+
+#pagebreak()
+
+#example[
+  *Modus Tollens:* $A imply B, thin not B entails not A$
+
+  #align(center)[
+    #fitch(
+      premise(1, $A imply B$),
+      premise(2, $not B$),
+      subproof(
+        assume(3, $A$, rule: [assumption]),
+        step(4, $B$, rule: [$imply$e 3, 1]),
+        step(5, $bot$, rule: [$not$e 4, 2]),
+      ),
+      step(6, $not A$, rule: [$not$i 3--5]),
+    )
+  ]
+
+  Lines 3--5 form a _subproof_: we temporarily assume $A$, derive $bot$, then discharge the assumption to conclude $not A$ via $not$i.
+  The vertical bar shows the scope of the assumption --- lines 4 and 5 are only accessible _within_ the subproof.
+]
+
+== Fitch Proofs: Implication Chains
+
+#example[
+  *Hypothetical Syllogism:* $A imply B, thin B imply C entails A imply C$
+
+  #align(center)[
+    #fitch(
+      premise(1, $A imply B$),
+      premise(2, $B imply C$),
+      subproof(
+        assume(3, $A$, rule: [assumption]),
+        step(4, $B$, rule: [$imply$e 3, 1]),
+        step(5, $C$, rule: [$imply$e 4, 2]),
+      ),
+      step(6, $A imply C$, rule: [$imply$i 3--5]),
+    )
+  ]
+
+  To prove an implication $A imply C$, we _assume_ $A$ (line 3), derive $C$ (line 5), and close with $imply$i.
+]
+
+#pagebreak()
+
+#example[
+  *Disjunctive Syllogism:* $A or B, thin not A entails B$
+
+  #align(center)[
+    #fitch(
+      premise(1, $A or B$),
+      premise(2, $not A$),
+      subproof(
+        assume(3, $A$, rule: [assumption]),
+        step(4, $bot$, rule: [$not$e 3, 2]),
+        step(5, $B$, rule: [$bot$e 4]),
+      ),
+      subproof(
+        assume(6, $B$, rule: [assumption]),
+      ),
+      step(7, $B$, rule: [$or$e 1, 3--5, 6--6]),
+    )
+  ]
+
+  The $or$e rule requires two subproofs --- one for each disjunct --- both arriving at the same conclusion.
+]
+
+== Fitch Proofs: De Morgan
+
+#example[
+  *De Morgan (one direction):* $not (A or B) entails not A and not B$
+
+  #align(center)[
+    #block[
+      #set align(left)
+      #fitch(
+        premise(1, $not (A or B)$),
+        subproof(
+          assume(2, $A$, rule: [assumption]),
+          step(3, $A or B$, rule: [$or$i 2]),
+          step(4, $bot$, rule: [$not$e 3, 1]),
+        ),
+        step(5, $not A$, rule: [$not$i 2--4]),
+        subproof(
+          assume(6, $B$, rule: [assumption]),
+          step(7, $A or B$, rule: [$or$i 6]),
+          step(8, $bot$, rule: [$not$e 7, 1]),
+        ),
+        step(9, $not B$, rule: [$not$i 6--8]),
+        step(10, $not A and not B$, rule: [$and$i 5, 9]),
+      )
+    ]
+  ]
+]
+
+The pattern repeats: to prove $not phi$, assume $phi$, derive $bot$, apply $not$i.
+Each subproof is self-contained --- it assumes one thing, reaches a contradiction, and produces a negation.
+
+== Tree Notation (Classical Alternative)
+
+Textbooks often present ND rules using _proof trees_ (Gentzen-style), where $Gamma entails alpha$ means _"from assumptions $Gamma$, derive $alpha$"_:
 
 #let rules-grid(..args) = {
   set align(center)
@@ -640,155 +1072,31 @@ Each connective has _introduction_ rules (how to prove it) and _elimination_ rul
 
 #rules-grid(
   rule(
-    name: [$and$-intro],
+    name: [$and$i],
     $Gamma entails alpha and beta$,
     $Gamma entails alpha$,
     $Gamma entails beta$,
   ),
   rule(
-    name: [$and$-elim],
-    $Gamma entails alpha$,
-    $Gamma entails alpha and beta$,
-  ),
-  rule(
-    name: [$and$-elim],
-    $Gamma entails beta$,
-    $Gamma entails alpha and beta$,
-  ),
-)
-
-#rules-grid(
-  rule(
-    name: [$imply$-intro],
+    name: [$imply$i],
     $Gamma entails alpha imply beta$,
     $Gamma, alpha entails beta$,
   ),
   rule(
-    name: [$imply$-elim],
+    name: [$imply$e],
     $Gamma entails beta$,
     $Gamma entails alpha$,
     $Gamma entails alpha imply beta$,
   ),
 )
 
-#rules-grid(
-  rule(
-    name: [$or$-intro],
-    $Gamma entails alpha or beta$,
-    $Gamma entails alpha$,
-  ),
-  rule(
-    name: [$or$-elim],
-    $Gamma entails gamma$,
-    $Gamma entails alpha or beta$,
-    $Gamma, alpha entails gamma$,
-    $Gamma, beta entails gamma$,
-  ),
-)
+Here $Gamma$ is the _context_ --- the set of currently active assumptions.
+The $imply$i rule shows that to prove $alpha imply beta$, we add $alpha$ to the context and derive $beta$.
 
-== Negation and Absurdity
-
-#rules-grid(
-  rule(
-    name: [$not$-intro],
-    $Gamma entails not alpha$,
-    $Gamma, alpha entails bot$,
-  ),
-  rule(
-    name: [$not$-elim],
-    $Gamma entails bot$,
-    $Gamma entails alpha$,
-    $Gamma entails not alpha$,
-  ),
-  rule(
-    name: [RAA],
-    $Gamma entails beta$,
-    $Gamma entails alpha$,
-    $Gamma entails not alpha$,
-  ),
-)
-
-#rules-grid(
-  rule(
-    name: [LEM],
-    $Gamma entails alpha or not alpha$,
-    [~],
-  ),
-  rule(
-    name: [assumption],
-    $Gamma, alpha entails alpha$,
-    [~],
-  ),
-)
-
-#v(1em)
-
-#note[
-  *Classical vs Intuitionistic:* The rules above define _classical_ natural deduction.
-  Dropping LEM (and restricting RAA) gives _intuitionistic_ logic, where $P or not P$ is not provable --- relevant in constructive mathematics and type theory (Curry--Howard correspondence).
-]
-
-== Fitch Notation
-
-_Fitch notation_ arranges ND proofs as a numbered list of lines, with indentation for _subproofs_ (temporary assumptions and their scope).
-
-#example[
-  $p and q, r entails q and r$
-
-  #import frederic: assume, fitch, premise, step, subproof
-
-  #align(center)[
-    #grid(
-      columns: 2,
-      align: left,
-      column-gutter: 2em,
-      [
-        *Proof tree:*
-        #prooftree(
-          title-inset: 0.5em,
-          rule(
-            name: [$and$i],
-            $q and r$,
-            rule(
-              name: [$and$e],
-              $q$,
-              rule($p and q$),
-            ),
-            rule($r$),
-          ),
-        )],
-      [
-        *Fitch notation:*
-        #fitch(
-          premise(1, $p and q$),
-          premise(2, $r$),
-          step(3, $q$, rule: [$and$e 1]),
-          step(4, $q and r$, rule: [$and$i 3, 2]),
-        )],
-    )
-  ]
-]
-
-#example[
-  *Modus Tollens* --- $A imply B, not B entails not A$:
-
-  #import frederic: assume, fitch, premise, step, subproof
-
-  #align(center)[
-    #fitch(
-      premise(1, $A imply B$),
-      premise(2, $not B$),
-      subproof(
-        assume(3, $A$, rule: [assumption]),
-        step(4, $B$, rule: [$imply$e 1, 3]),
-        step(5, $bot$, rule: [$not$e 4, 2]),
-      ),
-      step(6, $not A$, rule: [$not$i 3--5]),
-    )
-  ]
-
-  Note the _subproof_ at lines 3--5: temporarily assume $A$, derive $bot$, then discharge the assumption to conclude $not A$.
-  The vertical bar shows the scope of the assumption.
+#Block(color: teal)[
+  Tree notation and Fitch notation express _exactly the same_ proof system. \
+  Fitch is more readable for humans; trees compose better for automated proof search. \
+  We use Fitch throughout this course.
 ]
 
 == Soundness and Completeness
@@ -940,11 +1248,12 @@ If all branches close --- valid.
   })
 ]
 
-Both branches close $arrow.double$ the formula is valid. $square$
+Both branches close $=>$ the formula is valid. #h(1fr)$square$
 
 == Tableaux: Counterexample Discovery
 
 *Test:* Is $P imply (Q imply P)$ a tautology? (Spoiler: _yes._)
+
 *Test:* Is $P imply Q$ a tautology? (Spoiler: _no._)
 
 #grid(
@@ -962,8 +1271,8 @@ Both branches close $arrow.double$ the formula is valid. $square$
   [
     #Block(color: green)[
       *Key property of tableaux:*
-      - Closed tableau $arrow.double$ formula is valid.
-      - Open branch $arrow.double$ read off a counterexample from the literals on the branch.
+      - Closed tableau $=>$ formula is valid.
+      - Open branch $=>$ read off a counterexample from the literals on the branch.
     ]
   ],
 )
@@ -978,10 +1287,10 @@ Both branches close $arrow.double$ the formula is valid. $square$
 _Resolution_ reduces propositional proof theory to a single inference rule, but requires _clausal form_ (CNF).
 This makes it the natural foundation for automated theorem proving.
 
-#Block(color: teal)[
-  Introduced by J. Alan Robinson (1965).
-  Modern CDCL solvers maintain resolution proofs implicitly --- learned clauses _are_ resolution steps.
-]
+// #Block(color: teal)[
+//   Introduced by J. Alan Robinson (1965).
+//   Modern CDCL solvers maintain resolution proofs implicitly --- learned clauses _are_ resolution steps.
+// ]
 
 #definition[Resolution Rule][
   Given two clauses containing complementary literals:
@@ -990,7 +1299,7 @@ This makes it the natural foundation for automated theorem proving.
   $
   derive the _resolvent_:
   $
-    C = ell_1 or dots or ell_m or ell'_1 or dots or ell'_k
+    C = C_1 times.o_p C_2 = ell_1 or dots or ell_m or ell'_1 or dots or ell'_k
   $
   The variable $p$ is called the _pivot_.
 ]
@@ -1020,7 +1329,7 @@ $
   C_5 & = square & "resolve" C_4 "and" C_3 "on" Q
 $
 
-The empty clause $square$ is derived $arrow.double$ the original entailment holds. $square$
+The empty clause $square$ is derived $=>$ the original entailment holds. #h(1fr)$square$
 
 #theorem[Completeness of Resolution][
   Resolution is _refutation-complete_: a set of clauses $S$ is unsatisfiable if and only if the empty clause $square$ can be derived from $S$ by resolution.
@@ -1041,7 +1350,8 @@ The empty clause $square$ is derived $arrow.double$ the original entailment hold
   )
 ]
 
-Progression from left to right mirrors the course: human methods $arrow.r$ machine methods.
+Progression from left to right mirrors the course: human methods $=>$ machine methods.
+
 SAT solvers are _resolution engines_ augmented with heuristics (VSIDS, restarts, phase saving).
 
 = First-Order Logic
@@ -1080,7 +1390,8 @@ Dafny verification conditions are FOL formulas.
 #example[
   *Arithmetic:* $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$ \
   where $0$ is a constant, $S$ is unary, $+, times$ are binary functions; $<, =$ are binary relations.
-
+]
+#example[
   *Graph theory:* $Sigma = angle.l emptyset, {"Edge", "Path"} angle.r$ \
   where $"Edge"$ and $"Path"$ are binary predicates (no function symbols).
 ]
@@ -1152,10 +1463,10 @@ A formula with no free variables is a _sentence_ (closed formula).
 #definition[Structure (Model)][
   A _structure_ $frak(A)$ for signature $Sigma = angle.l cal(F), cal(R) angle.r$ consists of:
   - A non-empty _domain_ (universe) $A$ --- the set of objects we reason about.
-  - For each $n$-ary function symbol $f in cal(F)$: a function $f^frak(A) : A^n arrow A$.
+  - For each $n$-ary function symbol $f in cal(F)$: a function $f^frak(A) : A^n to A$.
   - For each $n$-ary relation symbol $R in cal(R)$: a relation $R^frak(A) subset.eq A^n$.
 
-  A _variable assignment_ $sigma : cal(V) arrow A$ maps each variable to a domain element.
+  A _variable assignment_ $sigma : cal(V) to A$ maps each variable to a domain element.
 ]
 
 #example[
@@ -1177,10 +1488,10 @@ The key ingredient compared to PL: quantifiers range over domain elements.
   The relation $frak(A), sigma models phi$ is defined inductively:
   - $frak(A), sigma models R(t_1, dots, t_n)$ iff $(t_1^(frak(A),sigma), dots, t_n^(frak(A),sigma)) in R^frak(A)$
   - Boolean connectives: as in PL.
-  - $frak(A), sigma models forall x. thin phi$ iff $frak(A), sigma[x arrow.bar a] models phi$ for _every_ $a in A$.
-  - $frak(A), sigma models exists x. thin phi$ iff $frak(A), sigma[x arrow.bar a] models phi$ for _some_ $a in A$.
+  - $frak(A), sigma models forall x. thin phi$ iff $frak(A), sigma[x |-> a] models phi$ for _every_ $a in A$.
+  - $frak(A), sigma models exists x. thin phi$ iff $frak(A), sigma[x |-> a] models phi$ for _some_ $a in A$.
 
-  Here $sigma[x arrow.bar a]$ maps $x$ to $a$ and agrees with $sigma$ on all other variables.
+  Here $sigma[x |-> a]$ maps $x$ to $a$ and agrees with $sigma$ on all other variables.
 ]
 
 For _sentences_ (no free variables), the truth value depends only on the structure: we write $frak(A) models phi$.
@@ -1285,40 +1596,68 @@ The alternation depth ($forall exists forall dots$) determines complexity.
 
 == FOL Proof Rules: Quantifiers
 
-Natural deduction extends to FOL with four quantifier rules:
+Natural deduction extends to FOL with four quantifier rules.
+In Fitch notation:
 
-#rules-grid(
-  rule(
-    name: [$forall$-intro],
-    $Gamma entails forall x. thin phi(x)$,
-    $Gamma entails phi(y)$,
-  ),
-  rule(
-    name: [$forall$-elim],
-    $Gamma entails phi(t)$,
-    $Gamma entails forall x. thin phi(x)$,
-  ),
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *$forall$-introduction* ($forall$i): \
+    Derive $phi(y)$ for an _arbitrary_ $y$. \
+    Conclude $forall x. thin phi(x)$.
+
+    #fitch(
+      step(1, $phi(y)$, rule: [$dots.v$ ($y$ arbitrary)]),
+      step(2, $forall x. thin phi(x)$, rule: [$forall$i 1]),
+    )
+  ],
+  [
+    *$forall$-elimination* ($forall$e): \
+    From $forall x. thin phi(x)$, conclude $phi(t)$ for _any_ term $t$.
+
+    #fitch(
+      premise(1, $forall x. thin phi(x)$),
+      step(2, $phi(t)$, rule: [$forall$e 1]),
+    )
+  ],
 )
 
-#rules-grid(
-  rule(
-    name: [$exists$-intro],
-    $Gamma entails exists x. thin phi(x)$,
-    $Gamma entails phi(t)$,
-  ),
-  rule(
-    name: [$exists$-elim],
-    $Gamma entails psi$,
-    $Gamma entails exists x. thin phi(x)$,
-    $Gamma, phi(y) entails psi$,
-  ),
+#v(1em)
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *$exists$-introduction* ($exists$i): \
+    From $phi(t)$ for some term $t$, conclude $exists x. thin phi(x)$.
+
+    #fitch(
+      premise(1, $phi(t)$),
+      step(2, $exists x. thin phi(x)$, rule: [$exists$i 1]),
+    )
+  ],
+  [
+    *$exists$-elimination* ($exists$e): \
+    From $exists x. thin phi(x)$, open a subproof assuming $phi(y)$ for _fresh_ $y$, derive $psi$. Conclude $psi$.
+
+    #fitch(
+      premise(1, $exists x. thin phi(x)$),
+      subproof(
+        assume(2, $phi(y)$, rule: [$y$ fresh]),
+        step(3, $dots.v$),
+        step(4, $psi$, rule: [$dots.v$]),
+      ),
+      step(5, $psi$, rule: [$exists$e 1, 2--4]),
+    )
+  ],
 )
 
 *Side conditions:*
-- $forall$-intro: $y$ must be _arbitrary_ --- not free in any undischarged assumption in $Gamma$.
-- $forall$-elim: $t$ can be any term (universal _instantiation_).
-- $exists$-intro: give a _witness_ term $t$.
-- $exists$-elim: $y$ must be _fresh_ --- not free in $psi$ or any undischarged assumption besides $phi(y)$.
+- $forall$i: $y$ must be _arbitrary_ --- not free in any undischarged assumption.
+- $forall$e: $t$ can be any term (universal _instantiation_).
+- $exists$i: give a _witness_ term $t$.
+- $exists$e: $y$ must be _fresh_ --- not free in $psi$ or any undischarged assumption besides $phi(y)$.
 
 == FOL Soundness and Completeness
 
@@ -1386,8 +1725,8 @@ SMT solvers restrict to _decidable fragments_ of FOL --- theories where satisfia
   A (possibly infinite) set of FOL sentences $Gamma$ is satisfiable if and only if every _finite_ subset of $Gamma$ is satisfiable.
 ]
 
-#proof[
-  (Sketch.)
+#proof[(sketch)][
+
   ($arrow.double$) Trivial: any model of $Gamma$ satisfies every finite subset.
 
   ($arrow.double.l$) If $Gamma$ is unsatisfiable, then by completeness there is a proof of $bot$ from $Gamma$.
