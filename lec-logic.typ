@@ -263,6 +263,9 @@ When this gap opens, confusing the two perspectives leads to fundamental errors.
 
 == PL Syntax
 
+Propositional logic studies _Boolean combinations_ of atomic statements. \
+Its syntax defines which strings are "legal" formulas:
+
 #definition[Well-Formed Formula (WFF)][
   Given propositional variables $P, Q, R, dots$ and constants $top, bot$, the set of _well-formed formulas_ is defined inductively:
   + Every propositional variable and constant is a WFF.
@@ -294,9 +297,28 @@ $
   Eval(alpha imply beta) & = max(1 - Eval(alpha), Eval(beta))
 $
 
+#definition[
+  An interpretation $nu$ _satisfies_ a formula $alpha$, written $nu models alpha$, if $Eval(alpha) = 1$.
+
+  A _model_ of $alpha$ is any interpretation that satisfies it.
+]
+
+#Block(color: orange)[
+  *Terminology note:* The word "model" appears in many distinct contexts:
+  - *PL model* = an interpretation (truth assignment) satisfying a formula.
+  - *FOL model* = a structure (domain + interpretation of symbols) satisfying sentences.
+  - *Model checking* = algorithmic verification technique (checking if a system model satisfies a temporal property).
+
+  In this course, context determines which meaning applies. \
+  For now, "model" = satisfying interpretation.
+]
+
 #example[
   Let $nu(P) = 1, nu(Q) = 0$.
-  Then $Eval(P imply Q) = max(1 - 1, 0) = 0$ and $Eval(not P or Q) = max(0, 0) = 0$. Both agree, as expected from the equivalence $(P imply Q) equiv (not P or Q)$.
+  - Then $Eval(P imply Q) = max(1 - 1, 0) = 0$ and $Eval(not P or Q) = max(0, 0) = 0$.
+  - Both agree, as expected from the equivalence $(P imply Q) equiv (not P or Q)$.
+
+  Since $Eval(P imply Q) = 0$, we say $nu models.not (P imply Q)$ --- this interpretation is _not_ a model of $P imply Q$.
 ]
 
 #pagebreak()
@@ -307,7 +329,8 @@ $
             Eval(B or C) & = max(0, 1) = 1 \
     Eval(A and (B or C)) & = min(1, 1) = 1
   $
-  The formula is _satisfied_ by this interpretation.
+  The formula is _satisfied_ by this interpretation: $nu models A and (B or C)$.
+  So $nu$ is a _model_ of $A and (B or C)$.
 ]
 
 == Semantic Classification
@@ -316,16 +339,16 @@ Formulas are classified by their truth behavior across _all_ interpretations:
 
 #definition[Semantic Classification][
   Let $alpha$ be a WFF.
-  - $alpha$ is *valid* (_tautology_), written $models alpha$, if $Eval(alpha) = 1$ for _all_ interpretations $nu$.
-  - $alpha$ is *satisfiable* if $Eval(alpha) = 1$ for _some_ interpretation $nu$.
-  - $alpha$ is *unsatisfiable* (_contradiction_) if $Eval(alpha) = 0$ for _all_ interpretations $nu$.
-  - $alpha$ is *falsifiable* if $Eval(alpha) = 0$ for _some_ interpretation $nu$.
+  - $alpha$ is *valid* (_tautology_), written $models alpha$, if _every_ interpretation is a model: $nu models alpha$ for all $nu$.
+  - $alpha$ is *satisfiable* (_consistent_) if it has _at least one_ model: $nu models alpha$ for some $nu$.
+  - $alpha$ is *unsatisfiable* (_contradiction_) if it has _no_ models: $nu models.not alpha$ for all $nu$.
+  - $alpha$ is *falsifiable* if some interpretation is _not_ a model: $nu models.not alpha$ for some $nu$.
 ]
 
 #example[
-  - $P or not P$ --- valid (tautology). True under every interpretation.
-  - $P and Q$ --- satisfiable ($nu(P) = nu(Q) = 1$) and falsifiable ($nu(P) = 1, nu(Q) = 0$). This is _contingent_.
-  - $P and not P$ --- unsatisfiable. No assignment makes it true.
+  - $P or not P$ --- valid (tautology). _Every_ interpretation is a model.
+  - $P and Q$ --- satisfiable (has model $nu(P) = nu(Q) = 1$) and falsifiable (non-model $nu(P) = 1, nu(Q) = 0$). This is _contingent_.
+  - $P and not P$ --- unsatisfiable. _No_ model exists.
 ]
 
 #align(center)[
@@ -352,41 +375,106 @@ Formulas are classified by their truth behavior across _all_ interpretations:
 == Entailment vs Implication
 
 #definition[Semantic Entailment][
-  A set of formulas $Gamma$ _semantically entails_ $alpha$, written $Gamma models alpha$, if every interpretation satisfying all formulas in $Gamma$ also satisfies $alpha$.
+  A set of formulas $Gamma$ _semantically entails_ $alpha$, written $Gamma models alpha$, if every model of $Gamma$ is also a model of $alpha$.
+
+  Equivalently: every interpretation satisfying all formulas in $Gamma$ also satisfies $alpha$.
 ]
 
-#grid(
-  columns: (3fr, 4fr),
-  column-gutter: 1em,
-  [
-    *Implication* ($imply$) is a _connective_ --- it lives _inside_ the language.
-    $P imply Q$ is a WFF with a truth value under each interpretation.
-  ],
-  [
-    *Entailment* ($models$) is a _metalogical_ relation --- it talks _about_ formulas from outside.
-    $P models Q$ is not a formula; it is a mathematical claim about all interpretations.
-  ],
-)
+These two notions --- _implication_ and _entailment_ --- are distinct but deeply related:
 
-#Block(color: green)[
-  *Deduction Theorem (semantic):* #h(1em)
-  $alpha imply beta$ is valid $quad iff quad alpha models beta$
+*Implication ($imply$)* is a _connective_ --- an operator _inside_ the language of propositional logic.
+- $P imply Q$ is a well-formed formula with a truth value under each interpretation.
+- It can appear in compound formulas: $(P imply Q) and R$, $not (P imply Q)$, etc.
+- Defined by a truth table: $Eval(P imply Q) = max(1 - Eval(P), Eval(Q))$.
+
+*Entailment ($models$)* is a _metalogical_ relation --- a claim _about_ formulas from outside the logic.
+- $P models Q$ is _not_ a formula; it is a mathematical statement about all interpretations.
+- It cannot be negated or combined using logical connectives.
+- Defined by quantifying over models: _"every model of $P$ is also a model of $Q$."_
+
+#Block(color: orange)[
+  *Common mistake:* writing $P models Q$ when you mean $P imply Q$, or vice versa.
+
+  One ($imply$) is a formula you can evaluate; the other ($models$) is a claim you prove.
+]
+
+#Block(color: yellow)[
+  *Why distinguish them?* In propositional logic, they coincide (via the Deduction Theorem).
+  But in first-order logic and beyond, the distinction becomes crucial: some truths are not provable, and the syntactic world ($entails$) diverges from the semantic world ($models$).
+]
+
+#Block(color: teal)[
+  *Gödel's Incompleteness Theorem (1931):*
+  In first-order arithmetic (Peano Arithmetic), there exist sentences $G$ that are _true in the standard model of natural numbers_ but _not provable_ from the axioms.
+
+  The Gödel sentence $G$ essentially encodes _"this statement is not provable."_
+  If $G$ were provable, we could derive a contradiction (since $G$ asserts its own unprovability).
+  If $not G$ were provable, then $G$ would be provable (contradiction again).
+  Therefore $G$ is _unprovable_, which makes it _true_.
+
+  *Consequence:* $NN models G$ but $"PA" entails.not G$ --- semantic truth and syntactic provability _diverge_.
+
+  Other concrete examples: Goodstein's Theorem (1944), Paris-Harrington Theorem (1977).
+]
+
+#pagebreak()
+
+#theorem[Deduction Theorem (Semantic)][
+  For any formulas $alpha, beta$:
+  $ alpha models beta quad iff quad models alpha imply beta $
+]
+
+#proof[
+  ($arrow.double$) Assume $alpha models beta$. We must show $models alpha imply beta$.
+
+  Let $nu$ be any interpretation. We show $nu models alpha imply beta$.
+  - If $nu models.not alpha$, then $Eval(alpha imply beta) = max(0, Eval(beta)) = 1$, so $nu models alpha imply beta$.
+  - If $nu models alpha$, then since $alpha models beta$, we have $nu models beta$, so $Eval(alpha imply beta) = max(0, 1) = 1$.
+
+  In both cases, $nu models alpha imply beta$. Since $nu$ was arbitrary, $alpha imply beta$ is valid.
+
+  ($arrow.double.l$) Assume $models alpha imply beta$. We must show $alpha models beta$.
+
+  Let $nu$ be a model of $alpha$, i.e., $nu models alpha$. Since $alpha imply beta$ is valid, $nu models alpha imply beta$.
+  By the definition of $imply$: $max(1 - Eval(alpha), Eval(beta)) = 1$.
+  Since $Eval(alpha) = 1$, we have $max(0, Eval(beta)) = 1$, so $Eval(beta) = 1$, i.e., $nu models beta$.
+
+  Thus every model of $alpha$ is a model of $beta$. $square$
 ]
 
 #example[
   ${P, P imply Q} models Q$ #h(2em) (modus ponens as entailment)
 
-  Equivalently: $P and (P imply Q) imply Q$ is a tautology.
+  *Via Deduction Theorem:* This is equivalent to $P and (P imply Q) imply Q$ being valid.
+
+  Check: any interpretation either falsifies $P and (P imply Q)$ (making the implication vacuously true), or satisfies both $P$ and $P imply Q$, in which case it must satisfy $Q$ (by the truth table for $imply$).
 ]
 
-#Block(color: orange)[
-  *Common mistake:* writing $P models Q$ when you mean $P imply Q$, or vice versa.
-  One ($imply$) is a formula inside the logic; the other ($models$) is a claim _about_ formulas.
+#example[
+  $not (P and Q) models not P or not Q$ #h(2em) (De Morgan, semantic form)
+
+  *Via Deduction Theorem:* Equivalent to $models not (P and Q) imply (not P or not Q)$, which is a tautology.
+]
+
+#theorem[Generalized Deduction Theorem][
+  For any set of formulas $Gamma$ and formulas $alpha, beta$:
+  $ Gamma union {alpha} models beta quad iff quad Gamma models alpha imply beta $
+]
+
+#proof[
+  ($arrow.double$) Assume $Gamma union {alpha} models beta$.
+  Let $nu$ be a model of $Gamma$. We show $nu models alpha imply beta$.
+  - If $nu models.not alpha$, then $nu models alpha imply beta$ (vacuously).
+  - If $nu models alpha$, then $nu$ models all formulas in $Gamma union {alpha}$, so by assumption $nu models beta$, hence $nu models alpha imply beta$.
+
+  ($arrow.double.l$) Assume $Gamma models alpha imply beta$.
+  Let $nu$ be a model of $Gamma union {alpha}$.
+  Then $nu models Gamma$, so $nu models alpha imply beta$ by assumption.
+  Since $nu models alpha$, we have $nu models beta$ by modus ponens. $square$
 ]
 
 #note[
-  The _Semantic Deduction Theorem_ generalizes this:
-  $ Gamma union {alpha} models beta quad iff quad Gamma models alpha imply beta $
+  This theorem justifies the _hypothetical reasoning_ pattern: to show $Gamma models alpha imply beta$, it suffices to show $Gamma union {alpha} models beta$ --- i.e., _"assume $alpha$ as an additional hypothesis and derive $beta$."_
 ]
 
 == SAT vs VALID Duality
@@ -394,8 +482,8 @@ Formulas are classified by their truth behavior across _all_ interpretations:
 Satisfiability and validity are _dual_ decision problems:
 
 $
-    "SAT:" quad & exists nu. thin Eval(alpha) = 1 quad "(find a witness)" \
-  "VALID:" quad & forall nu. thin Eval(alpha) = 1 quad "(verify universality)"
+    "SAT:" quad & exists nu. thin nu models alpha quad "(find a model)" \
+  "VALID:" quad & forall nu. thin nu models alpha quad "(every interpretation is a model)"
 $
 
 #Block(color: blue)[
@@ -415,7 +503,9 @@ $
 == Fundamental Equivalence Laws
 
 $alpha equiv beta$ iff $alpha iff beta$ is a tautology.
-The following equivalences serve as _rewriting rules_ for normal form transformations:
+
+These equivalences form the _toolkit_ for normal form transformations.
+Every conversion (NNF, CNF, DNF) is a sequence of applications of these rewriting rules:
 
 #grid(
   columns: 3,
@@ -527,6 +617,10 @@ Clauses and cubes are _dual_ notions:
 - A clause is _falsified_ only if _every_ literal in it is false.
 - A cube is _satisfied_ only if _every_ literal in it is true.
 
+#Block(color: teal)[
+  *Horn clauses* are computationally special: SAT restricted to Horn clauses is solvable in _linear time_ via unit propagation. Prolog's inference engine works exclusively with Horn clauses.
+]
+
 == Negation Normal Form
 
 #definition[Negation Normal Form (NNF)][
@@ -542,28 +636,16 @@ $
   chevron.l "Formula" chevron.r &::= chevron.l "Literal" chevron.r | chevron.l "Formula" chevron.r and chevron.l "Formula" chevron.r | chevron.l "Formula" chevron.r or chevron.l "Formula" chevron.r
 $
 
+In words: only $and$, $or$, and negation applied directly to variables --- no $imply$, no $iff$, no nested $not$.
+
 #example[
   $(p and q) or (not p and not q)$ --- in NNF. #h(2em)
   $not (p and q)$ --- _not_ in NNF (negation applied to a compound formula).
 ]
 
-== NNF Transformation: Worked Example
-
-Convert $(P imply Q) imply R$ to NNF step by step:
-
-$
-               & (P imply Q) imply R \
-  rewrite quad & not (P imply Q) or R       & "(eliminate outer" imply")" \
-  rewrite quad & not (not P or Q) or R      & "(eliminate inner" imply")" \
-  rewrite quad & (not not P and not Q) or R &               "(De Morgan)" \
-  rewrite quad & (P and not Q) or R         &         "(Double negation)"
-$
-
-Result: $(P and not Q) or R$ --- negations only on atoms.
-
 == NNF Transformation
 
-Rewriting rules:
+Rewriting rules (apply until no rule matches):
 
 #align(center)[
   #table(
@@ -583,6 +665,20 @@ Rewriting rules:
 
   Formulas _containing_ $iff$ may suffer _exponential blowup_ when converted to NNF.
 ]
+
+== NNF Transformation: Worked Example
+
+Convert $(P imply Q) imply R$ to NNF step by step:
+
+$
+               & (P imply Q) imply R \
+  rewrite quad & not (P imply Q) or R       & "(eliminate outer" imply")" \
+  rewrite quad & not (not P or Q) or R      & "(eliminate inner" imply")" \
+  rewrite quad & (not not P and not Q) or R &               "(De Morgan)" \
+  rewrite quad & (P and not Q) or R         &         "(Double negation)"
+$
+
+Result: $(P and not Q) or R$ --- negations only on atoms.
 
 == Conjunctive Normal Form
 
@@ -1175,7 +1271,7 @@ If _every_ branch reaches a contradiction, $phi$ is valid.
 ]
 
 #definition[Open Branch][
-  A branch is _open_ if it is fully expanded but not closed --- it provides a _satisfying assignment_ (counterexample).
+  A branch is _open_ if it is fully expanded but not closed --- it provides a _model_ of the formula being tested (a counterexample to validity).
 ]
 
 == Tableaux Decomposition Rules
@@ -1266,13 +1362,13 @@ Both branches close $=>$ the formula is valid. #h(1fr)$square$
     + $not Q$ #h(7.6em) _$alpha$-rule on 1_
 
     No complementary pair --- branch is *open*. \
-    *Counterexample:* $nu(P) = 1, nu(Q) = 0$.
+    *Counterexample* (model of $not (P imply Q)$): $nu(P) = 1, nu(Q) = 0$.
   ],
   [
     #Block(color: green)[
       *Key property of tableaux:*
       - Closed tableau $=>$ formula is valid.
-      - Open branch $=>$ read off a counterexample from the literals on the branch.
+      - Open branch $=>$ read off a model of the negated formula from the literals on the branch.
     ]
   ],
 )
@@ -1287,10 +1383,10 @@ Both branches close $=>$ the formula is valid. #h(1fr)$square$
 _Resolution_ reduces propositional proof theory to a single inference rule, but requires _clausal form_ (CNF).
 This makes it the natural foundation for automated theorem proving.
 
-// #Block(color: teal)[
-//   Introduced by J. Alan Robinson (1965).
-//   Modern CDCL solvers maintain resolution proofs implicitly --- learned clauses _are_ resolution steps.
-// ]
+#Block(color: teal)[
+  Introduced by J. Alan Robinson (1965).
+  Modern CDCL solvers maintain resolution proofs implicitly --- learned clauses _are_ resolution steps.
+]
 
 #definition[Resolution Rule][
   Given two clauses containing complementary literals:
@@ -1497,7 +1593,7 @@ The key ingredient compared to PL: quantifiers range over domain elements.
 For _sentences_ (no free variables), the truth value depends only on the structure: we write $frak(A) models phi$.
 
 #example[
-  Let $frak(A) = ({1, 2, 3}, <^frak(A) = {(1,2),(1,3),(2,3)})$ be a structure for signature ${<}$.
+  Let $frak(A) = ({1, 2, 3}, scripts(<)^frak(A) = {(1,2),(1,3),(2,3)})$ be a structure for signature ${<}$.
 
   Evaluate $forall x. thin exists y. thin x < y$ in $frak(A)$:
   - $x = 1$: need $y$ with $1 < y$.  Take $y = 2$. #YES
@@ -1511,7 +1607,7 @@ For _sentences_ (no free variables), the truth value depends only on the structu
 
 == Validity and Satisfiability in FOL
 
-The semantic classification extends from PL:
+// The semantic classification extends from PL:
 
 #definition[
   Let $phi$ be an FOL sentence.
@@ -1521,7 +1617,9 @@ The semantic classification extends from PL:
 ]
 
 #Block(color: orange)[
-  *Critical difference from PL:* In PL, the space of interpretations is _finite_ ($2^n$ truth assignments). In FOL, structures can have _infinite_ domains of _any_ cardinality --- decision procedures are fundamentally harder.
+  *Critical difference from PL:*
+  - In PL, the space of interpretations is _finite_ ($2^n$ truth assignments).
+  - In FOL, structures can have _infinite_ domains of _any_ cardinality --- decision procedures are fundamentally harder, sometimes even impossible (undecidable).
 ]
 
 #example[
@@ -1561,6 +1659,8 @@ Many useful equivalences govern quantifiers:
   ],
 )
 
+#pagebreak()
+
 #Block(color: orange)[
   $exists x. thin forall y$ is generally _stronger_ than $forall y. thin exists x$ --- the former asserts a _single_ $x$ for _all_ $y$.
 ]
@@ -1591,13 +1691,13 @@ Many useful equivalences govern quantifiers:
   $equiv forall x. thin exists y. thin (not P(x) or Q(x, y))$ #h(1em) _(pull $exists y$ out)_
 ]
 
-PNF separates the _quantifier prefix_ (alternation structure) from the _propositional skeleton_ (matrix).
+PNF separates the _quantifier prefix_ (alternation structure) from the _propositional skeleton_ (matrix). \
 The alternation depth ($forall exists forall dots$) determines complexity.
 
 == FOL Proof Rules: Quantifiers
 
-Natural deduction extends to FOL with four quantifier rules.
-In Fitch notation:
+// Natural deduction extends to FOL with four quantifier rules.
+// In Fitch notation:
 
 #grid(
   columns: 2,
@@ -1611,24 +1711,7 @@ In Fitch notation:
       step(1, $phi(y)$, rule: [$dots.v$ ($y$ arbitrary)]),
       step(2, $forall x. thin phi(x)$, rule: [$forall$i 1]),
     )
-  ],
-  [
-    *$forall$-elimination* ($forall$e): \
-    From $forall x. thin phi(x)$, conclude $phi(t)$ for _any_ term $t$.
 
-    #fitch(
-      premise(1, $forall x. thin phi(x)$),
-      step(2, $phi(t)$, rule: [$forall$e 1]),
-    )
-  ],
-)
-
-#v(1em)
-
-#grid(
-  columns: 2,
-  column-gutter: 2em,
-  [
     *$exists$-introduction* ($exists$i): \
     From $phi(t)$ for some term $t$, conclude $exists x. thin phi(x)$.
 
@@ -1638,26 +1721,76 @@ In Fitch notation:
     )
   ],
   [
-    *$exists$-elimination* ($exists$e): \
-    From $exists x. thin phi(x)$, open a subproof assuming $phi(y)$ for _fresh_ $y$, derive $psi$. Conclude $psi$.
+    *$forall$-elimination* ($forall$e): \
+    From $forall x. thin phi(x)$, conclude $phi(t)$ for _any_ term $t$.
 
+    #v(-0.5em)
     #fitch(
-      premise(1, $exists x. thin phi(x)$),
-      subproof(
-        assume(2, $phi(y)$, rule: [$y$ fresh]),
-        step(3, $dots.v$),
-        step(4, $psi$, rule: [$dots.v$]),
-      ),
-      step(5, $psi$, rule: [$exists$e 1, 2--4]),
+      premise(1, $forall x. thin phi(x)$),
+      step(2, $phi(t)$, rule: [$forall$e 1]),
     )
+
+    *$exists$-elimination* ($exists$e): \
+    From $exists x. thin phi(x)$, open a subproof assuming $phi(y)$ for _fresh_~$y$, derive $psi$. Conclude $psi$.
+
+    #place[
+      #v(1em)
+      #fitch(
+        premise(1, $exists x. thin phi(x)$),
+        subproof(
+          assume(2, $phi(y)$, rule: [$y$ fresh]),
+          step(3, $dots.v$),
+          step(4, $psi$, rule: [$dots.v$]),
+        ),
+        step(5, $psi$, rule: [$exists$e 1, 2--4]),
+      )
+    ]
   ],
 )
+
+#pagebreak()
 
 *Side conditions:*
 - $forall$i: $y$ must be _arbitrary_ --- not free in any undischarged assumption.
 - $forall$e: $t$ can be any term (universal _instantiation_).
 - $exists$i: give a _witness_ term $t$.
 - $exists$e: $y$ must be _fresh_ --- not free in $psi$ or any undischarged assumption besides $phi(y)$.
+
+== FOL Proof: A Complete Fitch Example
+
+#example[
+  *Prove:* $forall x. thin (P(x) imply Q(x)), thin exists x. thin P(x) entails exists x. thin Q(x)$
+
+  _"If every $P$ is a $Q$, and some $P$ exists, then some $Q$ exists."_
+
+  #align(center)[
+    #grid(
+      columns: 2,
+      align: left,
+      column-gutter: 2em,
+      [
+        #fitch(
+          premise(1, $forall x. thin (P(x) imply Q(x))$),
+          premise(2, $exists x. thin P(x)$),
+          subproof(
+            assume(3, $P(a)$, rule: [$a$ fresh]),
+            step(4, $P(a) imply Q(a)$, rule: [$forall$e 1]),
+            step(5, $Q(a)$, rule: [$imply$e 3, 4]),
+            step(6, $exists x. thin Q(x)$, rule: [$exists$i 5]),
+          ),
+          step(7, $exists x. thin Q(x)$, rule: [$exists$e 2, 3--6]),
+        )
+      ],
+      [
+        Line 3: open $exists$e subproof --- name the witness $a$ (fresh). \
+        Line 4: instantiate $forall x. thin (P(x) imply Q(x))$ with $a$ ($forall$e). \
+        Line 5: modus ponens on lines 3 and 4. \
+        Line 6: from $Q(a)$, existentially generalize ($exists$i). \
+        Line 7: close $exists$e --- the conclusion $exists x. thin Q(x)$ does not mention~$a$, so it survives.
+      ],
+    )
+  ]
+]
 
 == FOL Soundness and Completeness
 
@@ -1915,6 +2048,53 @@ The thread from logic to automated reasoning:
 ]
 
 *Next:* SAT encodings, DPLL, CDCL, then FOL theories and SMT.
+
+== Key Takeaways
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Propositional Logic:*
+    - Syntax (WFFs) vs Semantics (truth values)
+    - SAT $iff$ VALID duality via negation
+    - Equivalence laws $=>$ NNF $=>$ CNF
+    - Tseitin: polynomial equisatisfiable CNF
+  ],
+  [
+    *Proof Systems:*
+    - Natural deduction: intro/elim symmetry
+    - Fitch notation for human-readable proofs
+    - Refutation: assume $not alpha$, derive $bot$
+    - Resolution: single rule on clausal form
+    - Tableaux: systematic with counterexamples
+  ],
+)
+
+#v(0.5em)
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *First-Order Logic:*
+    - Quantifiers + predicates + functions
+    - Structures give meaning to symbols
+    - Gödel completeness: $entails iff models$
+    - Church--Turing: validity undecidable
+  ],
+  [
+    *Metatheorems:*
+    - Compactness: finite character of proofs
+    - Incompleteness: true $eq.not$ provable (arithmetic)
+    - SMT theories: decidable sweet spots
+  ],
+)
+
+#Block(color: blue)[
+  *The pipeline we build in this course:* \
+  Specification $=>$ logical formula $=>$ normal form $=>$ solver (SAT/SMT) $=>$ verdict.
+]
 
 == Exercises: Propositional Logic
 
