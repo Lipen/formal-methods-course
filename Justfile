@@ -16,6 +16,7 @@ files := """
     lec-fol.typ
     lec-smt.typ
     lec-dafny.typ
+    homework/hw1.typ
 """
 
 # Compile a single file

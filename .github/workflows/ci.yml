@@ -57,6 +57,10 @@ jobs:
       - run: typst compile lec-smt.typ
       - run: typst compile lec-dafny.typ
 
+      - run: |
+          typst compile homework/hw1.typ
+          mv homework/hw1.pdf .
+
       - name: List PDFs
         run: ls -lh *.pdf
 
