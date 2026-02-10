@@ -719,12 +719,12 @@ Satisfaction requires _at least one_ literal per clause --- this "one per clause
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header[*Problem*][*On CNF*][*On DNF*],
     [SAT check], [NP-complete], [Polynomial],
-    [TAUT check], [Polynomial], [co-NP-complete],
+    [VALID check], [Polynomial], [co-NP-complete],
   )
 ]
 
-SAT on DNF is polynomial: check if any cube has no complementary literals.
-TAUT on CNF is polynomial: check if every clause contains complementary literals.
+- SAT on DNF is polynomial: check if any cube has no complementary literals.
+- VALID on CNF is polynomial: check if every clause contains complementary literals.
 
 == CNF Transformation
 
