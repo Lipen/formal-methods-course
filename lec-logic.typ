@@ -62,7 +62,7 @@ In each case, the system's behavior was never _proven_ to match its specificatio
 
 == Formal Reasoning: A Taste
 
-Before we define verification formally, here is the _kind_ of reasoning formal methods make precise.
+Here is the _kind_ of reasoning formal methods make precise and machine-checkable.
 
 *Scenario:* A server has three properties documented in its specification:
 + If authentication succeeds, a session is created.
@@ -77,13 +77,16 @@ $
   underbrace(A, "premise 3")
 $
 
-*Derivation:* From $A$ and $A imply S$ we get $S$ (modus ponens). \
-From $S$ and $S imply R$ we get $R$ (modus ponens again). \
+*Derivation:* From $A$ and $A imply S$ we get $S$ (modus ponens).
+From $S$ and $S imply R$ we get $R$ (MP again). \
 *Conclusion:* the user can access the resource.
 
-#Block(color: blue)[
-  This is a _proof_ --- a finite chain of justified steps from premises to a conclusion.
-  Formal methods scale this idea to entire programs: premises are code + preconditions, and we prove that postconditions follow.
+#place[
+  #v(1em)
+  #Block(color: blue)[
+    This is a _proof_ --- a finite chain of justified steps from premises to a conclusion.
+    Formal methods scale this idea to entire programs: premises are code + pre-conditions, and we prove that post-conditions follow.
+  ]
 ]
 
 == What Is Verification?
@@ -97,7 +100,7 @@ Three ingredients are needed:
 ]
 
 #definition[
-  A _specification_ is a precise, formal statement of _desired behavior_: a precondition/postcondition pair, an invariant, a temporal property.
+  A _specification_ is a precise, formal statement of _desired behavior_: a pre-condition/post-condition pair, an invariant, a temporal property.
   It captures _what the system should do_.
 ]
 
@@ -213,6 +216,9 @@ This course moves from left to right, ending with deductive verification in Dafn
 = Propositional Logic Refresher
 
 == Syntax vs Semantics: Why Two Perspectives?
+
+// You studied propositional logic in Discrete Math.
+// Here we revisit it through the lens of _formal methods_ --- focusing on how machines manipulate and decide logical formulas, and why certain representations (CNF, clausal form) are essential for automated reasoning.
 
 Logic has two faces: _syntax_ (the strings we write and transform) and _semantics_ (what they _mean_).
 
@@ -404,17 +410,8 @@ These two notions --- _implication_ and _entailment_ --- are distinct but deeply
 ]
 
 #Block(color: teal)[
-  *Gödel's Incompleteness Theorem (1931):*
-  In first-order arithmetic (Peano Arithmetic), there exist sentences $G$ that are _true in the standard model of natural numbers_ but _not provable_ from the axioms.
-
-  The Gödel sentence $G$ essentially encodes _"this statement is not provable."_
-  If $G$ were provable, we could derive a contradiction (since $G$ asserts its own unprovability).
-  If $not G$ were provable, then $G$ would be provable (contradiction again).
-  Therefore $G$ is _unprovable_, which makes it _true_.
-
-  *Consequence:* $NN models G$ but $"PA" entails.not G$ --- semantic truth and syntactic provability _diverge_.
-
-  Other concrete examples: Goodstein's Theorem (1944), Paris-Harrington Theorem (1977).
+  For PL, these two worlds coincide perfectly: $\"entails\" <==> \"models\"$.
+  For first-order logic, Gödel showed that in specific theories (like Peano Arithmetic), _true_ sentences can be _unprovable_ --- the syntactic and semantic worlds diverge. We will see this precisely in the Metatheorems section.
 ]
 
 #pagebreak()
@@ -424,23 +421,32 @@ These two notions --- _implication_ and _entailment_ --- are distinct but deeply
   $ alpha models beta quad iff quad models alpha imply beta $
 ]
 
-#proof[
-  ($arrow.double$) Assume $alpha models beta$. We must show $models alpha imply beta$.
+#proof[($arrow.double.r$)][
+  Assume $alpha models beta$.
+  We must show $models alpha imply beta$.
 
-  Let $nu$ be any interpretation. We show $nu models alpha imply beta$.
+  Let $nu$ be any interpretation.
+  We show $nu models alpha imply beta$.
   - If $nu models.not alpha$, then $Eval(alpha imply beta) = max(0, Eval(beta)) = 1$, so $nu models alpha imply beta$.
   - If $nu models alpha$, then since $alpha models beta$, we have $nu models beta$, so $Eval(alpha imply beta) = max(0, 1) = 1$.
 
-  In both cases, $nu models alpha imply beta$. Since $nu$ was arbitrary, $alpha imply beta$ is valid.
+  In both cases, $nu models alpha imply beta$.
+  Since $nu$ was arbitrary, $alpha imply beta$ is valid.
+]
+#proof[($arrow.double.l$)][
+  Assume $models alpha imply beta$.
+  We must show $alpha models beta$.
 
-  ($arrow.double.l$) Assume $models alpha imply beta$. We must show $alpha models beta$.
-
-  Let $nu$ be a model of $alpha$, i.e., $nu models alpha$. Since $alpha imply beta$ is valid, $nu models alpha imply beta$.
+  Let $nu$ be a model of $alpha$, i.e., $nu models alpha$.
+  Since $alpha imply beta$ is valid, $nu models alpha imply beta$.
   By the definition of $imply$: $max(1 - Eval(alpha), Eval(beta)) = 1$.
   Since $Eval(alpha) = 1$, we have $max(0, Eval(beta)) = 1$, so $Eval(beta) = 1$, i.e., $nu models beta$.
 
-  Thus every model of $alpha$ is a model of $beta$. $square$
+  Thus every model of $alpha$ is a model of $beta$.
 ]
+
+The Deduction Theorem connects semantic entailment to formula validity --- it lets us reduce the question _"does $alpha$ entail~$beta$?"_ to _"is $alpha imply beta$ valid?"_
+This reduction is what makes automated validity checking possible: entailment becomes a satisfiability check.
 
 #example[
   ${P, P imply Q} models Q$ #h(2em) (modus ponens as entailment)
@@ -456,21 +462,24 @@ These two notions --- _implication_ and _entailment_ --- are distinct but deeply
   *Via Deduction Theorem:* Equivalent to $models not (P and Q) imply (not P or not Q)$, which is a tautology.
 ]
 
+#pagebreak()
+
 #theorem[Generalized Deduction Theorem][
   For any set of formulas $Gamma$ and formulas $alpha, beta$:
   $ Gamma union {alpha} models beta quad iff quad Gamma models alpha imply beta $
 ]
 
-#proof[
-  ($arrow.double$) Assume $Gamma union {alpha} models beta$.
+#proof[($arrow.double.r$)][
+  Assume $Gamma union {alpha} models beta$.
   Let $nu$ be a model of $Gamma$. We show $nu models alpha imply beta$.
   - If $nu models.not alpha$, then $nu models alpha imply beta$ (vacuously).
-  - If $nu models alpha$, then $nu$ models all formulas in $Gamma union {alpha}$, so by assumption $nu models beta$, hence $nu models alpha imply beta$.
-
-  ($arrow.double.l$) Assume $Gamma models alpha imply beta$.
+  - If $nu models alpha$, then $nu$ models all formulas in $Gamma union {alpha}$, so by assumption $nu models beta$, hence $nu models alpha imply beta$. #qedhere
+]
+#proof[($arrow.double.l$)][
+  Assume $Gamma models alpha imply beta$.
   Let $nu$ be a model of $Gamma union {alpha}$.
   Then $nu models Gamma$, so $nu models alpha imply beta$ by assumption.
-  Since $nu models alpha$, we have $nu models beta$ by modus ponens. $square$
+  Since $nu models alpha$, we have $nu models beta$ by modus ponens.
 ]
 
 #note[
@@ -495,14 +504,16 @@ $
 ]
 
 #Block(color: yellow)[
-  Checking SAT by truth tables takes $cal(O)(2^n)$ time.
+  Checking SAT by truth tables takes $cal(O)(2^n)$ time. \
   Is there a polynomial algorithm?
   _This is the P vs NP problem_ --- a Millennium Prize question.
 ]
 
 == Fundamental Equivalence Laws
 
-$alpha equiv beta$ iff $alpha iff beta$ is a tautology.
+#Block[
+  $alpha equiv beta$ iff $alpha iff beta$ is a tautology.
+]
 
 These equivalences form the _toolkit_ for normal form transformations.
 Every conversion (NNF, CNF, DNF) is a sequence of applications of these rewriting rules:
@@ -568,12 +579,19 @@ How many connectives do we _really_ need?
   But $not P$ evaluates to $0$ under this $nu$ --- so $not P$ is not expressible.
 ]
 
+#Block(color: blue)[
+  *Why FM cares:*
+  In hardware verification, circuits are built from NAND/NOR gates --- completeness guarantees these gates can implement _any_ Boolean function.
+  In SAT solving, CNF uses only ${not, and, or}$ --- so no expressiveness is lost.
+]
+
 = Normal Forms
 
 == Why Normal Forms?
 
-SAT solvers expect input in a specific _canonical_ syntax.
-Normal forms provide this standardization: every formula is rewritten into a restricted shape that algorithms can uniformly process.
+We know PL formulas can express any Boolean function.
+But SAT solvers don't accept _arbitrary_ formulas --- they need a standardized input format.
+Normal forms provide exactly this: every formula is rewritten into a restricted shape that algorithms can uniformly process.
 
 Three normal forms, each with different trade-offs:
 - *Negation Normal Form (NNF)* --- negations pushed to atoms; cheap to compute, preserves structure
@@ -639,8 +657,8 @@ $
 In words: only $and$, $or$, and negation applied directly to variables --- no $imply$, no $iff$, no nested $not$.
 
 #example[
-  $(p and q) or (not p and not q)$ --- in NNF. #h(2em)
-  $not (p and q)$ --- _not_ in NNF (negation applied to a compound formula).
+  - $(p and q) or (not p and not q)$ --- in NNF. #h(2em)
+  - $not (p and q)$ --- _not_ in NNF (negation applied to a compound formula).
 ]
 
 == NNF Transformation
@@ -665,6 +683,11 @@ Rewriting rules (apply until no rule matches):
 
   Formulas _containing_ $iff$ may suffer _exponential blowup_ when converted to NNF.
 ]
+
+Why the blowup?
+The biconditional $A iff B$ expands to $(not A or B) and (A or not B)$ --- producing _two copies_ of $A$ and $B$.
+A chain of $n$ biconditionals $p_1 iff p_2 iff dots iff p_n$ doubles the formula at each level, producing $2^n$ copies.
+The Tseitin transformation (coming soon) avoids this.
 
 == NNF Transformation: Worked Example
 
@@ -750,7 +773,7 @@ $
 
 == Equisatisfiability
 
-#definition[Equisatisfiability][
+#definition[
   Two formulas $alpha$ and $beta$ are _equisatisfiable_ if $alpha$ is satisfiable iff $beta$ is satisfiable.
 ]
 
@@ -766,18 +789,18 @@ $
 
 == Tseitin Transformation
 
-The _Tseitin transformation_ converts any formula to CNF in _polynomial time_ by introducing _fresh_ variables.
+#definition[
+  The _Tseitin transformation_ converts any formula to CNF in _polynomial time_ by introducing _fresh_ variables.
 
-=== Method
+  For each non-literal subformula $A$ of a formula $F$:
+  + Introduce a fresh propositional variable $n_A$.
+  + Add a _definitional clause_ $n_A iff A$ (asserting equivalence).
+  + Replace $A$ with $n_A$ in $F$.
 
-For each non-literal subformula $A$ of a formula $F$:
-+ Introduce a fresh propositional variable $n_A$.
-+ Add a _definitional clause_ $n_A iff A$ (asserting equivalence).
-+ Replace $A$ with $n_A$ in $F$.
-
-The resulting formula is _equisatisfiable_ with the original:
-- Every model of $F$ extends to a model of the Tseitin encoding.
-- Every model of the encoding restricted to original variables satisfies $F$.
+  The resulting formula is _equisatisfiable_ with the original:
+  - Every model of $F$ extends to a model of the Tseitin encoding.
+  - Every model of the encoding restricted to original variables satisfies $F$.
+]
 
 #pagebreak()
 
@@ -838,6 +861,9 @@ The main advantage: any formula can be converted to clausal form in _almost line
 
 == Why Proof Systems?
 
+Clausal form gives us the _input format_ for SAT solvers.
+But before we build solvers (next lecture), we need to understand what it means to _prove_ things mechanically --- that is the purpose of proof systems.
+
 Truth tables require $2^n$ rows for $n$ variables.
 For 300 variables (modest by industrial standards), that exceeds the number of atoms in the universe.
 
@@ -850,7 +876,7 @@ A clever proof can be _exponentially shorter_ than brute-force enumeration.
 
 Three main traditions:
 - *Hilbert-style:* many axiom schemas, one rule (modus ponens). Compact to define, hard to use.
-- *Natural deduction* (Gentzen, 1934): no axioms, symmetric intro/elim rules per connective. _Our primary tool._
+- *Natural deduction* (Gentzen, 1934): no axioms, intro/elim rules per connective. _Our primary tool._
 - *Sequent calculus* (Gentzen, 1934): manipulates structured judgments. Foundation of automated proof search.
 
 == Natural Deduction
@@ -1025,15 +1051,19 @@ When the subproof closes, the assumption is _discharged_ --- you may no longer c
   ],
 )
 
-#note[
+#v(-0.5em)
+#Block(color: yellow)[
   *Classical vs Intuitionistic:* RAA and LEM ($alpha or not alpha$) are _classical_ rules.
-  Dropping them gives _intuitionistic_ logic, where $P or not P$ is not provable --- relevant in constructive type theory (Curry--Howard correspondence).
+  Dropping them gives _intuitionistic_ logic, where $P or not P$ is not provable.
 ]
 
-#Block(color: yellow)[
-  *Two key proof patterns* that cover the majority of ND proofs: \
-  --- To prove $not phi$: assume $phi$, derive $bot$, apply $not$i. \
-  --- To prove $alpha imply beta$: assume $alpha$, derive $beta$, apply $imply$i.
+#place[
+  #v(0.7em)
+  #Block[
+    *Two key proof patterns* that cover the majority of ND proofs:
+    - To prove $not phi$: assume $phi$, derive $bot$, apply $not$i.
+    - To prove $alpha imply beta$: assume $alpha$, derive $beta$, apply $imply$i.
+  ]
 ]
 
 == Fitch Proofs: Basic Examples
@@ -1097,102 +1127,9 @@ When the subproof closes, the assumption is _discharged_ --- you may no longer c
   To prove an implication $A imply C$, we _assume_ $A$ (line 3), derive $C$ (line 5), and close with $imply$i.
 ]
 
-#pagebreak()
-
-#example[
-  *Disjunctive Syllogism:* $A or B, thin not A entails B$
-
-  #align(center)[
-    #fitch(
-      premise(1, $A or B$),
-      premise(2, $not A$),
-      subproof(
-        assume(3, $A$, rule: [assumption]),
-        step(4, $bot$, rule: [$not$e 3, 2]),
-        step(5, $B$, rule: [$bot$e 4]),
-      ),
-      subproof(
-        assume(6, $B$, rule: [assumption]),
-      ),
-      step(7, $B$, rule: [$or$e 1, 3--5, 6--6]),
-    )
-  ]
-
-  The $or$e rule requires two subproofs --- one for each disjunct --- both arriving at the same conclusion.
-]
-
-== Fitch Proofs: De Morgan
-
-#example[
-  *De Morgan (one direction):* $not (A or B) entails not A and not B$
-
-  #align(center)[
-    #block[
-      #set align(left)
-      #fitch(
-        premise(1, $not (A or B)$),
-        subproof(
-          assume(2, $A$, rule: [assumption]),
-          step(3, $A or B$, rule: [$or$i 2]),
-          step(4, $bot$, rule: [$not$e 3, 1]),
-        ),
-        step(5, $not A$, rule: [$not$i 2--4]),
-        subproof(
-          assume(6, $B$, rule: [assumption]),
-          step(7, $A or B$, rule: [$or$i 6]),
-          step(8, $bot$, rule: [$not$e 7, 1]),
-        ),
-        step(9, $not B$, rule: [$not$i 6--8]),
-        step(10, $not A and not B$, rule: [$and$i 5, 9]),
-      )
-    ]
-  ]
-]
-
-The pattern repeats: to prove $not phi$, assume $phi$, derive $bot$, apply $not$i.
-Each subproof is self-contained --- it assumes one thing, reaches a contradiction, and produces a negation.
-
-== Tree Notation (Classical Alternative)
-
-Textbooks often present ND rules using _proof trees_ (Gentzen-style), where $Gamma entails alpha$ means _"from assumptions $Gamma$, derive $alpha$"_:
-
-#let rules-grid(..args) = {
-  set align(center)
-  grid(
-    columns: args.pos().len(),
-    column-gutter: 1em,
-    ..args.pos().map(arg => Block(color: green, prooftree(arg)))
-  )
-  v(-0.5em)
-}
-
-#rules-grid(
-  rule(
-    name: [$and$i],
-    $Gamma entails alpha and beta$,
-    $Gamma entails alpha$,
-    $Gamma entails beta$,
-  ),
-  rule(
-    name: [$imply$i],
-    $Gamma entails alpha imply beta$,
-    $Gamma, alpha entails beta$,
-  ),
-  rule(
-    name: [$imply$e],
-    $Gamma entails beta$,
-    $Gamma entails alpha$,
-    $Gamma entails alpha imply beta$,
-  ),
-)
-
-Here $Gamma$ is the _context_ --- the set of currently active assumptions.
-The $imply$i rule shows that to prove $alpha imply beta$, we add $alpha$ to the context and derive $beta$.
-
-#Block(color: teal)[
-  Tree notation and Fitch notation express _exactly the same_ proof system. \
-  Fitch is more readable for humans; trees compose better for automated proof search. \
-  We use Fitch throughout this course.
+#note[
+  More worked Fitch proofs (disjunctive syllogism, De Morgan) appear in the exercises.
+  The key patterns: $or$-elimination requires two subproofs (one per disjunct); $not$-introduction assumes $phi$, derives $bot$, concludes $not phi$.
 ]
 
 == Soundness and Completeness
@@ -1257,125 +1194,14 @@ The $imply$i rule shows that to prove $alpha imply beta$, we add $alpha$ to the 
 Refutation is the basis for _automated_ reasoning:
 searching for a contradiction in $Gamma union {not alpha}$ is equivalent to a SAT problem.
 
-== Semantic Tableaux
-
-_Semantic tableaux_ (truth trees) operationalize the refutation principle.
-
-To test whether $phi$ is valid: _negate_ it and try to build a satisfying assignment for $not phi$.
-Decompose compound formulas into simpler ones, branching at disjunctions.
-If _every_ branch reaches a contradiction, $phi$ is valid.
-
-#definition[Closed Branch][
-  A branch is _closed_ if it contains both $phi$ and $not phi$ for some formula $phi$ (marked $times$).
-  A tableau is _closed_ if _every_ branch is closed.
+#note(title: "Other proof systems")[
+  _Semantic tableaux_ (truth trees) are another refutation-based method: negate the goal, decompose formulas, and check if every branch closes.
+  Open branches yield counterexamples.
+  We skip the details --- resolution (below) is more directly relevant to SAT solving.
 ]
 
-#definition[Open Branch][
-  A branch is _open_ if it is fully expanded but not closed --- it provides a _model_ of the formula being tested (a counterexample to validity).
-]
-
-== Tableaux Decomposition Rules
-
-Formulas are classified as $alpha$-type (conjunctive) or $beta$-type (disjunctive):
-
-#align(center)[
-  #grid(
-    columns: 2,
-    column-gutter: 3em,
-    [
-      *$alpha$-rules* (no branching):
-      #table(
-        columns: 3,
-        stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
-        table.header[$alpha$][$alpha_1$][$alpha_2$],
-        [$A and B$], [$A$], [$B$],
-        [$not (A or B)$], [$not A$], [$not B$],
-        [$not (A imply B)$], [$A$], [$not B$],
-        [$not not A$], [$A$], [],
-      )
-    ],
-    [
-      *$beta$-rules* (branching):
-      #table(
-        columns: 3,
-        stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
-        table.header[$beta$][$beta_1$][$beta_2$],
-        [$A or B$], [$A$], [$B$],
-        [$not (A and B)$], [$not A$], [$not B$],
-        [$A imply B$], [$not A$], [$B$],
-      )
-    ],
-  )
-]
-
-$alpha$-rules _extend_ the current branch (conjunction --- both must hold). \
-$beta$-rules _split_ into two branches (disjunction --- at least one must hold).
-
-== Tableaux: Worked Example
-
-*Prove:* $models (P imply Q) imply (not Q imply not P)$ (contraposition).
-
-Negate and try to satisfy.
-If all branches close --- valid.
-
-#align(center)[
-  #cetz.canvas(length: 0.8cm, {
-    import cetz.draw: *
-    let nd(pos, label, ..args) = content(pos, label, ..args.named())
-    let closed(pos) = content(pos, text(red, $times$))
-
-    nd((4, 0), [$1. thin not ((P imply Q) imply (not Q imply not P))$], anchor: "west")
-    nd((4, -1), [$2. thin P imply Q$], anchor: "west")
-    nd((4, -2), [$3. thin not (not Q imply not P)$], anchor: "west")
-    nd((4, -3), [$4. thin not Q$], anchor: "west")
-    nd((4, -4), [$5. thin not not P$], anchor: "west")
-    nd((4, -5), [$6. thin P$], anchor: "west")
-
-    line((5.5, -5.5), (3.5, -6.5), stroke: 0.6pt)
-    line((5.5, -5.5), (7.5, -6.5), stroke: 0.6pt)
-
-    nd((3.5, -7), [$7. thin not P$], anchor: "center")
-    nd((7.5, -7), [$7. thin Q$], anchor: "center")
-
-    closed((3.5, -7.8))
-    content((3.5, -8.4), text(0.65em, red)[$P, not P$])
-    closed((7.5, -7.8))
-    content((7.5, -8.4), text(0.65em, red)[$Q, not Q$])
-  })
-]
-
-Both branches close $=>$ the formula is valid. #h(1fr)$square$
-
-== Tableaux: Counterexample Discovery
-
-*Test:* Is $P imply (Q imply P)$ a tautology? (Spoiler: _yes._)
-
-*Test:* Is $P imply Q$ a tautology? (Spoiler: _no._)
-
-#grid(
-  columns: 2,
-  column-gutter: 2em,
-  [
-    Negate $P imply Q$:
-    + $not (P imply Q)$ #h(5em) _negate_
-    + $P$ #h(9.6em) _$alpha$-rule on 1_
-    + $not Q$ #h(7.6em) _$alpha$-rule on 1_
-
-    No complementary pair --- branch is *open*. \
-    *Counterexample* (model of $not (P imply Q)$): $nu(P) = 1, nu(Q) = 0$.
-  ],
-  [
-    #Block(color: green)[
-      *Key property of tableaux:*
-      - Closed tableau $=>$ formula is valid.
-      - Open branch $=>$ read off a model of the negated formula from the literals on the branch.
-    ]
-  ],
-)
-
-#theorem[
-  Propositional semantic tableaux are _sound_ and _complete_:
-  a closed tableau can be constructed for $alpha$ if and only if $alpha$ is valid.
+#Block(color: yellow)[
+  *Bridge to automated reasoning:* Resolution is the foundation of SAT solvers. Unlike natural deduction (designed for humans), resolution has a single rule — perfect for implementation.
 ]
 
 == Resolution
@@ -1427,8 +1253,17 @@ $
 
 The empty clause $square$ is derived $=>$ the original entailment holds. #h(1fr)$square$
 
+#pagebreak()
+
 #theorem[Completeness of Resolution][
   Resolution is _refutation-complete_: a set of clauses $S$ is unsatisfiable if and only if the empty clause $square$ can be derived from $S$ by resolution.
+]
+
+#Block(color: blue)[
+  *Why this matters for SAT solving:*
+  Every CDCL solver is _implicitly_ building a resolution proof.
+  When a solver reports UNSAT, its learned clauses form a resolution refutation.
+  This is how SAT solvers produce _verifiable certificates_ of unsatisfiability --- a crucial property for trustworthy verification.
 ]
 
 == Proof Systems: Comparison
@@ -1454,6 +1289,10 @@ SAT solvers are _resolution engines_ augmented with heuristics (VSIDS, restarts,
 
 == Why First-Order Logic?
 
+Propositional logic handles Boolean constraints well, and SAT solvers are remarkably efficient.
+But program _specifications_ say things like _"for all inputs $x$, if the precondition holds, the postcondition holds"_ --- we need _quantifiers_.
+First-order logic is the language of specifications, and its decidable fragments power SMT solvers.
+
 Propositional logic cannot express quantification over objects.
 Consider _"every even number greater than 2 is a sum of two primes"_ (Goldbach's conjecture) --- PL would need a separate proposition $G_4, G_6, G_8, dots$ for each even number.
 
@@ -1468,10 +1307,10 @@ FOL adds three key ingredients:
   One formula replaces infinitely many propositional checks.
 ]
 
-FOL matters for this course because _specifications_ are naturally first-order:
-"for _all_ inputs, if the precondition holds, the postcondition holds" is a $forall$-statement.
-SMT solvers decide fragments of FOL.
-Dafny verification conditions are FOL formulas.
+// FOL matters for this course because _specifications_ are naturally first-order:
+// "for _all_ inputs, if the precondition holds, the postcondition holds" is a $forall$-statement.
+// SMT solvers decide fragments of FOL.
+// Dafny verification conditions are FOL formulas.
 
 == FOL Syntax: Signatures
 
@@ -1607,8 +1446,6 @@ For _sentences_ (no free variables), the truth value depends only on the structu
 
 == Validity and Satisfiability in FOL
 
-// The semantic classification extends from PL:
-
 #definition[
   Let $phi$ be an FOL sentence.
   - $phi$ is _valid_ ($models phi$) if $frak(A) models phi$ for _every_ structure $frak(A)$.
@@ -1695,9 +1532,6 @@ PNF separates the _quantifier prefix_ (alternation structure) from the _proposit
 The alternation depth ($forall exists forall dots$) determines complexity.
 
 == FOL Proof Rules: Quantifiers
-
-// Natural deduction extends to FOL with four quantifier rules.
-// In Fitch notation:
 
 #grid(
   columns: 2,
@@ -1809,7 +1643,7 @@ The alternation depth ($forall exists forall dots$) determines complexity.
   Add Henkin witnesses for existential formulas.
   Build a canonical model from equivalence classes of closed terms.
   This model satisfies $Gamma union {not phi}$, so $Gamma models.not phi$.
-  Contrapositive gives the result. $square$
+  Contrapositive gives the result.
 ]
 
 #Block(color: yellow)[
@@ -1859,8 +1693,7 @@ SMT solvers restrict to _decidable fragments_ of FOL --- theories where satisfia
 ]
 
 #proof[(sketch)][
-
-  ($arrow.double$) Trivial: any model of $Gamma$ satisfies every finite subset.
+  ($arrow.double.r$) Trivial: any model of $Gamma$ satisfies every finite subset.
 
   ($arrow.double.l$) If $Gamma$ is unsatisfiable, then by completeness there is a proof of $bot$ from $Gamma$.
   Every proof uses only _finitely many_ premises, so some finite $Gamma_0 subset.eq Gamma$ is already unsatisfiable.
@@ -1873,16 +1706,22 @@ SMT solvers restrict to _decidable fragments_ of FOL --- theories where satisfia
   By compactness, $Gamma$ is satisfiable --- in a model with an "infinite" element $c$ larger than all standard naturals. This is a _non-standard model_ of arithmetic.
 ]
 
+#Block(color: blue)[
+  If a specification has a bug (is unsatisfiable), some _finite_ subset of constraints already witnesses it --- this is why _bounded model checking_ works: check finitely many constraints at a time.
+]
+
 == The Löwenheim--Skolem Theorem
 
 #theorem[Löwenheim--Skolem Theorem][
   If an FOL sentence (or countable set of sentences) has an _infinite_ model, then it has a model of _every_ infinite cardinality.
 ]
 
+#v(-0.5em)
 #Block(color: teal)[
   *Skolem's paradox (1922):* ZFC proves uncountable sets exist, yet by Löwenheim--Skolem, ZFC has a _countable_ model.
   Resolution: "uncountable" is _relative_ to the model's membership relation.
 ]
+#v(-0.5em)
 
 Expressive limitations of FOL (compactness + Löwenheim--Skolem):
 - Cannot define "exactly the natural numbers" (up to isomorphism).
@@ -1891,29 +1730,43 @@ Expressive limitations of FOL (compactness + Löwenheim--Skolem):
 
 These limitations motivate _stronger_ logics (second-order, infinitary) and _decidable_ fragments (monadic FOL, EPR, SMT theories).
 
+#place[
+  #v(0.5em)
+  #Block(color: orange)[
+    You cannot write an FOL spec that pins down "exactly the integers." \
+    SMT solvers work around this by _fixing_ the interpretation of theory symbols ($+$, $times$, $<$) --- they reason about a _specific_ structure, not all possible models.
+  ]
+]
+
 == Gödel's Incompleteness Theorems
 
 _Completeness_ (above): "if $phi$ is true in _all_ structures, it is provable."
 _Incompleteness_ (below): "if we fix _one_ structure ($NN$), some true sentences are unprovable."
 These concern different questions.
 
+#v(-0.5em)
 #theorem[First Incompleteness Theorem][
   Any _consistent_ formal system $cal(T)$ capable of expressing elementary arithmetic contains sentences that are _true_ (in the standard model $NN$) but _unprovable_ in $cal(T)$.
 ]
 
+#v(-0.5em)
 #theorem[Second Incompleteness Theorem][
   If $cal(T)$ is consistent and sufficiently powerful, then $cal(T)$ _cannot prove its own consistency_:
   $ cal(T) tack.r.not op("Con")(cal(T)) $
 ]
+#v(-0.5em)
 
 #note(title: "Sufficiently powerful")[
   $cal(T)$ must be capable of representing all computable functions --- essentially, $cal(T)$ must contain Robinson arithmetic ($Q$) or stronger.
 ]
 
-#Block(color: orange)[
-  Gödel's _completeness_ theorem: FOL proof systems are complete w.r.t. semantic consequence.
-  His _incompleteness_ theorems: specific _theories_ (like arithmetic) have true-but-unprovable sentences.
-  Different notions of "completeness"!
+#place[
+  #v(1em)
+  #Block(color: orange)[
+    Gödel's _completeness_ theorem: FOL proof systems are complete w.r.t. semantic consequence.
+    His _incompleteness_ theorems: specific _theories_ (like arithmetic) have true-but-unprovable sentences.
+    Different notions of "completeness"!
+  ]
 ]
 
 == Incompleteness: The Key Idea
@@ -1924,7 +1777,7 @@ Every formula, proof, and syntactic operation is encoded as a natural number.
 There is an arithmetic formula $"Prov"(n)$ saying "$n$ is the Gödel number of a provable sentence."
 Construct a sentence $G$:
 
-$ G quad equiv quad "\"I am not provable in " cal(T) "\"" $
+$ G quad equiv quad #[$quote.l$I am not provable in $cal(T)$$quote.r$] $
 
 #grid(
   columns: 2,
@@ -2041,11 +1894,12 @@ The thread from logic to automated reasoning:
 + *FOL and theories* motivate SMT solvers --- SAT + specialized theory reasoning.
 + *Soundness and completeness* guarantee correctness of the entire pipeline.
 
-#Block(color: green)[
-  *The SAT Problem:* Given a CNF formula $phi$, does there exist $nu$ such that $nu models phi$?
-
-  SAT is *NP-complete* (Cook--Levin, 1971) --- yet modern solvers handle _millions_ of variables.
+#theorem[Cook--Levin Theorem (1971)][
+  The Boolean satisfiability problem (SAT) is *NP-complete*: every problem in NP can be reduced to SAT in polynomial time.
 ]
+
+SAT is the _universal search problem_: if you can verify a solution efficiently, you can encode the search as a SAT instance.
+Modern CDCL solvers routinely handle formulas with _millions_ of variables.
 
 *Next:* SAT encodings, DPLL, CDCL, then FOL theories and SMT.
 
@@ -2067,7 +1921,7 @@ The thread from logic to automated reasoning:
     - Fitch notation for human-readable proofs
     - Refutation: assume $not alpha$, derive $bot$
     - Resolution: single rule on clausal form
-    - Tableaux: systematic with counterexamples
+    - Cook--Levin: SAT is NP-complete
   ],
 )
 
