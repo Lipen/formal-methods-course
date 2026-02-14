@@ -132,3 +132,9 @@
   inset: (x: 0em, y: 0em),
   titlefmt: it => strong(it),
 ).with(numbering: none)
+#let exercise = thmplain(
+  "exercise",
+  "Exercise",
+  inset: (x: 0em, y: 0em),
+  titlefmt: it => strong(it),
+).with(numbering: none)

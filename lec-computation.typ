@@ -1,12 +1,12 @@
-#import "theme.typ": *
+#import "theme2.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
   subtitle: "Theory of Computation",
-  date: "Spring 2025",
+  date: "Spring 2026",
   authors: "Konstantin Chukharev",
-  ratio: 16 / 9,
-  // dark: true,
 )
+
+#import "common-lec.typ": *
 
 #let yields = $scripts(arrow.double)$
 #let tapestart = box(baseline: 1pt)[$triangle.small.r$]

@@ -1,12 +1,12 @@
-#import "theme.typ": *
+#import "theme2.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
   subtitle: "Specification and Verification",
-  date: "Spring 2025",
+  date: "Spring 2026",
   authors: "Konstantin Chukharev",
-  ratio: 16 / 9,
-  dark: false,
 )
+
+#import "common-lec.typ": *
 
 #show table.cell.where(y: 0): strong
 
@@ -279,7 +279,7 @@ method MyMethod(x: int) returns (y: int)
 
 The last calculated condition is _implied_ by the given pre-condition:
 $
-  (x + 3 + 12 >= 25) implied (x >= 10)
+  (x + 3 + 12 >= 25) <- (x >= 10)
 $
 
 == Exercise \#1
@@ -351,9 +351,9 @@ Write an appropriate pre-condition for the method that allows you to implement i
 #examples[
   #block(spacing: 1em)[
     $
-      { x = 1 } &quad x := 20 &quad& { x = 20 } \
-      { x < 18 } &quad y := 18 - x &quad& { y >= 0 } \
-      { x < 18 } &quad y := 5 &quad& { y >= 0 } \
+       { x = 1 } & quad x := 20     & quad & { x = 20 } \
+      { x < 18 } & quad y := 18 - x & quad & { y >= 0 } \
+      { x < 18 } & quad y := 5      & quad & { y >= 0 } \
     $
   ]
 ]
@@ -361,7 +361,7 @@ Write an appropriate pre-condition for the method that allows you to implement i
 #example(title: "Non-examples")[
   #block(spacing: 1em)[
     $
-      { x < 18 } &quad x := y &quad& { y >= 0 }
+      { x < 18 } & quad x := y & quad & { y >= 0 }
     $
   ]
 ]
@@ -379,11 +379,11 @@ Write an appropriate pre-condition for the method that allows you to implement i
 #examples[
   #block(spacing: 1em)[
     $
-      { x = 0 } &quad y := x + 3 &quad& { y < 100 } \
-      { x = 0 } &quad y := x + 3 &quad& { x = 0 } \
-      { x = 0 } &quad y := x + 3 &quad& { 0 <= x, y = 3 } \
-      { x = 0 } &quad y := x + 3 &quad& { 3 <= y } \
-      { x = 0 } &quad y := x + 3 &quad& { #`true` } \
+      { x = 0 } & quad y := x + 3 & quad & { y < 100 } \
+      { x = 0 } & quad y := x + 3 & quad & { x = 0 } \
+      { x = 0 } & quad y := x + 3 & quad & { 0 <= x, y = 3 } \
+      { x = 0 } & quad y := x + 3 & quad & { 3 <= y } \
+      { x = 0 } & quad y := x + 3 & quad & { #`true` } \
     $
   ]
 ]
@@ -393,7 +393,7 @@ Write an appropriate pre-condition for the method that allows you to implement i
 Forward reasoning constructs the _strongest_ (i.e., _the most specific_) post-condition.
 
 $
-  { x = 0 } &quad y := x + 3 &quad& { 0 <= x and y = 3 }
+  { x = 0 } & quad y := x + 3 & quad & { 0 <= x and y = 3 }
 $
 
 #definition[
@@ -417,11 +417,11 @@ $
 #examples[
   #block(spacing: 1em)[
     $
-      { x <= 70 } &quad y := x + 3 &quad& { y <= 80 } \
-      { x = 65, y < 21 } &quad y := x + 3 &quad& { y <= 80 } \
-      { x <= 77 } &quad y := x + 3 &quad& { y <= 80 } \
-      { x dot x + y dot y <= 2500 } &quad y := x + 3 &quad& { y <= 80 } \
-      { #`false` } &quad y := x + 3 &quad& { y <= 80 } \
+                        { x <= 70 } & quad y := x + 3 & quad & { y <= 80 } \
+                 { x = 65, y < 21 } & quad y := x + 3 & quad & { y <= 80 } \
+                        { x <= 77 } & quad y := x + 3 & quad & { y <= 80 } \
+      { x dot x + y dot y <= 2500 } & quad y := x + 3 & quad & { y <= 80 } \
+                       { #`false` } & quad y := x + 3 & quad & { y <= 80 } \
     $
   ]
 ]
@@ -431,7 +431,7 @@ $
 Backward reasoning constructs the _weakest_ (i.e., _the most general_) pre-condition.
 
 $
-  { x <= 77 } &quad y := x + 3 &quad& { y <= 80 }
+  { x <= 77 } & quad y := x + 3 & quad & { y <= 80 }
 $
 
 #definition[
@@ -453,9 +453,9 @@ $
 #examples[
   #block(spacing: 1em)[
     $
-      { 25 <= x + 3 + 12 } &quad a := x + 3 &quad& { 25 <= a + 12 } \
-      { x + 1 <= y } &quad x := x + 1 &quad& { x <= y } \
-      { 6 x + 5 y < 100 } &quad x := 2 dot x &quad& { 3 x + 5 y < 100 } \
+      { 25 <= x + 3 + 12 } & quad a := x + 3   & quad & { 25 <= a + 12 } \
+            { x + 1 <= y } & quad x := x + 1   & quad & { x <= y } \
+       { 6 x + 5 y < 100 } & quad x := 2 dot x & quad & { 3 x + 5 y < 100 } \
     $
   ]
 ]
@@ -539,7 +539,7 @@ All right-hand sides are evaluated _before_ any variables are assigned.
 #definition[
   The weakest pre-condition for a _simultaneous assignment_ $x_1, x_2 := E_1, E_2$ is constructed by replacing each $x_1$ with $E_1$ and each $x_2$ with $E_2$ in post-condition $Q$.
   $
-    Q[x_1 := E_1, x_2 := E_2] &quad x_1, x_2 := E_1, E_2 quad { Q }
+    Q[x_1 := E_1, x_2 := E_2] & quad x_1, x_2 := E_1, E_2 quad { Q }
   $
 ]
 
@@ -572,7 +572,7 @@ All right-hand sides are evaluated _before_ any variables are assigned.
 What is true about $x$ in the post-condition, must have been true for all $x$ before the variable introduction.
 
 $
-  { forall x. thin Q } &quad #`var` x quad& { Q }
+  { forall x. thin Q } & quad #`var` x quad & { Q }
 $
 
 #examples[
@@ -668,7 +668,7 @@ Weakest pre-condition:
 == Conditional Control Flow
 
 #let condition-flow-diagram(P, B, nB, V, W, S, T, X, Y, Q) = {
-  import fletcher: diagram, node, edge
+  import fletcher: diagram, edge, node
   diagram(
     // debug: 3,
     node-corner-radius: 5pt,
@@ -764,8 +764,8 @@ Weakest pre-condition:
     #v(2em)
 
     $SP(ITE(B, S, T), P) = \
-      = X or Y = \
-      = SP(S, P and B) or SP(T, P and not B)$
+    = X or Y = \
+    = SP(S, P and B) or SP(T, P and not B)$
   ],
 )
 
@@ -801,8 +801,8 @@ Weakest pre-condition:
     )
 
     $WP(ITE(B, S, T), Q) = \
-      = (B imply V) and (not B imply W) = \
-      = (B imply WP(S, Q)) and (not B imply WP(T, Q))$
+    = (B imply V) and (not B imply W) = \
+    = (B imply WP(S, Q)) and (not B imply WP(T, Q))$
 
     #v(1em)
 
@@ -847,10 +847,10 @@ Weakest pre-condition:
 
 #place(horizon + right)[
   $
-    &((x < 3) imply (x = 89)) and ((x >= 3) imply (x = 50)) equiv \
+          & ((x < 3) imply (x = 89)) and ((x >= 3) imply (x = 50)) equiv \
     equiv & ((x >= 3) or (x = 89)) and ((x < 3) or (x = 50)) equiv \
     equiv & ((x >= 3) and (x < 3)) or ((x >= 3) and (x = 50)) or \
-    & or ((x = 89) and (x < 3)) or ((x = 89) and (x = 50)) equiv \
+          & or ((x = 89) and (x < 3)) or ((x = 89) and (x = 50)) equiv \
     equiv & (bot or (x = 50) or bot or bot) equiv \
     equiv & (x = 50)
   $
@@ -908,8 +908,8 @@ The called can assume that the method's post-condition holds.
 
 We introduce a new statement, ```dafny assume E```, to capture this:
 $
-  SP("assume" E, P) &= P and E \
-  WP("assume" E, Q) &= E imply Q \
+  SP("assume" E, P) & = P and E \
+  WP("assume" E, Q) & = E imply Q \
 $
 
 The semantics of ```dafny v := Triple(u + 1)``` is then given by
@@ -937,12 +937,12 @@ method M(x: X) returns (y: Y) ensures R[x, y]
 #box[
   $
     & WP(r := M(E), Q) = \
-    &= WP("var" x_E\; "var" y_E\; x_E := E\; "assume" R[x,y := x_E,y_r]\; r := y_r, Q) = \
-    &= WP("var" x_E, WP("var" y_r, WP(x_E := E, WP("assume" R[x,y := x_E,y_r], WP(r := y_r, Q))))) = \
-    &= WP("var" x_E, WP("var" y_r, WP(x_E := E, WP("assume" R[x,y := x_E,y_r], Q[r := y_r])))) = \
-    &= WP("var" x_E, WP("var" y_r, WP(x_E := E, R[x,y := x_E,y_r] imply Q[r := y_r]))) = \
-    &= WP("var" x_E, forall x_E. thin R[x,y := x_E,y_r] imply Q[r := y_r]) = \
-    &= forall y_r. forall x_E. thin R[x,y := x_E,y_r] imply Q[r := y_r]
+    & = WP("var" x_E\; "var" y_E\; x_E := E\; "assume" R[x,y := x_E,y_r]\; r := y_r, Q) = \
+    & = WP("var" x_E, WP("var" y_r, WP(x_E := E, WP("assume" R[x,y := x_E,y_r], WP(r := y_r, Q))))) = \
+    & = WP("var" x_E, WP("var" y_r, WP(x_E := E, WP("assume" R[x,y := x_E,y_r], Q[r := y_r])))) = \
+    & = WP("var" x_E, WP("var" y_r, WP(x_E := E, R[x,y := x_E,y_r] imply Q[r := y_r]))) = \
+    & = WP("var" x_E, forall x_E. thin R[x,y := x_E,y_r] imply Q[r := y_r]) = \
+    & = forall y_r. forall x_E. thin R[x,y := x_E,y_r] imply Q[r := y_r]
   $
 ]
 
@@ -993,8 +993,8 @@ method Triple(x: int) returns (r: int)
 ```
 
 $
-  SP("assert" E, P) &= P and E \
-  WP("assert" E, Q) &= E and Q \
+  SP("assert" E, P) & = P and E \
+  WP("assert" E, Q) & = E and Q \
 $
 
 #note[
@@ -1037,7 +1037,7 @@ Differences from method calls:
 - Functions are _transparent_: we reason about them in terms of their definition by _unfolding_ it.
 
 #align(center)[
-  #import fletcher: diagram, node, edge
+  #import fletcher: diagram, edge, node
   #diagram(
     // debug: true,
     edge-stroke: 1pt,

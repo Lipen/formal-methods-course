@@ -1,4 +1,4 @@
-#import "theme.typ": *
+#import "theme2.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
   subtitle: "DPLL",
