@@ -1,12 +1,12 @@
-#import "theme.typ": *
+#import "theme2.typ": *
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
   subtitle: "Satisfiability Modulo Theories",
-  date: "Spring 2025",
+  date: "Spring 2026",
   authors: "Konstantin Chukharev",
-  ratio: 16 / 9,
-  // dark: true,
 )
+
+#import "common-lec.typ": *
 
 #show table.cell.where(y: 0): strong
 
@@ -26,21 +26,114 @@
 #let ISort = Sort("I")
 #let ESort = Sort("E")
 #let USort = Sort("U")
+#let PersonSort = Sort("Person")
+#let ElemSort = Sort("Elem")
+#let XSort = Sort("X")
+#let YSort = Sort("Y")
 
-#let Green(x) = {
-  show emph: set text(green.darken(20%))
-  text(x, green.darken(20%))
-}
-#let Red(x) = {
-  show emph: set text(red.darken(20%))
-  text(x, red.darken(20%))
-}
+= Many-Sorted First-Order Logic
 
-#let True = Green(`true`)
-#let False = Red(`false`)
+== Why Many-Sorted?
 
-#let YES = Green[#sym.checkmark]
-#let NO = Red[#sym.crossmark]
+In standard (mono-sorted) FOL, _all_ variables range over a _single_ domain. This is too restrictive for practical reasoning:
+
+- *Programming languages* have _typed_ variables: `int x`, `bool b`, `double[] arr`.
+- *Databases* distinguish between strings, integers, dates, etc.
+- *Mathematics* itself uses distinct sorts: $NN$, $RR$, matrices, functions, etc.
+
+#Block(color: yellow)[
+  *Key insight:* _Many-sorted FOL_ is a natural generalization of FOL where each variable, constant, and function is associated with a _sort_ (type). This is exactly what SMT solvers use internally, and what SMT-LIB expresses.
+]
+
+#note[
+  We have already seen first-order logic in the previous lecture. Here, we generalize it to the _many-sorted_ setting, which is the standard framework for SMT.
+]
+
+== Many-Sorted Signatures
+
+#definition[
+  A _many-sorted signature_ $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ consists of:
+  - $Sigma^S$ --- a set of _sorts_ (also called _types_), e.g. $BoolSort$, $IntSort$, $RealSort$, $ArraySort$.
+  - $Sigma^F$ --- a set of _function symbols_, e.g. $=$, $+$, $<$, $"read"$, $"write"$.
+]
+
+#definition[
+  Each _function symbol_ $f in Sigma^F$ has a _rank_ --- an $(n+1)$-tuple of sorts:
+  $ rank(f) = chevron.l sigma_1, dots, sigma_n, sigma_(n+1) chevron.r $
+  Intuitively, $f$ takes $n$ arguments of sorts $sigma_1, dots, sigma_n$ and returns a value of sort $sigma_(n+1)$.
+  - Functions of arity 0 are called _constants_, with $rank(f) = chevron.l sigma chevron.r$.
+  - Functions returning $BoolSort$ are called _predicates_.
+]
+
+#note[
+  Every signature includes a distinguished sort $BoolSort$ with constants $top$ and $bot$, and an _equality predicate_ $eqq_sigma$ with $rank(eqq_sigma) = chevron.l sigma, sigma, BoolSort chevron.r$ for each sort $sigma$.
+]
+
+== Signature Examples
+
+#columns(2)[
+  *Number Theory:*
+  - $Sigma^S = {NatSort, BoolSort}$
+  - $Sigma^F = {0, S, <, +, times, eqq_NatSort, dots}$
+  - $rank(0) = chevron.l NatSort chevron.r$
+  - $rank(S) = chevron.l NatSort, NatSort chevron.r$
+  - $rank(<) = chevron.l NatSort, NatSort, BoolSort chevron.r$
+  - $rank(+) = chevron.l NatSort, NatSort, NatSort chevron.r$
+
+  #colbreak()
+
+  *Arrays:*
+  - $Sigma^S = {ArraySort, ISort, ESort, BoolSort}$
+  - $Sigma^F = {"read", "write", eqq_ArraySort, dots}$
+  - $rank("read") = chevron.l ArraySort, ISort, ESort chevron.r$
+  - $rank("write") = chevron.l ArraySort, ISort, ESort, ArraySort chevron.r$
+]
+
+#v(1em)
+
+#example[
+  _Propositional logic_ can be viewed as a _one-sorted_ theory:
+  - $Sigma^S = {BoolSort}$, $Sigma^F = {not, and, or, p_1, p_2, dots}$
+  - $rank(p_i) = chevron.l BoolSort chevron.r$ (propositional variables are Boolean constants)
+  - $rank(not) = chevron.l BoolSort, BoolSort chevron.r$, $rank(and) = chevron.l BoolSort, BoolSort, BoolSort chevron.r$
+]
+
+== Terms and Formulas
+
+A _well-sorted term_ of sort $sigma$ is built from variables, constants, and function applications that _respect_ the rank:
+
+- A variable $x$ of sort $sigma$ is a term of sort $sigma$.
+- A constant $c$ with $rank(c) = chevron.l sigma chevron.r$ is a term of sort $sigma$.
+- If $f$ has $rank(f) = chevron.l sigma_1, dots, sigma_n, sigma chevron.r$ and $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, then $f(t_1, dots, t_n)$ is a term of sort $sigma$.
+
+#example[
+  In the Number Theory signature with $x : NatSort$:
+  - $S(0)$ is a well-sorted term of sort $NatSort$ #YES
+  - $S(x) + 0$ is a well-sorted term of sort $NatSort$ #YES
+  - $S(x < 0)$ is _not_ well-sorted: $<$ returns $BoolSort$, but $S$ expects $NatSort$ #NO
+]
+
+A _$Sigma$-formula_ is built from _atoms_ (terms of sort $BoolSort$) using the standard logical connectives ($not$, $and$, $or$, $imply$, $iff$) and quantifiers ($forall x : sigma. thin phi$, $exists x : sigma. thin phi$).
+
+== Many-Sorted Interpretations
+
+#definition[
+  A _many-sorted interpretation_ $cal(I)$ of a signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ assigns:
+  - To each sort $sigma in Sigma^S$, a non-empty _domain_ $sigma^cal(I)$ (e.g. $IntSort^cal(I) = ZZ$, $BoolSort^cal(I) = {True, False}$).
+  - To each function symbol $f$ with $rank(f) = chevron.l sigma_1, dots, sigma_n, sigma chevron.r$, a function $f^cal(I) : sigma_1^cal(I) times dots.c times sigma_n^cal(I) to sigma^cal(I)$.
+  - To each variable $x$ of sort $sigma$, a value $x^cal(I) in sigma^cal(I)$.
+]
+
+#example[
+  For the Number Theory signature, one interpretation is:
+  - $NatSort^cal(I) = NN$, $0^cal(I) = 0$, $S^cal(I)(n) = n + 1$, $+^cal(I)(m, n) = m + n$
+  - $<^cal(I)(m, n) = True$ iff $m < n$ in the usual sense
+  This is the _intended_ (standard) interpretation of natural numbers.
+]
+
+#Block(color: blue)[
+  *Mono-sorted vs. many-sorted:* The only difference is that each variable, constant, and function is now tagged with a sort. Connective semantics ($not$, $and$, $or$, $forall$, $exists$) remain exactly the same. Quantifiers now range over the domain of a _specific sort_: $(forall x : sigma. thin phi)$ means "for all $x$ in $sigma^cal(I)$".
+]
 
 = First-Order Theories
 
@@ -64,8 +157,8 @@ Consider the signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ for a frag
   - Is it _valid_?
   - No, e.g., if we interpret $<$ as the _successor_ relation.
 
-#fancy-box[
-  In practice, we often _do not care_ about satisfiability or validity in _general_, \ but rather with respect to a _limited class_ of interpretations.
+#Block(color: yellow)[
+  In practice, we often _do not care_ about satisfiability or validity in _general_, but rather with respect to a _limited class_ of interpretations.
 ]
 
 *A practical reason:*
@@ -92,11 +185,8 @@ Hereinafter, we assume that we have an infinite set of variables $X$.
   $bold(M)$ is _closed under variable re-assignment_ if every $Sigma$-interpretation that differs from one in $bold(M)$ in the way it interprets the variables in $X$ is also in $bold(M)$.
 ]
 
-#v(1em)
-#align(center)[
-  #fancy-box[
-    A theory limits the interpretations of $Sigma$-formulas to those from $bold(M)$.
-  ]
+#Block(color: yellow)[
+  A theory limits the interpretations of $Sigma$-formulas to those from $bold(M)$.
 ]
 
 == Theory Examples
@@ -304,7 +394,7 @@ For every signature $Sigma$, entailment and validity in "pure" FOL can be seen a
   )
 ]
 
-== Decidability
+== Decidability and Fragments
 
 Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure that, given an input element $a$, returns (after _finite_ time) either "yes" if $a in A$ or "no" if $a notin A$.
 
@@ -317,8 +407,6 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
 ]
 #example[
   The _quantifier-free_ fragment of $cal(T)$ is the set of all $cal(T)$-valid $Sigma$-formulas _without quantifiers_.
-]
-#example[
   The _linear_ fragment of $cal(T)_"RA"$ is the set of all $cal(T)$-valid $Sigma_"RA"$-formulas _without multiplication_ ($times$).
 ]
 
@@ -328,7 +416,6 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
   A theory $cal(T) = chevron.l Sigma, bold(M) chevron.r$ is _recursively axiomatizable_ if $bold(M)$ is the class of all interpretations satisfying a _decidable set_ of first-order axioms $cal(A)$.
 ]
 
-// TODO: replace #theorem with #lemma
 #theorem[Lemma][
   Every recursively axiomatizable theory $cal(T)$ admits a procedure $E_cal(T)$ that _enumerates_ all $cal(T)$-valid formulas.
 ]
@@ -405,6 +492,10 @@ Further, we are going to study:
     edge(<solver>, <sat>, "-|>"),
     edge(<solver>, <unsat>, "-|>"),
   )
+]
+
+#Block(color: yellow)[
+  *Key insight:* A $cal(T)$-solver is the bridge between SAT and theory reasoning. It answers: "Is this set of theory literals consistent in this domain?"
 ]
 
 == Theory of Uninterpreted Functions
@@ -531,6 +622,17 @@ Legend for the table:
 - *"QFC complexity"* denotes the complexity of the satisfiability in a _quantifier-free conjunctive_ fragment.
 - For complexities, $n$ is the size of the input formula, $k$ is some positive integer.
 - "_Not elementary recursive_" means the runtime cannot be bounded by a fixed-height stack of exponentials.
+
+== Roadmap
+
+In the following sections, we will study _theory solvers_ for several important theories:
+
++ *Difference Logic* (DL) --- a very restricted fragment of integer arithmetic; solved via _graph-based_ cycle detection.
++ *Equality with Uninterpreted Functions* ($cal(T)_"EUF"$) --- the "empty" theory; solved via _congruence closure_.
++ *Arrays* ($cal(T)_"AX"$) --- models memory/arrays; extends the EUF proof system.
++ *Linear Real Arithmetic* ($cal(T)_"RA"$) --- linear inequalities over $RR$; solved via the _Simplex_ algorithm.
+
+We will then see how to _combine_ theory solvers (Nelson-Oppen method), build a complete _SMT solver_ (CDCL($cal(T)$) architecture), and use the _SMT-LIB_ standard language with the Z3 solver.
 
 = Difference Logic
 
@@ -726,79 +828,6 @@ Is $R_"UF"$ _terminating_?
 
 == Example Derivation in $R_"UF"$
 
-#align(center)[
-  #import curryst: prooftree, rule
-  #show: box.with(inset: 5pt, radius: 5pt, stroke: 0.4pt)
-  #set text(size: 0.8em)
-  #set align(left)
-  #stack(
-    dir: ltr,
-    spacing: 2em,
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*Refl*],
-        $Gamma := Gamma, x eqq x$,
-        [$x$ occurs in $Gamma$],
-      ),
-    ),
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*Trans*],
-        $Gamma := Gamma, x eqq z$,
-        $x neqq y in Gamma$,
-        $y eqq z in Gamma$,
-      ),
-    ),
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*Contr*],
-        [UNSAT],
-        $x eqq y in Gamma$,
-        $x neqq y in Gamma$,
-      ),
-    ),
-  )
-  #stack(
-    dir: ltr,
-    spacing: 2em,
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*Symm*],
-        $Gamma := Gamma, y eqq x$,
-        $x neqq y in Gamma$,
-      ),
-    ),
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*Cong*],
-        $Gamma := Gamma, x eqq y$,
-        $x eqq f(bold(u)) in Gamma$,
-        $y eqq f(bold(v)) in Gamma$,
-        $bold(u) = bold(v) in Gamma$,
-      ),
-    ),
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*SAT*],
-        [SAT],
-        [No other rules apply],
-      ),
-    ),
-  )
-]
-
 #example[
   Determine the satisfiability of the following set of literals:
   $a eqq f(f(a))$, $a eqq f(f(f(a)))$, $g(a, f(a)) neqq g(f(a), a)$.
@@ -976,48 +1005,6 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
 
 == Example Derivation in $R_"AX"$
 
-#align(center)[
-  #import curryst: prooftree, rule
-  #show: box.with(inset: 1em, radius: 1em, stroke: 0.4pt)
-  #set text(size: 0.8em)
-  #set align(left)
-  #stack(
-    dir: ltr,
-    spacing: 1em,
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*RIntro1*],
-        $Gamma := Gamma, v eqq "read"(b, i)$,
-        $b eqq "write"(a, i, v) in Gamma$,
-      ),
-    ),
-    prooftree(
-      title-inset: 5pt,
-      vertical-spacing: 2pt,
-      rule(
-        label: smallcaps[*Ext*],
-        $Gamma := Gamma, u neqq v, u eqq "read"(a, k), v eqq "read"(b, k)$,
-        $a neqq b in Gamma$,
-        [$a$ and $b$ are arrays],
-      ),
-    ),
-  )
-
-  #prooftree(
-    title-inset: 5pt,
-    vertical-spacing: 2pt,
-    rule(
-      label: smallcaps[*RIntro2*],
-      $Gamma := Gamma, i eqq j quad quad Gamma := Gamma, i neqq j, u eqq "read"(a, j), u eqq "read"(b, j)$,
-      $b eqq "write"(a, i, v) in Gamma$,
-      $u eqq "read"(x, j) in Gamma$,
-      $x in {a, b}$,
-    ),
-  )
-]
-
 #example[
   Determine the satisfiability of ${ "write"(a_1, i, "read"(a_1, i)) eqq "write"(a_2, i, "read"(a_2, i)), a_1 neqq a_2 }$.
 
@@ -1059,15 +1046,15 @@ The satisfiability proof system $R_"AX"$ for $cal(T)_"AX"$ _extends_ the proof s
     #grid(
       columns: 2,
       column-gutter: 2em,
-  stroke: (top: 0.4pt),
-  inset: (top: 5pt),
+      stroke: (top: 0.4pt),
+      inset: (top: 5pt),
       [
         8. $i eqq n$
         + (by #smallcaps[Contr]) $"UNSAT"$
       ],
       [
         8. $i neqq n, u_2 eqq "read"(a'_2, n)$
-        + (by #smallcaps[Relf]) $n eqq n$
+        + (by #smallcaps[Refl]) $n eqq n$
         + (by #smallcaps[Cong]) $u_1 eqq u_2$
         + (by #smallcaps[Contr]) $"UNSAT"$
       ],
@@ -1209,19 +1196,11 @@ Encode it as LP: maximize $y$ subject to $bold(a)^T bold(x) lt.eq bold(b)$.
 
 The final system is _satisfiable_ iff the _optimal value_ for $y$ is _positive_.
 
-== Methods for Solving LP
+== LP Solving Methods and Standard Form
 
-- _Simplex_ (Dantzig, 1947) --- exponential time $cal(O)(2^n)$
+- _Simplex_ (Dantzig, 1947) --- exponential time $cal(O)(2^n)$, but very efficient in practice
 - _Ellipsoid_ (Khachiyan, 1979) --- polynomial time $cal(O)(n^6)$
 - _Projective_ (Karmarkar, 1984) --- polynomial time $cal(O)(n^3.5)$
-- And many more tricky algorithms approaching $cal(O)(n^2.5)$
-
-#note[
-  Although the Simplex method is the _oldest_ and the _least efficient in theory_, it can be implemented to be _quite efficient in practice_.
-  It remains the most popular and we will focus on it next.
-]
-
-== Standard Form
 
 Any LP can be transformed to _standard form_:
 $
@@ -1358,60 +1337,13 @@ Let's increase it as much as possible, _without compromising feasibility_.
 ]
 
 Select the _tightest bound_, $x_1 lt.eq 5/2$.
-- New assignment: $x_1 maps 5/2, x_2 maps x_3 maps x_4 maps 0, x_5 maps 1, x_6 maps 1/2, z maps 25/2$
-- This indeed improves the objective value $z$.
+- New assignment: $x_1 maps 5/2, x_2 maps x_3 maps x_4 maps 0, x_5 maps 1, x_6 maps 1/2, z maps 25/2$.
 
-#pagebreak()
+Now _pivot_: since $x_1$ became positive and $x_4$ became 0, swap them by isolating $x_1$ from the equation for $x_4$, then eliminating $x_1$ from all other equations:
 
-Current assignment:
-- $x_1 maps 5 / 2, x_2 maps x_3 maps x_4 maps 0, x_5 maps 1, x_6 maps 1 / 2, z maps 25 / 2$
-
-How do we continue?
-
-For the first iteration we had:
-- A _feasible solution_.
-- An _equation system_ where the variables with positive values \ are expressed in terms of variables with 0 value.
-
-#place(right)[
-  $
-    cases(
-      x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
-      x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
-      x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
-      z = 5 x_1 + 4 x_2 + 3 x_3,
-    )
-  $
-]
-
-Does the current _equation system_ satisfy this property?
-_No_ #NO
-
-#pagebreak()
-
-#place(right)[
-  $
-    & x_1 maps 5 / 2, x_2 maps x_3 maps x_4 maps 0 \
-    & cases(
-      x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
-      x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
-      x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
-      z = 5 x_1 + 4 x_2 + 3 x_3,
-    )
-  $
-]
-
-What should we change?
-- Initially, $x_1$ was 0 and $x_4$ was positive.
-- Now, $x_1$ is positive and $x_4$ is 0.
-
-Isolate $x_1$ and _eliminate_ it from right-hand-side:
-- $x_4 = 5 - 2 x_1 - 3 x_2 - x_3 quad to quad x_1 = 5 / 2 - 3 / 2 x_2 - 1 / 2 x_3 - 1 / 2 x_4$
-
-#v(1em)
 #align(center)[
   #import fletcher: diagram, node, edge
   #diagram(
-    // debug: true,
     edge-stroke: 1pt,
     node-corner-radius: 5pt,
     node-outset: 3pt,
@@ -1468,7 +1400,6 @@ As before, we switch $x_6$ and $x_3$, and _eliminate_ $x_3$ from the right-hand-
 #align(center)[
   #import fletcher: diagram, node, edge
   #diagram(
-    // debug: true,
     edge-stroke: 1pt,
     node-corner-radius: 5pt,
     node-outset: 3pt,
@@ -1516,23 +1447,19 @@ Can we improve $z$ again?
 
 So, we are done, and the optimal value of $z$ is 13.
 
-#fancy-box[
-  The optimal solution is then $x_1 maps 2, x_2 maps 0, x_3 maps 1$.
+#Block(color: yellow)[
+  *Optimal solution:* $x_1 maps 2, x_2 maps 0, x_3 maps 1$, with $z = 13$.
 ]
 
 == The Simplex Algorithm
 
-$
-  "maximize" & sum_(j=1)^n c_j x_j \
-  "such that" & sum_(j=1)^m a_(i j) x_j lt.eq b_i "for" i = 1, dots, m \
-  & x_j gt.eq 0 "for" j = 1, dots, n
-$
-
-+ Introduce slack variables $x_(n+1), dots, x_(n+m)$.
-+ Set $x_(n+i) = b_i - sum_(j=1)^n a_(i j) x_j$ for $i = 1, dots, m$.
-+ Start with initial, _feasible_ solution. (commonly, $x_1 maps 0, dots, x_n maps 0$)
-+ While some summands in the current objective function have _positive coefficients_, update the feasible solution to improve the objective value. Otherwise, stop.
-+ Update the equations to _maintain the invariant_ that all right-hand-side values have value 0.
++ Introduce _slack variables_ $x_(n+1), dots, x_(n+m)$ for each constraint.
++ Start with initial _feasible_ solution (commonly, $x_j maps 0$ for all original variables).
++ While some coefficients in the objective function are _positive_:
+  - Pick a variable $x_j$ with positive coefficient (_entering variable_).
+  - Compute the tightest bound: $min_i (b_i / a_(i j))$ for $a_(i j) > 0$ (_leaving variable_).
+  - _Pivot_: swap entering/leaving variables in the equation system.
++ When all coefficients are non-positive, the current solution is _optimal_. Stop.
 + Go to 4.
 
 
@@ -1540,7 +1467,7 @@ $
 
 == CDCL($cal(T)$) Architecture
 
-#fancy-box[
+#Block(color: yellow)[
   $
     "CDCL"(cal(T)) = "CDCL"(X) + #[$cal(T)$-solver]
   $
@@ -1612,23 +1539,294 @@ $cal(T)$-solver:
   )
 ]
 
+== Theory Propagation
+
+The $cal(T)$-solver does more than just check consistency --- it actively _propagates_ information back to the SAT solver:
+
+- *Conflict detection:* If the current set of theory literals is $cal(T)$-unsatisfiable, report a _conflict clause_ (a subset of literals explaining the inconsistency).
+- *Theory propagation:* If a literal $ell$ is $cal(T)$-entailed by the current assertions, _propagate_ $ell$ to the SAT solver (avoiding unnecessary case splits).
+- *Lemma learning:* The $cal(T)$-solver may derive useful _theory lemmas_ (clauses that are $cal(T)$-valid) and add them to the clause database.
+
+#example[
+  If the $cal(T)_"RA"$-solver sees $x lt.eq 3$ and $x gt.eq 5$, it immediately reports a conflict without waiting for the SAT solver to discover the contradiction.
+]
+
+#Block(color: blue)[
+  *Why incremental and backtrackable?* The SAT solver frequently backtracks, so the $cal(T)$-solver must efficiently _undo_ assertions. Typical implementations use a _stack-based_ approach: push assertions on decisions, pop on backtrack.
+]
+
+== CDCL($cal(T)$) Example
+
+Consider the formula $phi = (x eqq y or y eqq z) and (f(x) neqq f(y) or y eqq z) and (x eqq y or f(y) neqq f(z))$ in $cal(T)_"EUF"$.
+
+*Step 1:* Boolean abstraction. Replace each theory atom with a Boolean variable:
+- $p_1 := (x eqq y)$, $p_2 := (y eqq z)$, $p_3 := (f(x) eqq f(y))$, $p_4 := (f(y) eqq f(z))$
+- Boolean skeleton: $(p_1 or p_2) and (not p_3 or p_2) and (p_1 or not p_4)$
+
+*Step 2:* CDCL decides $p_1 = "true"$, $p_2 = "false"$.
+- SAT solver propagates: $not p_3$ (from clause 2) and $not p_4$ (from clause 3, since $p_2 = "false"$).
+
+*Step 3:* $cal(T)$-solver checks: ${x eqq y, not (y eqq z), not (f(x) eqq f(y)), not (f(y) eqq f(z))}$.
+- From $x eqq y$, by congruence: $f(x) eqq f(y)$. But we have $not (f(x) eqq f(y))$ --- *conflict!*
+- Conflict clause: $not (x eqq y) or f(x) eqq f(y)$, i.e. $not p_1 or p_3$.
+
+*Step 4:* CDCL learns the clause $not p_1 or p_3$, backtracks, and eventually finds SAT with $p_2 = "true"$.
+
 = Combining Theories
 
-== Motivation
+== Motivation: Mixed Formulas
 
-TODO
+In practice, formulas often involve _multiple_ theories simultaneously.
 
+#example[
+  $ f(x) - f(y) gt.eq 1 and (x eqq y) $
+  This mixes $cal(T)_"EUF"$ (uninterpreted $f$, equality $eqq$) and $cal(T)_"RA"$ (arithmetic $-$, $gt.eq$, $1$).
+]
 
-== TODO
-#show: cheq.checklist
-- [x] theory of arrays $cal(T)_"A"$
-- [x] satisfiability proof system for $cal(T)_"A"$
-- [x] example of derivation in $R_"AX"$
-- [ ] soundness, termination, completeness of $R_"AX"$
-- [ ] RDS solver
-- [ ] Bit-vector solver
-- [ ] String solver
-- [x] LRA
-- [x] Linear programming
-- [/] Simplex algorithm
-- [ ] Combination of theories
+#example[
+  $ "read"("write"(a, i, v), j) + 1 lt.eq x and i eqq j $
+  This mixes $cal(T)_"AX"$ (arrays) and $cal(T)_"RA"$ (arithmetic).
+]
+
+A single-theory solver cannot handle such formulas. We need a _combination method_ that orchestrates multiple theory solvers.
+
+== The Nelson-Oppen Method
+
+The _Nelson-Oppen_ (N-O) method combines decision procedures for _signature-disjoint_, _stably infinite_ theories.
+
+#definition[
+  Two theories $cal(T)_1$ and $cal(T)_2$ are _signature-disjoint_ if $Sigma^F_1 inter Sigma^F_2 = {eqq}$ --- the only shared symbol is equality.
+]
+
+#definition[
+  A theory $cal(T)$ is _stably infinite_ if every $cal(T)$-satisfiable quantifier-free formula is satisfiable in a model with an _infinite_ domain.
+]
+
+#note[
+  Most commonly used SMT theories ($cal(T)_"EUF"$, $cal(T)_"RA"$, $cal(T)_"IA"$, $cal(T)_"AX"$) are stably infinite and pairwise signature-disjoint (when restricted to their respective sorts).
+]
+
+== Nelson-Oppen: Purification
+
+*Step 1: Purification.* Separate a mixed formula into _pure_ conjuncts, one per theory.
+
+_Method:_ For any term $t$ from theory $cal(T)_i$ that appears as an argument in a literal of theory $cal(T)_j$ (with $i neq j$), introduce a _fresh shared variable_ $v$, add $v eqq t$ to $cal(T)_i$'s literals, and replace $t$ by $v$ in $cal(T)_j$'s literals.
+
+#example[
+  Purify $f(x) - f(y) gt.eq 1 and x eqq y$:
+
+  Introduce $v_1 eqq f(x)$ and $v_2 eqq f(y)$:
+  - $cal(T)_"EUF"$: ${ v_1 eqq f(x), thin v_2 eqq f(y), thin x eqq y }$
+  - $cal(T)_"RA"$: ${ v_1 - v_2 gt.eq 1 }$
+  - _Shared variables_: $v_1, v_2$ (appear in both "pure" sets)
+]
+
+== Nelson-Oppen: Equality Propagation
+
+*Step 2: Equality propagation.* The two solvers exchange _equalities and disequalities_ between shared variables until a _fixed point_ or a _conflict_ is reached.
+
++ Check each pure set with its own $cal(T)$-solver.
++ If either solver reports UNSAT $=>$ the combined formula is UNSAT.
++ If the $cal(T)_i$-solver deduces a new equality $v eqq w$ between shared variables, _propagate_ it to the other solver.
++ Repeat until no new equalities are deduced (_fixed point_).
++ If both solvers report SAT at the fixed point $=>$ the combined formula is SAT.
+
+#Block(color: yellow)[
+  *Key insight:* For _convex_ theories (including $cal(T)_"EUF"$ and $cal(T)_"RA"$), the method only needs to propagate _equalities_ --- no disjunctions. This makes the procedure _deterministic_ and efficient.
+]
+
+#definition[
+  A theory $cal(T)$ is _convex_ if whenever $cal(T) models (ell_1 and dots and ell_n) imply (x_1 eqq y_1 or dots or x_k eqq y_k)$, then $cal(T) models (ell_1 and dots and ell_n) imply (x_i eqq y_i)$ for some $i$.
+]
+
+== Nelson-Oppen: Worked Example
+
+*Formula:* $f(x) - f(y) gt.eq 1 and x eqq y$
+
+After purification with shared variables $v_1, v_2$:
+- $cal(T)_"EUF"$: ${ v_1 eqq f(x), thin v_2 eqq f(y), thin x eqq y }$
+- $cal(T)_"RA"$: ${ v_1 - v_2 gt.eq 1 }$
+
+*Round 1:*
+- $cal(T)_"EUF"$-solver: From $x eqq y$ and congruence, deduces $f(x) eqq f(y)$, hence $v_1 eqq v_2$.
+- _Propagate_ $v_1 eqq v_2$ to $cal(T)_"RA"$.
+
+*Round 2:*
+- $cal(T)_"RA"$-solver: Now has ${ v_1 - v_2 gt.eq 1, thin v_1 eqq v_2 }$.
+  - $v_1 eqq v_2$ implies $v_1 - v_2 = 0$, contradicting $v_1 - v_2 gt.eq 1$.
+  - *UNSAT!*
+
+*Conclusion:* The original mixed formula is unsatisfiable.
+
+= SMT-LIB and Z3
+
+== SMT-LIB: The Standard Language
+
+_SMT-LIB_ (v2) is a standardized _input language_ for SMT solvers. It defines:
+
+- A set of _logics_ (e.g. `QF_UF`, `QF_LIA`, `QF_LRA`, `QF_AUFLIA`, `QF_BV`, `ALL`) specifying which theories and quantifiers are allowed.
+- A _command language_ for interacting with solvers.
+- Standard _theory declarations_ shared across all solvers.
+
+Core commands:
+#align(center)[
+  #table(
+    columns: 2,
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header[Command][Description],
+    [`(set-logic QF_LIA)`], [Declare the logic],
+    [`(declare-sort S 0)`], [Declare an uninterpreted sort with arity 0],
+    [`(declare-fun f (Int Int) Bool)`], [Declare a function symbol with rank],
+    [`(define-fun g ((x Int)) Int ...)`], [Define a function (macro)],
+    [`(assert (< x 5))`], [Assert a formula],
+    [`(check-sat)`], [Check satisfiability],
+    [`(get-model)`], [Retrieve a satisfying assignment (if SAT)],
+    [`(push 1)` / `(pop 1)`], [Save/restore assertion stack],
+    [`(exit)`], [Terminate the session],
+  )
+]
+
+== SMT-LIB: QF_UF Example
+
+Encoding the EUF problem: $a eqq b and f(a) eqq b and not (g(a) eqq g(f(a)))$.
+
+```lisp
+(set-logic QF_UF)
+(declare-sort U 0)
+
+(declare-fun a () U)
+(declare-fun b () U)
+(declare-fun f (U) U)
+(declare-fun g (U) U)
+
+(assert (= a b))
+(assert (= (f a) b))
+(assert (not (= (g a) (g (f a)))))
+
+(check-sat)   ; Expected: unsat
+(exit)
+```
+
+#note[
+  In SMT-LIB, `=` is the built-in equality. There is no need to declare it. Variables are _declared_ as zero-arity functions: `(declare-fun a () U)` means "$a$ is a _constant_ of sort $U$".
+]
+
+== SMT-LIB: QF_LIA Example
+
+Is there an integer solution to $x + 2 y gt.eq 5$, $x - y lt.eq 1$, $x gt.eq 0$, $y gt.eq 0$?
+
+```lisp
+(set-logic QF_LIA)
+
+(declare-fun x () Int)
+(declare-fun y () Int)
+
+(assert (>= (+ x (* 2 y)) 5))
+(assert (<= (- x y) 1))
+(assert (>= x 0))
+(assert (>= y 0))
+
+(check-sat)   ; Expected: sat
+(get-model)   ; e.g., x = 1, y = 2
+(exit)
+```
+
+#Block(color: blue)[
+  *Logic naming convention:* `QF_` = quantifier-free. `L` = linear, `N` = non-linear. `I` = integers, `R` = reals. `A` = arrays. `UF` = uninterpreted functions. `BV` = bit-vectors. So `QF_AUFLIA` = quantifier-free arrays + UF + linear integer arithmetic.
+]
+
+== Z3: An SMT Solver
+
+*Z3* (Microsoft Research) is one of the most widely used SMT solvers.
+
+- Supports _all major theories_: EUF, LIA, LRA, arrays, bit-vectors, strings, datatypes, ...
+- Accepts _SMT-LIB_ input and also has _Python_, _C/C++_, and _Java_ APIs.
+- Used in: Dafny, Boogie, KLEE, Rosette, angr, many other FM tools.
+
+#example[
+  Run the QF_LIA example with Z3 from the command line:
+  ```bash
+  z3 example.smt2
+  ```
+  Output:
+  ```
+  sat
+  (model
+    (define-fun x () Int 1)
+    (define-fun y () Int 2))
+  ```
+]
+
+== Z3 Python API: z3py
+
+The _z3py_ library provides a Pythonic interface to Z3:
+
+```python
+from z3 import *
+
+x, y = Ints('x y')
+s = Solver()
+s.add(x + 2*y >= 5)
+s.add(x - y <= 1)
+s.add(x >= 0, y >= 0)
+
+if s.check() == sat:
+    m = s.model()
+    print(f"x = {m[x]}, y = {m[y]}")
+```
+
+Common z3py types and constructors:
+- `Bool('b')`, `Int('x')`, `Real('r')` --- declare sorted variables
+- `Function('f', IntSort(), IntSort())` --- uninterpreted function $f : IntSort -> IntSort$
+- `Array('a', IntSort(), IntSort())` --- array variable
+- `Solver()`, `.add(...)`, `.check()`, `.model()` --- solver interaction
+- `And(...)`, `Or(...)`, `Not(...)`, `Implies(a, b)` --- logical connectives
+
+== Z3 Practical Examples
+
+*Array swap verification:*
+```python
+from z3 import *
+a = Array('a', IntSort(), IntSort())
+i, j = Ints('i j')
+# swap a[i] and a[j]
+b = Store(Store(a, i, Select(a, j)), j, Select(a, i))
+# verify that b[i] == a[j] and b[j] == a[i]
+s = Solver()
+s.add(Not(And(Select(b, i) == Select(a, j),
+              Select(b, j) == Select(a, i))))
+print(s.check())  # unsat => swap is correct
+```
+
+*Simple scheduling:*
+```python
+from z3 import *
+A, B, C = Ints('A B C')  # start times
+s = Solver()
+s.add(A >= 0, B >= 0, C >= 0)   # non-negative start
+s.add(A + 3 <= B)               # A finishes before B starts
+s.add(B + 2 <= C)               # B finishes before C starts
+s.add(C + 1 <= 8)               # C finishes by deadline 8
+if s.check() == sat:
+    print(s.model())  # e.g., A=0, B=3, C=5
+```
+
+= Exercises
+
+== Exercise: Theory Satisfiability
+
+Determine whether the following sets of literals are $cal(T)$-satisfiable or $cal(T)$-unsatisfiable. If satisfiable, provide a $cal(T)$-interpretation. If unsatisfiable, show why.
+
++ In $cal(T)_"EUF"$: ${ a eqq b, thick b eqq c, thick f(a) neqq f(c) }$
++ In $cal(T)_"RA"$: ${ x + y lt.eq 3, thick 2 x - y gt.eq 5, thick x lt.eq 1 }$
++ In DL: ${ x - y lt.eq 2, thick y - z lt.eq 3, thick z - x lt.eq -6 }$
+
+== Exercise: Nelson-Oppen and SMT-LIB
+
++ Purify the following formula into $cal(T)_"EUF"$ and $cal(T)_"RA"$ components:
+  $ f(x + 1) eqq f(y) and x - y gt.eq 0 and x lt.eq y $
+  Run the Nelson-Oppen equality propagation. Is the formula satisfiable?
+
++ Encode the following problem in SMT-LIB (`QF_LIA`): "Find integers $x, y, z$ such that $x + y + z = 15$, $x gt.eq 1$, $y gt.eq 1$, $z gt.eq 1$, and $x lt.eq y lt.eq z$."
+
++ Write a z3py script to verify that for all integers $x$: if $x > 0$, then $x + x > x$. _(Hint: show the negation is UNSAT.)_
