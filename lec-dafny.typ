@@ -1179,7 +1179,7 @@ Function may have pre-conditions, making calls to them _partial_.
   + ```dafny a / b < 10 && c / d < 100```
   + ```dafny MinusOne(y) = 8 ==> arr[y] = 2```
 
-= Recusion and Termination
+= Recursion and Termination
 
 == Recursive Methods
 
@@ -2066,9 +2066,263 @@ method SquareRoot(N: nat) returns (r: nat)
 ```
 
 
-== TODO
-#show: cheq.checklist
-- [ ] ...
+= Advanced Dafny
+
+== Dafny Verification Architecture
+
+Dafny compiles your program _and_ its proof obligations into a single pipeline:
+
+#align(center)[
+  #table(
+    columns: 3,
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header[*Stage*][*What happens*][*Tool*],
+    [1. Parse + type-check], [Syntax, types, well-formedness], [Dafny frontend],
+    [2. Generate VCs], [Verification conditions from specs + code], [Boogie],
+    [3. Discharge VCs], [Check each VC via SMT], [Z3],
+    [4. Compile], [Generate target code (C\#, Java, Go, etc.)], [Dafny backend],
+  )
+]
+
+#Block(color: yellow)[
+  *Key insight:* Dafny translates your program into _Boogie_ (an intermediate verification language), which generates _verification conditions_ (VCs) --- first-order formulas that Z3 checks. If all VCs are valid, the program is correct.
+]
+
+== Algebraic Datatypes
+
+Dafny supports _inductive datatypes_ --- algebraic types like those in Haskell or OCaml.
+
+#example[
+  ```dafny
+  datatype Tree<T> = Leaf | Node(left: Tree<T>, value: T, right: Tree<T>)
+
+  function Size<T>(t: Tree<T>): nat {
+    match t
+    case Leaf => 0
+    case Node(l, _, r) => 1 + Size(l) + Size(r)
+  }
+
+  function Mirror<T>(t: Tree<T>): Tree<T> {
+    match t
+    case Leaf => Leaf
+    case Node(l, v, r) => Node(Mirror(r), v, Mirror(l))
+  }
+  ```
+]
+
+#Block(color: blue)[
+  *Pattern matching + structural recursion* = Dafny can automatically verify termination of functions over datatypes via structural descent.
+]
+
+== Lemmas
+
+_Lemmas_ are ghost methods --- they exist only for the proof, not in the compiled code.
+
+#example[
+  ```dafny
+  lemma MirrorMirror<T>(t: Tree<T>)
+    ensures Mirror(Mirror(t)) == t
+  {
+    match t
+    case Leaf =>
+    case Node(l, v, r) =>
+      MirrorMirror(l);
+      MirrorMirror(r);
+  }
+  ```
+  The lemma proves that mirroring twice gives back the original tree, by structural induction.
+]
+
+#Block(color: yellow)[
+  *Lemma = proof by induction.* Each recursive call to the lemma corresponds to applying the induction hypothesis on a smaller substructure.
+]
+
+== Calc Blocks: Structured Proofs
+
+Dafny's `calc` statement lets you write _equational proofs_ step by step:
+
+#example[
+  ```dafny
+  lemma SumFormula(n: nat)
+    ensures Sum(n) == n * (n + 1) / 2
+  {
+    if n == 0 {
+    } else {
+      SumFormula(n - 1);
+      calc {
+        Sum(n);
+      ==  // by definition of Sum
+        Sum(n - 1) + n;
+      ==  // by induction hypothesis
+        (n - 1) * n / 2 + n;
+      ==  // algebra
+        n * (n + 1) / 2;
+      }
+    }
+  }
+  ```
+]
+
+#note[
+  Each step in a `calc` block is verified by Z3. You only need to provide enough intermediate steps for Z3 to "connect the dots."
+]
+
+== Arrays and Framing
+
+Arrays in Dafny are _heap-allocated_ mutable objects. Verification requires _framing_ --- specifying which memory locations a method may read or modify.
+
+#example[
+  ```dafny
+  method Swap(a: array<int>, i: nat, j: nat)
+    requires i < a.Length && j < a.Length
+    modifies a
+    ensures a[i] == old(a[j]) && a[j] == old(a[i])
+    ensures forall k :: 0 <= k < a.Length && k != i && k != j
+              ==> a[k] == old(a[k])
+  {
+    var tmp := a[i];
+    a[i] := a[j];
+    a[j] := tmp;
+  }
+  ```
+]
+
+#Block(color: orange)[
+  *The frame problem:* `modifies a` declares that `Swap` may change array `a`. The last `ensures` clause explicitly states that _all other elements are unchanged_ --- Dafny does not infer this automatically.
+]
+
+== Sequences
+
+Dafny also has _immutable sequences_ `seq<T>` --- useful for specifications:
+
+#columns(2)[
+  *Sequence operations:*
+  - `|s|` --- length
+  - `s[i]` --- element access
+  - `s[i..j]` --- slicing
+  - `s + t` --- concatenation
+  - `x in s` --- membership
+  - `s[i := v]` --- update (returns new seq)
+
+  #colbreak()
+
+  *Ghost vs. compiled:*
+  - Sequences are _value types_ (immutable).
+  - Often used in `ensures` and `invariant` clauses.
+  - Can be used in executable code, but arrays are more efficient at runtime.
+  - Common pattern: specify with `seq`, implement with `array`.
+]
+
+#example[
+  ```dafny
+  predicate Sorted(s: seq<int>) {
+    forall i, j :: 0 <= i < j < |s| ==> s[i] <= s[j]
+  }
+  ```
+]
+
+== Verified Sorting: Insertion Sort
+
+#example[
+  ```dafny
+  predicate Sorted(s: seq<int>) {
+    forall i, j :: 0 <= i < j < |s| ==> s[i] <= s[j]
+  }
+
+  method InsertionSort(a: array<int>)
+    modifies a
+    ensures Sorted(a[..])
+    ensures multiset(a[..]) == multiset(old(a[..]))
+  {
+    for i := 1 to a.Length
+      invariant Sorted(a[..i])
+      invariant multiset(a[..]) == multiset(old(a[..]))
+    {
+      var j := i;
+      while j > 0 && a[j - 1] > a[j]
+        invariant 0 <= j <= i
+        invariant Sorted(a[..j]) && Sorted(a[j..i+1])
+        invariant multiset(a[..]) == multiset(old(a[..]))
+      {
+        a[j - 1], a[j] := a[j], a[j - 1];
+        j := j - 1;
+      }
+    }
+  }
+  ```
+]
+
+#Block(color: yellow)[
+  *Two postconditions:*
+  + `Sorted(a[..])` --- the result is sorted.
+  + `multiset(a[..]) == multiset(old(a[..]))` --- it is a _permutation_ of the input (no elements lost or duplicated).
+]
+
+== Verified Sorting: Why Two Postconditions?
+
+A sorting algorithm must satisfy _two_ properties:
+
+#columns(2)[
+  *Sortedness alone is not enough:*
+  ```dafny
+  // "Sorts" by replacing everything with 0
+  method BadSort(a: array<int>)
+    modifies a
+    ensures Sorted(a[..])
+  {
+    for i := 0 to a.Length {
+      a[i] := 0;  // Sorted ✓, but wrong!
+    }
+  }
+  ```
+
+  #colbreak()
+
+  *Permutation alone is not enough:*
+  ```dafny
+  // "Sorts" by doing nothing
+  method LazySort(a: array<int>)
+    modifies a
+    ensures multiset(a[..]) == multiset(old(a[..]))
+  {
+    // no-op: permutation ✓, but not sorted!
+  }
+  ```
+]
+
+#Block(color: blue)[
+  *Lesson:* Formal verification forces you to state _all_ aspects of correctness. Informal testing might miss that `BadSort` is wrong --- it passes any "is it sorted?" test!
+]
+
+== Exercises: Advanced Dafny
+
++ Write a Dafny function `Flatten<T>(t: Tree<T>): seq<T>` that returns the in-order traversal of a tree as a sequence. Verify that `|Flatten(t)| == Size(t)`.
+
++ Prove the following lemma about sequences:
+  ```dafny
+  lemma AppendAssoc<T>(a: seq<T>, b: seq<T>, c: seq<T>)
+    ensures (a + b) + c == a + (b + c)
+  ```
+  _Hint:_ Dafny may verify this automatically. If not, use structural induction on `a`.
+
++ Modify `InsertionSort` to sort in _descending_ order. Adjust the specification and loop invariants accordingly.
+
++ $star$ Write a verified binary search:
+  ```dafny
+  method BinarySearch(a: array<int>, key: int) returns (index: int)
+    requires Sorted(a[..])
+    ensures 0 <= index < a.Length ==> a[index] == key
+    ensures index == -1 ==> key !in a[..]
+  ```
+  Supply the loop invariant so that Dafny verifies the implementation.
+
++ $star$ Verify a `Reverse` method on arrays:
+  ```dafny
+  method Reverse(a: array<int>)
+    modifies a
+    ensures forall i :: 0 <= i < a.Length ==> a[i] == old(a[a.Length - 1 - i])
+  ```
+  What loop invariant do you need for the swapping loop?
 
 == Bibliography
 #bibliography("refs.yml")

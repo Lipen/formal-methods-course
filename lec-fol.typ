@@ -10,49 +10,19 @@
 
 #show table.cell.where(y: 0): strong
 
-#let True = $#`true`$
-#let False = $#`false`$
+// Packages
+#import curryst: prooftree, rule
+#import frederic: assume, fitch, premise, step, subproof
 
-#let eqq = $scripts(eq^.)$
-#let rank = $op("rank")$
+// Custom operators
+#let FV = math.op("FV")
+#let Vars = math.op("Vars")
 #let dom = math.op("dom")
 
-#let Sort(s) = $#raw(s)$
-#let BoolSort = Sort("Bool")
-#let NatSort = Sort("Nat")
-#let SetSort = Sort("Set")
-#let IntSort = Sort("Int")
-#let RealSort = Sort("Real")
-#let ArraySort = Sort("Array")
-#let ElemSort = Sort("Elem")
-#let ASort = Sort("A")
-#let BSort = Sort("B")
-#let XSort = Sort("X")
-#let YSort = Sort("Y")
-#let PersonSort = Sort("Person")
 
-#let sexp(..args) = {
-  let rec(expr) = {
-    if type(expr) == array {
-      let elements = expr.map(e => rec(e))
-      [ \( #elements.join[#h(0.3em)] \) ]
-    } else {
-      expr
-    }
-  }
-  rec(args.pos())
-}
-
-#let FreeVars = $cal(F V)$
-
-#let YES = text(fill: green.darken(20%))[#sym.checkmark]
-#let NO = text(fill: red.darken(20%))[#sym.crossmark]
-
-#let pa = $op("pa")$
-#let ma = $op("ma")$
-#let sp = $op("sp")$
-
-#let term(x) = $chevron.l #x chevron.r$
+// ═══════════════════════════════════════════════════════════════════════
+//  INTRODUCTION
+// ═══════════════════════════════════════════════════════════════════════
 
 = Introduction to FOL
 
@@ -63,14 +33,21 @@
 ]
 
 - PL cannot reason about _natural numbers_ directly.
-- PL cannor reason about _infinite_ domains.
+- PL cannot reason about _infinite_ domains.
 - PL cannot express _abstract_ properties.
-- PL cannot respresent the _internal structure_ of propositions.
+- PL cannot represent the _internal structure_ of propositions.
 - PL lacks _quantifiers_ for generalization.
 
 First-order logic (FOL) _extends_ propositional logic by adding _variables_, _predicates_, _functions_, and _quantifiers_, providing a structured way to reason about objects, their properties, and relationships.
 
 Unlike propositional logic, which is limited to fixed truth values for statements, FOL allows complex expressions like "All humans are mortal" ($forall x. thin "Human"(x) imply "Mortal"(x)$) or "There exists a solution to the problem" ($exists x. thin "Solution"(x)$).
+
+#example[
+  Consider _"every even number greater than 2 is a sum of two primes"_ (Goldbach's conjecture).
+  PL would need a separate proposition $G_4, G_6, G_8, dots$ for each even number.
+  FOL expresses it as a single formula:
+  $ forall n. thin (n > 2 and "Even"(n)) imply exists p, q. thin ("Prime"(p) and "Prime"(q) and n = p + q) $
+]
 
 == What is First-Order Logic?
 
@@ -89,17 +66,17 @@ Symbols of a first-order language are divided into _logical symbols_ and _non-lo
   column-gutter: 2em,
   [
     *Logical symbols*:
-    - Parantheses: $($, $)$
+    - Parentheses: $($, $)$
     - Logical connectives: $not$, $and$, $or$, $imply$, $iff$
     - Variables: $x$, $y$, $z$, $dots$
     - Quantifiers: $forall$ and $exists$
   ],
   [
     *Parameters*:
-    - Equiality: $=$
+    - Equality: $=$
     - Constants: e.g. $bot$, $0$, $emptyset$, $dots$
-    - Predicates: e.g. $P(x)$, $Q(x, y)$, $x > y$, $A subset B$, $"a" prec "ab"$
-    - Functions: e.g. $f(x)$, $g(x, y)$, $x + y$, $x xor y$
+    - Predicates: e.g. $P(x)$, $Q(x, y)$, $x > y$, $A subset B$
+    - Functions: e.g. $f(x)$, $g(x, y)$, $x + y$
   ],
 )
 
@@ -121,776 +98,376 @@ Each predicate and function symbol has a fixed _arity_ (number of arguments).
 - Equality is a special predicate with arity 2.
 - Constants can be seen as functions with arity 0.
 
-== First-Order Language
+== First-Order Languages
 
-First-order language is specified by its _parameters_.
+A first-order language is specified by its _parameters_.
 
 #grid(
   columns: 3,
   column-gutter: 2em,
   [
     *Propositional logic*:
-    - Equiality: _no_
+    - Equality: _no_
     - Constants: _none_
     - Predicates: $A_1$, $A_2$, $dots$
     - Functions: _none_
   ],
   [
     *Set theory*:
-    - Equiality: _yes_
+    - Equality: _yes_
     - Constants: $emptyset$
     - Predicates: $in$
     - Functions: _none_
   ],
   [
     *Number theory*:
-    - Equiality: _yes_
+    - Equality: _yes_
     - Constants: $0$
     - Predicates: $<$
-    - Functions: $S$ (successor), $+$, $times$, $"exp"$
+    - Functions: $S$ (successor), $+$, $times$
   ],
 )
 
-= Formalizing FOL
 
-== Syntax
+// ═══════════════════════════════════════════════════════════════════════
+//  SYNTAX
+// ═══════════════════════════════════════════════════════════════════════
 
-#definition[Signature][
-  A _vocabulary_ (also known as _signature_) of a language is a collection of symbols used to construct sentences in that language.
-  A signature $Sigma = chevron.l cal(V), cal(F), cal(R) chevron.r$ consists of:
-  - A set of _variables_ $cal(V)$, e.g., $x$, $y$, $z$, $dots$
-  - A set of _function symbols_ $cal(F)$, e.g., $S$, $plus$, $times$, $dots$
-  - A set of _relation symbols_ $cal(R)$, e.g., $eq$, $lt$, $in$, $dots$
-]
-
-Each function and relation symbol has an associated _arity_ (number of arguments).
-- Functions of arity 0 are called _constants_.
-- Relations of arity 1 are called _predicates_.
-
-== Statements
-
-#definition[Term][
-  A _first-order term_ over $Sigma$ is defined inductively:
-  - Each variable $x in cal(V)$ is a term.
-  - If $t_1, dots, t_n$ are terms and $f$ is an $n$-ary function symbol from $cal(F)$, then $f(t_1, dots, t_n)$ is a term.
-]
-
-#definition[Atom][
-  A _first-order atom_ over $Sigma$ is defined as follows:
-  - If $t_1, dots, t_n$ are terms and $R$ is a relation symbol from $cal(R)$, then $R(t_1, dots, t_n)$ is an atom.
-]
-
-#definition[Formula][
-  A _first-order formula_ over $Sigma$ is defined inductively:
-  - Each atom is a formula.
-  - If $alpha$ and $beta$ are formulas, then $not alpha$, $(alpha and beta)$, $(alpha or beta)$, $(alpha imply beta)$, and $(alpha iff beta)$ are formulas.
-  - If $alpha$ is a formula and $x in cal(V)$ is a variable, then $forall x. thin alpha$ and $exists x. thin alpha$ are formulas.
-]
-
-== Free and Bound Variables
-
-- A variable $x$ is _bound_ in $forall x. thin alpha$ and $exists x. thin alpha$.
-- A variable $x$ is _free_ in $alpha$ if it is not bound in $alpha$.
-- A formula is _closed_ (also called a _sentence_) if it contains no free variables.
-
-== Grammar
-
-$
-  term("Form") &::= term("Atom") | not term("Form") | term("Form") and term("Form") | dots | ("'"forall"'" | "'"exists"'") cal(V). thin term("Form") \
-  term("Atom") &::= cal(R) "'('" term("Term")^* "')'" \
-  term("Term") &::= cal(V) | term("Function") "'('" term("Term")^* "')'" \
-$
-
-// TODO: CASL language example, see Roggenback (2022)
-
-== Semantics
-
-#definition[Model][
-  A _possible world_ (also known as _model_, or _structure_, or _interpretation_) is a mathematical object that gives meaning to the symbols of a language.
-
-  A _first-order model_ $cal(M) = chevron.l cal(U), nu, cal(I) chevron.r$ for $Sigma = chevron.l cal(V), cal(F), cal(R) chevron.r$ consists of:
-  - A _domain_ $cal(U)$ is a non-empty set of objects (_universe of disclosure_).
-  - A _variable valuation_ $nu : cal(V) to cal(U)$ assigning to each variable $x in cal(V)$ an element of $cal(U)$.
-  - An _interpretation_ function $cal(I)$ for the function and relation symbols in $Sigma$.
-    - An _interpretation_ of an $n$-ary function symbol $f in cal(F)$ is an $n$-ary total function $cal(I)(f) : cal(U)^n to cal(U)$.
-    - An _interpretation_ of an $n$-ary relation symbol $R in cal(R)$ is an $n$-ary relation $cal(I)(R) subset.eq cal(U)^n$.
-]
-
-#definition[
-  The _term valuation_ induced by a model $cal(M) = chevron.l cal(U), nu, cal(I) chevron.r$ is defined as follows:
-  - $nu(t) = nu(x)$ if $t$ is a variable $x$.
-  - $nu(t) = (cal(I)(f))(nu(t_1), dots, nu(t_n))$ if $t$ is a term $f(t_1, dots, t_n)$.
-]
-
-#definition[Semantics of FOL][
-  The _validation relation_ $models$ between a model $cal(M)$ and a first-order formula $phi$ is defined inductively:
-  - $cal(M) models R(t_1, dots, t_n)$ iff $cal(I)(R)$ contains $(nu(t_1), dots, nu(t_n))$.
-  - $cal(M) models.not bot$.
-  - $cal(M) models not phi$ iff $cal(M) models.not phi$.
-  - $cal(M) models (alpha and beta)$ iff $cal(M) models alpha$ and $cal(M) models beta$. Similar for $or$, $imply$, and $iff$.
-  - $cal(M) models exists x. thin phi$ iff $cal(M') models phi$ for some $cal(M') = chevron.l cal(U), cal(I), nu' chevron.r$ with $nu'(y) = nu(y)$ for all $y neq x$.
-  - $cal(M) models forall x. thin phi$ iff $cal(M') models phi$ for all $cal(M')$ which differ from $cal(M)$ at most in the valuation of $x$.
-]
-
-
-= Many-Sorted FOL
-
-== Syntax
-
-The _syntax_ of a logic consists of _symbols_ and _rules_ for combining them.
-
-The _symbols_ of a first-order language include:
-+ Logical symbols: $($, $)$, $not$, $and$, $or$, $imply$, $iff$, $forall$, $exists$
-+ Infinite set of variables: $x$, $y$, $z$, $dots$
-+ Signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$, where:
-  - $Sigma^S$ is a set of _sorts_ (also called _types_), e.g. $BoolSort$, $"Int"$, $"Real"$, $SetSort$.
-  - $Sigma^F$ is a set of _function symbols_, e.g. $=$, $+$, $<$, $dots$
+= FOL Syntax
 
 == Signatures
 
-#definition[
-  Signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ consists of:
-  - $Sigma^S$ is a set of _sorts_ #strike[(also called _types_)], e.g. $BoolSort$, $IntSort$, $RealSort$, $SetSort$
-  - $Sigma^F$ is a set of _function symbols_, e.g. $=$, $+$, $<$
+#definition[Signature][
+  A _first-order signature_ $Sigma = angle.l cal(F), cal(R) angle.r$ consists of:
+  - A set of _function symbols_ $cal(F)$, each with an arity $n gt.eq 0$.
+  - A set of _relation symbols_ (predicates) $cal(R)$, each with an arity $n gt.eq 1$.
+
+  Functions of arity 0 are _constants_. We assume a countably infinite set of _variables_ $cal(V) = {x, y, z, x_1, x_2, dots}$.
 ]
 
-#definition[
-  Each _function symbol_ $f in Sigma^F$ is associated with an _arity_ $n$ (number of arguments) and a _rank_, $(n+1)$-tuple of sorts: $rank(f) = chevron.l sigma_1, sigma_2, dots, sigma_(n+1) chevron.r$.
-  Intuitively, $f$ denotes a function that takes $n$ values of sorts $sigma_1, dots, sigma_n$ and returns an output of sort $sigma_(n+1)$.
-  - Functions of arity 0 are called _constants_, which are said to have sort $sigma$ if $rank(f) = chevron.l sigma chevron.r$.
-  - Functions that _return_ sort $BoolSort$ are called _predicates_.
+#example[
+  *Arithmetic:* $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$ \
+  where $0$ is a constant, $S$ is unary, $+, times$ are binary functions; $<, =$ are binary relations.
+]
+#example[
+  *Graph theory:* $Sigma = angle.l emptyset, {"Edge", "Path"} angle.r$ \
+  where $"Edge"$ and $"Path"$ are binary predicates (no function symbols).
 ]
 
-For every signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$, we assume that:
-- $Sigma^S$ includes a distinguished sort $BoolSort$.
-- $Sigma^F$ contains distinguished constants $top$ and $bot$ of sort $BoolSort$, and distinguished predicate symbol $eqq$ with #box[$rank(eqq) = chevron.l sigma, sigma, BoolSort chevron.r$] for every sort $sigma in Sigma^S$.
-
-== Equality
-
-TODO: axioms of equality
-- reflexivity
-- substitution for functions
-- substitution for formulas
-
-== First-Order Languages
-
-A first-order language is defined w.r.t. a signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$.
-
-#columns(2)[
-  *Number Theory*:
-  - $Sigma^S = {NatSort} union {BoolSort}$
-  - $Sigma^F = {0, S, <, +, times} union {top, bot, eqq_BoolSort, eqq_NatSort}$
-    - $rank(0) = chevron.l NatSort chevron.r$
-    - $rank(S) = chevron.l NatSort, NatSort chevron.r$
-    - $rank(<) = chevron.l NatSort, NatSort, BoolSort chevron.r$
-    - $rank(+) = rank(times) = chevron.l NatSort, NatSort, NatSort chevron.r$
-
-  *Set Theory*:
-  - $Sigma^S = {SetSort} union {BoolSort}$
-  - $Sigma^F = {emptyset, in, union, inter} union {top, bot, eqq_BoolSort, eqq_SetSort}$
-    - $rank(emptyset) = chevron.l SetSort chevron.r$
-    - $rank(in) = chevron.l SetSort, SetSort, BoolSort chevron.r$
-    - $rank(union) = rank(inter) = chevron.l SetSort, SetSort, SetSort chevron.r$
-
-  #colbreak()
-
-  *Propositional Logic*:
-  - $Sigma^S = {BoolSort}$
-  - $Sigma^F = {not, and, or, dots, p_1, p_2, dots} union {top, bot, eqq_BoolSort}$
-    - $rank(p_i) = chevron.l BoolSort chevron.r$
-    - $rank(not) = chevron.l BoolSort, BoolSort chevron.r$
-    - $rank(and) = rank(or) = chevron.l BoolSort, BoolSort, BoolSort chevron.r$
-
-  *Arrays Theory*:
-  - $Sigma^S = {ArraySort_(chevron.l XSort,YSort chevron.r)} union {BoolSort}$
-    - $XSort$ is a sort of _indices_.
-    - $YSort$ is a sort of _values_.
-  - $Sigma^F = {"read", "write"} union {top, bot, eqq_BoolSort, eqq_ArraySort}$
-    - $rank("read") = chevron.l ArraySort_(chevron.l XSort,YSort chevron.r), XSort, YSort chevron.r$
-    - $rank("write") = chevron.l ArraySort_(chevron.l XSort,YSort chevron.r), XSort, YSort, ArraySort_(chevron.l XSort,YSort chevron.r) chevron.r$
-]
-
-== Expressions
-
-#definition[
-  An _expression_ is a finite sequence of symbols.
-]
-
-_Examples_:
-- $forall x_1 (sexp(<, 0, x_1) imply not forall x_2 sexp(<, x_1, x_2))$
-- $x_1 < forall x_2 ))$
-- $x_1 < x_2 imply forall x : NatSort. thin x > 0$
-
-#note[
-  Most expressions are *not* _well-formed_.
-]
-
-== Terms
-
-A _term_ is a _well-formed_ S-expression built from function symbols, variables, and parentheses.
+== Terms and Formulas
 
 #definition[Term][
-  Let $cal(B)$ be the set of all variables and all constant symbols in some signature $Sigma$.
-
-  For each function symbol $f$ in $Sigma^F$ of arity $n$, define _term-building operation_ $cal(T)_f$:
-  $ cal(T)_f (epsilon_1, dots, epsilon_n) := sexp(f, epsilon_1, dots.c, epsilon_1) $
-
-  _Well-formed terms_ are expressions generated from $cal(B)$ by $cal(T) = {cal(T)_f | f in Sigma^F}$.
-]
-
-_Examples_:
-#[
-  #show: cheq.checklist.with(
-    marker-map: (
-      "+": text(fill: green.darken(20%))[#sym.checkmark],
-      "-": text(fill: red.darken(20%))[#sym.crossmark],
-    ),
-  )
-  #grid(
-    columns: 4,
-    column-gutter: 1fr,
-    [
-      - $sexp(+, x_2, sexp(S, 0))$ #YES
-      - $sexp(S, sexp(S, sexp(S, sexp(S, 0))))$ #YES
-      - $sexp(S, sexp(0, 0))$ #NO
-    ],
-    [
-      - $sexp(x_2, +, 0)$ #NO
-      - $sexp(S, 0, 0)$ #NO
-      - $sexp(S, sexp(<, 0, 0))$ #YES
-    ],
-    [
-      - $sexp(+, x_2, bot)$ #YES
-      - $sexp(S, bot)$ #YES
-      - $sexp(eqq, 0, bot)$ #YES
-    ],
-    [
-      - $sexp("read", a)$ #NO
-      - $sexp("read", a, i)$ #YES
-      - $sexp("read", sexp("write", a, i, x), j)$ #YES
-    ],
-  )
-]
-
-== Well-sortedness
-
-#note[
-  Not all well-formed terms are are meaningful.
-  For this, we need to take into account _sorts_.
-]
-
-// The notion of _well-sortedness_ w.r.t. $Sigma$ is formulated via a _sort system_.
-
-#definition[
-  _Sort system_ is a proof system over sequents of the form $Gamma entails t : sigma$.
-  - $Gamma = x_1 : sigma_1, dots, x_n : sigma_n$ is a _sort context_, a set of sorted variables.
-  - $t$ is a well-formed term.
-  - $sigma$ is a sort from $Sigma^S$.
-
-  #align(center)[
-    #import curryst: prooftree, rule
-    #grid(
-      columns: 2,
-      column-gutter: 2em,
-      prooftree(
-        rule(
-          label: smallcaps[Var],
-          $Gamma entails x : sigma$,
-          $x : sigma in Gamma$,
-        ),
-      ),
-      prooftree(
-        rule(
-          label: smallcaps[Const],
-          $Gamma entails c : sigma$,
-          $c in Sigma^F$,
-          $rank(c) = chevron.l sigma chevron.r$,
-        ),
-      ),
-    )
-    #prooftree(
-      rule(
-        label: smallcaps[Fun],
-        $Gamma entails sexp(f, t_1, dots.c, t_n) : sigma$,
-        $f in Sigma^F$,
-        $rank(f) = chevron.l sigma_1, dots, sigma_n, sigma chevron.r$,
-        $Gamma entails t_1 : sigma_1$,
-        $dots.c$,
-        $Gamma entails t_n : sigma_n$,
-      ),
-    )
-  ]
-]
-
-#definition[$Sigma$-term][
-  A term $t$ is _well-sorted_ w.r.t. $Sigma$ and _has sort $sigma$_ in a sort context $Gamma$ if $Gamma entails t : sigma$ is derivable in the sort system.
-  Term $t$ is called $Sigma$-term.
-]
-
-== Examples of Well-sorted Terms
-
-Let $Sigma^S = {NatSort} union {BoolSort}$ and $Sigma^F = {0, S, <, +, times, eqq_NatSort} union {top, bot, eqq_BoolSort}$.
-- $rank(0) = chevron.l NatSort chevron.r$
-- $rank(S) = chevron.l NatSort, NatSort chevron.r$
-- $rank(<) = rank(eqq_NatSort) = chevron.l NatSort, NatSort, BoolSort chevron.r$
-- $rank(+) = rank(times) = chevron.l NatSort, NatSort, NatSort chevron.r$
-
-Are these well-formed terms also well-sorted in the context $Gamma = {x_1 : BoolSort, x_2 : NatSort, x_3 : NatSort}$?
-+ $sexp(+, 0, x_2)$ #YES
-+ $sexp(+, sexp(+, 0, x_1), x_2)$ #NO
-+ $sexp(S, sexp(+, 0, x_5))$ #YES
-+ $sexp(<, sexp(S, x_3), sexp(+, sexp(S, 0), x_1))$ #YES
-+ $sexp(eqq_NatSort, sexp(S, x_3), sexp(+, sexp(S, 0), x_1))$ #YES
-
-== Formulas
-
-#definition[$Sigma$-atom][
-  Given a signature $Sigma$, an _atomic $Sigma$-formula_, or simply _atom_, is a $Sigma$-term of sort $BoolSort$ under _some_ sort context $Gamma$.
+  _Terms_ over signature $Sigma$ are defined inductively:
+  - Every variable $x in cal(V)$ is a term.
+  - If $f in cal(F)$ has arity $n$ and $t_1, dots, t_n$ are terms, then $f(t_1, dots, t_n)$ is a term.
 ]
 
 #definition[Formula][
-  _Well-formed formulas_ are expressions generated from atoms by the _formula-building operations_, denoted $cal(F) = {cal(F)_or, cal(F)_and, cal(F)_not, cal(F)_imply, cal(F)_iff, cal(E)_(x,sigma), cal(A)_(x,sigma)}$.
-  - $cal(F)_not (alpha) := (not alpha)$
-  - $cal(F)_and (alpha, beta) := (alpha and beta)$, similar for $or$, $imply$, and $iff$
-  - $cal(E)_(x,sigma) (alpha) := (exists x : sigma. thin alpha)$ for each variable $x$ and sort $sigma$ in $Sigma^S$
-  - $cal(A)_(x,sigma) (alpha) := (forall x : sigma. thin alpha)$ for each variable $x$ and sort $sigma$ in $Sigma^S$
+  _Formulas_ over $Sigma$ are defined inductively:
+  - If $R in cal(R)$ has arity $n$ and $t_1, dots, t_n$ are terms, then $R(t_1, dots, t_n)$ is an _atomic formula_ (atom).
+  - If $phi, psi$ are formulas: $not phi$, $(phi and psi)$, $(phi or psi)$, $(phi imply psi)$, $(phi iff psi)$ are formulas.
+  - If $phi$ is a formula and $x in cal(V)$: $forall x. thin phi$ and $exists x. thin phi$ are formulas.
 ]
 
-== Examples of Formulas
-
-Let $Sigma^S = {NatSort}$, $Sigma^F = {0, S, <, +, times, eqq_NatSort}$, and let $x_i$ be variables.
-
-Which of the following formulas are well-formed?
-+ $sexp(eqq_NatSort, 0, sexp(S, 0))$ #YES
-+ $sexp(<, sexp(S, x_3), sexp(+, sexp(S, 0), x_1))$ #YES
-+ $sexp(eqq_NatSort, sexp(+, x_1, 0), x_2)$ #YES
-+ $sexp(eqq_NatSort, sexp(+, x_1, 0), x_2) imply bot$ #YES
-+ $sexp(+, 0, x_3) and sexp(<, 0, sexp(S, 0))$ #NO
-+ $forall x_3 : NatSort. thin sexp(+, sexp(+, 0, x_3), x_2)$ #NO
-+ $forall x_3 : BoolSort. thin sexp(eqq_NatSort, sexp(+, 0, x_3), x_2)$ #YES _(Note: not well-sorted)_
-+ $not exists x_0 : NatSort. thin sexp(<, 0, x_0, sexp(S, 0))$ #NO
-
-== Well-sorted Formulas
-
-We _extend_ the sort system for terms with rules for the _logical connectives_ and _quantifiers_.
-
-#align(center)[
-  #grid(
-    columns: 2,
-    column-gutter: 3em,
-    curryst.prooftree(
-      curryst.rule(
-        label: smallcaps[Bconst],
-        $Gamma entails c : BoolSort$,
-        $c in {top, bot}$,
-      ),
-    ),
-    curryst.prooftree(
-      curryst.rule(
-        label: smallcaps[Not],
-        $Gamma entails (not alpha) : BoolSort$,
-        $Gamma entails alpha : BoolSort$,
-      ),
-    ),
-  )
-  #curryst.prooftree(
-    curryst.rule(
-      label: smallcaps[Conn],
-      $Gamma entails (alpha ast beta) : BoolSort$,
-      $Gamma entails alpha : BoolSort$,
-      $Gamma entails beta : BoolSort$,
-      $ast in {and, or, imply, iff}$,
-    ),
-  )
-  #curryst.prooftree(
-    curryst.rule(
-      label: smallcaps[Quant],
-      $Gamma entails (op(Q) x : sigma. thin alpha) : BoolSort$,
-      $Gamma[x : sigma] entails alpha : BoolSort$,
-      $sigma in Sigma^S$,
-      $op(Q) in {forall, exists}$,
-    ),
-  )
-]
-
-Here, $Gamma[x : sigma] = Gamma union {x : sigma}$.
-
-#definition[$Sigma$-formula][
-  A formula $phi$ is a _well-sorted_ w.r.t. $Sigma$ in a sort context $Gamma$ if #box[$Gamma entails phi : BoolSort$] is derivable in the extended sort system.
-  Formula $phi$ is called $Sigma$-formula.
+#example[
+  $forall x. thin (x = 0 or exists y. thin S(y) = x)$ --- "every natural number is $0$ or a successor."
 ]
 
 == Free and Bound Variables
 
-A variable $x$ may occur _free_ or _bound_ in a $Sigma$-formula.
+The _scope_ of $forall x$ (or $exists x$) is the immediately following subformula.
 
-#example[
-  In $forall x. thin A(x, y)$, the variable $x$ is said to be _bound_ and $y$ is _free_.
+#definition[Free Variables][
+  The set $FV(phi)$ of _free variables_ of $phi$ is defined inductively:
+  - $FV(R(t_1, dots, t_n)) = Vars(t_1) union dots union Vars(t_n)$
+  - $FV(not phi) = FV(phi)$; #h(1em) $FV(phi circle.small psi) = FV(phi) union FV(psi)$ for $circle.small in {and, or, imply, iff}$
+  - $FV(forall x. thin phi) = FV(exists x. thin phi) = FV(phi) setminus {x}$
 ]
 
-#definition[Free and bound variables][
-  Recursive definition of _free_ variables in a $Sigma$-formula:
-  - $x$ occurs free in a $Sigma$-atom $sexp(A, t_1, dots.c, t_n)$ if some $t_i$ contains $x$.
-  - $x$ occurs free in $not A$ if $x$ occurs free in $A$.
-  - $x$ occurs free in $A ast B$ if $x$ occurs free in $A$ or in $B$.
-  - $x$ occurs free in $op(Q) y : sigma. thin A$ if $x$ occurs free in $A$ and $x$ is not $y$.
+A formula with no free variables is a _sentence_ (closed formula).
 
-  If $alpha$ contains $op(Q) x$, then $x$ is said to be _bound_ in $alpha$.
+#example[
+  In $forall x. thin P(x, y)$: $x$ is _bound_ (in scope of $forall x$), $y$ is _free_. Not a sentence.
 ]
 
 #note[
-  A variable can be simultaneously free and bound in a formula.
-  For example, $x imply forall x. thin P(x)$.
+  Only _sentences_ have a definite truth value in a structure.
+  Formulas with free variables are like "open predicates" --- they become true/false once you fix values for the free variables.
 ]
 
-#definition[Sentence][
-  A formula $alpha$ is _closed_, or a _sentence_, if it contains no free variables.
+== Substitution
+
+#definition[Substitution][
+  $phi[t \/ x]$ denotes the formula obtained by replacing every _free_ occurrence of $x$ with term $t$.
+
+  A substitution $[t \/ x]$ is _capture-free_ in $phi$ if no free variable in $t$ becomes bound.
 ]
+
+#example[
+  $forall y. thin (x < y) thin [S(0) \/ x] = forall y. thin (S(0) < y)$ --- correct substitution.
+
+  $exists y. thin (x < y) thin [y + 1 \/ x] = exists y. thin (y + 1 < y)$ --- *variable capture!* \
+  The free $y$ in the substituted term becomes bound.
+  Fix: rename bound variable first: $exists z. thin (y + 1 < z)$.
+]
+
+#Block(color: orange)[
+  *Variable capture:* Always check for name clashes before substituting.
+  Rename bound variables if necessary.
+]
+
+
+// ═══════════════════════════════════════════════════════════════════════
+//  SEMANTICS
+// ═══════════════════════════════════════════════════════════════════════
+
+= FOL Semantics
+
+== Structures (Models)
+
+#definition[Structure (Model)][
+  A _structure_ $frak(A)$ for signature $Sigma = angle.l cal(F), cal(R) angle.r$ consists of:
+  - A non-empty _domain_ (universe) $A$ --- the set of objects we reason about.
+  - For each $n$-ary function symbol $f in cal(F)$: a function $f^frak(A) : A^n to A$.
+  - For each $n$-ary relation symbol $R in cal(R)$: a relation $R^frak(A) subset.eq A^n$.
+
+  A _variable assignment_ $sigma : cal(V) to A$ maps each variable to a domain element.
+]
+
+#example[
+  For the arithmetic signature $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$:
+  - $frak(N) = (NN, 0, S, +, times, <, =)$ --- the _standard_ (intended) model.
+  - $frak(Z) = (ZZ, 0, S, +, times, <, =)$ --- a different, equally valid structure.
+  - The sentence $forall x. thin exists y. thin x = S(y) or x = 0$ is true in $frak(N)$ (every natural number is 0 or a successor) but _false_ in $frak(Z)$ (take $x = -1$: it is not $0$ and not a successor of any integer under the standard successor).
+
+  This illustrates a key point: the same sentence can be true in one structure and false in another.
+  _Validity_ means truth in _all_ structures.
+]
+
+== Evaluating FOL Formulas
+
+Given a structure $frak(A)$ and a variable assignment $sigma$, truth is defined inductively.
+The key ingredient compared to PL: quantifiers range over domain elements.
+
+#definition[Satisfaction Relation][
+  The relation $frak(A), sigma models phi$ is defined inductively:
+  - $frak(A), sigma models R(t_1, dots, t_n)$ iff $(t_1^(frak(A),sigma), dots, t_n^(frak(A),sigma)) in R^frak(A)$
+  - Boolean connectives: as in PL.
+  - $frak(A), sigma models forall x. thin phi$ iff $frak(A), sigma[x |-> a] models phi$ for _every_ $a in A$.
+  - $frak(A), sigma models exists x. thin phi$ iff $frak(A), sigma[x |-> a] models phi$ for _some_ $a in A$.
+
+  Here $sigma[x |-> a]$ maps $x$ to $a$ and agrees with $sigma$ on all other variables.
+]
+
+For _sentences_ (no free variables), the truth value depends only on the structure: we write $frak(A) models phi$.
+
+#example[
+  Let $frak(A) = ({1, 2, 3}, scripts(<)^frak(A) = {(1,2),(1,3),(2,3)})$ be a structure for signature ${<}$.
+
+  Evaluate $forall x. thin exists y. thin x < y$ in $frak(A)$:
+  - $x = 1$: need $y$ with $1 < y$.  Take $y = 2$. #YES
+  - $x = 2$: need $y$ with $2 < y$.  Take $y = 3$. #YES
+  - $x = 3$: need $y$ with $3 < y$.  No such $y$ in ${1, 2, 3}$. #NO
+
+  Result: $frak(A) models.not forall x. thin exists y. thin x < y$. The formula is _falsified_ by the element $3$.
+
+  But $forall x. thin exists y. thin x < y$ _is_ satisfied in $frak(N) = (NN, <)$ --- for every $n$, take $y = n + 1$.
+]
+
+== Validity and Satisfiability in FOL
 
 #definition[
-  The set $FreeVars$ of _free variables_ of a $Sigma$-formula $alpha$ is defined as follows:
-  $
-    FreeVars(alpha) := cases(
-      gap: #0.5em,
-      {x | x "is a var in" alpha} & "if" alpha "is atomic",
-      FreeVars(beta) & "if" alpha equiv not beta,
-      FreeVars(beta) union FreeVars(gamma) & "if" alpha equiv (alpha ast beta) "with" ast in {and, or, imply, iff},
-      FreeVars(beta) setminus {v} & "if" alpha equiv op(Q) v : sigma. thin beta "with" op(Q) in {forall, exists},
-    )
-  $
+  Let $phi$ be an FOL sentence.
+  - $phi$ is _valid_ ($models phi$) if $frak(A) models phi$ for _every_ structure $frak(A)$.
+  - $phi$ is _satisfiable_ if $frak(A) models phi$ for _some_ structure $frak(A)$.
+  - $phi$ is _unsatisfiable_ if no structure satisfies it.
+]
+
+#Block(color: orange)[
+  *Critical difference from PL:*
+  - In PL, the space of interpretations is _finite_ ($2^n$ truth assignments).
+  - In FOL, structures can have _infinite_ domains of _any_ cardinality --- decision procedures are fundamentally harder, sometimes even impossible (undecidable).
 ]
 
 #example[
-  Let $x$, $y$, and $z$ be variables.
-  - $FreeVars(x) = {x}$ (if $x$ has sort $BoolSort$)
-  - $FreeVars(x < S(0) + y)$ = ${x, y}$
-  - $FreeVars((x < S(0) + y) and (x eqq z)) = FreeVars(x < S(0) + y) union FreeVars(x eqq z) = {x,y} union {x,z} = {x,z,y}$
-  - $FreeVars(forall x : NatSort. thin x < S(0) + y) = FreeVars(x < S(0) + y) setminus {x} = {x,y} setminus {x} = {y}$
+  - $forall x. thin (P(x) or not P(x))$ --- valid (instance of LEM, holds in every structure).
+  - $forall x. thin P(x) and exists x. thin not P(x)$ --- unsatisfiable.
+  - $exists x. thin P(x)$ --- satisfiable (in any non-empty structure with $P$ non-empty) but not valid.
 ]
 
-== Scope
+== Quantifier Equivalences
 
-// see ML 7.2.2
-- TODO: scope of variables
-- TODO: free/bound variable
-- TODO: open/closed formula
-- TODO: universal closure
-- TODO: existential closure
+Many useful equivalences govern quantifiers:
 
-== FOL Semantics
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  row-gutter: 0.5em,
+  [
+    *De Morgan duality for quantifiers:*
+    - $not forall x. thin phi equiv exists x. thin not phi$
+    - $not exists x. thin phi equiv forall x. thin not phi$
 
-*Recall:* The _syntax_ of a first-order language is defined w.r.t. a signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$, where:
-- $Sigma^S$ is a set of _sorts_.
-- $Sigma^F$ is a set of _function symbols_.
+    *Distribution:*
+    - $forall x. thin (phi and psi) equiv (forall x. thin phi) and (forall x. thin psi)$
+    - $exists x. thin (phi or psi) equiv (exists x. thin phi) or (exists x. thin psi)$
+  ],
+  [
+    *Vacuous quantification* (if $x$ not free in $psi$):
+    - $forall x. thin psi equiv psi$, #h(1em) $exists x. thin psi equiv psi$
 
-In PL, the truth of a formula depends on the meaning of its variables.
+    *Commutativity of like quantifiers:*
+    - $forall x. thin forall y. thin phi equiv forall y. thin forall x. thin phi$
+    - $exists x. thin exists y. thin phi equiv exists y. thin exists x. thin phi$
 
-In FOL, the truth of a $Sigma$-formula depends on:
-+ The meaning of each sort $sigma in Sigma^S$ in the formula.
-+ The meaning of each function symbol $f in Sigma^F$ in the formula.
-+ The meaning of each free variable $x$ in the formula.
+    *Prenex pulling* (if $x$ not free in $psi$):
+    - $psi and forall x. thin phi equiv forall x. thin (psi and phi)$
+    - $psi or exists x. thin phi equiv exists x. thin (psi or phi)$
+  ],
+)
 
-== Semantics
+#pagebreak()
 
-Let $alpha$ be a $Sigma$-formula and let $Gamma$ be a sort context that includes all free variables of $alpha$.
-
-The truth of $alpha$ is determined by _interpretations_ $cal(I)$ of $Sigma$ and $Gamma$ consisting of:
-- An interpretation $sigma^cal(I)$ of each $sigma in Sigma^S$, as a non-empty set, the _domain_ of $sigma$.
-- An interpretation $f^cal(I)$ of each $f in Sigma^F$ of rank $chevron.l sigma_1, dots, sigma_n, sigma_(n+1) chevron.r$, as an $n$-ary total function from~#box[$sigma_1^cal(I) times dots.c times sigma_n^cal(I)$] to $sigma_(n+1)^cal(I)$.
-- An interpretation $x^cal(I)$ of each $x : sigma in Gamma$, as an element of $sigma^cal(I)$.
-
-#note[
-  We consider only interpretations $cal(I)$ such that
-  - $BoolSort^cal(I) = {True, False}$, #h(1em) $bot^cal(I) = False$, #h(1em) $top^cal(I) = True$,
-  - for all $sigma in Sigma^S$, $eqq_sigma^cal(I)$ maps its two arguments to $True$ iff they are identical.
+#Block(color: orange)[
+  $exists x. thin forall y$ is generally _stronger_ than $forall y. thin exists x$ --- the former asserts a _single_ $x$ for _all_ $y$.
 ]
 
-== Semantics: Example
+#example[
+  Let $R(x, y) equiv$ "$x$ is the parent of $y$". Then:
+  - $exists x. thin forall y. thin R(x, y)$ = "someone is the parent of _everyone_" --- false.
+  - $forall y. thin exists x. thin R(x, y)$ = "everyone _has_ a parent" --- true.
 
-Consider a signature $Sigma = chevron.l Sigma^S, Sigma^F chevron.r$ for a fragment of a set theory with non-set elements (ur-elements):
-- $Sigma^S = {ElemSort, SetSort}$,
-- $Sigma^F = {emptyset, epsilon}$ with $rank(emptyset) = chevron.l SetSort chevron.r$, $rank(epsilon) = chevron.l ElemSort, SetSort, BoolSort chevron.r$,
-- $Gamma = {e_i : ElemSort | i gt.eq 0} union {s_i : SetSort | i gt.eq 0}$
+  In general: $exists forall models forall exists$, but $forall exists models.not exists forall$.
+]
+
+== Prenex Normal Form
+
+#definition[Prenex Normal Form (PNF)][
+  A formula is in _prenex normal form_ if it has the shape:
+  $ Q_1 x_1. thin Q_2 x_2. thin dots thin Q_n x_n. thin psi $
+  where each $Q_i in {forall, exists}$ and $psi$ is _quantifier-free_ (the _matrix_).
+]
+
+#theorem[
+  Every FOL formula can be converted to an equivalent formula in PNF (after renaming bound variables to avoid capture if necessary).
+]
+
+#example[
+  $forall x. thin P(x) imply exists y. thin Q(x, y)$ \
+  $equiv forall x. thin (not P(x) or exists y. thin Q(x, y))$ #h(1em) _(eliminate $imply$)_ \
+  $equiv forall x. thin exists y. thin (not P(x) or Q(x, y))$ #h(1em) _(pull $exists y$ out)_
+]
+
+PNF separates the _quantifier prefix_ (alternation structure) from the _propositional skeleton_ (matrix). \
+The alternation depth ($forall exists forall dots$) determines complexity.
+
+
+// ═══════════════════════════════════════════════════════════════════════
+//  PROOFS
+// ═══════════════════════════════════════════════════════════════════════
+
+= FOL Proofs
+
+== FOL Proof Rules: Quantifiers
 
 #grid(
   columns: 2,
   column-gutter: 2em,
   [
-    A possible _interpretation_ $cal(I)$ of $Sigma$ and $Gamma$:
-    - $ElemSort^cal(I) = NN$, the natural numbers.
-    - $SetSort^cal(I) = 2^NN$, all sets of natural numbers.
-    - $emptyset^cal(I) = emptyset$, the empty set.
-    - For all $n in NN$ and $S subset.eq NN$, $epsilon^cal(I)(n, S) iff n in S$.
-    - For $i gt.eq 0$, $e_i^cal(I) = i$ and $s_i^cal(I) = [0; i] = {0, 1, dots, i}$.
+    *$forall$-introduction* ($forall$i): \
+    Derive $phi(y)$ for an _arbitrary_ $y$. \
+    Conclude $forall x. thin phi(x)$.
+
+    #fitch(
+      step(1, $phi(y)$, rule: [$dots.v$ ($y$ arbitrary)]),
+      step(2, $forall x. thin phi(x)$, rule: [$forall$i 1]),
+    )
+
+    *$exists$-introduction* ($exists$i): \
+    From $phi(t)$ for some term $t$, conclude $exists x. thin phi(x)$.
+
+    #fitch(
+      premise(1, $phi(t)$),
+      step(2, $exists x. thin phi(x)$, rule: [$exists$i 1]),
+    )
   ],
   [
-    Another _interpretation_ $cal(I)$ of $Sigma$ and $Gamma$:
-    - $ElemSort^cal(I) = SetSort^cal(I) = NN$.
-    - $emptyset^cal(I) = 0$.
-    - For all $m,n in NN$, $epsilon^cal(I)(m, n) iff m | n$.
-    - For $i gt.eq 0$, $e_i^cal(I) = i$ and $s_i^cal(I) = 2$.
+    *$forall$-elimination* ($forall$e): \
+    From $forall x. thin phi(x)$, conclude $phi(t)$ for _any_ term $t$.
+
+    #v(-0.5em)
+    #fitch(
+      premise(1, $forall x. thin phi(x)$),
+      step(2, $phi(t)$, rule: [$forall$e 1]),
+    )
+
+    *$exists$-elimination* ($exists$e): \
+    From $exists x. thin phi(x)$, open a subproof assuming $phi(y)$ for _fresh_~$y$, derive $psi$. Conclude $psi$.
+
+    #place[
+      #v(1em)
+      #fitch(
+        premise(1, $exists x. thin phi(x)$),
+        subproof(
+          assume(2, $phi(y)$, rule: [$y$ fresh]),
+          step(3, $dots.v$),
+          step(4, $psi$, rule: [$dots.v$]),
+        ),
+        step(5, $psi$, rule: [$exists$e 1, 2--4]),
+      )
+    ]
   ],
 )
 
-#h(1em)
-#align(center)[
-  #fancy-box[
-    There is a _infinity_ of interpretations of $Sigma, Gamma$.
+#pagebreak()
+
+*Side conditions:*
+- $forall$i: $y$ must be _arbitrary_ --- not free in any undischarged assumption.
+- $forall$e: $t$ can be any term (universal _instantiation_).
+- $exists$i: give a _witness_ term $t$.
+- $exists$e: $y$ must be _fresh_ --- not free in $psi$ or any undischarged assumption besides $phi(y)$.
+
+== FOL Proof: A Complete Fitch Example
+
+#example[
+  *Prove:* $forall x. thin (P(x) imply Q(x)), thin exists x. thin P(x) entails exists x. thin Q(x)$
+
+  _"If every $P$ is a $Q$, and some $P$ exists, then some $Q$ exists."_
+
+  #align(center)[
+    #grid(
+      columns: 2,
+      align: left,
+      column-gutter: 2em,
+      [
+        #fitch(
+          premise(1, $forall x. thin (P(x) imply Q(x))$),
+          premise(2, $exists x. thin P(x)$),
+          subproof(
+            assume(3, $P(a)$, rule: [$a$ fresh]),
+            step(4, $P(a) imply Q(a)$, rule: [$forall$e 1]),
+            step(5, $Q(a)$, rule: [$imply$e 3, 4]),
+            step(6, $exists x. thin Q(x)$, rule: [$exists$i 5]),
+          ),
+          step(7, $exists x. thin Q(x)$, rule: [$exists$e 2, 3--6]),
+        )
+      ],
+      [
+        Line 3: open $exists$e subproof --- name the witness $a$ (fresh). \
+        Line 4: instantiate $forall x. thin (P(x) imply Q(x))$ with $a$ ($forall$e). \
+        Line 5: modus ponens on lines 3 and 4. \
+        Line 6: from $Q(a)$, existentially generalize ($exists$i). \
+        Line 7: close $exists$e --- the conclusion $exists x. thin Q(x)$ does not mention~$a$, so it survives.
+      ],
+    )
   ]
 ]
 
-== Term and Formula Semantics
-
-// TODO: similar to PL interpretation under variable assignment $nu$
-
-First, extend $cal(I)$ to an interpretation $overline(cal(I))$ for _well-sorted $Sigma$-terms_ by structural induction:
-
-$
-  t^overline(cal(I)) = cases(
-    t^cal(I) & "if" t "is a constant or a variable",
-    f^cal(I)(t_1^overline(cal(I)), dots, t_n^overline(cal(I))) & "if" t "is a term" sexp(f, t_1, dots, t_n),
-  )
-$
-
-#example[
-  Let $Sigma^S = {PersonSort}$, $Sigma^F = {pa, ma, sp}$, $Gamma = {x:PersonSort, y:PersonSort}$, #box[$rank(pa) = rank(ma) = chevron.l PersonSort, PersonSort chevron.r$], $rank(sp) = chevron.l PersonSort, PersonSort, BoolSort chevron.r$.
-
-  Let $cal(I)$ be an interpretation of $Sigma$ and $Gamma$ such that:
-  - $ma^cal(I) = {"Jim" maps "Jill", "Joe" maps "Jen", dots}$
-  - $pa^cal(I) = {"Jim" maps "Joe", "Jill" maps "Jay", dots}$
-  - $sp^cal(I) = {("Jill", "Joe") maps True, ("Joe", "Jill") maps True, ("Jill", "Jill") maps False, dots}$
-  - $x^cal(I) = "Jim"$ and $y^cal(I) = "Joe"$
-
-  Then:
-  - $sexp(pa, sexp(ma, x))^overline(cal(I)) &= pa^cal(I)\(sexp(ma, x)^overline(cal(I))\) = pa^cal(I)\(ma^cal(I)\(x^overline(cal(I))\)\) = pa^cal(I)\(x^cal(I)\) \ &= pa^cal(I)\(ma^cal(I)("Jim")\) = pa^cal(I)\("Jill"\) = "Jay"$
-  - $sexp(sp, sexp(ma, x), y)^overline(cal(I)) &= sp^cal(I)\(sexp(ma, x)^overline(cal(I)), y^overline(cal(I))\) = sp^cal(I)\(ma^cal(I)\(x^overline(cal(I))\), y^overline(cal(I))) = sp^cal(I)\(ma^cal(I)(x^cal(I)), y^cal(I)\) \ &= sp^cal(I)\(ma^cal(I)\("Jim"\), "Joe"\) = sp^cal(I)\("Jill", "Joe"\) = True$
-]
-
-Further extend $overline(cal(I))$ to _well-sorted non-atomic $Sigma$-formulas_ by structural induction:
-- $(not alpha)^overline(cal(I)) = True$ iff $alpha^overline(cal(I)) = False$
-- $(alpha and beta)^overline(cal(I)) = True$ iff $alpha^overline(cal(I)) = True$ and $beta^overline(cal(I)) = True$
-- $(alpha or beta)^overline(cal(I)) = True$ iff $alpha^overline(cal(I)) = True$ or $beta^overline(cal(I)) = True$
-- $(alpha imply beta)^overline(cal(I)) = True$ iff $alpha^overline(cal(I)) = False$ or $beta^overline(cal(I)) = True$
-- $(alpha iff beta)^overline(cal(I)) = True$ iff $alpha^overline(cal(I)) = beta^overline(cal(I))$
-- $(exists x : sigma. thin alpha)^overline(cal(I)) = True$ iff $alpha^(overline(cal(I))[x maps c]) = True$ for some $c in sigma^cal(I)$
-- $(forall x : sigma. thin alpha)^overline(cal(I)) = True$ iff $alpha^(overline(cal(I))[x maps c]) = True$ for all $c in sigma^cal(I)$
-
-Here, $overline(cal(I))[x maps c]$ denotes the interpretation that maps $x$ to $c$ and is otherwise identical to $overline(cal(I))$.
-
-== Satisfiability, Entailment, Validity
-
-// TODO: compress
-// TODO: reogranize
-// TODO: move satisfiability on a separate slide
-
-We write $cal(I) models alpha$ to denote "$cal(I)$ _satisfies_ $alpha$" and mean $alpha^overline(cal(I)) = True$.
-
-We write $cal(I) models.not alpha$ to denote "$cal(I)$ _falsifies_ $alpha$" and mean $alpha^overline(cal(I)) = False$.
-
-Let $Phi$ be a set of $Sigma$-formulas.
-We write $cal(I) models Phi$ to mean that $cal(I) models alpha$ for every $alpha in Phi$.
-
-If $Phi$ is a set of $Sigma$-formulas and $alpha$ is a $Sigma$-formula, then $Phi$ _entails_ or _logically implies_ $alpha$, denoted $Phi models alpha$, if #box[$cal(I) models alpha$] for every interpretation $cal(I)$ of $Sigma$ such that $cal(I) models Phi$.
-
-We write $alpha models beta$ as an abbreviation for ${alpha} models beta$.
-
-$alpha$ and $beta$ are _logically equivalent_, denoted $alpha equiv beta$, iff $alpha models beta$ and $beta models alpha$.
-
-A $Sigma$-formula $alpha$ is _valid_, denoted $models alpha$, if $emptyset models alpha$ iff $cal(I) models alpha$ for every interpretation $cal(I)$ of $Sigma$.
-
-#pagebreak()
-
-#example[
-  Let $Sigma^S = {ASort}$, $Sigma^F = {p, q}$, $rank(p) = chevron.l ASort, BoolSort chevron.r$, $rank(q) = chevron.l ASort, ASort, BoolSort chevron.r$, and all variables have sort $ASort$.
-  Do the following entailments hold?
-  + $forall x. thin p(x) models p(y)$ #YES
-  + $p(x) models forall x. thin p(x)$ #NO
-  + $forall x. thin p(x) models exists y. thin p(y)$ #YES
-  + $exists y thin forall x. thin q(x, y) models forall x thin exists y. thin q(x, y)$ #YES
-  + $forall x thin exists y. thin q(x, y) models exists y thin forall x. thin q(x, y)$ #NO
-  + $models exists x. thin (p(x) imply forall y. thin p(y))$ #YES
-]
-
-== Exercise
-
-Let $alpha$ be a $Sigma$-formula and let $Gamma$ be a sort context that includes all free variables of $alpha$.
-
-Consider the signature where $Sigma^S = {sigma}$, $Sigma^F = {Q, eqq_sigma}$, $Gamma = {x:sigma, y:sigma}$, $rank(Q) = chevron.l sigma, sigma, BoolSort chevron.r$.
-
-For each of the following $Sigma$-formulas, describe an interpretation that satisfies it.
-+ $forall x:sigma. thin forall y:sigma. thin x eqq y$
-+ $forall x:sigma. thin forall y:sigma. thin Q(x,y)$
-+ $forall x:sigma. thin exists y:sigma. thin Q(x,y)$
-
-== From English to FOL
-
-+ There is a natural number that is smaller than any _other_ natural number. \
-  $exists x : NatSort. thin forall y : NatSort. thin (x eqq y) or (x < y)$
-+ For every natural number there is a greater one. \
-  $forall x : NatSort. thin exists y : NatSort. thin (x < y)$
-+ Two natural numbers are equal only if their respective successors are equal. \
-  $forall x : NatSort. thin forall y : NatSort. thin (x eqq y) imply (S(x) eqq S(y))$
-+ Two natural numbers are equal if their respective successors are equal. \
-  $forall x : NatSort. thin forall y : NatSort. thin (S(x) eqq S(y)) imply (x eqq y)$
-+ No two distinct natural number have the same successor. \
-  $forall x : NatSort. thin forall y : NatSort. thin not (x eqq y) imply not (S(x) eqq S(y))$
-+ There are at least two natural number smaller than 3. \
-  $exists x : NatSort. thin exists y : NatSort. thin not (x eqq y) and (x < S(S(S(0)))) and (y < S(S(S(0))))$
-+ There is no largest natural number. \
-  $not exists x : NatSort. thin forall y : NatSort. thin (y eqq x) or (y < x)$ \
-
-#pagebreak()
-
-+ Everyone has a father and a mother. \
-  $forall x : PersonSort. thin exists y : PersonSort. thin exists z : PersonSort. thin (y eqq pa(x)) and (z eqq ma(x))$
-+ The marriage relation is symmetric. \
-  $forall x : PersonSort. thin forall y : PersonSort. thin sp(x,y) imply sp(y,x)$
-+ No one can be married to themselves. \
-  $forall x : PersonSort. thin not sp(x,x)$
-+ Not all people are married. \
-  $not forall x : PersonSort. thin exists y : PersonSort. thin sp(x,y)$
-+ Some people have a farther and a mother who are not married to each other. \
-  $exists x : PersonSort. thin not sp(ma(x), pa(x))$
-+ You cannot marry more than one person. \
-  $forall x : PersonSort. thin forall y : PersonSort. thin forall z : PersonSort. thin (sp(x,y) and sp(x,z)) imply (y eqq z)$
-+ Some people are not mothers. \
-  $exists x : PersonSort. thin forall y : PersonSort. thin not (x eqq ma(y))$
-+ Nobody can be both a farther and a mother. \
-  $forall x : PersonSort. thin not exists y : PersonSort. thin not exists z : PersonSort. thin (x eqq pa(y)) and (x eqq ma(z))$
-+ Nobody can be their own or farther's farther. \
-  $forall x : PersonSort. thin not ((x eqq pa(x)) or (x eqq pa(pa(x))))$
-+ Some people do not have children. \
-  $exists x : PersonSort. thin forall y : PersonSort. thin not (y eqq pa(x)) and not (y eqq ma(y))$
-
-== Invariance of Term Values
-
-Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $cal(I)$ and $cal(J)$ that agree on the sorts and symbols of $Sigma$.
-
-#theorem[
-  If $cal(I)$ and $cal(J)$ also agree on the variables of a $Sigma$-term $t$, then $t^overline(cal(I)) = t^overline(cal(J))$.
-  // Note: variables must be in Gamma
-]
-
-#proof[
-  By structural induction on $t$.
-  - If $t$ is a variable or a constant, then $t^overline(cal(I)) = t^cal(I)$ and $t^cal(J) = t^overline(cal(J))$.
-    Since $t^cal(I) = t^cal(J)$ by assumption, we have $t^overline(cal(I)) = t^overline(cal(J))$.
-  - If $t$ is a term $sexp(f, t_1, dots.c, t_n)$ with $n > 1$, then $f^cal(I) = f^cal(J)$ by assumption and $t_i^overline(cal(I)) = t_i^overline(cal(J))$ for $j gt.eq 1$ by induction hypothesis.
-    It follows, $t^overline(cal(I)) = f^cal(I)\(t_1^overline(cal(I)), dots, t_n^overline(cal(I))\) = f^cal(J)\(t_1^overline(cal(J)), dots, t_n^overline(cal(J))\) = t^overline(cal(J))$.
-]
-
-== Invariance of Truth Values
-
-#theorem[
-  If $cal(I)$ and $cal(J)$ also agree on the _free_ variables of a $Sigma$-formula $alpha$, then $alpha^overline(cal(I)) = alpha^overline(cal(J))$.
-  // Note: free variables must be in Gamma
-] <thm:invariance>
-
-#proof[
-  By induction on $alpha$.
-  - If $alpha$ is an atomic formula, the result follows from the previous lemma, since $alpha$ is a term and all of its variables are free in it.
-  - If $alpha$ is $not beta$ or $alpha_1 ast alpha_2$ with $ast in {and, or, imply, iff}$, the result follows from the induction hypothesis.
-  - If $alpha$ is $op(Q) x : sigma. thin beta$ with $op(Q) in {forall, exists}$, then $FreeVars(beta) = FreeVars(alpha) union {x}$.
-    For any $c$ in $sigma^cal(I)$, $cal(I)[x maps c]$ and $cal(J)[x maps c]$ agree on $x$ by construction and on $FreeVars(alpha)$ by assumption.
-    The result follows from the induction hypothesis and the semantics of $forall$ and $exists$.
-]
-
-#corollary[
-  The truth value of _$Sigma$-sentences_ is independent from how the variables are interpreted.
-]
-
-== Deduction Theorem of FOL
-
-#theorem[
-  For all $Sigma$-formulas $alpha$ and $beta$, we have $alpha models beta$ iff $alpha imply beta$ is valid.
-]
-
-#proof[($arrow.double.r$)][
-  _If $alpha models beta$ then $alpha imply beta$ is valid_.
-
-  Let $cal(I)$ be an interpretation and let $gamma := alpha imply beta$.
-  - If $cal(I)$ falsifies $alpha$, then it trivially satisfies $gamma$.
-  - If $cal(I)$ satisfies $alpha$, then, since $alpha models beta$, it must also satisfy $beta$. Hence, it satisfies $gamma$.
-  In both cases, $cal(I)$ satisfies $gamma$, thus $cal(I) models alpha imply beta$ for every interpretation $cal(I)$.
-]
-
-#proof[($arrow.double.l$)][
-  _If $alpha imply beta$ is valid then $alpha models beta$._
-
-  Let $cal(I)$ be an interpretation that satisfies $alpha$.
-  If $cal(I)$ falsifies $beta$, then it must also falsify $alpha imply beta$, contradicting the assumption that $alpha imply beta$ is valid.
-  Thus, every interpretation $cal(I)$ that satisfies $alpha$ also satisfies $beta$.
-]
-
-#corollary[
-  For all $Sigma$-formulas $alpha$ and $beta$, we have $models alpha imply beta$ iff $alpha imply beta$ is valid.
-]
-
-== Free Variables Theorem 1
-
-#theorem[
-  Consider a signature $Sigma$ and a sort context $Gamma$.
-  Let $Phi$ be a set of $Sigma$-formulas, let $alpha$ be a #box[$Sigma$-formula] with free variables from $Gamma$, and let $x in FreeVars(alpha)$ be a free variable of sort $sigma$ in $Gamma$.
-
-  Suppose $x$ occurs free in no formulas of $Phi$.
-  Then, $Phi models alpha$ iff $Phi models forall x : sigma. thin alpha$.
-]
-
-#proof[($arrow.double.r$)][
-  _If $Phi models alpha$ then $Phi models forall x : sigma. thin alpha$._
-
-  Let $cal(I)$ be an interpretation that satisfies $Phi$.
-  Since $x$ does not occur free in any formulas of $Phi$, $cal(I)$ satisfies all formulas in $Phi$ regardless of how it interprets $x$.
-  Then, for any element $c in sigma^cal(I)$, the interpretation $cal(I)[x maps c]$ satisfies all formulas in $Phi$, including $alpha$ (because $Phi models alpha$).
-  Thus, it also satisfies the formula $forall x : sigma. thin alpha$, by the semantics of $forall$.
-  Hence, every interpretation that satisfies $Phi$ also satisfies $forall x : sigma. thin alpha$, that is, $Phi models forall x : sigma. thin alpha$.
-]
-
-#proof[($arrow.double.l$)][
-  _If $Phi models forall x : sigma. thin alpha$ then $Phi models alpha$._
-
-  Let $cal(I)$ be an interpretation that satisfies $Phi$.
-  By assumption, $cal(I) models forall x : sigma. thin alpha$.
-  This implies that $cal(I) models alpha$ regardless of how $cal(I)$ interprets $x$.
-  Hence, $Phi models alpha$.
-]
-
-== Free Variables Theorem 2
-
-#theorem[
-  Consider a signature $Sigma$ and a sort context $Gamma$.
-  Let $beta$ be a $Sigma$-formula, let $alpha$ be a $Sigma$-formula with free variables from $Gamma$, and let $x in FreeVars(alpha)$ be a free variable of sort $sigma$ in $Gamma$.
-
-  Suppose $x$ does not occur free in $beta$.
-  Then, $alpha models beta$ iff $exists x : sigma. thin alpha models beta$.
-]
-
-#proof[($arrow.double.r$)][
-  _If $alpha models beta$ then $exists x : sigma. thin alpha models beta$._
-
-  Let $cal(I)$ be an interpretation that satisfies $exists x : sigma. alpha$.
-  This means that $cal(I)[x maps c]$ satisfies $alpha$ for some $c in sigma^cal(I)$.
-  By assumption, $cal(I)[x maps c]$ satisfies $beta$ as well.
-  Since $x$ does not occur free in $beta$, changing the value assigned to $x$ does not matter.
-  It follows that $cal(I)$ satisfies $beta$.
-  Since $cal(I)$ was arbitrary, this shows that $exists x : sigma. alpha models beta$.
-]
-
-#proof[($arrow.double.l$)][
-  _If $exists x : sigma. thin alpha models beta$ then $alpha models beta$._
-
-  Let $cal(I)$ be an interpretation that satisfies $alpha$.
-  Then, trivially#footnote[Recall that any _domain_ $sigma^cal(I)$ is _non-empty_.], $cal(I)$ satisfies $exists x : sigma. thin alpha$.
-  By assumption, $cal(I) models beta$.
-  Since~$cal(I)$ was arbitrary, $alpha models beta$.
-]
-
-= Proofs in FOL
-
 == Semantic Arguments for FOL
 
+Semantic tableaux rules extend to FOL with rules for quantifiers:
+
 #align(horizon)[
-  #import curryst: prooftree, rule
   #grid(
     columns: 3,
     column-gutter: 1fr,
@@ -981,178 +558,358 @@ Consider a signature $Sigma$, a sort context $Gamma$, and two interpretations $c
   )
 ]
 
-= Other slides
 
-== Terms (simple)
+// ═══════════════════════════════════════════════════════════════════════
+//  METATHEOREMS
+// ═══════════════════════════════════════════════════════════════════════
 
-#definition[Variables][
-  A set $X$ of $Sigma$-variables, or simply _variables_, is a countable set of variable names, each associated with a sort from $Sigma^S$.
+= Metatheorems and \ the Limits of Logic
+
+== FOL Soundness and Completeness
+
+#theorem[Gödel's Completeness Theorem (1930)][
+  FOL with standard proof rules is both _sound_ and _complete_:
+  $ Gamma entails phi quad iff quad Gamma models phi $
 ]
 
-Based on variables, we can build _terms_.
-Intuitevely, terms are expressions that evaluate to values.
+#proof[
+  _(Soundness.)_
+  Each rule preserves truth: if premises hold in $frak(A)$, so does the conclusion.
 
-#definition[Terms][
-  The $Sigma$-terms over $X$, or simply _terms_, are defined inductively:
-  - Each variable $x$ in $X$ is a term of sort $sigma$.
-  - If $c in Sigma^F$ is a constant symbol of sort $sigma$, then $c$ is a term of sort $sigma$.
-  - If $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $f$ is a function symbol with $rank(f) = chevron.l sigma_1, dots, sigma_n, sigma chevron.r$, then $sexp(f, t_1, dots.c, t_n)$ is a term of sort $sigma$.
-  - _(Nothing else is a term.)_
+  _(Completeness, sketch.)_
+  If $Gamma entails.not phi$, then $Gamma union {not phi}$ is consistent.
+  Extend to a maximally consistent set $Gamma^*$ (Lindenbaum's lemma).
+  Add Henkin witnesses for existential formulas.
+  Build a canonical model from equivalence classes of closed terms.
+  This model satisfies $Gamma union {not phi}$, so $Gamma models.not phi$.
+  Contrapositive gives the result.
 ]
 
-== Formulas (simple)
-
-Based on terms, we can build _atoms_.
-Intuitevely, atoms are expressions that evaluate Boolean values.
-
-#definition[Atoms][
-  The $Sigma$-atoms over $X$, or simply _atoms_, are terms of the form $sexp(p, t_1, dots.c, t_n)$, where $t_1, dots, t_n$ are terms of sorts $sigma_1, dots, sigma_n$, and $p$ is a predicate with $rank(p) = chevron.l sigma_1, dots, sigma_n, BoolSort chevron.r$.
+#Block(color: yellow)[
+  _Not_ the "incompleteness theorem" --- here "complete" means the proof system derives everything semantically true in _all_ structures.
 ]
 
-In addition to sorted $Sigma$-variables $X$, also consider _propositional variables_ $cal(B)$.
+== FOL Validity is Undecidable
 
-#definition[Formulas][
-  The $Sigma$-formulas over $X$ and $cal(B)$, or simply _formulas_, are defined inductively:
-  - Each propositional variable $p$ in $cal(B)$ is a formula.
-  - Each $Sigma$-atom over $X$ is a formula.
-  - If $alpha$ and $beta$ are formulas, then so are $not alpha$, $(alpha or beta)$, $(alpha and beta)$, $(alpha imply beta)$, and $(alpha iff beta)$.
-  - For each variable $x in X$ and sort $sigma in Sigma^S$, if $alpha$ is a formula, then so are $forall x : sigma. thin alpha$ and $exists x : sigma. thin alpha$.
+Despite completeness, there is _no algorithm_ that always terminates and correctly decides FOL validity.
+
+#theorem[Church--Turing Theorem (1936)][
+  The validity problem for FOL is _undecidable_:
+  no Turing machine can decide, given an arbitrary FOL sentence $phi$, whether $models phi$.
 ]
 
-== Syntax and Semantics of FOL
-
-#definition[Vocabulary][
-  A _vocabulary_ (also known as _signature_) of a language is a collection of symbols used to construct sentences in that language.
-  A vocabulary $cal(V) = chevron.l cal(C), cal(F), cal(P) chevron.r$ consists of:
-  - A set of _constant symbols_ $cal(C)$, e.g., $0$, $bot$, $emptyset$, $dots$
-  - A set of _function symbols_ $cal(F)$, e.g., $S$, $plus$, $times$, $dots$
-  - A set of _predicate symbols_ $cal(P)$, e.g., $eq$, $lt$, $in$, $dots$
-]
-
-#definition[Model][
-  A _possible world_ (also known as _model_, or _structure_, or _interpretation_) is a mathematical object that gives meaning to the symbols in a vocabulary.
-  A model $cal(M)$ for $cal(V)$ consists of:
-  - A _domain_ $cal(D) = dom(cal(M))$, which is a non-empty set of objects (_universe_).
-  - For each constant symbol $c$ in $cal(C)$, its interpretation $c^cal(M)$ is an element of $cal(D)$.
-  - For each $k$-ary function symbol $f$ in $cal(F)$, its interpretation $f^cal(M)$ is a $k$-ary total function on $cal(D)$.
-  - For each $k$-ary predicate symbol $p$ in $cal(P)$, its interpretation $p^cal(M)$ is a $k$-ary relation on $cal(D)$.
-]
-
-== Semantics Example
-
-#example[
-  Let $cal(V)_"field"$ consist of 2-ary functions $plus$ and $times$, constants $0$ and $1$, and 2-ary predicates $eq$ and $lt$.
-
-  One possible interpretation $cal(M)$ is:
-  - $cal(D) = ZZ$, the integer numbers. $0^cal(M)$ and $1^cal(M)$ are the usual integers zero and one.
-  - $scripts(plus)^cal(M)$, $scripts(times)^cal(M)$, $scripts(eq)^cal(M)$, $scripts(lt)^cal(M)$ are the usual arithmetic operators on integers.
-
-  Alternatively, $cal(D) = RR$, $0^cal(M) := 3.14159$, $1^cal(M) := 42$.
-  There are infinitely many possible interpretations!
-]
-
-== Predicate Logic Statements
-
-#definition[Formula][
-  A _formula_ is a statement about the objects in a world.
-
-  #example[
-    $x$ is a even number.
-  ]
-]
-
-#definition[Sentence][
-  A _sentence_ is a statement about a world.
-
-  #example[
-    Every even natural number greater than 2 is a sum of two prime numbers.
-  ]
-]
-
-== Some Computational Challenges
-
-#table(
-  columns: 3,
-  stroke: none,
-  table.header[Decision problem][Formalization][Description],
-  [Validity], [$models phi$], [Is $phi$ true in every world?],
-  [Satisfiability], [$exists cal(M). thin cal(M) models phi$], [Is $phi$ true in some world?],
-  [Model checking], [$cal(M) models phi$], [Is $phi$ true in a given world?],
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Decidable (PL):*
+    - Finite search space ($2^n$ interpretations)
+    - Truth tables always terminate
+    - SAT is NP-complete, VALID is co-NP-complete
+  ],
+  [
+    *Undecidable (FOL):*
+    - Infinite/unbounded structures
+    - Proof search may not terminate
+    - Valid = semi-decidable (r.e.)
+    - Satisfiable = semi-decidable (co-r.e.)
+  ],
 )
 
-== First-Order Model Checking
-
-First basic computational problem in predicate logic is _Model Checking_.
-
-#definition[
-  Model checking problem for first-order logic is the problem of determining whether a given first-order formula $phi$ is satisfied by a given structure $cal(M)$, formally, $cal(M) models phi$.
-
-  $ "MCFO" = { chevron.l cal(M), phi chevron.r | cal(M) models phi } $
+#Block(color: green)[
+  FOL validity is *semi-decidable*: if $phi$ is valid, proof search _will_ find a proof (by completeness).
+  If $phi$ is not valid, search may run forever.
 ]
 
-#note[
-  MCFO is decidable in $abs(cal(M))^abs(phi)$ time.
+SMT solvers restrict to _decidable fragments_ of FOL --- theories where satisfiability _can_ be decided.
+
+== The Compactness Theorem
+
+#theorem[Compactness Theorem][
+  A (possibly infinite) set of FOL sentences $Gamma$ is satisfiable if and only if every _finite_ subset of $Gamma$ is satisfiable.
 ]
 
-#pagebreak()
+#proof[(sketch)][
+  ($arrow.double.r$) Trivial: any model of $Gamma$ satisfies every finite subset.
 
-#theorem[
-  MCFO is NP-hard.
-]
-#proof[
-  SAT can be reduced to MCFO.
-
-  Let $phi$ be a propositional formula.
-  For example, $phi := (p_1 or not p_2 or p_3) and dots$
-
-  Construct a model $cal(M)$ with interpretations for $True$ and $False$, and a first-order formula $phi'$:
-  $ phi' := exists x_1, dots, x_n. thin ((x_1 = True) or (not x_2 = True) or (x_3 = True)) and dots $
-
-  Then, $phi$ is satisfiable iff $cal(M) models phi'$.
-]
-
-== FOL and Computation
-
-Second basic computational problem in predicate logic is _Finite Satisfiability Problem_.
-
-Given a sentence $phi$, is it finitely satisfiable?
-That is, does there exist a _finite_ model $cal(M)$ such that $cal(M) models phi$?
-
-FSP is semi-decidable, undecidable.
-
-Corollary: Finite Validity is not RE, but in co-RE.
-
-TODO: third problem is validity.
-
-More:
-- set of validities in FOL is in RE
-- FOL satisfiability is undecidable
-
-== Finite Satisfiability
-
-#definition[
-  _Finite Satisfiability Problem_ (FSP) is the problem of determining whether a given first-order formula $phi$ has a _finite_ model $cal(M)$ such that $cal(M) models phi$.
+  ($arrow.double.l$) If $Gamma$ is unsatisfiable, then by completeness there is a proof of $bot$ from $Gamma$.
+  Every proof uses only _finitely many_ premises, so some finite $Gamma_0 subset.eq Gamma$ is already unsatisfiable.
 ]
 
 #example[
-  Let $phi$ be the first-order formula obtained as the conjunction of the following sentences, where $a_i$ are constants:
-  - $R(a_0, a_1)$
-  - $forall x, y. thin (R(x, y) imply exists z. thin R(y, z))$
-  - $forall x, y, z. thin (R(y, x) and R(z, x) imply (y = z))$
-  - $forall x. thin not R(x, a_0)$
-
-  Formula $phi$ has the infinite model $R(a_0, a_1), R(a_1, a_2), dots$, but is not finitely satisfiable.
+  *Non-standard models of arithmetic:*
+  Let $Gamma = op("Th")(NN) union {c > 0, c > 1, c > 2, dots}$ where $c$ is a fresh constant.
+  Every finite subset is satisfiable (interpret $c$ as a large enough number).
+  By compactness, $Gamma$ is satisfiable --- in a model with an "infinite" element $c$ larger than all standard naturals. This is a _non-standard model_ of arithmetic.
 ]
 
-// == Trakhtenbrot's Theorem
-
-#theorem[Trakhtenbrot][
-  Finite satisfiability problem for first-order logic is undecidable.
+#Block(color: blue)[
+  If a specification has a bug (is unsatisfiable), some _finite_ subset of constraints already witnesses it --- this is why _bounded model checking_ works: check finitely many constraints at a time.
 ]
 
-// == Bibliography
-// #bibliography("refs.yml")
+== The Löwenheim--Skolem Theorem
 
-== TODO: Exercises
-- Parse tree of a FOL formula
-- Describe Euclidean geometry as a FOL theory
+#theorem[Löwenheim--Skolem Theorem][
+  If an FOL sentence (or countable set of sentences) has an _infinite_ model, then it has a model of _every_ infinite cardinality.
+]
+
+#v(-0.5em)
+#Block(color: teal)[
+  *Skolem's paradox (1922):* ZFC proves uncountable sets exist, yet by Löwenheim--Skolem, ZFC has a _countable_ model.
+  Resolution: "uncountable" is _relative_ to the model's membership relation.
+]
+#v(-0.5em)
+
+Expressive limitations of FOL (compactness + Löwenheim--Skolem):
+- Cannot define "exactly the natural numbers" (up to isomorphism).
+- Cannot express "the domain is finite" or "the domain is countable."
+- Cannot distinguish between structures of different infinite cardinalities.
+
+These limitations motivate _stronger_ logics (second-order, infinitary) and _decidable_ fragments (monadic FOL, EPR, SMT theories).
+
+#place[
+  #v(0.5em)
+  #Block(color: orange)[
+    You cannot write an FOL spec that pins down "exactly the integers." \
+    SMT solvers work around this by _fixing_ the interpretation of theory symbols ($+$, $times$, $<$) --- they reason about a _specific_ structure, not all possible models.
+  ]
+]
+
+== Gödel's Incompleteness Theorems
+
+_Completeness_ (above): "if $phi$ is true in _all_ structures, it is provable."
+_Incompleteness_ (below): "if we fix _one_ structure ($NN$), some true sentences are unprovable."
+These concern different questions.
+
+#v(-0.5em)
+#theorem[First Incompleteness Theorem][
+  Any _consistent_ formal system $cal(T)$ capable of expressing elementary arithmetic contains sentences that are _true_ (in the standard model $NN$) but _unprovable_ in $cal(T)$.
+]
+
+#v(-0.5em)
+#theorem[Second Incompleteness Theorem][
+  If $cal(T)$ is consistent and sufficiently powerful, then $cal(T)$ _cannot prove its own consistency_:
+  $ cal(T) tack.r.not op("Con")(cal(T)) $
+]
+#v(-0.5em)
+
+#note(title: "Sufficiently powerful")[
+  $cal(T)$ must be capable of representing all computable functions --- essentially, $cal(T)$ must contain Robinson arithmetic ($Q$) or stronger.
+]
+
+#place[
+  #v(1em)
+  #Block(color: orange)[
+    Gödel's _completeness_ theorem: FOL proof systems are complete w.r.t. semantic consequence.
+    His _incompleteness_ theorems: specific _theories_ (like arithmetic) have true-but-unprovable sentences.
+    Different notions of "completeness"!
+  ]
+]
+
+== Incompleteness: The Key Idea
+
+The proof relies on _self-reference_, made mathematically precise via Gödel numbering.
+
+Every formula, proof, and syntactic operation is encoded as a natural number.
+There is an arithmetic formula $"Prov"(n)$ saying "$n$ is the Gödel number of a provable sentence."
+Construct a sentence $G$:
+
+$ G quad equiv quad #[$quote.l$I am not provable in $cal(T)$$quote.r$] $
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *If $G$ is provable in $cal(T)$:*
+    - $cal(T)$ proves $G$
+    - $G$ says "$G$ is not provable"
+    - So $cal(T)$ proves something false
+    - Contradicts _consistency_ of $cal(T)$
+  ],
+  [
+    *If $G$ is not provable:*
+    - $G$'s assertion is _true_
+    - So $G$ is true but unprovable
+    - $cal(T)$ is _incomplete_
+  ],
+)
+
+#Block(color: blue)[
+  Incompleteness means _no_ verification system can prove _all_ true program properties.
+  In practice, automated tools are remarkably effective for _specific_ programs.
+]
+
+== The Landscape of Logics
+
+Classical PL and FOL are two points in a rich space of formal systems.
+Different verification tasks need different logics:
+
+#align(center)[
+  #import fletcher: diagram, edge, node, shapes
+  #let vertex(pos, label, color, ..args) = blob(
+    pos,
+    label,
+    shape: rect,
+    tint: color,
+    ..args.named(),
+  )
+  #diagram(
+    spacing: (4em, 1.5em),
+    node-stroke: 1pt,
+    edge-stroke: 1pt,
+    node-corner-radius: 2pt,
+
+    vertex((0, 0), [Propositional\ Logic], green, name: <pl>),
+    vertex((2, 0), [First-Order\ Logic], blue, name: <fol>),
+    vertex((4, 0), [Higher-Order\ Logic], purple, name: <hol>),
+
+    vertex((0, 2), [Modal\ Logic], orange, name: <modal>),
+    vertex((2, 2), [Temporal\ Logic], orange, name: <temporal>),
+    vertex((4, 2), [Separation\ Logic], red, name: <sep>),
+
+    edge(<pl>, <fol>, "-}>", label: [\+ quantifiers]),
+    edge(<fol>, <hol>, "-}>", label: [\+ higher types]),
+    edge(<pl>, <modal>, "-}>", label: [\+ $square, diamond$]),
+    edge(<modal>, <temporal>, "-}>", label: [\+ time]),
+    edge(<fol>, <sep>, "-}>", label: [\+ heap], label-angle: auto),
+  )
+]
+
+#grid(
+  columns: 3,
+  column-gutter: 1em,
+  [
+    *Modal Logic:*
+    $square phi$ ("necessarily") and $diamond phi$ ("possibly").
+    Kripke semantics: worlds + accessibility.
+  ],
+  [
+    *Temporal Logic:*
+    LTL ($square$, $diamond$, $cal(U)$), CTL, CTL\*.
+    Model checking: $square diamond "response"$.
+  ],
+  [
+    *Separation Logic:*
+    Spatial connectives ($ast$, $ast.op$) for heap memory.
+    Powers Meta Infer, VeriFast.
+  ],
+)
+
+== Decidability Landscape
+
+Computational complexity of logical decision problems:
+
+#align(center)[
+  #table(
+    columns: 4,
+    align: (left, center, center, left),
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header[*Logic / Fragment*][*SAT*][*Validity*][*Complexity*],
+    [Propositional], [Decidable], [Decidable], [NP-c / co-NP-c],
+    [Modal (K, S4, S5)], [Decidable], [Decidable], [PSPACE-complete],
+    [FOL (general)], [Undecidable], [Undecidable], [Semi-decidable],
+    [FOL monadic], [Decidable], [Decidable], [NEXPTIME-complete],
+    [Presburger ($NN, +$)], [Decidable], [Decidable], [2-EXPTIME],
+    [Arithmetic ($NN, +, times$)], [Undecidable], [Undecidable], [Not even semi-dec.],
+  )
+]
+
+#Block(color: yellow)[
+  *The sweet spot:* SMT logics (QF_LIA, QF_LRA, QF_BV, QF_AX, ...) --- expressive enough for verification conditions, with terminating decision procedures.
+]
+
+
+// ═══════════════════════════════════════════════════════════════════════
+//  BRIDGE
+// ═══════════════════════════════════════════════════════════════════════
+
+= From FOL to SMT
+
+== Why Theories?
+
+FOL validity is _undecidable_ in general.
+But verification does not need _all_ of FOL --- it needs to reason about _specific_ domains: integers, arrays, bit-vectors, etc.
+
+#definition[First-Order Theory][
+  A _first-order theory_ $cal(T)$ is a set of FOL sentences (axioms) over a fixed signature $Sigma$.
+  A _$cal(T)$-model_ is a structure satisfying all axioms in $cal(T)$.
+  $cal(T)$-satisfiability asks: is there a _$cal(T)$-model_ satisfying a given formula?
+]
+
+#example[
+  - _Theory of linear integer arithmetic_ (LIA): $Sigma = {0, 1, +, <, =}$. Only structures isomorphic to $ZZ$ considered.
+  - _Theory of arrays_: $Sigma = {"read", "write"}$ with McCarthy axioms.
+  - _Theory of equality with uninterpreted functions_ (EUF): $Sigma = {=, f_1, f_2, dots}$, congruence axioms only.
+]
+
+By _fixing_ the theory, we restrict to structures where decision procedures _can_ terminate.
+
+#Block(color: yellow)[
+  *The key insight:* FOL + fixed theory axioms = decidable fragments. \
+  _Satisfiability Modulo Theories_ (SMT) solvers exploit this. \
+  *Next (Week 6):* Many-sorted FOL, SMT theories, CDCL($cal(T)$), and Z3.
+]
+
+== From English to FOL
+
+Translating natural language to FOL formulas is a key skill.
+Here are worked examples over the signature of arithmetic: $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$.
+
++ _There is no largest natural number._ \
+  $not exists x. thin forall y. thin y lt.eq x$ #h(2em) (equivalently: $forall x. thin exists y. thin x < y$)
+
++ _Every prime greater than 2 is odd._ \
+  $forall p. thin ("Prime"(p) and p > 2) imply "Odd"(p)$
+
++ _For every natural number there is a greater one._ \
+  $forall x. thin exists y. thin x < y$
+
++ _Two distinct natural numbers cannot have the same successor._ \
+  $forall x. thin forall y. thin not (x = y) imply not (S(x) = S(y))$
+
++ _There are at least two natural numbers smaller than 3._ \
+  $exists x. thin exists y. thin not (x = y) and x < S(S(S(0))) and y < S(S(S(0)))$
+
+#Block(color: blue)[
+  *Tip:* When formalizing, identify (1) the domain, (2) the quantifier structure, and (3) the predicate/function symbols needed.
+  Common pitfall: confusing the direction of implication after $forall$.
+]
+
+
+// ═══════════════════════════════════════════════════════════════════════
+//  EXERCISES
+// ═══════════════════════════════════════════════════════════════════════
+
+= Exercises
+
+== Exercises: FOL Syntax and Semantics
+
++ Formalize the following in FOL:
+  - "Every prime number greater than 2 is odd."
+  - "There is no largest natural number."
+  - "If $f$ is injective and $A subset.eq B$, then $f(A) subset.eq f(B)$."
+
++ Determine free and bound variables, and whether each formula is a sentence:
+  - $forall x. thin (P(x) imply exists y. thin Q(x, y))$
+  - $exists x. thin (x = y + 1)$
+  - $forall x. thin forall y. thin (R(x, y) imply R(y, x))$
+
++ Convert to prenex normal form:
+  $(forall x. thin P(x)) imply (exists y. thin Q(y))$
+
++ Explain informally: why does $exists x. thin forall y. thin R(x, y) thin models thin forall y. thin exists x. thin R(x, y)$ hold, but $forall y. thin exists x. thin R(x, y) thin models.not thin exists x. thin forall y. thin R(x, y)$?
+  Give a concrete counterexample for the latter.
+
+== Exercises: FOL Proofs and Metatheorems
+
++ Prove the following using natural deduction (Fitch notation):
+  - $forall x. thin (P(x) imply Q(x)), thin exists x. thin P(x) thin entails thin exists x. thin Q(x)$
+  - $forall x. thin (P(x) imply Q(x)) thin entails thin (exists x. thin P(x)) imply (exists x. thin Q(x))$
+  - $forall x. thin P(x), thin forall x. thin (P(x) imply Q(x)) thin entails thin forall x. thin Q(x)$
+
++ Construct a countermodel to show that $exists x. thin P(x) and exists x. thin Q(x) thin models.not thin exists x. thin (P(x) and Q(x))$.
+
++ $star$ Using compactness, show that "the domain is finite" cannot be expressed by any _single_ FOL sentence (or even by any _set_ of FOL sentences).
+  _Hint_: Consider the set of sentences $phi_n$ asserting "there exist at least $n$ distinct elements."
+
++ $star$ The compactness theorem fails for _second-order_ logic. Explain why, and give an example of a property SOL can express but FOL cannot.

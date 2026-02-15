@@ -31,6 +31,35 @@ SAT instances are typically given in *CNF* (conjunctive normal form): a conjunct
   Any problem in NP can be encoded as a SAT instance --- making SAT solvers _universal search engines_.
 ]
 
+== The Cook--Levin Theorem: Proof Sketch
+
+#theorem[Cook--Levin (Cook 1971, Levin 1973)][
+  SAT is NP-complete: it is in NP, and _every_ problem in NP can be reduced to SAT in polynomial time.
+]
+
+*Proof idea:* Every NP problem has a polynomial-time verifier $V$ (a Turing machine). We encode $V$'s execution as a Boolean formula:
+
+#columns(2)[
+  *Variables* (for $T$ steps, $S$ cells):
+  - $q_(t,s)$: machine in state $s$ at step $t$
+  - $h_(t,p)$: head at position $p$ at step $t$
+  - $c_(t,p,sigma)$: cell $p$ has symbol $sigma$ at step $t$
+
+  #colbreak()
+
+  *Clauses* enforce valid computation:
+  - _Initial config_ --- input on tape
+  - _Transition function_ --- $delta$ as implications
+  - _Acceptance_ --- accepting state reached
+]
+
+The resulting formula $phi$ is satisfiable $iff$ there exists a certificate that $V$ accepts.
+The reduction is polynomial: $O(T^2)$ clauses, where $T = p(n)$ is the verifier's runtime.
+
+#Block(color: blue)[
+  *FM takeaway:* Cook--Levin makes SAT solvers _universal search engines_ --- any polynomially verifiable property can be checked by compiling it to SAT.
+]
+
 == SAT Encoding Methodology
 
 To solve a search problem with a SAT solver:
@@ -771,24 +800,81 @@ Beyond the core algorithm, several heuristics make CDCL practical:
   These heuristics matter more than the core algorithm for practical performance. A solver with poor heuristics can be orders of magnitude slower.
 ]
 
-== Modern SAT Solvers
+== SAT Solver Architecture
+
+A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
+
+#align(center)[
+  #table(
+    columns: 2,
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header[*Component*][*Purpose*],
+    [Clause database], [Stores original + learned clauses; periodically garbage-collects],
+    [Two-watched-literal scheme], [Efficient unit propagation --- only visit a clause when a watched literal becomes false],
+    [Decision heuristic (VSIDS)], [Pick the next branching variable; bump activity on conflict],
+    [Conflict analysis (1-UIP)], [Derive learned clause from implication graph],
+    [Restart policy], [Luby or geometric; prevents getting stuck in unproductive subtrees],
+    [Phase saving], [Remember last polarity of each variable for faster re-exploration],
+  )
+]
+
+#note[
+  The two-watched-literal scheme is the key to scalability --- it makes unit propagation amortized $O(1)$ per propagation step, instead of scanning every clause.
+]
+
+== Modern SAT Solvers and Competitions
 
 #columns(2)[
-  *Key solvers:*
-  - *MiniSat* (Eén & Sörensson, 2003): clean reference implementation, ~2k lines of C++.
-  - *CaDiCaL* (Biere): state-of-the-art, incremental, supports proof logging.
-  - *Kissat* (Biere, 2020): competition-oriented, highly optimized.
+  *Key solvers*:
+  - *MiniSat* (Eén & Sörensson, 2003): clean, educational, widely embedded.
+  - *CaDiCaL* (Biere): state-of-the-art, incremental, proof logging.
+  - *Kissat* (Biere, 2020): competition-optimized, _inprocessing_ techniques.
 
   #colbreak()
 
-  *Scale:*
-  - Routinely solve instances with _millions_ of variables and _billions_ of clauses.
-  - SAT Competition (annual since 2002): industrial, crafted, random tracks.
-  - Applications: hardware verification, planning, cryptanalysis, software testing, configuration.
+  *SAT Competition* (annual since 2002):
+  - *Industrial* track: real-world instances (verification, planning).
+  - *Crafted* track: hard combinatorial problems.
+  - *Random* track: random $k$-SAT near phase transition.
+  - Drives solver improvement; open-source requirement.
 ]
 
+#Block(color: yellow)[
+  *Scale:* modern solvers routinely handle _millions_ of variables and _billions_ of clauses. From NP-complete in theory to practical workhorse --- the gap is bridged by CDCL + smart engineering.
+]
+
+== Applications of SAT
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  row-gutter: 1em,
+  [
+    *Hardware Verification*
+    - Bounded Model Checking (BMC): unroll circuit $k$ times, check for bugs via SAT.
+    - Equivalence checking: are two circuits functionally identical?
+    - Used at Intel, AMD, ARM for chip design validation.
+  ],
+  [
+    *Software Analysis*
+    - Symbolic execution backends.
+    - Concolic testing (KLEE, SAGE).
+    - Configuration coverage (Linux kernel has 15k+ options).
+  ],
+  [
+    *AI Planning*
+    - Encode: can we reach goal state in $k$ steps?
+    - SATPlan: competitive with dedicated planners.
+  ],
+  [
+    *Cryptanalysis & Mathematics*
+    - Boolean Pythagorean Triples theorem (2016): 200~TB proof!
+    - Attack stream ciphers via algebraic SAT encoding.
+  ],
+)
+
 #Block(color: blue)[
-  *SAT solvers are the most successful automated reasoning tools ever built.* Despite SAT being NP-complete, modern CDCL solvers exploit structure in real-world instances to achieve remarkable performance.
+  *SAT solvers are the most successful automated reasoning tools ever built.* Despite worst-case exponential complexity, modern CDCL solvers exploit structure in real-world instances to achieve remarkable performance.
 ]
 
 == CDCL: Key Takeaways

@@ -1036,15 +1036,193 @@ This language is _neither_ recognizable nor co-recognizable.
   $overline(L)_Delta scripts(lt.eq)_M "REGULAR"_"TM"$.
 ]
 
-== TODO
+= Rice's Theorem
 
-#show: cheq.checklist
+== Rice's Theorem
 
-- [ ] Decidable language outside of NP
-- [/] Universal TM
-- [ ] Encodings
-- [ ] Programs
-- [ ] Rice's theorem
+Rice's theorem shows that _any_ non-trivial property of the language recognized by a Turing machine is undecidable.
+
+#definition[Semantic Property][
+  A property $P$ of Turing machines is _semantic_ (or a _property of languages_) if whenever $cal(L)(M_1) = cal(L)(M_2)$, then $P(M_1) iff P(M_2)$.
+
+  A semantic property is _non-trivial_ if some TMs satisfy it and others do not.
+]
+
+#example[
+  - "$cal(L)(M)$ is finite" --- semantic, non-trivial.
+  - "$cal(L)(M)$ is regular" --- semantic, non-trivial.
+  - "$M$ has at most 5 states" --- _not_ semantic (depends on machine, not language).
+]
+
+== Rice's Theorem: Statement and Proof
+
+#theorem[Rice's Theorem][
+  Every non-trivial semantic property of TMs is undecidable. \
+  That is, if $P$ is non-trivial and semantic, then ${ chevron.l M chevron.r | P(M) }$ is undecidable.
+]
+
+#proof[
+  Assume WLOG that $P(M_emptyset) = "false"$ (where $cal(L)(M_emptyset) = emptyset$). Since $P$ is non-trivial, there exists some~$M_P$ with $P(M_P) = "true"$.
+
+  We reduce $"HALT"_"TM"$ to $P$: given $chevron.l M, w chevron.r$, construct $M'$ that on input $x$:
+  + Simulates $M$ on $w$.
+  + If $M$ accepts $w$, simulates $M_P$ on $x$.
+
+  Then: $M$ halts on $w$ $imply$ $cal(L)(M') = cal(L)(M_P)$ $imply$ $P(M') = "true"$. \
+  If $M$ does not halt on $w$ $imply$ $cal(L)(M') = emptyset$ $imply$ $P(M') = "false"$.
+]
+
+== Rice's Theorem: Consequences for FM
+
+#Block(color: orange)[
+  *What Rice's theorem tells us:*
+  - _"Does this program terminate?"_ --- undecidable (halting is semantic & non-trivial).
+  - _"Does this program satisfy its spec?"_ --- undecidable.
+  - _"Is this program equivalent to that one?"_ --- undecidable.
+
+  *Every interesting program property is undecidable in general.*
+]
+
+#Block(color: blue)[
+  *The FM response:* We don't give up --- we _approximate_:
+  - *Sound* over-approximation (abstract interpretation): may report false alarms, but never misses bugs.
+  - *Decidable fragments* (SMT theories): restrict to decidable sub-problems.
+  - *Programmer annotations* (Dafny): provide enough hints to make verification tractable.
+  - *Bounded checking* (SAT/BMC): verify up to bound $k$, not for all inputs.
+]
+
+
+= Alternative Models of Computation
+
+== The Church--Turing Thesis
+
+Beyond Turing machines, other models capture the same notion of "computability":
+
+#columns(2)[
+  *Equivalent models:*
+  - $lambda$-calculus (Church, 1936)
+  - $mu$-recursive functions (Kleene)
+  - Post systems
+  - Register machines (RAM)
+  - ...and every general-purpose programming language
+
+  #colbreak()
+
+  *The Church--Turing Thesis:*
+  _Every effectively computable function is computable by a Turing machine._
+
+  This is a _thesis_, not a theorem --- it cannot be formally proved because "effectively computable" is an informal notion.
+]
+
+#Block(color: teal)[
+  *Historical note:* Church and Turing independently arrived at equivalent definitions of computability in 1936. Church used $lambda$-calculus; Turing used his machines. Both showed the Entscheidungsproblem is unsolvable.
+]
+
+== $lambda$-Calculus in a Nutshell
+
+The $lambda$-calculus is a minimal language with just three constructs:
+
+#definition[$lambda$-Calculus Syntax][
+  $ M ::= x | (lambda x. M) | (M space N) $
+  Variables, abstraction (function definition), and application (function call).
+]
+
+#example[
+  - _Identity:_ $lambda x. x$ --- takes $x$, returns $x$.
+  - _Application:_ $(lambda x. x) space y arrow.squiggly y$ --- $beta$-reduction.
+  - _Church numeral_ $overline(2)$: $lambda f. lambda x. f(f(x))$ --- "apply $f$ twice".
+]
+
+Computation is _$beta$-reduction_: $(lambda x. M) space N arrow.squiggly M[x := N]$ (substitute $N$ for $x$ in $M$).
+
+#Block(color: yellow)[
+  *Key insight:* Despite having no numbers, booleans, or loops, $lambda$-calculus can encode _all_ computable functions. This is the theoretical foundation of functional programming (Haskell, ML, Coq, Lean).
+]
+
+
+= From Theory to Practice
+
+== Bridging Computability and Software Engineering
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  row-gutter: 1em,
+  [
+    *Theory says:*
+    - Program correctness is undecidable (Rice).
+    - Halting is undecidable.
+    - FOL validity is undecidable.
+    - Full functional equivalence is undecidable.
+  ],
+  [
+    *Practice responds:*
+    - Sound approximation (abstract interpretation).
+    - Decidable fragments (SMT theories).
+    - Programmer annotations (Dafny, ACSL, JML).
+    - Bounded verification (SAT, BMC, $k$-induction).
+  ],
+)
+
+#v(0.5em)
+
+#example[
+  Dafny's approach combines decidable theories (linear arithmetic, arrays, sets) with programmer-supplied loop invariants and pre/postconditions to make verification _tractable_ for real programs.
+]
+
+#Block(color: yellow)[
+  *The key message:* Undecidability is not a dead end --- it is a _design constraint_. Formal methods succeed by carefully choosing _what_ to verify and _how much_ automation to provide.
+]
+
+== Looking Ahead
+
+#grid(
+  columns: 3,
+  column-gutter: 1.5em,
+  [
+    *Week 3: SAT*
+    - NP-completeness
+    - CDCL solvers
+    - SAT encodings
+  ],
+  [
+    *Week 6: SMT*
+    - Decidable theories
+    - DPLL(T) architecture
+    - Theory combination
+  ],
+  [
+    *Weeks 9--12: Dafny*
+    - Annotations
+    - Loop invariants
+    - Verified programs
+  ],
+)
+
+#v(0.5em)
+
+Each step makes the _gap between theory and practice_ narrower: from "undecidable in general" to "verified for this specific program".
+
+
+= Exercises
+
+== Exercises: Decidability and Computability
+
++ Show that the language ${ chevron.l M chevron.r | M "accepts at least one string" }$ is recognizable but not decidable.
+
++ Using Rice's theorem, explain why each of the following is undecidable:
+  - ${ chevron.l M chevron.r | cal(L)(M) = Sigma^* }$ (universality)
+  - ${ chevron.l M chevron.r | cal(L)(M) "is context-free" }$
+  - ${ chevron.l M chevron.r | |cal(L)(M)| = 42 }$
+
++ Construct a reduction from $"HALT"_"TM"$ to $"TOTAL"_"TM" = { chevron.l M chevron.r | M "halts on all inputs" }$ to prove $"TOTAL"_"TM"$ is undecidable.
+
++ Explain why Rice's theorem does _not_ apply to the property "M has fewer than 10 states." What kind of property is this?
+
++ $star$ The _Busy Beaver_ function $"BB"(n)$ = the maximum number of steps any halting TM with $n$ states can make. Argue that $"BB"$ grows faster than any computable function. _Hint:_ if $"BB"$ were computable, we could decide the halting problem.
+
++ $star$ Consider $lambda$-terms $I = lambda x. x$ and $Omega = (lambda x. x space x)(lambda x. x space x)$. \
+  Show that $I$ has a normal form, but $Omega$ does not (i.e., $beta$-reduction does not terminate on $Omega$).
 
 == Bibliography
 #bibliography("refs.yml")

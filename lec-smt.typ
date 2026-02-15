@@ -49,6 +49,30 @@ In standard (mono-sorted) FOL, _all_ variables range over a _single_ domain. Thi
   We have already seen first-order logic in the previous lecture. Here, we generalize it to the _many-sorted_ setting, which is the standard framework for SMT.
 ]
 
+== From Single-Sorted to Many-Sorted FOL
+
+In the previous lectures, we studied _single-sorted_ (mono-sorted) FOL:
+
+#columns(2)[
+  *Single-sorted FOL (Weeks 4--5):*
+  - One universal domain $D$
+  - All variables range over $D$
+  - $forall x. thin P(x)$ means "for all $x$ in $D$"
+  - Sufficient for pure math foundations
+
+  #colbreak()
+
+  *Many-sorted FOL (this lecture):*
+  - Multiple domains: $IntSort^cal(I), BoolSort^cal(I), ArraySort^cal(I), dots$
+  - Variables are _typed_: $x : IntSort$
+  - $forall x : sigma. thin P(x)$ --- "for all $x$ in $sigma^cal(I)$"
+  - Essential for programming & verification
+]
+
+#Block(color: yellow)[
+  *The key extension:* many-sorted FOL adds a _type system_ to FOL. This is exactly what programming languages do --- and why SMT solvers speak many-sorted logic natively.
+]
+
 == Many-Sorted Signatures
 
 #definition[
@@ -1810,6 +1834,63 @@ s.add(C + 1 <= 8)               # C finishes by deadline 8
 if s.check() == sat:
     print(s.model())  # e.g., A=0, B=3, C=5
 ```
+
+= Advanced Applications of SMT
+
+== Symbolic Execution
+
+_Symbolic execution_ explores program paths using _symbolic_ rather than concrete inputs, building _path conditions_ as SMT formulas.
+
+#example[
+  ```python
+  def abs(x: int) -> int:
+      if x >= 0: return x
+      else: return -x
+  ```
+  - Path 1: condition $x gt.eq 0$, result $= x$.
+  - Path 2: condition $x < 0$, result $= -x$.
+  - To find an input where `abs(x) < 0`: query SMT for $(x gt.eq 0 and x < 0) or (x < 0 and -x < 0)$ --- UNSAT!
+]
+
+#Block(color: blue)[
+  *Tools:* KLEE (LLVM), SAGE (Microsoft), angr (binary analysis). All rely on SMT solvers (typically Z3) as the constraint-solving backend.
+]
+
+== CEGAR and CEGIS
+
+*Counterexample-Guided Abstraction Refinement (CEGAR)*:
++ Start with a _coarse_ abstraction of the program.
++ Check if the abstraction satisfies the property (using an SMT solver).
++ If a counterexample is found, check if it is _spurious_ (infeasible in the concrete program).
++ If spurious, _refine_ the abstraction and repeat.
+
+*Counterexample-Guided Inductive Synthesis (CEGIS)*:
++ Propose a candidate program (from a template).
++ Check if it satisfies the specification for _all_ inputs (using an SMT solver).
++ If a counterexample input is found, add it to the test suite and re-synthesize.
+
+#Block(color: yellow)[
+  *Common pattern:* both CEGAR and CEGIS use SMT solvers in a _verify--refine loop_. The solver alternates between finding counterexamples and checking candidates.
+]
+
+== Syntax-Guided Synthesis (SyGuS)
+
+#definition[SyGuS Problem][
+  Given a _specification_ $phi(x, f(x))$ and a _grammar_ $G$ defining the space of candidate expressions, find a function $f$ expressible in $G$ such that $forall x. thin phi(x, f(x))$.
+]
+
+#example[
+  *Synthesize* $max(x, y)$:
+  - Spec: $f(x, y) gt.eq x and f(x, y) gt.eq y and (f(x, y) = x or f(x, y) = y)$
+  - Grammar: $f ::= x | y |$ `ite`$(f gt.eq f, f, f)$
+  - Solution: `ite`$(x gt.eq y, x, y)$
+]
+
+SyGuS competitions (since 2014) drive solver development. Key solvers: *CVC5* (built-in SyGuS), *EUSolver*, *DryadSynth*.
+
+#Block(color: blue)[
+  *The big picture:* SMT solvers are not just decision procedures --- they are the _engine_ behind program analysis, synthesis, and verification. Everything from Dafny to KLEE to CVC5's synthesizer relies on efficient SMT solving.
+]
 
 = Exercises
 
