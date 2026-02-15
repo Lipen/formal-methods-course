@@ -8,12 +8,10 @@ default:
 # All Typst files to compile
 files := """
     syllabus.typ
-    lec-prop-logic.typ
-    lec-normal-forms.typ
+    lec-logic.typ
     lec-sat.typ
-    lec-dpll.typ
-    lec-computation.typ
     lec-fol.typ
+    lec-computation.typ
     lec-smt.typ
     lec-dafny.typ
     homework/hw1.typ

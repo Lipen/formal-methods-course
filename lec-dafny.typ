@@ -10,21 +10,6 @@
 
 #show table.cell.where(y: 0): strong
 
-#let Green(x) = {
-  show emph: set text(green.darken(20%))
-  text(x, green.darken(20%))
-}
-#let Red(x) = {
-  show emph: set text(red.darken(20%))
-  text(x, red.darken(20%))
-}
-
-#let True = Green(`true`)
-#let False = Red(`false`)
-
-#let YES = Green(sym.checkmark)
-#let NO = Red(sym.crossmark)
-
 #let WPsym = $cal(W P)$
 #let SPsym = $cal(S P)$
 

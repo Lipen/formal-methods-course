@@ -48,12 +48,10 @@ jobs:
       - run: typst fonts
 
       - run: typst compile syllabus.typ
-      - run: typst compile lec-prop-logic.typ
-      - run: typst compile lec-normal-forms.typ
+      - run: typst compile lec-logic.typ
       - run: typst compile lec-sat.typ
-      - run: typst compile lec-dpll.typ
-      - run: typst compile lec-computation.typ
       - run: typst compile lec-fol.typ
+      - run: typst compile lec-computation.typ
       - run: typst compile lec-smt.typ
       - run: typst compile lec-dafny.typ
 

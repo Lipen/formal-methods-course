@@ -9,23 +9,19 @@ image:https://github.com/Lipen/formal-methods-course/actions/workflows/ci.yml/ba
 [%autowidth]
 |===
 
-|image:https://img.shields.io/badge/Syllabus-Course Information-blue?style=social&logo=gitbook["Syllabus", link="https://lipen.github.io/formal-methods-course/syllabus.pdf"]
+|image:https://img.shields.io/badge/Course-Syllabus-blue?style=social&logo=gitbook["Syllabus", link="https://lipen.github.io/formal-methods-course/syllabus.pdf"]
 
-|image:https://img.shields.io/badge/Lecture-Propositional Logic-blue?style=social&logo=gitbook["Lecture: Propositional Logic", link="https://lipen.github.io/formal-methods-course/lec-prop-logic.pdf"]
+|image:https://img.shields.io/badge/Lecture-Logic-blue?style=social&logo=gitbook["Lecture: Logic", link="https://lipen.github.io/formal-methods-course/lec-logic.pdf"]
 
-|image:https://img.shields.io/badge/Lecture-Normal Forms-blue?style=social&logo=gitbook["Lecture: Normal Forms", link="https://lipen.github.io/formal-methods-course/lec-normal-forms.pdf"]
+|image:https://img.shields.io/badge/Lecture-SAT-blue?style=social&logo=gitbook["Lecture: SAT", link="https://lipen.github.io/formal-methods-course/lec-sat.pdf"]
 
-|image:https://img.shields.io/badge/Lecture-Boolean Satisfiability-blue?style=social&logo=gitbook["Lecture: Boolean Satisfiability", link="https://lipen.github.io/formal-methods-course/lec-sat.pdf"]
+|image:https://img.shields.io/badge/Lecture-FOL-blue?style=social&logo=gitbook["Lecture: First-Order Logic", link="https://lipen.github.io/formal-methods-course/lec-fol.pdf"]
 
-|image:https://img.shields.io/badge/Lecture-DPLL-blue?style=social&logo=gitbook["Lecture: DPLL", link="https://lipen.github.io/formal-methods-course/lec-dpll.pdf"]
-
-|image:https://img.shields.io/badge/Lecture-Theory of Computation-blue?style=social&logo=gitbook["Lecture: Theory of Computation", link="https://lipen.github.io/formal-methods-course/lec-computation.pdf"]
-
-|image:https://img.shields.io/badge/Lecture-First Order Logic-blue?style=social&logo=gitbook["Lecture: First-Order Logic", link="https://lipen.github.io/formal-methods-course/lec-fol.pdf"]
+|image:https://img.shields.io/badge/Lecture-Computation-blue?style=social&logo=gitbook["Lecture: Theory of Computation", link="https://lipen.github.io/formal-methods-course/lec-computation.pdf"]
 
 |image:https://img.shields.io/badge/Lecture-SMT-blue?style=social&logo=gitbook["Lecture: Satisfiability Modulo Theories", link="https://lipen.github.io/formal-methods-course/lec-smt.pdf"]
 
-|image:https://img.shields.io/badge/Lecture-Dafny-blue?style=social&logo=gitbook["Lecture: Dafny", link="https://lipen.github.io/formal-methods-course/lec-dafny.pdf"]
+|image:https://img.shields.io/badge/Lecture-Dafny-blue?style=social&logo=gitbook["Lecture: Specification and Verification", link="https://lipen.github.io/formal-methods-course/lec-dafny.pdf"]
 
 |===
 

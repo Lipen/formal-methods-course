@@ -2,11 +2,11 @@
 #show: slides.with(
   title: [Formal Methods in Software Engineering],
   subtitle: "First-Order Logic",
-  date: "Spring 2025",
+  date: "Spring 2026",
   authors: "Konstantin Chukharev",
-  ratio: 16 / 9,
-  // dark: true,
 )
+
+#import "common-lec.typ": *
 
 #show table.cell.where(y: 0): strong
 
@@ -15,6 +15,7 @@
 
 #let eqq = $scripts(eq^.)$
 #let rank = $op("rank")$
+#let dom = math.op("dom")
 
 #let Sort(s) = $#raw(s)$
 #let BoolSort = Sort("Bool")
