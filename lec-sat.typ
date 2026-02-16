@@ -442,7 +442,7 @@ Pure literal elimination:
 #align(center)[
   #import fletcher: diagram, edge, node, shapes
   #diagram(
-    spacing: (2.5em, 3em),
+    spacing: 3em,
     node-corner-radius: 3pt,
     edge-stroke: 1pt,
     edge-corner-radius: 5pt,
