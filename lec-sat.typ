@@ -807,9 +807,9 @@ Beyond the core algorithm, several heuristics make CDCL practical:
 - When deciding a variable, use its _last assigned polarity_ as default.
 - Effect: quickly reconstructs parts of previous partial solutions.
 
-#note[
-  These heuristics matter more than the core algorithm for practical performance. A solver with poor heuristics can be orders of magnitude slower.
-]
+// #note[
+//   These heuristics matter more than the core algorithm for practical performance. A solver with poor heuristics can be orders of magnitude slower.
+// ]
 
 == SAT Solver Architecture
 
