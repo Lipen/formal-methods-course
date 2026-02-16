@@ -522,13 +522,13 @@ See also: https://complexityzoo.net/Petting_Zoo
 == Computable Functions
 
 #definition[Church--Turing thesis][
-  _Computable functions_ are exactly the functions that can be calculated using a mechanical (that is, automatic) calculation device given unlimited amounts of time and storage space.
+  _Every effectively computable function_ --- anything that _can_ be computed by a mechanical, step-by-step procedure --- _is computable by a Turing machine._
 
-  // Any algorithmically solvable problem can be computed by a Turing machine.
+  This is a *thesis*, not a theorem. "Effectively computable" is an informal, intuitive notion; we cannot formally _prove_ the thesis, but no counterexample has ever been found.
 ]
 
-#quote[
-  _Every model of computation that has ever been imagined can compute _only_ computable functions, and _all_ computable functions can be computed by any of several _models of computation_ that are apparently very different, such as Turing machines, register machines, lambda calculus and general recursive functions._
+#note[
+  In 1936, Alonzo Church ($lambda$-calculus) and Alan Turing (Turing machines) independently formalized computability. They proved these models equivalent --- and _every other model proposed since_ computes exactly the same class of functions.
 ]
 
 #definition[Computable function][
@@ -605,10 +605,10 @@ _Examples:_
 == Halting Problem
 
 #definition[Halting problem #href("https://en.wikipedia.org/wiki/Halting_problem")][
-  Given a program and an input, determine whether the program _halts_ (stops after a finite time) on that input or _loops_ forever.
+  Given a program $P$ and an input $x$, determine whether $P$ halts on $x$ (stops after finite time) or loops forever.
 ]
 
-#theorem[Turing][
+#theorem[Turing, 1936][
   The halting problem is undecidable.
 ]
 

@@ -848,33 +848,36 @@ A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
 #grid(
   columns: 2,
   column-gutter: 2em,
-  row-gutter: 1em,
   [
     *Hardware Verification*
     - Bounded Model Checking (BMC): unroll circuit $k$ times, check for bugs via SAT.
     - Equivalence checking: are two circuits functionally identical?
     - Used at Intel, AMD, ARM for chip design validation.
-  ],
-  [
-    *Software Analysis*
-    - Symbolic execution backends.
-    - Concolic testing (KLEE, SAGE).
-    - Configuration coverage (Linux kernel has 15k+ options).
-  ],
-  [
+    - _Intel Pentium FDIV bug (1994)_: cost \$475M. Modern SAT-based verification would have caught it.
+
     *AI Planning*
     - Encode: can we reach goal state in $k$ steps?
     - SATPlan: competitive with dedicated planners.
+    - Mars rover path planning: 60-minute problems solved in seconds.
   ],
   [
+    *Software Analysis*
+    - Symbolic execution backends (KLEE, SAGE).
+    - Concolic testing: concrete + symbolic execution.
+    - Configuration coverage: Linux kernel has 15k+ options $=>$ $2^(15000)$ configs --- SAT finds bugs in specific combinations.
+
     *Cryptanalysis & Mathematics*
-    - Boolean Pythagorean Triples theorem (2016): 200~TB proof!
+    - _Boolean Pythagorean Triples theorem (2016)_: proved using SAT solver, generated 200~TB proof!
     - Attack stream ciphers via algebraic SAT encoding.
+    - Factorization: $n = p times q$ encoded as multiplication circuit + SAT.
   ],
 )
 
-#Block(color: blue)[
-  *SAT solvers are the most successful automated reasoning tools ever built.* Despite worst-case exponential complexity, modern CDCL solvers exploit structure in real-world instances to achieve remarkable performance.
+#Block(color: teal)[
+  In 2016, researchers used a SAT solver to solve the Boolean Pythagorean Triples problem --- a 35-year-old open problem in Ramsey theory.
+  The solver ran for 2 days on ~800 cores, exploring $10^(18)$ search states, and produced a 200~TB proof (largest math proof ever).
+  - _The problem:_ Can we 2-color positive integers such that no Pythagorean triple $a^2 + b^2 = c^2$ is monochromatic?
+  - _Answer:_ Yes up to 7824, impossible beyond.
 ]
 
 == CDCL: Key Takeaways

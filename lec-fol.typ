@@ -26,66 +26,99 @@
 
 = Introduction to FOL
 
-== Motivation
+== Motivation: The Limits of Propositional Logic
 
-#fancy-box(tint: yellow)[
-  Propositional logic (PL) is not powerful enough for many applications.
-]
-
-- PL cannot reason about _natural numbers_ directly.
-- PL cannot reason about _infinite_ domains.
-- PL cannot express _abstract_ properties.
-- PL cannot represent the _internal structure_ of propositions.
-- PL lacks _quantifiers_ for generalization.
-
-First-order logic (FOL) _extends_ propositional logic by adding _variables_, _predicates_, _functions_, and _quantifiers_, providing a structured way to reason about objects, their properties, and relationships.
-
-Unlike propositional logic, which is limited to fixed truth values for statements, FOL allows complex expressions like "All humans are mortal" ($forall x. thin "Human"(x) imply "Mortal"(x)$) or "There exists a solution to the problem" ($exists x. thin "Solution"(x)$).
-
-#example[
-  Consider _"every even number greater than 2 is a sum of two primes"_ (Goldbach's conjecture).
-  PL would need a separate proposition $G_4, G_6, G_8, dots$ for each even number.
-  FOL expresses it as a single formula:
-  $ forall n. thin (n > 2 and "Even"(n)) imply exists p, q. thin ("Prime"(p) and "Prime"(q) and n = p + q) $
-]
-
-== What is First-Order Logic?
-
-Similar to PL, first-order logic is a formal system with a _syntax_ and _semantics_.
-
-#fancy-box(tint: green)[
-  First-order logic is an umbrella term for different _first-order languages_.
-]
-
-Syntax of a logic consists of _symbols_ and _rules_ for combining them into _well-formed formulas_ (WFFs).
-
-Symbols of a first-order language are divided into _logical symbols_ and _non-logical parameters_.
+Propositional logic was humanity's first formal calculus of reasoning (Boole, 1847; Frege, 1879).
+But it has fundamental limitations:
 
 #grid(
   columns: 2,
   column-gutter: 2em,
   [
-    *Logical symbols*:
-    - Parentheses: $($, $)$
-    - Logical connectives: $not$, $and$, $or$, $imply$, $iff$
-    - Variables: $x$, $y$, $z$, $dots$
-    - Quantifiers: $forall$ and $exists$
+    *What PL cannot express:*
+    - "All humans are mortal" (quantification)
+    - "Every even number > 2 is a sum of two primes" (Goldbach)
+    - "For all $epsilon > 0$, there exists $delta > 0$..." ($epsilon$--$delta$ proofs)
+    - "The array has no out-of-bounds access" (program verification)
   ],
   [
-    *Parameters*:
-    - Equality: $=$
-    - Constants: e.g. $bot$, $0$, $emptyset$, $dots$
-    - Predicates: e.g. $P(x)$, $Q(x, y)$, $x > y$, $A subset B$
-    - Functions: e.g. $f(x)$, $g(x, y)$, $x + y$
+    *Why this matters:*
+    - Mathematics _needs_ universal statements
+    - Program specifications quantify over inputs
+    - Database queries select objects satisfying properties
+    - Scientific theories make generalizations
+  ],
+)
+
+== What is First-Order Logic? The Historical Context
+
+_First-order logic_ emerged from three converging streams in late 19th/early 20th century:
+
+#grid(
+  columns: 3,
+  column-gutter: 1.5em,
+  [
+    *Frege (1879):*
+    _Begriffsschrift_ --- the first formal system with quantifiers.
+    Goal: foundations for arithmetic.
+    Notation was 2D and hard to use.
+  ],
+  [
+    *Russell (1903):*
+    _Principia Mathematica_ (with Whitehead, 1910-1913).
+    Derived mathematics from logic.
+    Discovered Russell's paradox: naive set theory is inconsistent.
+  ],
+  [
+    *Hilbert (1920s):*
+    Hilbert's program: prove consistency of mathematics via finitary methods.
+    Pushed for formal axiomatization.
+    Goal shattered by Gödel (1931).
+  ],
+)
+
+#Block(color: teal)[
+  *Why "first-order"?* The quantifiers $forall x, exists x$ range over _individuals_ (elements of the domain). \
+  In _second-order_ logic, we could quantify over _sets_ or _predicates_: $forall P. exists x. thin P(x)$. \
+  In _higher-order_ logic (used in Coq, Lean, Isabelle), we quantify over functions of functions, etc.
+
+  First-order logic is the _sweet spot_: expressive enough for most mathematics and verification, yet with nice metatheoretic properties (completeness, compactness).
+]
+
+== Syntax: The Language of FOL
+
+Similar to PL, first-order logic is a formal system with a _syntax_ and _semantics_.
+
+#fancy-box(tint: green)[
+  First-order logic is an umbrella term for different _first-order languages_.
+  Each language is specified by its _signature_ $Sigma$ --- the vocabulary of function and relation symbols.
+]
+
+Symbols of a first-order language are divided into _logical symbols_ (fixed) and _non-logical parameters_ (signature-dependent):
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Logical symbols (universal):*
+    - Parentheses: $($, $)$
+    - Logical connectives: $not$, $and$, $or$, $imply$, $iff$
+    - Variables: $x$, $y$, $z$, $dots$ (infinite supply)
+    - Quantifiers: $forall$ ("for all") and $exists$ ("there exists")
+    - Equality: $=$ (sometimes, depending on convention)
+  ],
+  [
+    *Non-logical parameters (signature $Sigma$):*
+    - Constants: e.g., $0$, $emptyset$, $e$ (arity 0 functions)
+    - Functions: e.g., $S$ (successor), $+$, $times$, $f(x, y)$
+    - Predicates: e.g., $<$, $in$, $"Prime"(x)$, $P(x, y)$
+
+    Each symbol has a fixed _arity_ (number of arguments).
   ],
 )
 
 #note[
-  For connectives, just $and$ and $not$ are enough.
-  The others can be expressed in terms of them.
-]
-#note[
-  For quantifiers, just $forall$ is enough, since $exists x. thin phi$ can be expressed as $not forall x. thin not phi$.
+  Minimalism: Just $and$, $not$ suffice for connectives (others defined). Just $forall$ suffices for quantifiers ($exists x. phi equiv not forall x. not phi$).
 ]
 
 == Predicates and Functions
@@ -814,17 +847,6 @@ Computational complexity of logical decision problems:
   )
 ]
 
-#Block(color: yellow)[
-  *The sweet spot:* SMT logics (QF_LIA, QF_LRA, QF_BV, QF_AX, ...) --- expressive enough for verification conditions, with terminating decision procedures.
-]
-
-
-// ═══════════════════════════════════════════════════════════════════════
-//  BRIDGE
-// ═══════════════════════════════════════════════════════════════════════
-
-= From FOL to SMT
-
 == Why Theories?
 
 FOL validity is _undecidable_ in general.
@@ -843,12 +865,6 @@ But verification does not need _all_ of FOL --- it needs to reason about _specif
 ]
 
 By _fixing_ the theory, we restrict to structures where decision procedures _can_ terminate.
-
-#Block(color: yellow)[
-  *The key insight:* FOL + fixed theory axioms = decidable fragments. \
-  _Satisfiability Modulo Theories_ (SMT) solvers exploit this. \
-  *Next (Week 6):* Many-sorted FOL, SMT theories, CDCL($cal(T)$), and Z3.
-]
 
 == From English to FOL
 

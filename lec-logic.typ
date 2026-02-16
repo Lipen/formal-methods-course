@@ -678,6 +678,8 @@ Rewriting rules (apply until no rule matches):
   )
 ]
 
+#pagebreak()
+
 #theorem[
   Every formula _not containing_ $iff$ can be converted to an equivalent NNF with a _linear increase_ in size.
 
@@ -841,7 +843,7 @@ $
 
 == Clausal Form
 
-#definition[Clausal Form][
+#definition[
   A _clausal form_ of a formula $F$ is a _set_ of clauses $S_F$ which is satisfiable iff $F$ is satisfiable.
   Moreover, $F$ and $S_F$ have the same models when restricted to the language of $F$.
 ]
@@ -1209,10 +1211,10 @@ searching for a contradiction in $Gamma union {not alpha}$ is equivalent to a SA
 _Resolution_ reduces propositional proof theory to a single inference rule, but requires _clausal form_ (CNF).
 This makes it the natural foundation for automated theorem proving.
 
-#Block(color: teal)[
-  Introduced by J. Alan Robinson (1965).
-  Modern CDCL solvers maintain resolution proofs implicitly --- learned clauses _are_ resolution steps.
-]
+// #Block(color: teal)[
+//   Introduced by J. Alan Robinson (1965).
+//   Modern CDCL solvers maintain resolution proofs implicitly --- learned clauses _are_ resolution steps.
+// ]
 
 #definition[Resolution Rule][
   Given two clauses containing complementary literals:
@@ -1285,15 +1287,31 @@ Progression from left to right mirrors the course: human methods $=>$ machine me
 
 SAT solvers are _resolution engines_ augmented with heuristics (VSIDS, restarts, phase saving).
 
-= First-Order Logic: A Taste
+= First-Order Logic
 
 == Why First-Order Logic?
 
-Propositional logic handles Boolean constraints well, and SAT solvers are remarkably efficient.
-But program _specifications_ say things like _"for all inputs $x$, if the precondition holds, the postcondition holds"_ --- we need _quantifiers_.
+Propositional logic handles Boolean constraints well, and SAT solvers are remarkably efficient. \
+But _specifications_ in formal methods require quantification:
 
-PL cannot express quantification over objects.
-Consider _"every even number greater than 2 is a sum of two primes"_ (Goldbach's conjecture) --- PL would need a separate proposition $G_4, G_6, G_8, dots$ for each even number.
+```python
+def binary_search(arr, key):
+    # Precondition: arr is sorted
+    # Postcondition: returns index of key, or -1
+```
+
+The postcondition says: _"For all inputs $("arr", "key")$ where `arr` is sorted, if the function returns $i geq 0$, then `arr[i] == key`; if it returns $-1$, then `key` is not in `arr`."_
+
+In FOL: $forall "arr", "key". thin "Sorted"("arr") imply ("result" geq 0 imply "arr"["result"] = "key") and ("result" = -1 imply forall i. thin "arr"[i] eq.not "key")$
+
+#Block(color: orange)[
+  *Why PL fails:* Specifications quantify over _unbounded_ or _infinite_ domains:
+  - "All array indices are in bounds" → quantifies over all integers $i$ in range
+  - "No null pointer dereferences" → quantifies over all pointers in the heap
+  - "The loop preserves the invariant" → quantifies over all iterations
+
+  PL would need infinitely many propositions. FOL makes this expressible and _checkable_.
+]
 
 FOL adds three key ingredients:
 - *Variables* ranging over objects in a domain ($x, y, z, dots$)
@@ -1309,21 +1327,33 @@ FOL adds three key ingredients:
 == FOL at a Glance
 
 A first-order _signature_ $Sigma = angle.l cal(F), cal(R) angle.r$ declares function symbols (including constants) and relation symbols.
-_Terms_ are built from variables and functions; _formulas_ combine terms via predicates, connectives, and quantifiers $forall, exists$.
+- _Terms_ are built from variables and functions.
+- _Formulas_ combine terms via predicates, connectives, and quantifiers $forall, exists$.
 
-#example[
-  Over the arithmetic signature $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$:
-
-  $forall x. thin (x = 0 or exists y. thin S(y) = x)$ --- "every natural number is $0$ or a successor."
-]
+#grid(
+  columns: (1fr, auto),
+  column-gutter: 1em,
+  [
+    *Syntax example* (arithmetic):
+    - Signature: $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$
+    - Formula: $forall x. thin (x = 0 or exists y. thin S(y) = x)$
+    - Meaning: "every natural number is either $0$ or a successor"
+  ],
+  [
+    *Verification example* (arrays):
+    - Signature: array operations `read`, `write`, `len`
+    - Formula: $forall a, i, v. thin 0 lt.eq i < "len"(a) imply "read"("write"(a, i, v), i) = v$
+    - Meaning: "writing then reading gives back the value"
+  ],
+)
 
 A _structure_ (model) $frak(A)$ gives meaning to the symbols: a domain $A$, concrete functions, concrete relations.
 The _same_ formula can be true in one structure and false in another --- _validity_ means truth in _all_ structures.
 
 #Block(color: orange)[
-  *PL vs FOL:*
-  In PL, the space of interpretations is finite ($2^n$ truth assignments) --- decidable.
-  In FOL, structures can have _infinite_ domains --- validity is _undecidable_ (Church--Turing, 1936).
+  - PL: $2^n$ truth assignments (finite) $=>$ SAT is decidable (NP-complete)
+  - FOL: structures can have _infinite_ domains $=>$ validity is _undecidable_ (Church--Turing, 1936)
+  - *FM response:* Restrict to _decidable fragments_ $=>$ SMT theories (linear arithmetic, arrays, etc.)
 ]
 
 == FOL: Key Concepts Preview
@@ -1331,29 +1361,58 @@ The _same_ formula can be true in one structure and false in another --- _validi
 A variable $x$ in $forall x. thin phi$ is _bound_; a variable not in scope of any quantifier is _free_.
 A formula with no free variables is a _sentence_ (has a definite truth value in each structure).
 
-#columns(2)[
-  *What FOL gives us:*
-  - Quantification over infinite domains
-  - Predicates expressing properties
-  - Functions giving structure to objects
-  - Formal proofs with $forall$-intro/elim, $exists$-intro/elim
-
-  #colbreak()
-
-  *Key metatheorems:*
-  - Gödel completeness: $entails iff models$
-  - Church--Turing: validity undecidable
-  - Compactness: finite character of proofs
-  - Incompleteness: true $eq.not$ provable (arithmetic)
+#align(center)[
+  #table(
+    columns: 3,
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header[*Concept*][*Meaning*][*Example*],
+    [Free variables], [Unquantified, act as parameters], [$x + y > 0$ has free $x, y$],
+    [Bound variables], [Under $forall$ or $exists$ scope], [$forall x. thin x + y > 0$ binds $x$, $y$ free],
+    [Sentence], [No free vars, definite truth value], [$forall x. exists y. thin y > x$ (true in $ZZ$)],
+    [Structure/Model], [Domain + interpretation of symbols], [$NN, ZZ, RR$ with standard $+, times, <$],
+    [Validity], [True in _all_ structures], [$forall x. thin x = x$ (valid)],
+    [Satisfiability], [True in _some_ structure], [$exists x. thin x dot x = 2$ (sat in $RR$, unsat in $QQ$)],
+  )
 ]
 
-#Block(color: yellow)[
-  *Full treatment in Weeks 4--5.* \
-  FOL is the _language of specifications_ --- its decidable fragments power SMT solvers. \
-  *Next:* SAT solving (Week 3). Then: FOL in full depth (Weeks 4--5).
+== Why FOL Matters: From Theory to Verification
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Theoretical significance:*
+    - Gödel completeness (1930): syntactic provability = semantic truth
+    - Church--Turing (1936): decision problem undecidable
+    - Compactness: infinite theories have finite character
+    - Incompleteness (1931): arithmetic has true unprovable statements
+  ],
+  [
+    *Practical impact on FM:*
+    - _Dafny_ specifications: `requires`, `ensures`, `invariant` are FOL formulas
+    - _SMT solvers_ (Z3, CVC5): decide satisfiability in restricted FOL theories
+    - _Separation logic_: FOL + heap reasoning for pointer programs
+    - _Temporal logic_: FOL + time for reactive systems
+  ],
+)
+
+#pagebreak()
+
+#example[Real verification scenario][
+  Dafny method specification:
+  ```dafny
+  method Find(a: array<int>, key: int) returns (index: int)
+    ensures index >= 0 ==> 0 <= index < a.Length && a[index] == key
+    ensures index == -1 ==> forall i :: 0 <= i < a.Length ==> a[i] != key
+  ```
+
+  The `forall i :: ...` is FOL quantification over integers. Z3 (the SMT solver behind Dafny) checks this by:
+  1. Translating to many-sorted FOL (separate sorts for `int`, `array<int>`)
+  2. Applying decision procedures for linear integer arithmetic + array theory
+  3. Returning SAT (code correct) or UNSAT + counterexample (bug found)
 ]
 
-= Connecting to Automated Reasoning
+= Automated Reasoning
 
 == From Logic to SAT Solving
 

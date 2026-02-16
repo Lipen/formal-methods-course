@@ -84,6 +84,16 @@ To formally verify a program you need:
 - Automated tools for verification and reasoning.
 - Domain-specific expertise.
 
+#Block(color: teal)[
+  *Historical context:* Floyd-Hoare logic (1969) laid the theoretical foundations. Dijkstra's weakest precondition calculus (1975) made it practical. Modern tools like Dafny (2009, Microsoft Research) combine:
+  - Programming language design
+  - SMT solvers (Z3) for automation
+  - Boogie intermediate verification language
+  - User-friendly syntax inspired by C\# and Java
+]
+
+#pagebreak()
+
 There are many tools and even specific languages for writing specs and verifying them.
 
 One of them is _Dafny_, both a specification language and a program verifier.
@@ -264,7 +274,7 @@ method MyMethod(x: int) returns (y: int)
 
 The last calculated condition is _implied_ by the given pre-condition:
 $
-  (x + 3 + 12 >= 25) <- (x >= 10)
+  (x + 3 + 12 gt.eq 25) arrow.l (x gt.eq 10)
 $
 
 == Exercise \#1
@@ -2290,8 +2300,9 @@ A sorting algorithm must satisfy _two_ properties:
   ```
 ]
 
-#Block(color: blue)[
-  *Lesson:* Formal verification forces you to state _all_ aspects of correctness. Informal testing might miss that `BadSort` is wrong --- it passes any "is it sorted?" test!
+#note[
+  Formal verification requires stating _all_ aspects of correctness.
+  A permutation-only specification allows "sorts" that don't actually sort.
 ]
 
 == Exercises: Advanced Dafny
