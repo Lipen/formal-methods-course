@@ -56,7 +56,7 @@ jobs:
       - run: typst compile lec-dafny.typ
 
       - run: |
-          typst compile homework/hw1.typ
+          typst compile --root . homework/hw1.typ
           mv homework/hw1.pdf .
 
       - name: List PDFs
