@@ -56,8 +56,11 @@ SAT instances are typically given in *CNF* (conjunctive normal form): a conjunct
 The resulting formula $phi$ is satisfiable $iff$ there exists a certificate that $V$ accepts.
 The reduction is polynomial: $O(T^2)$ clauses, where $T = p(n)$ is the verifier's runtime.
 
-#Block(color: blue)[
-  *FM takeaway:* Cook--Levin makes SAT solvers _universal search engines_ --- any polynomially verifiable property can be checked by compiling it to SAT.
+#place[
+  #v(1em)
+  #Block(color: blue)[
+    Cook--Levin makes SAT solvers _universal search engines_ --- any polynomially verifiable property can be checked by compiling it to SAT.
+  ]
 ]
 
 == SAT Encoding Methodology
@@ -127,9 +130,9 @@ Common encoding primitives:
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header[*Pattern*][*Clauses*][*Aux Vars*][*When to Use*],
     [ALO$(x_1, dots, x_n)$], [$1$], [$0$], [Something must be chosen],
-    [AMO pairwise], [$binom(n,2)$], [$0$], [At most one choice ($n lt.eq 10$)],
+    [AMO pairwise], [$binom(n, 2)$], [$0$], [At most one choice ($n lt.eq 10$)],
     [AMO commander], [$O(n)$], [$O(n)$], [At most one choice ($n > 10$)],
-    [EO = ALO + AMO], [$1 + binom(n,2)$], [$0$], [Exactly one choice],
+    [EO = ALO + AMO], [$1 + binom(n, 2)$], [$0$], [Exactly one choice],
     [Implication $a imply b$], [$1$], [$0$], [Dependency between choices],
     [If-then-else], [$2$], [$0$], [Conditional assignment],
   )
@@ -332,6 +335,7 @@ The efficiency comes from modern solvers: _billions_ of clauses, solved in minut
     row-gutter: 0.5em,
     box(inset: (right: -0.6cm), clip: true, image("assets/Martin_Davis.jpg", height: 3cm)),
     image("assets/Hilary_Putnam.jpg", height: 3cm),
+
     [Martin Davis], [Hilary Putnam],
   )
   #let body = [
@@ -414,7 +418,7 @@ DPLL @davis1962 replaces resolution with _splitting_: choose a variable, try bot
     + *if* $S$ contains the empty clause $square$ *then*
       - *return* _unsatisfiable_
     + $L := "select_literal"(S)$
-    + *if* $"DPLL"(S union {L}) = $ _satisfiable_ *then*
+    + *if* $"DPLL"(S union {L}) =$ _satisfiable_ *then*
       - *return* _satisfiable_
     + *else*
       - *return* $"DPLL"(S union {not L})$
@@ -429,7 +433,7 @@ The search forms a _binary decision tree_ where each internal node is a variable
 == DPLL Flowchart
 
 #align(center)[
-  #import fletcher: diagram, node, edge, shapes
+  #import fletcher: diagram, edge, node, shapes
   #diagram(
     spacing: (2.5em, 3em),
     node-corner-radius: 3pt,
@@ -649,7 +653,9 @@ The learned clause is added permanently to the clause database --- the solver _r
 #set text(size: 0.85em)
 
 Consider formula $F$ with variables $x_1, dots, x_5$ and clauses:
-$ c_1 = (x_1 or x_2), quad c_2 = (not x_1 or x_3), quad c_3 = (not x_2 or x_3), quad c_4 = (not x_3 or x_4), quad c_5 = (not x_3 or not x_4) $
+$
+  c_1 = (x_1 or x_2), quad c_2 = (not x_1 or x_3), quad c_3 = (not x_2 or x_3), quad c_4 = (not x_3 or x_4), quad c_5 = (not x_3 or not x_4)
+$
 
 #align(center)[
   #table(
@@ -657,7 +663,11 @@ $ c_1 = (x_1 or x_2), quad c_2 = (not x_1 or x_3), quad c_3 = (not x_2 or x_3), 
     align: (center, left, left, left),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header[*Level*][*Action*][*Propagation*][*Status*],
-    [1], [Decide $x_1 = 0$], [$c_1 => x_2 = 1$; \ $c_3 => x_3 = 1$; \ $c_4 => x_4 = 1$; \ $c_5$ conflict: needs $not x_4$ but $x_4 = 1$], [#Red[Conflict!]],
+    [1],
+    [Decide $x_1 = 0$],
+    [$c_1 => x_2 = 1$; \ $c_3 => x_3 = 1$; \ $c_4 => x_4 = 1$; \ $c_5$ conflict: needs $not x_4$ but $x_4 = 1$],
+    [#Red[Conflict!]],
+
     [], [Analyze: learned clause $(x_1)$], [], [Backjump to level 0],
     [0], [Unit prop: $x_1 = 1$], [$c_2 => x_3 = 1$; $c_4 => x_4 = 1$; $c_5$ conflict again], [#Red[Conflict!]],
     [], [Level 0 conflict $=>$ *UNSAT*], [], [],
@@ -695,7 +705,7 @@ The formula is unsatisfiable. CDCL proved this by learning a clause at level 1 a
 == CDCL Flowchart
 
 #align(center)[
-  #import fletcher: diagram, node, edge, shapes
+  #import fletcher: diagram, edge, node, shapes
   #diagram(
     spacing: (3em, 2em),
     node-corner-radius: 3pt,
@@ -810,7 +820,9 @@ A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header[*Component*][*Purpose*],
     [Clause database], [Stores original + learned clauses; periodically garbage-collects],
-    [Two-watched-literal scheme], [Efficient unit propagation --- only visit a clause when a watched literal becomes false],
+    [Two-watched-literal scheme],
+    [Efficient unit propagation --- only visit a clause when a watched literal becomes false],
+
     [Decision heuristic (VSIDS)], [Pick the next branching variable; bump activity on conflict],
     [Conflict analysis (1-UIP)], [Derive learned clause from implication graph],
     [Restart policy], [Luby or geometric; prevents getting stuck in unproductive subtrees],
