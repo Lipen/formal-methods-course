@@ -221,7 +221,9 @@ SAT solvers use the _DIMACS CNF_ format --- a standard text representation:
 #v(0.5em)
 
 Run a solver:
-#raw(block: true, lang: "bash", "cadical formula.cnf")
+```sh
+cadical formula.cnf
+```
 
 If SAT, the solver prints a _model_ (variable assignments). \
 If UNSAT, it may produce a _proof certificate_.
