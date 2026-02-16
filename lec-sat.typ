@@ -558,7 +558,7 @@ Consider: $(A or B) and (not A or C) and (not B or not C) and (A or not C)$ --- 
     table.header[*Step*][*Action*][*Assignment*][*Clauses*][*Status*],
     [1], [Decide $A = 1$], [$A = 1$], [$(not A or C) => (C)$; others simplified], [],
     [2], [Unit prop $C = 1$], [$A = 1, C = 1$], [$(not B or not C) => (not B)$], [],
-    [3], [Unit prop $B = 0$], [$A = 1, C = 1, B = 0$], [Check $(A or B)$: satisfied], [#Green[SAT] $checkmark$],
+    [3], [Unit prop $B = 0$], [$A = 1, C = 1, B = 0$], [Check $(A or B)$: satisfied], [#Green[SAT] #YES],
   )
 ]
 #set text(size: 1em)
