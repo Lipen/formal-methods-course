@@ -818,6 +818,7 @@ A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
 #align(center)[
   #table(
     columns: 2,
+    align: left,
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header[*Component*][*Purpose*],
     [Clause database], [Stores original + learned clauses; periodically garbage-collects],
