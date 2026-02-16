@@ -86,21 +86,22 @@ To solve a search problem with a SAT solver:
 
 Many encoding tasks require constraining _how many_ variables in a group are true.
 
-#definition[At-Least-One (ALO)][
-  At least one of $x_1, dots, x_n$ is true:
+#definition[
+  _At least one_ (ALO) of $x_1, dots, x_n$ is true:
   $ (x_1 or x_2 or dots or x_n) $
-  *1 clause, $n$ literals.*
+  *single $n$-literal clause*
 ]
 
-#definition[At-Most-One (AMO)][
-  At most one of $x_1, dots, x_n$ is true.
+#definition[
+  _At most one_ (AMO) of $x_1, dots, x_n$ is true.
   _Pairwise_ encoding: for each pair $i < j$, add
   $ (not x_i or not x_j) $
-  *$binom(n, 2)$ clauses, 2 literals each.*
+  *$binom(n, 2)$ binary clauses*
 ]
 
-#note(title: "Scaling")[
-  Pairwise AMO produces $O(n^2)$ clauses. For large $n$, _commander--variable_ or _logarithmic_ encodings reduce this to $O(n)$ clauses using auxiliary variables.
+#note[
+  Pairwise AMO produces $O(n^2)$ clauses.
+  For large $n$, _commander--variable_ or _logarithmic_ encodings reduce this to $O(n)$ clauses using auxiliary variables.
 ]
 
 == Encoding Patterns: Exactly-One & Implications
