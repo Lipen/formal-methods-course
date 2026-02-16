@@ -549,7 +549,6 @@ Pure literal elimination:
 
 Consider: $(A or B) and (not A or C) and (not B or not C) and (A or not C)$ --- 4 clauses, 3 variables.
 
-#set text(size: 0.9em)
 #align(center)[
   #table(
     columns: 5,
@@ -561,7 +560,6 @@ Consider: $(A or B) and (not A or C) and (not B or not C) and (A or not C)$ --- 
     [3], [Unit prop $B = 0$], [$A = 1, C = 1, B = 0$], [Check $(A or B)$: satisfied], [#Green[SAT] #YES],
   )
 ]
-#set text(size: 1em)
 
 Model: $nu = {A = 1, B = 0, C = 1}$. Verify: all clauses satisfied.
 
@@ -657,8 +655,6 @@ The learned clause is added permanently to the clause database --- the solver _r
 
 == Worked CDCL Example
 
-#set text(size: 0.85em)
-
 Consider formula $F$ with variables $x_1, dots, x_5$ and clauses:
 $
   c_1 = (x_1 or x_2), quad c_2 = (not x_1 or x_3), quad c_3 = (not x_2 or x_3), quad c_4 = (not x_3 or x_4), quad c_5 = (not x_3 or not x_4)
@@ -680,8 +676,6 @@ $
     [], [Level 0 conflict $=>$ *UNSAT*], [], [],
   )
 ]
-
-#set text(size: 1em)
 
 The formula is unsatisfiable. CDCL proved this by learning a clause at level 1 and detecting a conflict at level 0.
 
