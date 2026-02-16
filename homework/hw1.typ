@@ -217,22 +217,333 @@ This problem explores quantifiers, structures, and fundamental limitations of FO
     - Conclude: "the domain is infinite" can be expressed by an infinite set of FOL sentences, but not by a _single_ sentence (or any finite set). Why?
 ]
 
-= Notation Reference
+== Problem 7: Programming Challenge --- Logic in Practice
 
-#grid(
-  columns: 2,
-  column-gutter: 2em,
-  row-gutter: 1em,
-  [
-    *Semantic relations:*
-    - $Gamma models phi$ --- semantic entailment
-    - $nu models phi$ --- interpretation $nu$ satisfies $phi$
-    - $models phi$ --- $phi$ is valid (tautology)
-  ],
-  [
-    *Syntactic relations:*
-    - $Gamma tack phi$ --- syntactic derivability
-    - Fitch rules: $and$i/e, $or$i/e, $imply$i/e, $not$i/e, $bot$e, RAA, LEM
-    - FOL rules: $forall$i/e, $exists$i/e
-  ],
-)
+#Block(color: teal, width: 100%)[
+  *Implementation context:*
+
+  This is a _programming project_ where you implement core logic concepts from scratch and explore their real-world applications.
+  Choose your language: Python, Rust, OCaml, Haskell, or any language with algebraic data types.
+  For formal verification tasks, use Lean 4 or Coq.
+
+  *Submission:* Code repository (GitHub/GitLab) with README explaining your design choices, plus a brief report (2-3 pages) documenting what you implemented, challenges encountered, and insights gained.
+
+  *Grading:* Core tasks (50%), code quality & documentation (30%), extensions (20%).
+]
+
+=== Part A: Formula Engine (Core Implementation)
+
+Build a _propositional logic toolkit_ from the ground up.
+
+*Task A.1: Abstract Syntax Tree*
+
+Design and implement an AST representation for propositional formulas.
+
+#Block(color: blue.lighten(50%), width: 100%)[
+  *Required:*
+  - Data type/class for formulas: atoms ($p, q, dots$), $not$, $and$, $or$, $imply$, $iff$, constants ($top$, $bot$)
+  - Constructor functions or smart constructors
+  - Structural equality and hashing (for sets/maps)
+
+  *Example (Rust):*
+  ```rust
+  enum Formula {
+      Atom(String),
+      Not(Box<Formula>),
+      And(Box<Formula>, Box<Formula>),
+      // ... complete the rest
+  }
+  ```
+
+  *Example (Python):*
+  ```python
+  @dataclass(frozen=True)
+  class Atom:
+      name: str
+
+  @dataclass(frozen=True)
+  class Not:
+      operand: Formula
+  # ... complete using Union or inheritance
+  ```
+
+  *Open question:* Should $imply$ and $iff$ be primitive or derived? Justify your choice.
+]
+
+*Task A.2: Pretty Printer and Parser*
+
+#Block(color: blue.lighten(50%), width: 100%)[
+  *Required:*
+  - `to_string(formula)`: Convert AST to human-readable string with minimal parentheses.
+    Use precedence: $not > and > or > imply > iff$
+  - Handle associativity correctly
+
+  *Optional:*
+  - Parser: `parse(string)` → AST. Use a parser combinator library (e.g., `pyparsing`, `nom`, `parsec`) or write a recursive descent parser.
+  - Round-trip test: `parse(to_string(f)) == f`
+
+  *Test case:*
+  ```
+  ((p ∧ q) → r) ∨ (¬p ∧ s)  should print with minimal parens
+  ```
+]
+
+#block(sticky: true)[*Task A.3: Evaluator and Truth Tables*]
+
+#Block(color: blue.lighten(50%), width: 100%)[
+  *Required:*
+  - `eval(formula, interpretation)`: Evaluate formula under a given variable assignment.
+  - `truth_table(formula)`: Generate complete truth table as a list/table of `(valuation, result)` pairs.
+  - `is_tautology(formula)`, `is_satisfiable(formula)`, `is_contradiction(formula)`
+
+  *Output format:*
+  ```
+  p | q | r | (p ∧ q) → r
+  --|---|---|-------------
+  T | T | T |      T
+  T | T | F |      F
+  ...
+  ```
+
+  *Open task:* Implement _early termination_: stop generating the truth table for `is_satisfiable` as soon as you find one satisfying assignment.
+]
+
+#block(sticky: true)[*Task A.4: Normal Forms*]
+
+#Block(color: blue.lighten(50%), width: 100%)[
+  *Required:*
+  - `to_nnf(formula)`: Convert to Negation Normal Form (push negations to atoms).
+  - `to_cnf(formula)`: Convert to Conjunctive Normal Form using distributivity or Tseitin transformation.
+
+  *Open choice:* Should `to_cnf` always use Tseitin (polynomial blowup) or try direct conversion first (exponential worst case, but often smaller)? Implement both and compare.
+
+  *Test:* Verify that your CNF conversion preserves satisfiability (or equivalence, if not using Tseitin).
+]
+
+#block(sticky: true)[*Task A.5: Equivalence and Properties*]
+
+#Block(color: blue.lighten(50%), width: 100%)[
+  *Required:*
+  - `equivalent(f1, f2)`: Check logical equivalence using truth tables or SAT solving.
+  - Implement and test De Morgan's laws:
+    - $not (p and q) equiv (not p) or (not q)$
+    - $not (p or q) equiv (not p) and (not q)$
+  - Test distributivity: $p and (q or r) equiv (p and q) or (p and r)$
+
+  *Extension:*
+  - Implement a _random formula generator_ for property-based testing.
+  - Use it to test commutativity, associativity, absorption laws.
+]
+
+=== Part B: Proof Systems (Advanced Implementation)
+
+Implement proof checking and (optionally) proof search.
+
+#block(sticky: true)[*Task B.1: Fitch Proof Representation*]
+
+#Block(color: green.lighten(60%), width: 100%)[
+  *Required:*
+  - Data structure for Fitch proofs: list of steps, each with:
+    - Line number
+    - Formula
+    - Justification (rule name + references to earlier lines)
+    - Indentation level (for subproofs)
+
+  *Example structure (pseudocode):*
+  ```
+  Step = {
+    line: int,
+    formula: Formula,
+    rule: Rule,
+    references: List[int],
+    level: int,  // subproof depth
+  }
+  ```
+
+  *Open design question:* How do you represent assumptions vs. derived steps? How do you track subproof scope?
+]
+
+#block(sticky: true)[*Task B.2: Proof Checker*]
+
+#Block(color: green.lighten(60%), width: 100%)[
+  *Required:*
+  Implement a checker that validates Fitch proofs step-by-step.
+  Support at minimum:
+  - Premise (assumption at depth 0)
+  - Assumption (start subproof, increase depth)
+  - ∧i, ∧e, ∨i, ∨e, →i, →e, ¬i, ¬e, ⊥e
+  - Reiteration (repeat earlier line from valid scope)
+
+  *Checker requirements:*
+  - Verify each step references valid earlier lines
+  - Check subproof scoping (can only reference lines from current or outer scopes)
+  - Verify rule applications are correct
+  - Report specific errors with line numbers
+
+  *Test case:* Validate the proof from Problem 1(a) in HW1.
+
+  *Extension:*
+  - Add RAA (reductio ad absurdum) and LEM (law of excluded middle)
+  - Support FOL quantifier rules ($forall$i/e, $exists$i/e) with eigenvariable checking
+]
+
+#block(sticky: true)[*Task B.3: Automated Proof Search (Optional)*]
+
+#Block(color: green.lighten(60%), width: 100%)[
+  *Challenge:* Implement a simple automated prover.
+
+  *Approach 1 (Semantic Tableaux):*
+  - Implement a tableau prover: try to build a countermodel by systematic case analysis.
+  - If all branches close, the formula is a tautology.
+
+  *Approach 2 (Resolution):*
+  - Convert to CNF, apply resolution until deriving $square$ or saturating.
+
+  *Approach 3 (Sequent Calculus):*
+  - Bottom-up proof search in sequent calculus.
+
+  *Open exploration:* Which approach finds proofs fastest for the examples in Problem 1?
+  Can you find formulas where one method outperforms the others dramatically?
+]
+
+=== Part C: Real-World Applications
+
+Connect theory to practical software engineering.
+
+#block(sticky: true)[*Task C.1: Configuration Validation*]
+
+#Block(color: orange.lighten(70%), width: 100%)[
+  *Scenario:* You're building a deployment system with configuration constraints (like Problem 5: production mode, debug mode, logging, security).
+
+  *Implementation:*
+  - Define a configuration schema as propositional formulas (constraints).
+  - Implement `validate_config(constraints, config)`: check if a configuration satisfies all constraints.
+  - Implement `find_valid_configs(constraints)`: enumerate _all_ valid configurations using your SAT solver or truth table generator.
+  - Implement `explain_conflict(constraints, config)`: if a config is invalid, report which constraints are violated and suggest fixes.
+
+  *Test:* Use the access control system from Problem 5.
+
+  *Extension:*
+  - Minimal correction: given an invalid config, find the _smallest_ set of variables to flip to make it valid.
+]
+
+#block(sticky: true)[*Task C.2: SMT Solver Integration*]
+
+#Block(color: orange.lighten(70%), width: 100%)[
+  *Tool:* Use Z3 (Python/C\+\+/Java bindings) or CVC5.
+
+  *Task:*
+  - Translate your propositional formulas to SMT-LIB or use the API.
+  - Solve satisfiability: `z3_solve(formula)` → SAT/UNSAT + model.
+  - Compare performance with your truth table implementation on large formulas (100+ variables).
+
+  *Research direction:*
+  - Generate random 3-SAT instances with varying clause/variable ratios.
+  - Plot satisfiability probability vs. ratio. Observe the _phase transition_ around ratio ≈ 4.26.
+  - Document your findings.
+]
+
+#block(sticky: true)[*Task C.3: Symbolic Execution (Bonus)*]
+
+#Block(color: orange.lighten(70%), width: 100%)[
+  *Challenge:* Implement a _toy symbolic executor_ for a simple imperative language.
+
+  *Language (example):*
+  ```
+  x := E         // assignment
+  if B then S1 else S2
+  assert(B)      // fails if B is false
+  while B do S   // bounded unrolling
+  ```
+
+  #block(sticky: true)[*Symbolic execution:*]
+  - Execute with _symbolic_ inputs (variables, not concrete values).
+  - Track path condition (formula representing choices made).
+  - At `assert(B)`, check if `path_condition ∧ ¬B` is satisfiable:
+    - If SAT → assertion can fail (counterexample).
+    - If UNSAT → assertion always holds on this path.
+
+  *Deliverable:*
+  - Implement symbolic executor for assertion checking.
+  - Test on 2-3 small programs (e.g., array bounds check, login validation).
+
+  *Open question:* How do you handle loops? (Bounded unrolling? Loop invariants?)
+]
+
+#block(sticky: true)[*Task C.4: Type Checking as Logic (Bonus)*]
+
+#Block(color: orange.lighten(70%), width: 100%)[
+  *Insight:* Type systems are logical systems (Curry-Howard correspondence).
+
+  *Task:*
+  - Design a simple typed lambda calculus or a subset of a real language (e.g., Simply Typed Lambda Calculus with booleans and integers).
+  - Encode typing judgments $Gamma tack e : tau$ as logical formulas or inference rules.
+  - Implement a type checker using your proof representation from Part B.
+  - Show that type checking $equiv$ proof search in a specific logic.
+
+  *Extension:*
+  - Implement in Lean or Coq: prove type safety (progress + preservation theorems).
+  - Compare the formal proof to your implementation.
+]
+
+=== Part D: Formal Verification Track (Optional)
+
+Use Lean 4 or Coq to _prove properties_ about your implementations.
+
+#block(sticky: true)[*Task D.1: Verified Evaluator (Lean/Coq)*]
+
+#Block(color: teal.lighten(60%), width: 100%)[
+  *Task:*
+  - Define propositional formulas in Lean/Coq as an inductive type.
+  - Implement `eval : Formula → Valuation → Bool`.
+  - *Prove:* `eval` is deterministic: `∀ f v, eval f v = eval f v` (trivial, warmup).
+  - *Prove:* Double negation: `∀ f v, eval (¬¬f) v = eval f v`.
+  - *Prove:* De Morgan: `∀ f g v, eval (¬(f ∧ g)) v = eval (¬f ∨ ¬g) v`.
+
+  *Resources:*
+  - Lean 4: #link("https://leanprover.github.io/theorem_proving_in_lean4/")[Theorem Proving in Lean]
+  - Coq: Software Foundations (Vol. 1, _Logical Foundations_)
+]
+
+#block(sticky: true)[*Task D.2: Verified CNF Conversion (Lean/Coq)*]
+
+#Block(color: teal.lighten(60%), width: 100%)[
+  *Challenge:*
+  - Implement NNF conversion in Lean/Coq.
+  - *Prove correctness:* `∀ f, equivalent f (to_nnf f)` where `equivalent f g := ∀ v, eval f v = eval g v`.
+  - Prove termination (structural recursion or well-founded relation).
+
+  *Extension:*
+  - Prove Tseitin transformation preserves _satisfiability_ (not equivalence).
+]
+
+#block(sticky: true)[*Task D.3: Soundness of Proof Checker (Lean/Coq)*]
+
+#Block(color: teal.lighten(60%), width: 100%)[
+  *Advanced challenge:*
+  - Formalize Fitch-style natural deduction in Lean/Coq.
+  - Implement proof checking.
+  - *Prove soundness:* If `check_proof Γ φ proof = true`, then `Γ ⊢ φ` (semantic entailment).
+
+  *This is research-level work* — partial results are valuable. Document your approach and any obstacles.
+]
+
+// = Notation Reference
+//
+// #grid(
+//   columns: 2,
+//   column-gutter: 2em,
+//   row-gutter: 1em,
+//   [
+//     *Semantic relations:*
+//     - $Gamma models phi$ --- semantic entailment
+//     - $nu models phi$ --- interpretation $nu$ satisfies $phi$
+//     - $models phi$ --- $phi$ is valid (tautology)
+//   ],
+//   [
+//     *Syntactic relations:*
+//     - $Gamma tack phi$ --- syntactic derivability
+//     - Fitch rules: $and$i/e, $or$i/e, $imply$i/e, $not$i/e, $bot$e, RAA, LEM
+//     - FOL rules: $forall$i/e, $exists$i/e
+//   ],
+// )
