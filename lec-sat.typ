@@ -406,10 +406,11 @@ Pure literal elimination:
 
 == Davis--Putnam--Logemann--Loveland (DPLL)
 
-DPLL @davis1962 replaces resolution with _splitting_: choose a variable, try both values, recurse.
+#grid(
+  columns: (40%, auto),
+  column-gutter: 1em,
 
-#place(left)[
-  #lovelace.pseudocode-list(
+  lovelace.pseudocode-list(
     hooks: 0.5em,
     line-gap: 0.7em,
   )[
@@ -426,12 +427,15 @@ DPLL @davis1962 replaces resolution with _splitting_: choose a variable, try bot
     + *else*
       - *return* $"DPLL"(S union {not L})$
     + *end*
-  ]
-]
+  ],
+  [
+    DPLL @davis1962 replaces resolution with _splitting_: choose a variable, try both values, recurse.
 
-DPLL is _complete_: it always terminates and finds a satisfying assignment iff one exists.
+    DPLL is _complete_: it always terminates and finds a satisfying assignment iff one exists.
 
-The search forms a _binary decision tree_ where each internal node is a variable choice and leaves are SAT/UNSAT.
+    The search forms a _binary decision tree_ where each internal node is a variable choice and leaves are SAT/UNSAT.
+  ],
+)
 
 == DPLL Flowchart
 
