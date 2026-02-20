@@ -12,7 +12,7 @@
 #show table.cell.where(y: 0): strong
 
 
-= SAT Encoding
+= SAT Problem
 
 == Boolean Satisfiability Problem (SAT)
 
@@ -150,7 +150,7 @@ Common encoding primitives:
 ]
 
 
-= Worked Encodings
+= SAT Encodings
 
 == Example: Graph Coloring
 
