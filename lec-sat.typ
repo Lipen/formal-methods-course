@@ -16,22 +16,32 @@
 
 == Boolean Satisfiability Problem (SAT)
 
-SAT is the problem of determining whether a given Boolean formula has a _satisfying assignment_ --- a mapping of truth values to variables that makes the formula true.
+A propositional formula is _satisfiable_ if it has a _model_ --- an assignment of truth values that makes it true.
 
 #definition[Boolean Satisfiability (SAT)][
   Given a propositional formula $phi$ over variables $X = {x_1, dots, x_n}$, decide whether
   $ exists nu : X to {0, 1}. quad nu models phi $
+  *SAT* (decision): does a model exist?
+  *Functional SAT*: also return a concrete $nu$.
 ]
 
-SAT is a _decision_ problem (yes/no), but in practice we want the actual assignment --- the _functional SAT_ problem.
-SAT instances are typically given in *CNF* (conjunctive normal form): a conjunction of _clauses_, where each clause is a disjunction of _literals_.
+Solvers work with formulas in *CNF*: a conjunction of _clauses_, each a disjunction of _literals_ (a variable or its negation).
 
-#Block(color: yellow)[
-  *Recall:* SAT is NP-complete (Cook--Levin, 1971).
-  Any problem in NP can be encoded as a SAT instance --- making SAT solvers _universal search engines_.
+#example[
+  Formula: $(x_1 or not x_2) and (not x_1 or x_3) and (x_2 or x_3)$.
+
+  Assignment $x_1 = 1, x_2 = 0, x_3 = 1$: every clause is satisfied --- this is a model.
+
+  Assignment $x_1 = 0, x_2 = 1, x_3 = 0$: clause $(x_2 or x_3) = (1 or 0) = 1$ OK, clause $(not x_1 or x_3) = (1 or 0) = 1$ OK, but clause $(x_1 or not x_2) = (0 or 0) = 0$ fails.
+  Not a model.
 ]
 
-== The Cook--Levin Theorem: Proof Sketch
+// #Block(color: yellow)[
+//   *Recall:* SAT is NP-complete (Cook--Levin, 1971).
+//   Any NP problem reduces to SAT in polynomial time, making SAT solvers _universal search engines_.
+// ]
+
+== The Cook--Levin Theorem
 
 #theorem[Cook--Levin (Cook 1971, Levin 1973)][
   SAT is NP-complete: it is in NP, and _every_ problem in NP can be reduced to SAT in polynomial time.
@@ -53,61 +63,60 @@ SAT instances are typically given in *CNF* (conjunctive normal form): a conjunct
   - _Acceptance_ --- accepting state reached
 ]
 
-The resulting formula $phi$ is satisfiable $iff$ there exists a certificate that $V$ accepts.
+The resulting formula $phi$ is satisfiable iff $V$ accepts on some certificate.
 The reduction is polynomial: $O(T^2)$ clauses, where $T = p(n)$ is the verifier's runtime.
-
-#place[
-  #v(1em)
-  #Block(color: blue)[
-    Cook--Levin makes SAT solvers _universal search engines_ --- any polynomially verifiable property can be checked by compiling it to SAT.
-  ]
-]
 
 == SAT Encoding Methodology
 
-To solve a search problem with a SAT solver:
+To reduce a search problem to SAT:
 
-+ *Define variables* to represent the problem's _state_. \
-  Each variable captures a binary choice in the solution.
++ *Define variables* for each binary choice in the problem.
++ *Encode constraints* as propositional clauses.
++ *Convert to CNF* if needed (use Tseitin to avoid exponential blowup).
++ *Run a SAT solver* to obtain a model or an UNSAT proof.
 
-+ *Encode constraints* as propositional formulas. \
-  Express what makes a solution _valid_.
-
-+ *Translate to CNF* (clausal form). \
-  Use Tseitin if needed to avoid exponential blowup.
-
-+ *Run a SAT solver* to find a satisfying assignment or prove UNSAT.
-
-#Block(color: blue)[
-  *The power of SAT:* This methodology turns _any_ combinatorial search problem into a standard format that state-of-the-art solvers handle efficiently.
+#example[
+  *Graph $k$-colorability:* can we color the vertices of $G = (V, E)$ with $k$ colors so adjacent vertices receive different colors?
+  - *Variables:* $c_(v, i)$ = "vertex $v$ gets color $i$", for $v in V$, $i in {1, dots, k}$.
+  - *EO per vertex:* each vertex gets exactly one color.
+  - *Edge constraint:* for each $(u,v) in E$ and color $i$: $(not c_(u,i) or not c_(v,i))$.
+  If the solver returns SAT, reading off the values of $c_(v, dot)$ gives the coloring.
 ]
 
 == Encoding Patterns: At-Least-One & At-Most-One
 
-Many encoding tasks require constraining _how many_ variables in a group are true.
+Encoding cardinality constraints is a recurring task.
 
 #definition[
   _At least one_ (ALO) of $x_1, dots, x_n$ is true:
   $ (x_1 or x_2 or dots or x_n) $
-  *single $n$-literal clause*
+  One clause with $n$ literals.
 ]
 
 #definition[
   _At most one_ (AMO) of $x_1, dots, x_n$ is true.
-  _Pairwise_ encoding: for each pair $i < j$, add
+  *Pairwise encoding:* for each pair $i < j$,
   $ (not x_i or not x_j) $
-  *$binom(n, 2)$ binary clauses*
+  One clause per pair: $binom(n, 2)$ clauses total.
+]
+
+#pagebreak()
+
+#example[
+  AMO on ${x_1, x_2, x_3}$: three clauses $(not x_1 or not x_2) and (not x_1 or not x_3) and (not x_2 or not x_3)$.
+  The assignment $x_1 = 1, x_2 = 1, x_3 = 0$ falsifies the first clause: $(0 or 0) = 0$.
+  Any assignment with at most one true variable satisfies all three.
 ]
 
 #note[
   Pairwise AMO produces $O(n^2)$ clauses.
-  For large $n$, _commander--variable_ or _logarithmic_ encodings reduce this to $O(n)$ clauses using auxiliary variables.
+  For large $n$, _commander--variable_ or _logarithmic_ encodings achieve $O(n)$ clauses using auxiliary variables.
 ]
 
 == Encoding Patterns: Exactly-One & Implications
 
-#definition[Exactly-One (EO)][
-  Exactly one of $x_1, dots, x_n$ is true: $"ALO" and "AMO"$ combined.
+#definition[
+  _Exactly one_ (EO) of $x_1, dots, x_n$ is true: $"ALO" and "AMO"$ combined.
   $ underbrace((x_1 or dots or x_n), "ALO") and underbrace(and.big_(i < j) (not x_i or not x_j), "AMO") $
 ]
 
@@ -119,7 +128,8 @@ Common encoding primitives:
 - *Channeling:* link two groups of variables, e.g., $x_(i,j) iff y_(j,i)$.
 
 #Block(color: orange)[
-  *Common pitfall:* Forgetting AMO and only encoding ALO. Without AMO, the solver can set _multiple_ variables true --- leading to invalid solutions.
+  *Common mistake:* Encoding ALO without AMO.
+  Without the pairwise clauses, the solver is free to set _multiple_ variables true --- the encoding is too weak to rule out invalid solutions.
 ]
 
 == Encoding Patterns: Summary
@@ -152,7 +162,7 @@ What is the largest $n$ for which this is possible?
 
 - For $k = 1$: $n = 2$ (only 1 edge).
 - For $k = 2$: $n = 5$ (see diagram on the right).
-- For $k = 3$: $n = 16$ --- a job for a SAT solver.
+- For $k = 3$: $n = 16$ (requires a SAT solver to verify).
 
 #place(bottom + right)[
   #fletcher.diagram({
@@ -193,7 +203,7 @@ What is the largest $n$ for which this is possible?
 + *Solve:* Increase $n$ until the formula becomes UNSAT.
 
 #Block(color: yellow)[
-  *Pattern recognition:* The EO constraint on edge colors is exactly the ALO + AMO pattern from the previous section.
+  The EO constraint on edge colors is exactly the ALO + AMO pattern from the previous section --- applied to the set of color variables for each edge.
 ]
 
 == DIMACS CNF Format
@@ -225,8 +235,8 @@ Run a solver:
 cadical formula.cnf
 ```
 
-If SAT, the solver prints a _model_ (variable assignments). \
-If UNSAT, it may produce a _proof certificate_.
+If SAT, the solver outputs a _model_ (a line of `v` values).
+If UNSAT, a DRAT _proof certificate_ can be requested with `--proof`.
 
 == Code: Graph Coloring SAT Encoding
 
@@ -278,7 +288,7 @@ If UNSAT, it may produce a _proof certificate_.
   ```
 ]
 
-== Example: N-Queens (Sketch)
+== Example: N-Queens
 
 Place $n$ queens on an $n times n$ board so no two attack each other.
 
@@ -292,7 +302,8 @@ Place $n$ queens on an $n times n$ board so no two attack each other.
 *Size:* $n^2$ variables, $O(n^3)$ clauses (pairwise AMO on each line).
 
 #note[
-  N-Queens is a classic SAT benchmark. For $n = 1000$, the encoding has $10^6$ variables and $~10^9$ clauses --- but modern solvers handle it in seconds.
+  N-Queens is a classic SAT benchmark.
+  For $n = 1000$, the encoding has $10^6$ variables and $~10^9$ clauses --- but modern solvers handle it in seconds.
 ]
 
 == Example: Pigeonhole Principle (Sketch)
@@ -309,7 +320,8 @@ This formula is *always UNSAT* ($n + 1$ pigeons cannot fit in $n$ holes).
 
 #Block(color: orange)[
   *Proof complexity:* Resolution proofs of $"PHP"_(n+1)^n$ require exponentially many steps (Haken, 1985).
-  This is why DPLL (which implicitly produces resolution proofs) struggles with pigeonhole --- and why CDCL with learned clauses does better (though it's still hard).
+  DPLL implicitly constructs resolution proofs, so it struggles here.
+  CDCL with learned clauses can do better --- but pigeonhole remains hard for all known solvers.
 ]
 
 == Encodings: Key Takeaways
@@ -322,8 +334,8 @@ This formula is *always UNSAT* ($n + 1$ pigeons cannot fit in $n$ holes).
   + Feed to a SAT solver and interpret the result.
 ]
 
-The expressiveness of SAT encoding comes from NP-completeness: _any_ polynomially verifiable problem can be encoded.
-The efficiency comes from modern solvers: _billions_ of clauses, solved in minutes.
+The expressiveness comes from NP-completeness: any polynomially verifiable property encodes into SAT.
+The efficiency comes from the solvers themselves: modern CDCL handles _billions_ of clauses.
 
 
 = Algorithms for SAT
@@ -336,8 +348,18 @@ The efficiency comes from modern solvers: _billions_ of clauses, solved in minut
     align: center,
     column-gutter: 1em,
     row-gutter: 0.5em,
-    box(inset: (right: -0.6cm), clip: true, image("assets/Martin_Davis.jpg", height: 3cm)),
-    image("assets/Hilary_Putnam.jpg", height: 3cm),
+    box(
+      inset: (right: -0.6cm),
+      clip: true,
+      stroke: 1pt + blue,
+      radius: 5pt,
+      image("assets/Martin_Davis.jpg", height: 3cm),
+    ),
+    box(
+      stroke: 1pt + blue,
+      radius: 5pt,
+      image("assets/Hilary_Putnam.jpg", height: 3cm),
+    ),
 
     [Martin Davis], [Hilary Putnam],
   )
@@ -349,12 +371,13 @@ The efficiency comes from modern solvers: _billions_ of clauses, solved in minut
     + *Pure literal elimination* --- remove variables appearing with one polarity.
     + *Resolution* (variable elimination) --- resolve away a variable.
 
-    The original DP algorithm uses resolution, which can _increase_ formula size. DPLL (1962) replaces resolution with _splitting_ (backtracking search), which is far more practical.
+    The original DP algorithm uses resolution, which can _increase_ formula size.
+    DPLL (1962) replaces resolution with _splitting_ (backtracking search), which is far more practical.
   ]
   #wrap-it.wrap-content(fig, body, align: top + right)
 ]
 
-Hereinafter, formulas are given in *CNF*: a set of clauses, where each clause is a set of literals.
+Henceforth, formulas are represented in *CNF*: a set of clauses, each a set of literals.
 
 == Unit Propagation Rule
 
@@ -378,15 +401,18 @@ Unit propagation:
 #example[
   #let r(x) = $cancel(#x, stroke: #red, cross: #true)$
   Consider $(A or B) and (A or not B) and (not A or B) and (not A or not B) and (A)$.
-  The unit clause $(A)$ forces $A = 1$.
-  Remove clauses with $A$; remove $not A$ from the rest:
-  $#r($(A or B)$) and #r($(A or not B)$) and (#r($not A$) or B) and (#r($not A$) or not B) and #r($(A)$)$
-  Result: $(B) and (not B)$ --- still unsatisfiable.
+
+  - The unit clause $(A)$ forces #box[$A = 1$].
+
+  - Remove clauses with $A$; remove $not A$ from the rest:
+    $ #r($(A or B)$) and #r($(A or not B)$) and (#r($not A$) or B) and (#r($not A$) or not B) and #r($(A)$) $
+
+  - Result: $(B) and (not B)$ --- still unsatisfiable.
 ]
 
 == Pure Literal Rule
 
-#definition[Pure literal][
+#definition[
   A literal $p$ is _pure_ if it appears in the formula only positively or only negatively.
 ]
 
@@ -396,12 +422,14 @@ Pure literal elimination:
 
 #example[
   $(A or B) and (A or C) and (B or C)$.
-  Literal $A$ is pure (appears only positively).
-  Assign $A = 1$, remove clauses containing $A$: result is $(B or C)$.
+  - Literal $A$ is pure (appears only positively).
+  - Assign $A = 1$, remove clauses containing $A$: result is $(B or C)$.
 ]
 
 #note[
-  Unit propagation is a _forced_ assignment (no choice). Pure literal elimination is a _safe_ assignment (any model can be extended). Both reduce the formula without branching.
+  Unit propagation is a _forced_ assignment (no choice).
+  Pure literal elimination is a _safe_ assignment (any model can be extended).
+  Both reduce the formula without branching.
 ]
 
 == Davis--Putnam--Logemann--Loveland (DPLL)
@@ -429,11 +457,11 @@ Pure literal elimination:
     + *end*
   ],
   [
-    DPLL @davis1962 replaces resolution with _splitting_: choose a variable, try both values, recurse.
+    DPLL @davis1962 replaces resolution with _splitting_: pick a literal, assert it, propagate, recurse; on failure, assert its negation.
 
     DPLL is _complete_: it always terminates and finds a satisfying assignment iff one exists.
 
-    The search forms a _binary decision tree_ where each internal node is a variable choice and leaves are SAT/UNSAT.
+    The search forms a binary tree where each internal node is a literal choice and leaves are SAT or UNSAT.
   ],
 )
 
@@ -561,36 +589,42 @@ Consider: $(A or B) and (not A or C) and (not B or not C) and (A or not C)$ --- 
   )
 ]
 
-Model: $nu = {A = 1, B = 0, C = 1}$. Verify: all clauses satisfied.
+Model: $nu = {A = 1, B = 0, C = 1}$.
+Verify: all clauses satisfied.
 
 #note[
-  In this example, DPLL found a solution without backtracking. On harder instances (e.g., pigeonhole), it may explore exponentially many branches.
+  In this trace, DPLL found a model without backtracking.
+  On structured hard instances (pigeonhole, parity), the search tree can have exponentially many branches.
 ]
 
 == From DPLL to CDCL
 
-DPLL's weakness: *chronological backtracking*.
+DPLL has a fundamental limitation: *chronological backtracking*.
 
-When a conflict occurs, DPLL backtracks to the _most recent_ decision --- even if that decision was irrelevant to the conflict. This leads to re-exploring huge search spaces.
+When a conflict occurs, DPLL backtracks to the most recent decision --- even if that decision was irrelevant to the conflict.
+This forces the solver to re-explore search spaces that cannot possibly contribute to a solution.
 
-#columns(2)[
-  *DPLL:*
-  - Backtrack to the previous decision
-  - Undo it, try the other value
-  - No "memory" of _why_ the conflict occurred
-  - May repeat the same mistake in a different subtree
-
-  #colbreak()
-
-  *CDCL insight:*
-  - _Analyze_ the conflict: which decisions caused it?
-  - _Learn_ a new clause that prevents the same scenario
-  - _Backjump_ to the source of the problem
-  - Never make the same mistake again
-]
+#grid(
+  columns: 2,
+  column-gutter: 1em,
+  [
+    *DPLL:*
+    - Backtrack to the previous decision
+    - Undo it, try the other value
+    - No "memory" of _why_ the conflict occurred
+    - May repeat the same mistake \ in a different subtree
+  ],
+  [
+    *CDCL:*
+    - Analyze the conflict: which prior decisions caused it?
+    - Learn a new clause that excludes this combination.
+    - Backjump to the earliest relevant decision level.
+    - The same conflict assignment is now ruled out \ by the learned clause.
+  ],
+)
 
 #Block(color: yellow)[
-  *Key question:* When a conflict occurs, can we jump back to the _cause_ rather than just the last decision?
+  *CDCL answer:* analyze the implication graph to identify which decisions caused the conflict, learn a clause encoding that fact, and jump directly to the responsible level.
 ]
 
 == DPLL: Key Takeaways
@@ -604,58 +638,78 @@ When a conflict occurs, DPLL backtracks to the _most recent_ decision --- even i
 ]
 
 #note[
-  DPLL can be formalized as a _transition system_ with rules for unit propagation, decisions, and backtracking @nieuwenhuis2006. This abstract framework extends naturally to CDCL via Learn and Backjump rules.
+  DPLL can be formalized as a _transition system_ with rules for unit propagation, decisions, and backtracking @nieuwenhuis2006.
+  This abstract framework extends naturally to CDCL via Learn and Backjump rules.
 ]
 
 
-= Conflict-Driven Clause Learning
+= Conflict-Driven \ Clause Learning
 
 == Implication Graph
 
-During propagation, each forced assignment has a _reason_ --- the clause that caused it.
-The *implication graph* records these dependencies.
+During propagation, each forced assignment has a _reason_ --- the clause that caused it. \
+The implication graph makes these dependencies explicit.
 
+#v(-0.5em)
 #definition[Implication Graph][
-  A directed acyclic graph where:
-  - *Nodes* are assigned literals (annotated with _decision level_).
-  - *Edges* trace the clause that _forced_ each propagated literal.
-  - *Decision nodes* have no incoming edges (marked with $square.small.filled$).
-  - A *conflict node* $kappa$ is added when a clause becomes empty.
+  A labeled directed acyclic graph where:
+  - *Nodes* represent assigned literals, labeled with their decision level (1, 2, 3, ...).
+  - *Edges* from a clause $C$ point to the propagated literal $ell$ with label $C$ ("clause $C$ forced $ell$").
+  - *Source nodes* correspond to decisions (no incoming edges, marked $square.small.filled$).
+  - *Sink node* $kappa$ is a special conflict node, with incoming edges from literals in the conflicting clause.
 ]
+#v(-0.5em)
 
 #example[
-  Suppose at decision level 3 we decide $x_1 = 1$, and this forces propagations:
-  - $x_1 = 1$ forces $x_4 = 1$ (via clause $c_1: not x_1 or x_4$).
-  - $x_4 = 1$ and prior $x_2 = 1$ force $x_5 = 0$ (via clause $c_2: not x_4 or not x_2 or not x_5$).
-  - $x_5 = 0$ and prior $x_3 = 1$ create a _conflict_ (via clause $c_3: x_5 or not x_3$).
+  Consider the formula from the next slide: $c_1 = (x_1 or x_2)$, $c_3 = (not x_2 or x_3)$, $c_4 = (not x_3 or x_4)$, $c_5 = (not x_3 or not x_4)$.
+  At decision level 1, assign $x_1 := 0$.
 
-  The implication graph shows the chain: $x_1 => x_4 => not x_5 => kappa$, with side edges from prior decisions $x_2, x_3$.
+  Unit propagations: $c_1$ forces $x_2 := 1$; $c_3$ forces $x_3 := 1$; $c_4$ forces $x_4 := 1$; $c_5 = (0 or 0)$ --- conflict.
+
+  All four literals are at level 1.
+  Implication graph (edges labeled by forcing clause):
+  #v(-0.3em)
+  $ overline(x)_1 arrow.r^(c_1) x_2 arrow.r^(c_3) x_3 arrow.r^(c_4) x_4 arrow.r^(c_5) kappa $
+  #v(-0.3em)
+  with a second edge $x_3 arrow.r^(c_5) kappa$ (both $not x_3$ and $not x_4$ are in the conflict clause).
 ]
 
 == Conflict Analysis
 
-When a conflict occurs, CDCL traces the implication graph backward to find the _root cause_.
+When a conflict occurs, CDCL traces the implication graph backward to derive a clause that explains the conflict.
 
 #definition[1-UIP (Unique Implication Point)][
-  The _1-UIP_ is the last decision-level node on every path from the current decision to the conflict.
-  Cut the implication graph at the 1-UIP boundary --- the literals on the _reason side_ (negated) form the *learned clause*.
+  The _first unique implication point_ (1-UIP) is the node at the current decision level $d$ that is closest to $kappa$ and dominates _all_ paths from the level-$d$ decision to $kappa$.
+
+  _Learned clause:_ negate the 1-UIP literal, plus the negations of all prior-level literals that have edges into the conflict side of the cut.
 ]
 
 #example[
-  From the previous example: the 1-UIP cut at $x_4$ yields the learned clause
-  $ (not x_2 or not x_4) $
-  This clause prevents the solver from ever simultaneously setting $x_2 = 1$ and $x_4 = 1$ again.
+  From the previous slide.
+  - Paths from $overline(x)_1$ to $kappa$: $overline(x)_1 -> x_2 -> x_3 -> x_4 -> kappa$ and $overline(x)_1 -> x_2 -> x_3 -> kappa$.
+  - Both pass through $x_3$; neither requires $x_4$ on both.
+  - So $x_3$ dominates all paths --- it is the 1-UIP.
+
+  Apply the resolution procedure:
+  - Start with conflict clause $c_5 = (not x_3 or not x_4)$.
+  - Two level-1 literals.
+  - Resolve on $x_4$ with its reason $c_4 = (not x_3 or x_4)$: the resolvent is $(not x_3)$.
+  - One level-1 literal remains.
+  - *Learned clause: $(not x_3)$.*
+
+  No prior-level literals appear, so backjump to level 0 and propagate $x_3 := 0$.
 ]
 
-The learned clause is added permanently to the clause database --- the solver _remembers_ this conflict.
+The learned clause is added permanently to the clause database.
 
 #Block(color: blue)[
-  *Learned clauses are resolution proofs in disguise.* Each learned clause corresponds to a sequence of resolution steps on the original clauses.
+  Each learned clause is a _resolution proof_ on the original clauses.
+  The 1-UIP resolution procedure is exactly backward chaining through the implication graph via resolution steps.
 ]
 
 == Worked CDCL Example
 
-Consider formula $F$ with variables $x_1, dots, x_5$ and clauses:
+Consider formula $F$ over variables $x_1, x_2, x_3, x_4$ with clauses:
 $
   c_1 = (x_1 or x_2), quad c_2 = (not x_1 or x_3), quad c_3 = (not x_2 or x_3), quad c_4 = (not x_3 or x_4), quad c_5 = (not x_3 or not x_4)
 $
@@ -668,16 +722,17 @@ $
     table.header[*Level*][*Action*][*Propagation*][*Status*],
     [1],
     [Decide $x_1 = 0$],
-    [$c_1 => x_2 = 1$; \ $c_3 => x_3 = 1$; \ $c_4 => x_4 = 1$; \ $c_5$ conflict: needs $not x_4$ but $x_4 = 1$],
+    [$c_1 => x_2 = 1$; $c_3 => x_3 = 1$; \ $c_4 => x_4 = 1$; $c_5 = (0 or 0)$ --- conflict],
     [#Red[Conflict!]],
 
-    [], [Analyze: learned clause $(x_1)$], [], [Backjump to level 0],
-    [0], [Unit prop: $x_1 = 1$], [$c_2 => x_3 = 1$; $c_4 => x_4 = 1$; $c_5$ conflict again], [#Red[Conflict!]],
+    [], [1-UIP: resolve $c_5$ on $x_4$ with $c_4$; learned clause $(not x_3)$], [], [Backjump to level 0],
+    [0], [Unit prop: $x_3 = 0$], [$c_2 => x_1 = 0$; $c_1 => x_2 = 1$; $c_3 = (0 or 0)$ --- conflict], [#Red[Conflict!]],
     [], [Level 0 conflict $=>$ *UNSAT*], [], [],
   )
 ]
 
-The formula is unsatisfiable. CDCL proved this by learning a clause at level 1 and detecting a conflict at level 0.
+The formula is unsatisfiable.
+CDCL discovered this in two conflicts: the first at level 1 (learning $not x_3$), the second at level 0 (no further backtracking possible).
 
 == Non-Chronological Backtracking
 
@@ -700,7 +755,9 @@ The formula is unsatisfiable. CDCL proved this by learning a clause at level 1 a
 #v(1em)
 
 #Block(color: yellow)[
-  *This is the key insight:* Backjumping skips irrelevant search space. Combined with clause learning, CDCL avoids repeating the same mistakes. This is why CDCL solvers outperform DPLL by orders of magnitude on structured problems.
+  Backjumping skips irrelevant search space.
+  A learned clause with highest levels $k$ and $j$ ($j < k$) means: once we have tried the level-$k$ decision, we can jump straight to level $j$ without exploring anything in between.
+  Combined with clause learning, the solver never makes the same conflict-causing assignment twice.
 ]
 
 == CDCL Flowchart
@@ -793,19 +850,19 @@ The formula is unsatisfiable. CDCL proved this by learning a clause at level 1 a
 Beyond the core algorithm, several heuristics make CDCL practical:
 
 *VSIDS* (Variable State Independent Decaying Sum):
-- Bump the _activity score_ of variables involved in recent conflicts.
-- Periodically decay all scores.
-- Always decide the highest-activity variable next.
-- Effect: focuses search on the "hard" part of the problem.
+- Track an _activity score_ per variable; bump the score of variables in each conflict clause.
+- Periodically multiply all scores by a decay factor.
+- Always pick the highest-activity unassigned variable next.
+- Focuses search on variables that appear in recent conflicts --- the structurally "hard" part.
 
 *Restarts:*
-- Periodically restart the search from scratch, keeping all learned clauses.
-- Uses Luby sequence or geometric schedule for restart intervals.
-- Effect: avoids getting stuck in unproductive search regions.
+- Periodically restart from scratch, keeping all learned clauses.
+- Schedule via Luby sequence or geometric intervals.
+- Escapes unproductive regions of the search space.
 
 *Phase saving:*
-- When deciding a variable, use its _last assigned polarity_ as default.
-- Effect: quickly reconstructs parts of previous partial solutions.
+- When a variable is decided, use its most recently assigned polarity.
+- Quickly rediscovers satisfying sub-assignments after a restart.
 
 // #note[
 //   These heuristics matter more than the core algorithm for practical performance. A solver with poor heuristics can be orders of magnitude slower.
@@ -839,22 +896,23 @@ A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
 == Modern SAT Solvers and Competitions
 
 #columns(2)[
-  *Key solvers*:
-  - *MiniSat* (Eén & Sörensson, 2003): clean, educational, widely embedded.
-  - *CaDiCaL* (Biere): state-of-the-art, incremental, proof logging.
-  - *Kissat* (Biere, 2020): competition-optimized, _inprocessing_ techniques.
+  *Key solvers:*
+  - *MiniSat* (Eén & Sörensson, 2003) --- clean reference implementation, widely embedded in tools.
+  - *CaDiCaL* (Biere) --- state-of-the-art, incremental API, DRAT proof logging.
+  - *Kissat* (Biere, 2020) --- competition-optimized, inprocessing techniques.
 
   #colbreak()
 
   *SAT Competition* (annual since 2002):
-  - *Industrial* track: real-world instances (verification, planning).
-  - *Crafted* track: hard combinatorial problems.
-  - *Random* track: random $k$-SAT near phase transition.
-  - Drives solver improvement; open-source requirement.
+  - *Industrial* track: verification and planning instances from industry.
+  - *Crafted* track: hard combinatorial benchmarks.
+  - *Random* track: random $k$-SAT near the phase transition.
+  - Open-source requirement drives solver improvement.
 ]
 
 #Block(color: yellow)[
-  *Scale:* modern solvers routinely handle _millions_ of variables and _billions_ of clauses. From NP-complete in theory to practical workhorse --- the gap is bridged by CDCL + smart engineering.
+  Modern solvers routinely handle _millions_ of variables and _billions_ of clauses.
+  NP-complete in theory; polynomial in practice for structured industrial instances --- the gap is entirely due to CDCL plus engineering.
 ]
 
 == Applications of SAT
@@ -933,8 +991,8 @@ A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
 #v(0.5em)
 
 #Block(color: blue)[
-  *The pipeline:* Problem $=>$ SAT encoding (ALO/AMO/EO) $=>$ DIMACS CNF $=>$ CDCL solver $=>$ model or UNSAT proof. \
-  *Next:* FOL theories and SMT --- extending SAT with richer background knowledge.
+  *The pipeline:* Problem $->$ SAT encoding (ALO/AMO/EO) $->$ DIMACS CNF $->$ CDCL solver $->$ model or UNSAT proof. \
+  *Next lecture:* FOL theories and SMT --- extending SAT with background knowledge about arithmetic, arrays, and uninterpreted functions.
 ]
 
 == Exercises: SAT Encoding
@@ -946,7 +1004,8 @@ A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
 + Write a Python script to generate the DIMACS CNF encoding for vertex coloring of a graph with $n$ vertices, $m$ edges, and $k$ colors.
   Test it on the Petersen graph ($n = 10$, $k = 3$).
 
-+ Show that a DNF formula can be converted to an equivalent CNF in exponential size in the worst case, but the Tseitin encoding produces an _equisatisfiable_ CNF of linear size. Why does equisatisfiability (rather than equivalence) suffice for SAT solving?
++ Show that a DNF formula can be converted to an equivalent CNF in exponential size in the worst case, but the Tseitin encoding produces an _equisatisfiable_ CNF of linear size.
+  Why does equisatisfiability (rather than equivalence) suffice for SAT solving?
 
 == Exercises: DPLL
 
@@ -956,7 +1015,9 @@ A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
 
 + Explain why the pure literal rule is _sound_ (preserves satisfiability) but is rarely used in modern solvers.
 
-+ $star$ Consider the pigeonhole formula $"PHP"_4^3$ (4 pigeons, 3 holes). How many nodes does the DPLL search tree have in the worst case? What is the optimal variable ordering?
++ $star$ Consider the pigeonhole formula $"PHP"_4^3$ (4 pigeons, 3 holes).
+  How many nodes does the DPLL search tree have in the worst case?
+  What is the optimal variable ordering?
 
 == Exercises: CDCL
 
@@ -966,9 +1027,11 @@ A modern CDCL solver (e.g., MiniSat, ~2k lines of C++) consists of:
 
 + Explain why a conflict at decision level 0 implies UNSAT.
 
-+ Compare DPLL and CDCL on the formula from Exercise 1 above. Does CDCL learn any useful clauses?
++ Compare DPLL and CDCL on the formula from Exercise 1 above.
+  Does CDCL learn any useful clauses?
 
-+ $star$ Show that every CDCL execution on an unsatisfiable formula implicitly constructs a _resolution proof_. Explain why this means CDCL can never be worse than tree-like resolution (up to polynomial overhead).
++ $star$ Show that every CDCL execution on an unsatisfiable formula implicitly constructs a _resolution proof_.
+  Explain why this means CDCL can never be worse than tree-like resolution (up to polynomial overhead).
 
 == Bibliography
 
