@@ -160,11 +160,7 @@ $K_n$ --- the complete graph on $n$ vertices (every pair connected).
 *Problem:* Color the _edges_ of $K_n$ using $k$ colors with _no monochromatic triangle_.
 What is the largest $n$ for which this is possible?
 
-- For $k = 1$: $n = 2$ (only 1 edge).
-- For $k = 2$: $n = 5$ (see diagram on the right).
-- For $k = 3$: $n = 16$ (requires a SAT solver to verify).
-
-#place(bottom + right)[
+#place(right, dx: -3cm)[
   #fletcher.diagram({
     let nodes = (1, 2, 3, 4, 5)
     for i in nodes {
@@ -185,6 +181,10 @@ What is the largest $n$ for which this is possible?
     }
   })
 ]
+
+- For $k = 1$: $n = 2$ (only 1 edge).
+- For $k = 2$: $n = 5$ (see diagram on the right).
+- For $k = 3$: $n = 16$ (requires a SAT solver to verify).
 
 == Modelling Graph Coloring as SAT
 
