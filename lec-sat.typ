@@ -25,15 +25,15 @@ A propositional formula is _satisfiable_ if it has a _model_ --- an assignment o
   *Functional SAT*: also return a concrete $nu$.
 ]
 
-Solvers work with formulas in *CNF*: a conjunction of _clauses_, each a disjunction of _literals_ (a variable or its negation).
+SAT solvers work with formulas in CNF: a conjunction of _clauses_, each a disjunction of _literals_.
 
 #example[
   Formula: $(x_1 or not x_2) and (not x_1 or x_3) and (x_2 or x_3)$.
-
-  Assignment $x_1 = 1, x_2 = 0, x_3 = 1$: every clause is satisfied --- this is a model.
-
-  Assignment $x_1 = 0, x_2 = 1, x_3 = 0$: clause $(x_2 or x_3) = (1 or 0) = 1$ OK, clause $(not x_1 or x_3) = (1 or 0) = 1$ OK, but clause $(x_1 or not x_2) = (0 or 0) = 0$ fails.
-  Not a model.
+  - Assignment ${x_1 = 1, x_2 = 0, x_3 = 1}$: every clause is satisfied --- this is a _model_.
+  - Assignment ${x_1 = 0, x_2 = 1, x_3 = 0}$: *not* a _model_.
+    - clause $(x_2 or x_3) = (1 or 0) = 1$ #YES
+    - clause $(not x_1 or x_3) = (1 or 0) = 1$ #YES
+    - clause $(x_1 or not x_2) = (0 or 0) = 0$ #NO
 ]
 
 // #Block(color: yellow)[
