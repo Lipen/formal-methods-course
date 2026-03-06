@@ -20,10 +20,6 @@
 #let dom = math.op("dom")
 
 
-// ═══════════════════════════════════════════════════════════════════════
-//  INTRODUCTION
-// ═══════════════════════════════════════════════════════════════════════
-
 = Introduction to FOL
 
 == Motivation: The Limits of Propositional Logic
@@ -162,10 +158,6 @@ A first-order language is specified by its _parameters_.
 )
 
 
-// ═══════════════════════════════════════════════════════════════════════
-//  SYNTAX
-// ═══════════════════════════════════════════════════════════════════════
-
 = FOL Syntax
 
 == Signatures
@@ -249,10 +241,6 @@ A formula with no free variables is a _sentence_ (closed formula).
   Rename bound variables if necessary.
 ]
 
-
-// ═══════════════════════════════════════════════════════════════════════
-//  SEMANTICS
-// ═══════════════════════════════════════════════════════════════════════
 
 = FOL Semantics
 
@@ -394,10 +382,6 @@ Many useful equivalences govern quantifiers:
 PNF separates the _quantifier prefix_ (alternation structure) from the _propositional skeleton_ (matrix). \
 The alternation depth ($forall exists forall dots$) determines complexity.
 
-
-// ═══════════════════════════════════════════════════════════════════════
-//  PROOFS
-// ═══════════════════════════════════════════════════════════════════════
 
 = FOL Proofs
 
@@ -591,10 +575,6 @@ Semantic tableaux rules extend to FOL with rules for quantifiers:
   )
 ]
 
-
-// ═══════════════════════════════════════════════════════════════════════
-//  METATHEOREMS
-// ═══════════════════════════════════════════════════════════════════════
 
 = Metatheorems and \ the Limits of Logic
 
@@ -891,10 +871,6 @@ Here are worked examples over the signature of arithmetic: $Sigma = angle.l {0, 
   Common pitfall: confusing the direction of implication after $forall$.
 ]
 
-
-// ═══════════════════════════════════════════════════════════════════════
-//  EXERCISES
-// ═══════════════════════════════════════════════════════════════════════
 
 = Exercises
 
