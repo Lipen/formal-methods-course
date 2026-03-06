@@ -25,7 +25,8 @@
 == Motivation: The Limits of Propositional Logic
 
 Propositional logic was humanity's first formal calculus of reasoning (Boole, 1847; Frege, 1879).
-But it has fundamental limitations:
+
+But it has fundamental _limitations_:
 
 #grid(
   columns: 2,
@@ -85,8 +86,8 @@ _First-order logic_ emerged from three converging streams in late 19th/early 20t
 
 Similar to PL, first-order logic is a formal system with a _syntax_ and _semantics_.
 
-#fancy-box(tint: green)[
-  First-order logic is an umbrella term for different _first-order languages_.
+#Block(color: green)[
+  First-order logic is an umbrella term for different _first-order languages_. \
   Each language is specified by its _signature_ $Sigma$ --- the vocabulary of function and relation symbols.
 ]
 
@@ -101,7 +102,7 @@ Symbols of a first-order language are divided into _logical symbols_ (fixed) and
     - Logical connectives: $not$, $and$, $or$, $imply$, $iff$
     - Variables: $x$, $y$, $z$, $dots$ (infinite supply)
     - Quantifiers: $forall$ ("for all") and $exists$ ("there exists")
-    - Equality: $=$ (sometimes, depending on convention)
+    - Equality: $=$
   ],
   [
     *Non-logical parameters (signature $Sigma$):*
@@ -114,7 +115,8 @@ Symbols of a first-order language are divided into _logical symbols_ (fixed) and
 )
 
 #note[
-  Minimalism: Just $and$, $not$ suffice for connectives (others defined). Just $forall$ suffices for quantifiers ($exists x. phi equiv not forall x. not phi$).
+  Just $and$, $not$ suffice for connectives (others defined).
+  Just $forall$ suffices for quantifiers ($exists x. phi equiv not forall x. not phi$).
 ]
 
 == Predicates and Functions
@@ -167,7 +169,9 @@ A first-order language is specified by its _parameters_.
   - A set of _function symbols_ $cal(F)$, each with an arity $n gt.eq 0$.
   - A set of _relation symbols_ (predicates) $cal(R)$, each with an arity $n gt.eq 1$.
 
-  Functions of arity 0 are _constants_. We assume a countably infinite set of _variables_ $cal(V) = {x, y, z, x_1, x_2, dots}$.
+  Functions of arity 0 are _constants_.
+
+  We assume a countably infinite set of _variables_ $cal(V) = {x, y, z, x_1, x_2, dots}$.
 ]
 
 #example[
@@ -852,21 +856,17 @@ By _fixing_ the theory, we restrict to structures where decision procedures _can
 
 == From English to FOL
 
-Translating natural language to FOL formulas is a key skill.
-Here are worked examples over the signature of arithmetic: $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$.
+Translating natural language to FOL formulas is a key skill. \
+Here are examples over the signature of arithmetic: $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$.
 
 + _There is no largest natural number._ \
   $not exists x. thin forall y. thin y lt.eq x$ #h(2em) (equivalently: $forall x. thin exists y. thin x < y$)
-
 + _Every prime greater than 2 is odd._ \
   $forall p. thin ("Prime"(p) and p > 2) imply "Odd"(p)$
-
 + _For every natural number there is a greater one._ \
   $forall x. thin exists y. thin x < y$
-
 + _Two distinct natural numbers cannot have the same successor._ \
   $forall x. thin forall y. thin not (x = y) imply not (S(x) = S(y))$
-
 + _There are at least two natural numbers smaller than 3._ \
   $exists x. thin exists y. thin not (x = y) and x < S(S(S(0))) and y < S(S(S(0)))$
 
