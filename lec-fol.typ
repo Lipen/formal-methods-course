@@ -727,7 +727,11 @@ Every formula, proof, and syntactic operation is encoded as a natural number.
 There is an arithmetic formula $"Prov"(n)$ saying "$n$ is the Gödel number of a provable sentence."
 Construct a sentence $G$:
 
-$ G quad equiv quad #[$quote.l$I am not provable in $cal(T)$$quote.r$] $
+#align(center)[
+  #fancy-box[
+    $ G quad equiv quad #[$quote.l$I am not provable in $cal(T)$$quote.r$] $
+  ]
+]
 
 #grid(
   columns: 2,
