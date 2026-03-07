@@ -58,6 +58,8 @@ jobs:
       - run: |
           typst compile --root . homework/hw1.typ
           mv homework/hw1.pdf .
+          typst compile --root . homework/hw2.typ
+          mv homework/hw2.pdf .
 
       - name: List PDFs
         run: ls -lh *.pdf
