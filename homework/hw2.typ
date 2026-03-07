@@ -275,7 +275,7 @@ The _size_ of the circuit is the number of gates (internal nodes).
 
   + *Complete Boolean basis.*
     Extend the synthesis question to include NOT gates (full Boolean basis: AND, OR, NOT).
-    Encode the synthesis of $"XOR"(x,y) = (x or y) and (not x or not y)$ using a formula of size $lt.eq 4$ (using AND, OR, NOT gates).
+    Encode the synthesis of $"XOR"(x,y) = (x or y) and #box[$(not x or not y)$]$ using a formula of size $lt.eq 4$ (using AND, OR, NOT gates).
     Run a solver and verify the result.
 ]
 
