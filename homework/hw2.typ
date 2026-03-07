@@ -92,15 +92,21 @@ Work through the following formulas by hand, simulating DPLL and CDCL.
   + *CDCL trace with conflict analysis.*
     Consider $F_2$ over ${x_1, x_2, x_3, x_4, x_5}$:
     $
-      & c_1 = (x_1 or x_2), quad c_2 = (not x_1 or x_3), quad c_3 = (not x_2 or x_3), \
-      & c_4 = (not x_3 or x_4 or x_5), quad c_5 = (not x_4 or not x_5)
+      c_1 = (x_1 or x_2), quad
+      c_2 = (not x_1 or x_3), quad
+      c_3 = (not x_2 or x_4), \
+      c_4 = (not x_3 or not x_4), quad
+      c_5 = (not x_3 or x_5), quad
+      c_6 = (not x_4 or not x_5)
     $
-    Run CDCL.
-    At decision level 1, decide $x_1 = 0$; at decision level 2, decide $x_5 = 1$.
+    Run CDCL with the following decision sequence:
+    at decision level 1, decide $x_1 = 1$;
+    at decision level 2, decide $x_2 = 1$.
+    - Record all unit propagations forced at each level.
     - Draw the implication graph at the point of conflict.
-    - Identify the 1-UIP.
-    - State the learned clause and the backjump level.
-    - Continue the trace to termination.
+    - Identify the 1-UIP and compute the learned clause.
+    - State the backjump level and continue the trace to termination.
+    - Report the final satisfying assignment.
 
   + *Comparing DPLL and CDCL.*
     Run _both_ DPLL and CDCL on the pigeonhole formula $"PHP"_3^2$ (3 pigeons, 2 holes) from scratch.
@@ -299,7 +305,7 @@ SAT solvers can _search_ for graphs satisfying structural properties and _verify
     - $G$: the cycle $C_6$ (vertices $1, dots, 6$ in a ring).
     - $H$: two disjoint triangles $K_3 union K_3$ (vertices ${1,2,3}$ all connected and ${4,5,6}$ all connected, no edges between them).
     Encode graph isomorphism as SAT:
-    - Variables: $\pi_(i,j)$ = "vertex $i$ of $G$ maps to vertex $j$ of $H$."
+    - Variables: $pi_(i,j)$ = "vertex $i$ of $G$ maps to vertex $j$ of $H$."
     - Constraints: (i) $\pi$ is a bijection (ALO + AMO per row and column); (ii) edge preservation.
     - Run the solver. Are $G$ and $H$ isomorphic? Justify.
 
@@ -351,7 +357,7 @@ Random $k$-SAT instances with $n$ variables and $m$ clauses (each clause is a un
 #Items[
   + *Empirical phase transition.*
     Write a script (Python or any language) that:
-    - Generates random 3-SAT instances with $n = 50$ variables and clause ratios $m/n in {3.0, 3.5, 4.0, 4.267, 4.5, 5.0, 6.0\}$.
+    - Generates random 3-SAT instances with $n = 50$ variables and clause ratios $m/n in {3.0, 3.5, 4.0, 4.267, 4.5, 5.0, 6.0}$.
     - For each ratio, generates 100 independent instances and solves each with CaDiCaL (via subprocess or the `pycadical` binding).
     - Plots the empirical satisfiability probability vs. ratio.
     Compare your plot to the theoretical prediction; explain any discrepancies.
@@ -362,7 +368,7 @@ Random $k$-SAT instances with $n$ variables and $m$ clauses (each clause is a un
     Where does the peak occur? Why is solving hardest at the phase transition?
 
   + *Scaling behavior.*
-    Repeat the median-runtime experiment for $n \in \{50, 100, 150, 200\}$ at the critical ratio $m/n = 4.267$.
+    Repeat the median-runtime experiment for $n in {50, 100, 150, 200}$ at the critical ratio $m/n = 4.267$.
     Fit the growth curve. Is it consistent with polynomial or exponential scaling in practice (for these sizes)?
 ]
 
