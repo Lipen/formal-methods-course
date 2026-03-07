@@ -201,8 +201,8 @@ It _accepts_ a word $w$ if the run of $delta$ on $w$ starting from $q_0$ ends in
 
 Given a finite set of _positive examples_ $P^+$ (words the DFA must accept) and _negative examples_ $P^-$ (words it must reject), _DFA synthesis_ asks: does a DFA with $k$ states exist that correctly classifies all examples?
 
-*Example set:* $Sigma = {a, b}$, $k = 2$ states, and:
-$P^+ = {epsilon, "aa", "bb", "abba"}$, $quad P^- = {"a", "b", "ab", "ba"}$.
+*Example set:* $Sigma = {a, b}$, $k = 2$ states, and
+$P^+ = {epsilon, "aa", "bb", "abba"}$, $P^- = {"a", "b", "ab", "ba"}$.
 
 The DFA should accept words of _even length_ and reject words of _odd length_.
 
