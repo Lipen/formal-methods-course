@@ -174,7 +174,7 @@ The following problems ask you to _find_ or _prove impossible_ a combinatorial o
   + *Self-complementary graphs.*
     A graph $G$ on $n$ vertices is _self-complementary_ if $G$ is isomorphic to its complement $overline(G)$.
     - Encode the existence of a self-complementary graph on $n = 4$ vertices: find a labeling $sigma$ of vertices (a permutation) and an edge set $E$ such that $E$ is exactly the set ${ (sigma(u), sigma(v)) : (u,v) in.not E }$.
-      _(Hint: introduce edge variables $e_(i,j)$ for $i < j$ and permutation variables $\pi_(i,j)$ for "vertex $i$ maps to vertex $j$.")_
+      _(Hint: introduce edge variables $e_(i,j)$ for $i < j$ and permutation variables $pi_(i,j)$ for "vertex $i$ maps to vertex $j$.")_
     - Run your encoding. Report the self-complementary graph found and verify it by hand.
 
   + *Non-attacking rooks with forbidden squares.*
@@ -306,7 +306,7 @@ SAT solvers can _search_ for graphs satisfying structural properties and _verify
     - $H$: two disjoint triangles $K_3 union K_3$ (vertices ${1,2,3}$ all connected and ${4,5,6}$ all connected, no edges between them).
     Encode graph isomorphism as SAT:
     - Variables: $pi_(i,j)$ = "vertex $i$ of $G$ maps to vertex $j$ of $H$."
-    - Constraints: (i) $\pi$ is a bijection (ALO + AMO per row and column); (ii) edge preservation.
+    - Constraints: (i) $pi$ is a bijection (ALO + AMO per row and column); (ii) edge preservation.
     - Run the solver. Are $G$ and $H$ isomorphic? Justify.
 
   + *Ramsey $R(3,3,3)$.*
@@ -461,8 +461,8 @@ Random $k$-SAT instances with $n$ variables and $m$ clauses (each clause is a un
   ```
 
   *Test:* Synthesize DFAs for:
-  - Even-length words over $\{a, b\}$.
-  - Words over $\{a, b\}$ ending in $"ab"$.
+  - Even-length words over ${a, b}$.
+  - Words over ${a, b}$ ending in $"ab"$.
   - Words over ${0,1}$ where the number of $1$s is divisible by 3.
 
   For each, verify the synthesized DFA is correct on additional test inputs.
