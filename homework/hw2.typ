@@ -53,7 +53,7 @@ Use pairwise AMO throughout (no auxiliary variables needed for small $n$).
 
 #Items[
   + *Pigeonhole encoding.*
-    Write the complete DIMACS CNF encoding of $"PHP"_4^3$ --- 4 pigeons, 3 holes (pigeon $i$ in hole $j$ is variable $p_(i,j)$, numbered row-major: $p_(1,1)=1, p_(1,2)=2, dots$).
+    Write the complete DIMACS CNF encoding of $"PHP"_4^3$ --- 4 pigeons, 3 holes (pigeon $i$ in hole $j$ is variable $p_(i,j)$, numbered row-major: $p_(1,1) = 1$, $p_(1,2) = 2$, ...).
     List every clause explicitly.
     Then, check with a SAT solver: paste the CNF into CaDiCaL (or any solver) and report the result.
     Explain why this instance is necessarily UNSAT even before running the solver.
