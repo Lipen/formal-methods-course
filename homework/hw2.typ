@@ -243,7 +243,7 @@ The DFA should accept words of _even length_ and reject words of _odd length_.
 == Problem 6: Boolean Formula Synthesis
 
 A _monotone Boolean circuit_ (or _formula tree_) over variables $x_1, dots, x_n$ consists of:
-- _Leaf nodes:_ each is a variable $x_i$ or a constant $0/1$.
+- _Leaf nodes:_ each is a variable $x_i$ or a constant $0$/$1$.
 - _Internal nodes:_ each is an AND ($and$) or OR ($or$) gate with exactly two children.
 - One designated _root_ node whose output is the formula's value.
 
