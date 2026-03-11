@@ -265,7 +265,7 @@ A formula with no free variables is a _sentence_ (closed formula).
   - $frak(Z) = (ZZ, 0, S, +, times, <, =)$ --- a different, equally valid structure.
   - The sentence $forall x. thin exists y. thin x = S(y) or x = 0$ is true in $frak(N)$ (every natural number is 0 or a successor) but _false_ in $frak(Z)$ (take $x = -1$: it is not $0$ and not a successor of any integer under the standard successor).
 
-  This illustrates a key point: the same sentence can be true in one structure and false in another.
+  This illustrates a key point: the same sentence can be true in one structure and false in another. \
   _Validity_ means truth in _all_ structures.
 ]
 
