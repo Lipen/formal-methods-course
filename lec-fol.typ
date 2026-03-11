@@ -488,10 +488,10 @@ The alternation depth ($forall exists forall dots$) determines complexity.
 
 Semantic tableaux rules extend to FOL with rules for quantifiers:
 
-#align(horizon)[
+#align(horizon + center)[
   #grid(
     columns: 3,
-    column-gutter: 1fr,
+    column-gutter: 4em,
     [
       #prooftree(
         rule(
