@@ -657,7 +657,8 @@ SMT solvers restrict to _decidable fragments_ of FOL --- theories where satisfia
   *Non-standard models of arithmetic:*
   Let $Gamma = op("Th")(NN) union {c > 0, c > 1, c > 2, dots}$ where $c$ is a fresh constant.
   Every finite subset is satisfiable (interpret $c$ as a large enough number).
-  By compactness, $Gamma$ is satisfiable --- in a model with an "infinite" element $c$ larger than all standard naturals. This is a _non-standard model_ of arithmetic.
+  By compactness, $Gamma$~is satisfiable --- in a model with an "infinite" element $c$ larger than all standard naturals. \
+  This is a _non-standard model_ of arithmetic.
 ]
 
 #Block(color: blue)[
