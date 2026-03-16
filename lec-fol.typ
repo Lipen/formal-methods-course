@@ -810,34 +810,65 @@ Consequences for first-order expressiveness:
 - pure first-order arithmetic cannot characterize $NN$ up to isomorphism;
 - properties such as "the domain is finite" or "the domain is countable" are not first-order axiomatizable in the intended absolute sense.
 
-== FOL Validity is Undecidable
+== What Is the Decision Problem?
 
-Despite completeness, there is _no_ algorithm that always terminates and correctly decides FOL validity.
+Given a sentence $phi$, we can ask three different questions:
+
++ *Satisfiable?* Is there some structure $frak(M)$ with $frak(M) models phi$?
++ *Valid?* Does every structure satisfy $phi$? Equivalently, $models phi$.
++ *Provable?* Can we derive $phi$ in a proof system? Equivalently, $tack phi$ or $T tack phi$.
+
+#definition[Decidable][
+  A problem is _decidable_ if there is an algorithm that halts on every input and always returns the correct yes/no answer.
+]
+
+== FOL Validity Is Undecidable
 
 #theorem[Church--Turing, 1936][
-  The set ${phi | models phi}$ of all valid FOL sentences is undecidable.
+  The _validity problem_ for first-order logic is undecidable:
+  there is no algorithm that decides, for every FOL sentence $phi$, whether $models phi$.
 ]
 
 #grid(
   columns: 2,
   column-gutter: 2em,
   [
-    *Propositional logic:*
-    - finite truth-table search
-    - decision procedures terminate
+    *Why PL is decidable:*
+    - finitely many propositional variables
+    - finitely many truth assignments
+    - brute force always terminates
   ],
   [
-    *First-order logic:*
-    - unbounded domains and structures
-    - validity is semi-decidable (r.e.)
-    - satisfiability is co-semi-decidable (co-r.e.)
+    *Why FOL is not:*
+    - structures may be infinite
+    - domains may have arbitrary size
+    - quantifiers range over unbounded domains
   ],
 )
 
-#Block(color: yellow)[
-  Proof search is complete, but not terminating in general.
+#Block(color: orange)[
+  Completeness does _not_ imply decidability.
+  It only says: if $phi$ is valid, then some proof exists.
+  It does not say how long proof search will take, or whether search terminates on invalid input.
+]
 
-  Therefore FM tools rely on _decidable fragments_ and background theories handled by SMT solvers.
+== Semi-Decidability: What Completeness Gives
+
+*Validity is semi-decidable.*
+Enumerate all formal proofs. If $phi$ is valid, then by completeness some proof of $phi$ exists, so the search will eventually find it.
+
+*Unsatisfiability is semi-decidable.*
+$phi$ is unsatisfiable iff $not phi$ is valid. So a search for a proof of $not phi$ will eventually succeed when $phi$ has no model.
+
+*Satisfiability is therefore co-semi-decidable.*
+If $phi$ is satisfiable, there need not be any finite certificate that a blind proof search will eventually find.
+Search may run forever even on satisfiable input.
+
+#Block(color: yellow)[
+  For general FOL:
+  - validity is r.e. but undecidable;
+  - unsatisfiability is r.e.;
+  - satisfiability is co-r.e. and undecidable.
 ]
 
 == Gödel Incompleteness
@@ -912,41 +943,60 @@ Different verification tasks need different logics:
 
 == Decidability Landscape
 
-Computational complexity of logical decision problems:
-
 #align(center)[
   #table(
     columns: 4,
     align: (left, center, center, left),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
-    table.header[*Logic / Fragment*][*SAT*][*Validity*][*Complexity*],
+    table.header[*Logic / Fragment*][*SAT*][*VALID*][*Complexity*],
     [Propositional], [Decidable], [Decidable], [NP-c / co-NP-c],
-    [Modal (K, S4, S5)], [Decidable], [Decidable], [PSPACE-complete],
-    [FOL (general)], [Undecidable], [Undecidable], [Semi-decidable],
-    [FOL monadic], [Decidable], [Decidable], [NEXPTIME-complete],
-    [Presburger ($NN, +$)], [Decidable], [Decidable], [2-EXPTIME],
-    [Arithmetic ($NN, +, times$)], [Undecidable], [Undecidable], [Not even semi-dec.],
+    [Modal (K, S4, S5)], [Decidable], [Decidable], [PSPACE-c],
+    [FOL (general)], [Undecidable], [Undecidable], [r.e. / co-r.e.],
+    [Monadic FOL], [Decidable], [Decidable], [NEXPTIME-c],
+    [Presburger $(NN, +)$], [Decidable], [Decidable], [2-EXPTIME],
+    [Arithmetic $(NN, +, times)$], [Undecidable], [Undecidable], [Not decidable],
   )
 ]
 
-== Why Theories?
+#Block(color: blue)[
+  Read the last column carefully:
+  sometimes the issue is _complexity_, but sometimes the issue is _decidability itself_.
+  That distinction is the key boundary for automation.
+]
 
-FOL validity is _undecidable_ in general.
-But verification does not need _all_ of FOL --- it needs to reason about _specific_ domains: integers, arrays, bit-vectors, etc.
+== Reading the Landscape
 
-#definition[First-Order Theory][
++ _Propositional logic_ is expensive but fully algorithmic.
++ _General first-order logic_ crosses the boundary into undecidability.
++ _Useful fragments and theories_ recover decidability by restricting syntax or fixing intended structures.
+
+#Block(color: yellow)[
+  This is why verification tools do not attempt to solve arbitrary FOL formulas. \
+  They target _fragments_ where _decision procedures exist_: SAT, modal model checking, Presburger arithmetic, EUF, arrays, bit-vectors, and related SMT theories.
+]
+
+== Why Theories and SMT?
+
+General FOL is too expressive for fully automatic decision procedures.
+Verification tools therefore restrict attention to theories with fixed intended meanings for their symbols: integers, reals, arrays, bit-vectors, uninterpreted functions, heaps, and so on.
+
+#definition[
   A _first-order theory_ $cal(T)$ is a set of FOL sentences (axioms) over a fixed signature $Sigma$.
-  A _$cal(T)$-model_ is a structure satisfying all axioms in $cal(T)$.
-  $cal(T)$-satisfiability asks: is there a _$cal(T)$-model_ satisfying a given formula?
+  - _$cal(T)$-model_ is a structure satisfying all axioms in $cal(T)$.
+  - _$cal(T)$-satisfiability_ asks: is there a _$cal(T)$-model_ satisfying a given formula?
 ]
 
 #example[
-  - _Theory of linear integer arithmetic_ (LIA): $Sigma = {0, 1, +, <, =}$. Only structures isomorphic to $ZZ$ considered.
-  - _Theory of arrays_: $Sigma = {"read", "write"}$ with McCarthy axioms.
-  - _Theory of equality with uninterpreted functions_ (EUF): $Sigma = {=, f_1, f_2, dots}$, congruence axioms only.
+  - _Linear integer arithmetic_ (LIA): formulas over the standard integers with $0, 1, +, <, =$.
+  - _Theory of arrays_: functions such as `read` and `write`, plus axioms relating them.
+  - _Equality with uninterpreted functions_ (EUF): equality plus function symbols with no built-in meaning beyond congruence.
 ]
 
-By _fixing_ the theory, we restrict to structures where decision procedures _can_ terminate.
+#Block(color: green)[
+  *SMT = SAT + theories.*
+  A SAT solver handles Boolean structure; theory solvers handle domain-specific constraints.
+  This is why SMT solvers can be both _expressive_ and _terminating_ on important verification fragments.
+]
 
 == From English to FOL
 
