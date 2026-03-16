@@ -964,38 +964,35 @@ Different verification tasks need different logics:
   That distinction is the key boundary for automation.
 ]
 
-== Reading the Landscape
+== Why Theories?
 
-+ _Propositional logic_ is expensive but fully algorithmic.
-+ _General first-order logic_ crosses the boundary into undecidability.
-+ _Useful fragments and theories_ recover decidability by restricting syntax or fixing intended structures.
-
-#Block(color: yellow)[
-  This is why verification tools do not attempt to solve arbitrary FOL formulas. \
-  They target _fragments_ where _decision procedures exist_: SAT, modal model checking, Presburger arithmetic, EUF, arrays, bit-vectors, and related SMT theories.
-]
-
-== Why Theories and SMT?
-
-General FOL is too expressive for fully automatic decision procedures.
-Verification tools therefore restrict attention to theories with fixed intended meanings for their symbols: integers, reals, arrays, bit-vectors, uninterpreted functions, heaps, and so on.
+The decidability landscape gives one practical conclusion: unrestricted FOL is too expressive for general algorithmic solving.
 
 #definition[
-  A _first-order theory_ $cal(T)$ is a set of FOL sentences (axioms) over a fixed signature $Sigma$.
-  - _$cal(T)$-model_ is a structure satisfying all axioms in $cal(T)$.
-  - _$cal(T)$-satisfiability_ asks: is there a _$cal(T)$-model_ satisfying a given formula?
+  A _first-order theory_ $cal(T)$ fixes a signature and intended class of models.
+  - _$cal(T)$-model_: structure satisfying all axioms of $cal(T)$.
+  - _$cal(T)$-satisfiability_: whether a formula has a model _inside_ that class.
 ]
 
-#example[
-  - _Linear integer arithmetic_ (LIA): formulas over the standard integers with $0, 1, +, <, =$.
-  - _Theory of arrays_: functions such as `read` and `write`, plus axioms relating them.
-  - _Equality with uninterpreted functions_ (EUF): equality plus function symbols with no built-in meaning beyond congruence.
+#Block(color: yellow)[
+  Verification tools stay inside fragments/theories where decision procedures exist,
+  instead of solving arbitrary FOL over arbitrary structures.
 ]
+
+== SMT = SAT + Theories
+
+Two components work together:
+- *SAT layer:* handles Boolean structure ($and$, $or$, $not$, case splitting, learning).
+- *Theory layer:* handles domain constraints (arithmetic, arrays, bit-vectors, uninterpreted functions, ...).
+
+Common SMT theories in verification:
+- _LIA_ (linear integer arithmetic): $0, 1, +, <, =$ over integers.
+- _EUF_ (equality with uninterpreted functions): congruence reasoning over symbolic functions.
+- _Arrays_: read/write operators with array axioms.
 
 #Block(color: green)[
-  *SMT = SAT + theories.*
-  A SAT solver handles Boolean structure; theory solvers handle domain-specific constraints.
-  This is why SMT solvers can be both _expressive_ and _terminating_ on important verification fragments.
+  SMT gains expressiveness by combining Boolean search with theory reasoning,
+  while preserving termination on selected decidable fragments.
 ]
 
 == From English to FOL
