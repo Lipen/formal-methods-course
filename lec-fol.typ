@@ -631,7 +631,7 @@ Now we step back and analyze FOL _itself_.
 == Step 1: Lindenbaum Extension
 
 #theorem[Lindenbaum Lemma][
-  If $T$ is consistent, then there exists a _maximally consistent_ theory $T^*$ with $T subset.eq T^*$.
+  If $T$ is consistent, then there exists a _maximally consistent_ theory~$T^*$ with $T subset.eq T^*$.
   Maximal means: for every sentence $psi$, either $psi in T^*$ or $not psi in T^*$.
 ]
 
