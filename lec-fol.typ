@@ -79,7 +79,7 @@ _First-order logic_ emerged from three converging streams in late 19th/early 20t
   In _second-order_ logic, we could quantify over _sets_ or _predicates_: $forall P. exists x. thin P(x)$. \
   In _higher-order_ logic (used in Coq, Lean, Isabelle), we quantify over functions of functions, etc.
 
-  First-order logic gives a practical balance: strong expressive power with robust metatheory (soundness, completeness, compactness).
+  First-order logic is expressive and has strong metatheory (soundness, completeness, compactness).
 ]
 
 == Syntax: The Language of FOL
@@ -272,7 +272,7 @@ A formula with no free variables is a _sentence_ (closed formula).
 == Evaluating FOL Formulas
 
 Given a structure $frak(A)$ and a variable assignment $sigma$, truth is defined inductively.
-The key ingredient compared to PL: quantifiers range over domain elements.
+The main semantic difference from PL is that quantifiers range over domain elements.
 
 #definition[Satisfaction Relation][
   The relation $frak(A), sigma models phi$ is defined inductively:
@@ -309,7 +309,7 @@ For _sentences_ (no free variables), the truth value depends only on the structu
 ]
 
 #Block(color: orange)[
-  *Key difference from PL:*
+  *Difference from PL:*
   - In PL, the space of interpretations is _finite_ ($2^n$ truth assignments).
   - In FOL, structures may be infinite and of arbitrary cardinality --- this is the source of undecidability in general validity/satisfiability problems.
 ]
@@ -873,17 +873,16 @@ Search may run forever even on satisfiable input.
 
 == Gödel Incompleteness
 
-Before stating the theorems, separate two levels clearly:
+Completeness and incompleteness concern different objects.
 
-+ *FOL completeness* (logic-level):
-  if $T models phi$ then $T entails phi$.
-  This compares semantic consequence and derivability.
-+ *Gödel incompleteness* (theory-level):
-  concerns specific arithmetic theories interpreted in $NN$.
-  It shows limitations of what those theories can prove.
++ *Completeness theorem (logic-level):* for first-order logic, semantic consequence and derivability coincide:
+  $T models phi imply T entails phi$.
++ *Incompleteness theorems (theory-level):* for specific arithmetic theories,
+  not every sentence true in the intended model $NN$ is provable inside the theory.
 
 #Block(color: orange)[
-  No contradiction: completeness is a theorem about first-order _logic_; incompleteness is a theorem about particular first-order _theories_.
+  Completeness is about the proof system of first-order logic.
+  Incompleteness is about the limitations of particular arithmetic axiomatizations.
 ]
 
 == First Incompleteness Theorem
@@ -897,8 +896,14 @@ Before stating the theorems, separate two levels clearly:
 ]
 
 #note[
-  Informally: there are arithmetic truths that the theory cannot prove.
-  So no single effective axiomatization captures all true arithmetic statements.
+  There are arithmetic sentences true in the intended model $NN$ that are not provable in $cal(T)$.
+  Hence no single effective axiomatization captures all arithmetic truths.
+]
+
+#Block(color: blue)[
+  Terminology checkpoint:
+  - "true" here means true in the standard naturals $NN$;
+  - "provable" means derivable inside the formal calculus of $cal(T)$.
 ]
 
 == Second Incompleteness Theorem
@@ -909,13 +914,13 @@ Before stating the theorems, separate two levels clearly:
 ]
 
 #note[
-  A sufficiently strong consistent arithmetic theory cannot prove its own consistency by its own internal methods.
+  Here $op("Con")(cal(T))$ is an arithmetized sentence expressing "there is no code of a contradiction-proof in $cal(T)$."
+  So a sufficiently strong consistent arithmetic theory cannot prove its own consistency by its own internal methods.
 ]
 
 #Block(color: yellow)[
-  *Why this matters in FM:* verification tools and proof assistants are powerful,
-  but no fixed sufficiently expressive sound system can automatically prove every true property of programs/arithmetic.
-  Engineering practice therefore combines automation, user guidance, and modular reasoning.
+  *FM consequence:* no fixed sufficiently expressive sound system can prove every true arithmetic/program property.
+  Practical verification combines automated solvers with user-guided invariants, lemmas, and decomposition.
 ]
 
 == The Landscape of Logics
@@ -992,14 +997,13 @@ Different verification tasks need different logics:
 ]
 
 #Block(color: blue)[
-  Read the last column carefully:
-  sometimes the issue is _complexity_, but sometimes the issue is _decidability itself_.
-  That distinction is the key boundary for automation.
+  Distinguish two failure modes:
+  high complexity (decidable but expensive) versus undecidability (no terminating general procedure).
 ]
 
 == Why Theories?
 
-The decidability landscape gives one practical conclusion: unrestricted FOL is too expressive for general algorithmic solving.
+Unrestricted FOL is too expressive for fully general algorithmic solving.
 
 #definition[
   A _first-order theory_ $cal(T)$ fixes a signature and intended class of models.
@@ -1008,8 +1012,8 @@ The decidability landscape gives one practical conclusion: unrestricted FOL is t
 ]
 
 #Block(color: yellow)[
-  Verification tools stay inside fragments/theories where decision procedures exist,
-  instead of solving arbitrary FOL over arbitrary structures.
+  Verification tools therefore work in fragments/theories with known decision procedures,
+  rather than arbitrary FOL over arbitrary structures.
 ]
 
 == SMT = SAT + Theories
@@ -1024,13 +1028,13 @@ Common SMT theories in verification:
 - _Arrays_: read/write operators with array axioms.
 
 #Block(color: green)[
-  SMT gains expressiveness by combining Boolean search with theory reasoning,
-  while preserving termination on selected decidable fragments.
+  SMT combines Boolean search with theory reasoning.
+  Termination is guaranteed on the decidable fragments implemented by the solver.
 ]
 
 == From English to FOL
 
-Translating natural language to FOL formulas is a key skill. \
+Translating natural language statements into FOL formulas is a core formalization task. \
 Here are examples over the signature of arithmetic: $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$.
 
 + _There is no largest natural number._ \
@@ -1045,8 +1049,11 @@ Here are examples over the signature of arithmetic: $Sigma = angle.l {0, S, +, t
   $exists x. thin exists y. thin not (x = y) and x < S(S(S(0))) and y < S(S(S(0)))$
 
 #Block(color: blue)[
-  *Tip:* When formalizing, identify (1) the domain, (2) the quantifier structure, and (3) the predicate/function symbols needed.
-  Common pitfall: confusing the direction of implication after $forall$.
+  Formalization checklist:
+  (1) specify the domain,
+  (2) fix quantifier order,
+  (3) choose predicates/functions,
+  (4) verify implication direction under quantifiers.
 ]
 
 
