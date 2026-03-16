@@ -24,7 +24,7 @@
 
 == Motivation: The Limits of Propositional Logic
 
-Propositional logic was humanity's first formal calculus of reasoning (Boole, 1847; Frege, 1879).
+Propositional logic was the first widely used formal calculus of reasoning (Boole, 1847; Frege, 1879).
 
 But it has fundamental _limitations_:
 
@@ -79,7 +79,7 @@ _First-order logic_ emerged from three converging streams in late 19th/early 20t
   In _second-order_ logic, we could quantify over _sets_ or _predicates_: $forall P. exists x. thin P(x)$. \
   In _higher-order_ logic (used in Coq, Lean, Isabelle), we quantify over functions of functions, etc.
 
-  First-order logic is the _sweet spot_: expressive enough for most mathematics and verification, yet with nice metatheoretic properties (completeness, compactness).
+  First-order logic gives a practical balance: strong expressive power with robust metatheory (soundness, completeness, compactness).
 ]
 
 == Syntax: The Language of FOL
@@ -115,8 +115,8 @@ Symbols of a first-order language are divided into _logical symbols_ (fixed) and
 )
 
 #note[
-  Just $and$, $not$ suffice for connectives (others defined).
-  Just $forall$ suffices for quantifiers ($exists x. phi equiv not forall x. not phi$).
+  The pair $and$, $not$ is functionally complete for Boolean connectives.
+  Also, $forall$ alone is sufficient for quantification since $exists x. phi equiv not forall x. not phi$.
 ]
 
 == Predicates and Functions
@@ -263,7 +263,7 @@ A formula with no free variables is a _sentence_ (closed formula).
   For the arithmetic signature $Sigma = angle.l {0, S, +, times}, {<, =} angle.r$:
   - $frak(N) = (NN, 0, S, +, times, <, =)$ --- the _standard_ (intended) model.
   - $frak(Z) = (ZZ, 0, S, +, times, <, =)$ --- a different, equally valid structure.
-  - The sentence $forall x. thin exists y. thin x = S(y) or x = 0$ is true in $frak(N)$ (every natural number is 0 or a successor) but _false_ in $frak(Z)$ (take $x = -1$: it is not $0$ and not a successor of any integer under the standard successor).
+  - The sentence $exists m. thin forall x. thin m <= x$ is true in $frak(N)$ (least element exists: $m = 0$) but _false_ in $frak(Z)$ (integers have no least element).
 
   The same sentence may be true in one structure and false in another. \
   _Validity_ means truth in _all_ structures.
@@ -309,9 +309,9 @@ For _sentences_ (no free variables), the truth value depends only on the structu
 ]
 
 #Block(color: orange)[
-  *Critical difference from PL:*
+  *Key difference from PL:*
   - In PL, the space of interpretations is _finite_ ($2^n$ truth assignments).
-  - In FOL, structures can have _infinite_ domains of _any_ cardinality --- decision procedures are fundamentally harder, sometimes even impossible (undecidable).
+  - In FOL, structures may be infinite and of arbitrary cardinality --- this is the source of undecidability in general validity/satisfiability problems.
 ]
 
 #example[
@@ -354,7 +354,8 @@ Many useful equivalences govern quantifiers:
 #pagebreak()
 
 #Block(color: orange)[
-  $exists x. thin forall y$ is generally _stronger_ than $forall y. thin exists x$ --- the former asserts a _single_ $x$ for _all_ $y$.
+  In general, $exists x. thin forall y. thin R(x, y)$ is _stronger_ than $forall y. thin exists x. thin R(x, y)$: \
+  the first requires one uniform witness for all $y$.
 ]
 
 #example[
@@ -378,9 +379,9 @@ Many useful equivalences govern quantifiers:
 ]
 
 #example[
-  $forall x. thin P(x) imply exists y. thin Q(x, y)$ \
-  $equiv forall x. thin (not P(x) or exists y. thin Q(x, y))$ #h(1em) _(eliminate $imply$)_ \
-  $equiv forall x. thin exists y. thin (not P(x) or Q(x, y))$ #h(1em) _(pull $exists y$ out)_
+  $(forall x. thin P(x)) imply (exists y. thin Q(y))$ \
+  $equiv not forall x. thin P(x) or exists y. thin Q(y)$ #h(1em) _(eliminate $imply$)_ \
+  $equiv exists x. thin not P(x) or exists y. thin Q(y)$ #h(1em) _(quantifier duality)_
 ]
 
 PNF separates the _quantifier prefix_ (alternation structure) from the _propositional skeleton_ (matrix). \
@@ -486,7 +487,8 @@ The alternation depth ($forall exists forall dots$) determines complexity.
 
 == Semantic Arguments for FOL
 
-Semantic tableaux rules extend to FOL with rules for quantifiers:
+The rules below are the propositional tableau core. \
+Full FOL tableaux add quantifier rules (instantiation and witness introduction):
 
 #align(horizon + center)[
   #grid(
@@ -640,7 +642,7 @@ Now we step back and analyze FOL _itself_.
   - if $T_n union {psi_n}$ is consistent, set $T_(n+1) = T_n union {psi_n}$;
   - otherwise set $T_(n+1) = T_n union {not psi_n}$.
 
-  Let $T^* = T_0 union T_1 union dots$
+  Let $T^* = T_0 union T_1 union dots$.
 
   Any proof uses finitely many premises, so any contradiction would already appear at some finite stage.
   Hence consistency is preserved, and every sentence is decided.
@@ -709,7 +711,7 @@ Assume $T^*$ is maximally consistent and Henkin.
   - atomic case by definition of the term model;
   - Boolean connectives by maximal consistency;
   - existential case uses the Henkin witness;
-  - universal follows via $forall x. thin psi equiv not exists x. thin not psi$.
+  - universal case follows by duality: $forall x. thin psi equiv not exists x. thin not psi$.
 ]
 
 == Completeness Theorem (Gödel, 1930)
@@ -808,7 +810,7 @@ Despite completeness, there is _no_ algorithm that always terminates and correct
 #Block(color: yellow)[
   Proof search is complete, but not terminating in general.
 
-  Therefore FM tools rely on _decidable fragments_ and background theories (SMT).
+  Therefore FM tools rely on _decidable fragments_ and background theories handled by SMT solvers.
 ]
 
 == Gödel Incompleteness
@@ -818,7 +820,8 @@ if $T models phi$ then $T entails phi$.
 Here semantics ranges over _all models_ of $T$.
 
 *Incompleteness theorems (arithmetic theories):*
-sufficiently strong consistent $cal(T)$ has true-but-unprovable arithmetic sentences, and cannot prove $op("Con")(cal(T))$.
+any sufficiently strong recursively axiomatized consistent $cal(T)$ has true-but-unprovable arithmetic sentences,
+and (under mild assumptions) cannot prove $op("Con")(cal(T))$.
 
 #Block(color: orange)[
   Completeness is about the logic itself; incompleteness is about particular theories interpreted in $NN$.
