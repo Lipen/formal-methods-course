@@ -873,16 +873,49 @@ Search may run forever even on satisfiable input.
 
 == Gödel Incompleteness
 
-*Completeness theorem (FOL):*
-if $T models phi$ then $T entails phi$.
-Here semantics ranges over _all models_ of $T$.
+Before stating the theorems, separate two levels clearly:
 
-*Incompleteness theorems (arithmetic theories):*
-any sufficiently strong recursively axiomatized consistent $cal(T)$ has true-but-unprovable arithmetic sentences,
-and (under mild assumptions) cannot prove $op("Con")(cal(T))$.
++ *FOL completeness* (logic-level):
+  if $T models phi$ then $T entails phi$.
+  This compares semantic consequence and derivability.
++ *Gödel incompleteness* (theory-level):
+  concerns specific arithmetic theories interpreted in $NN$.
+  It shows limitations of what those theories can prove.
 
 #Block(color: orange)[
-  Completeness is about the logic itself; incompleteness is about particular theories interpreted in $NN$.
+  No contradiction: completeness is a theorem about first-order _logic_; incompleteness is a theorem about particular first-order _theories_.
+]
+
+== First Incompleteness Theorem
+
+#theorem[Gödel I][
+  Let $cal(T)$ be a recursively axiomatized, consistent theory that can represent elementary arithmetic
+  (for example, $cal(T)$ extends Robinson arithmetic $Q$).
+  Then there exists a sentence $G_cal(T)$ such that:
+  - $cal(T) tack.not G_cal(T)$, and
+  - if $cal(T)$ is sound for arithmetic truth, then $NN models G_cal(T)$.
+]
+
+#note[
+  Informally: there are arithmetic truths that the theory cannot prove.
+  So no single effective axiomatization captures all true arithmetic statements.
+]
+
+== Second Incompleteness Theorem
+
+#theorem[Gödel II][
+  Under similar assumptions (in particular, sufficient arithmetic strength),
+  if $cal(T)$ is consistent then $cal(T) tack.not op("Con")(cal(T))$.
+]
+
+#note[
+  A sufficiently strong consistent arithmetic theory cannot prove its own consistency by its own internal methods.
+]
+
+#Block(color: yellow)[
+  *Why this matters in FM:* verification tools and proof assistants are powerful,
+  but no fixed sufficiently expressive sound system can automatically prove every true property of programs/arithmetic.
+  Engineering practice therefore combines automation, user guidance, and modular reasoning.
 ]
 
 == The Landscape of Logics
