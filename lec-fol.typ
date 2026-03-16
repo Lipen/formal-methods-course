@@ -582,183 +582,245 @@ Semantic tableaux rules extend to FOL with rules for quantifiers:
 
 = Metatheorems and \ the Limits of Logic
 
-== FOL Soundness and Completeness
+== Metatheory Roadmap: From Syntax to Models
 
-#theorem[Gödel's Completeness Theorem (1930)][
-  FOL with standard proof rules is both _sound_ and _complete_:
-  $ Gamma entails phi quad iff quad Gamma models phi $
-]
+Up to now, we used FOL _inside_ proofs and specifications.
+Now we step back and analyze FOL _itself_.
 
-#proof[
-  _(Soundness.)_
-  Each rule preserves truth: if premises hold in $frak(A)$, so does the conclusion.
-
-  _(Completeness, sketch.)_
-  If $Gamma entails.not phi$, then $Gamma union {not phi}$ is consistent.
-  Extend to a maximally consistent set $Gamma^*$ (Lindenbaum's lemma).
-  Add Henkin witnesses for existential formulas.
-  Build a canonical model from equivalence classes of closed terms.
-  This model satisfies $Gamma union {not phi}$, so $Gamma models.not phi$.
-  Contrapositive gives the result.
-]
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Syntactic side:*
+    - Derivability: $T entails phi$
+    - Consistency: $T entails.not bot$
+    - Proof rules and finite derivations
+  ],
+  [
+    *Semantic side:*
+    - Satisfaction: $frak(M) models phi$
+    - Satisfiability: some model exists
+    - Consequence: $T models phi$
+  ],
+)
 
 #Block(color: yellow)[
-  _Not_ the "incompleteness theorem" --- here "complete" means the proof system derives everything semantically true in _all_ structures.
+  Lindenbaum extension $=>$ Henkin witnesses $=>$ term model $=>$ Truth Lemma $=>$ Completeness.
+
+  Then we get Compactness and Löwenheim--Skolem almost for free.
 ]
 
-== FOL Validity is Undecidable
+== Consequence, Consistency, Satisfiability
 
-Despite completeness, there is _no algorithm_ that always terminates and correctly decides FOL validity.
+#definition[
+  Let $T$ be a set of FOL sentences and $phi$ a sentence.
+  - $T models phi$ means: every model of $T$ is a model of $phi$.
+  - $T entails phi$ means: $phi$ is derivable from $T$.
+  - $T$ is _consistent_ iff $T entails.not bot$.
+  - $T$ is _satisfiable_ iff some structure $frak(M)$ satisfies every sentence in $T$.
+]
 
-#theorem[Church--Turing Theorem (1936)][
-  The validity problem for FOL is _undecidable_:
-  no Turing machine can decide, given an arbitrary FOL sentence $phi$, whether $models phi$.
+#Block[
+  Soundness gives $T entails phi imply T models phi$.
+
+  Completeness will prove the converse: $T models phi imply T entails phi$.
+]
+
+== Step 1: Lindenbaum Extension
+
+#theorem[Lindenbaum Lemma][
+  If $T$ is consistent, then there exists a _maximally consistent_ theory $T^*$ with $T subset.eq T^*$.
+  Maximal means: for every sentence $psi$, either $psi in T^*$ or $not psi in T^*$.
+]
+
+#proof[(construction sketch)][
+  Enumerate sentences as $psi_0, psi_1, psi_2, dots$ and build $T_0 subset.eq T_1 subset.eq dots$ with $T_0 = T$.
+
+  At stage $n$:
+  - if $T_n union {psi_n}$ is consistent, set $T_(n+1) = T_n union {psi_n}$;
+  - otherwise set $T_(n+1) = T_n union {not psi_n}$.
+
+  Let $T^* = T_0 union T_1 union dots$
+
+  "Finite-proof-uses-finite-premises" implies consistency is preserved, and every sentence is decided.
+]
+
+== Step 2: Henkinization (Adding Witnesses)
+
+Maximal consistency alone does _not_ guarantee explicit witnesses for existential sentences.
+
+#definition[Henkin Property][
+  A theory $T^*$ is _Henkin_ if whenever $exists x. thin psi(x) in T^*$,
+  there is a constant $c_psi$ such that $psi(c_psi) in T^*$.
 ]
 
 #grid(
   columns: 2,
   column-gutter: 2em,
   [
-    *Decidable (PL):*
-    - Finite search space ($2^n$ interpretations)
-    - Truth tables always terminate
-    - SAT is NP-complete, VALID is co-NP-complete
+    *Construction idea:*
+    For each existential sentence $exists x. thin psi(x)$,
+    introduce a fresh constant $c_psi$ and add a witness condition.
   ],
   [
-    *Undecidable (FOL):*
-    - Infinite/unbounded structures
-    - Proof search may not terminate
-    - Valid = semi-decidable (r.e.)
-    - Satisfiable = semi-decidable (co-r.e.)
+    *Consistency key point:*
+    Add witness only when the existential branch is consistent.
+    Freshness of $c_psi$ avoids accidental contradictions.
+  ],
+)
+
+#Block(color: orange)[
+  Technical core: if $T_n union {exists x. thin psi(x)}$ is consistent, then
+  $T_n union {exists x. thin psi(x), psi(c)}$ is consistent for fresh $c$.
+  This is the Henkin consistency lemma used in all standard proofs.
+]
+
+== Step 3: Canonical Term Model
+
+Assume $T^*$ is maximally consistent and Henkin.
+
+#definition[Term Model][
+  Work in the extended language $L_H$ with Henkin constants.
+
+  Domain: equivalence classes $[t]$ of closed terms under
+  $t sim s iff T^* entails t = s$.
+
+  Interpret symbols by syntax:
+  - constants: $c^frak(M) = [c]$;
+  - functions: $f^frak(M)([t_1], dots, [t_n]) = [f(t_1, dots, t_n)]$;
+  - relations: $frak(M) models R([t_1], dots, [t_n])$ iff $R(t_1, dots, t_n) in T^*$.
+]
+
+#note[
+  Equality axioms/substitutivity ensure these interpretations are well-defined.
+]
+
+== Step 4: Truth Lemma
+
+#theorem[Truth Lemma][
+  For every formula $phi(x_1, dots, x_k)$ and closed terms $t_1, dots, t_k$:
+  $ frak(M) models phi([t_1], dots, [t_k]) quad iff quad phi(t_1, dots, t_k) in T^* $.
+
+  In particular, for every sentence $phi$: $frak(M) models phi iff phi in T^*$.
+]
+
+#proof[(induction sketch)][
+  By structural induction on $phi$:
+  - atomic case by definition of the term model;
+  - Boolean connectives by maximal consistency;
+  - existential case uses the Henkin witness;
+  - universal follows via $forall x. thin psi equiv not exists x. thin not psi$.
+]
+
+== Completeness Theorem (Gödel, 1930)
+
+#theorem[Completeness][
+  For every theory $T$ and sentence $phi$:
+  $ T models phi quad -> quad T entails phi $
+]
+
+#proof[(contrapositive sketch)][
+  Assume $T entails.not phi$.
+  Then $T union {not phi}$ is consistent.
+  Extend it to a maximally consistent Henkin theory $T^*$.
+  Build the term model $frak(M)$ of $T^*$.
+  By the Truth Lemma, $frak(M) models T^*$, hence $frak(M) models T$ and $frak(M) models not phi$.
+  Therefore $T models.not phi$, proving the contrapositive.
+]
+
+#Block(color: yellow)[
+  Completeness (logic-level) is different from incompleteness (theory-level arithmetic).
+]
+
+== Compactness Theorem
+
+#theorem[Compactness][
+  A theory $T$ is satisfiable iff every finite subset $T_0 subset.eq T$ is satisfiable.
+]
+
+#proof[(from completeness)][
+  The forward direction is immediate.
+  For the converse, if $T$ were unsatisfiable then $T models bot$.
+  By completeness, $T entails bot$.
+  Any derivation is finite, so only finitely many premises are used; thus some finite $T_0 subset.eq T$ already proves $bot$ --- contradiction.
+]
+
+#example[
+  Let $T = op("Th")(NN) union {c > 0, c > 1, c > 2, dots}$ with fresh constant $c$.
+  Every finite subset is satisfiable in $NN$ by choosing $c$ large enough.
+  By compactness, $T$ has a model, yielding a non-standard element larger than every standard numeral.
+]
+
+== Löwenheim--Skolem: Downward and Upward
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Downward LS (informal):*
+    If a theory in language $L$ has an infinite model,
+    then it has elementary submodels of smaller infinite cardinalities
+    (at least down to $max(aleph_0, |L|)$).
+  ],
+  [
+    *Upward LS (informal):*
+    If a theory has an infinite model,
+    then it has models of all larger infinite cardinalities.
+    (Compactness + fresh constants.)
+  ],
+)
+
+#Block(color: teal)[
+  *Skolem paradox:* a countable model of set theory may contain sets it calls "uncountable".
+
+  No contradiction --- "countable" is _internal_ to that model.
+]
+
+Consequences for FOL expressiveness:
+- cannot force "the domain is finite" by a single sentence;
+- cannot characterize $NN$ up to isomorphism in pure first-order arithmetic;
+- cannot control infinite cardinality uniquely.
+
+== FOL Validity is Undecidable
+
+Despite completeness, there is _no_ algorithm that always terminates and correctly decides FOL validity.
+
+#theorem[Church--Turing, 1936][
+  The set ${phi | models phi}$ of all valid FOL sentences is undecidable.
+]
+
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    *Propositional logic:*
+    - finite truth-table search
+    - decision procedures terminate
+  ],
+  [
+    *First-order logic:*
+    - unbounded domains and structures
+    - validity is semi-decidable (r.e.)
+    - satisfiability is co-semi-decidable (co-r.e.)
   ],
 )
 
 #Block(color: green)[
-  FOL validity is *semi-decidable*: if $phi$ is valid, proof search _will_ find a proof (by completeness).
-  If $phi$ is not valid, search may run forever.
+  Completeness + undecidability means: proof search is complete but may diverge on invalid formulas.
+  This is why FM tools use decidable fragments and domain theories (SMT).
 ]
 
-SMT solvers restrict to _decidable fragments_ of FOL --- theories where satisfiability _can_ be decided.
+== Gödel Incompleteness
 
-== The Compactness Theorem
+*Completeness theorem (FOL):*
+if $T models phi$ then $T entails phi$.
+Here semantics ranges over _all models_ of $T$.
 
-#theorem[Compactness Theorem][
-  A (possibly infinite) set of FOL sentences $Gamma$ is satisfiable if and only if every _finite_ subset of $Gamma$ is satisfiable.
-]
+*Incompleteness theorems (arithmetic theories):*
+sufficiently strong consistent $cal(T)$ has true-but-unprovable arithmetic sentences, and cannot prove $op("Con")(cal(T))$.
 
-#proof[(sketch)][
-  ($arrow.double.r$) Trivial: any model of $Gamma$ satisfies every finite subset.
-
-  ($arrow.double.l$) If $Gamma$ is unsatisfiable, then by completeness there is a proof of $bot$ from $Gamma$.
-  Every proof uses only _finitely many_ premises, so some finite $Gamma_0 subset.eq Gamma$ is already unsatisfiable.
-]
-
-#example[
-  *Non-standard models of arithmetic:*
-  Let $Gamma = op("Th")(NN) union {c > 0, c > 1, c > 2, dots}$ where $c$ is a fresh constant.
-  Every finite subset is satisfiable (interpret $c$ as a large enough number).
-  By compactness, $Gamma$~is satisfiable --- in a model with an "infinite" element $c$ larger than all standard naturals. \
-  This is a _non-standard model_ of arithmetic.
-]
-
-#Block(color: blue)[
-  If a specification has a bug (is unsatisfiable), some _finite_ subset of constraints already witnesses it --- this is why _bounded model checking_ works: check finitely many constraints at a time.
-]
-
-== The Löwenheim--Skolem Theorem
-
-#theorem[Löwenheim--Skolem Theorem][
-  If an FOL sentence (or countable set of sentences) has an _infinite_ model, then it has a model of _every_ infinite cardinality.
-]
-
-#v(-0.5em)
-#Block(color: teal)[
-  *Skolem's paradox (1922):* ZFC proves uncountable sets exist, yet by Löwenheim--Skolem, ZFC has a _countable_ model.
-  Resolution: "uncountable" is _relative_ to the model's membership relation.
-]
-#v(-0.5em)
-
-Expressive limitations of FOL (compactness + Löwenheim--Skolem):
-- Cannot define "exactly the natural numbers" (up to isomorphism).
-- Cannot express "the domain is finite" or "the domain is countable."
-- Cannot distinguish between structures of different infinite cardinalities.
-
-These limitations motivate _stronger_ logics (second-order, infinitary) and _decidable_ fragments (monadic FOL, EPR, SMT theories).
-
-#place[
-  #v(0.5em)
-  #Block(color: orange)[
-    You cannot write an FOL spec that pins down "exactly the integers." \
-    SMT solvers work around this by _fixing_ the interpretation of theory symbols ($+$, $times$, $<$) --- they reason about a _specific_ structure, not all possible models.
-  ]
-]
-
-== Gödel's Incompleteness Theorems
-
-_Completeness_ (above): "if $phi$ is true in _all_ structures, it is provable."
-_Incompleteness_ (below): "if we fix _one_ structure ($NN$), some true sentences are unprovable."
-These concern different questions.
-
-#v(-0.5em)
-#theorem[First Incompleteness Theorem][
-  Any _consistent_ formal system $cal(T)$ capable of expressing elementary arithmetic contains sentences that are _true_ (in the standard model $NN$) but _unprovable_ in $cal(T)$.
-]
-
-#v(-0.5em)
-#theorem[Second Incompleteness Theorem][
-  If $cal(T)$ is consistent and sufficiently powerful, then $cal(T)$ _cannot prove its own consistency_:
-  $ cal(T) tack.r.not op("Con")(cal(T)) $
-]
-#v(-0.5em)
-
-#note(title: "Sufficiently powerful")[
-  $cal(T)$ must be capable of representing all computable functions --- essentially, $cal(T)$ must contain Robinson arithmetic ($Q$) or stronger.
-]
-
-#place[
-  #v(1em)
-  #Block(color: orange)[
-    Gödel's _completeness_ theorem: FOL proof systems are complete w.r.t. semantic consequence.
-    His _incompleteness_ theorems: specific _theories_ (like arithmetic) have true-but-unprovable sentences.
-    Different notions of "completeness"!
-  ]
-]
-
-== Incompleteness: The Key Idea
-
-The proof relies on _self-reference_, made mathematically precise via Gödel numbering.
-
-Every formula, proof, and syntactic operation is encoded as a natural number.
-There is an arithmetic formula $"Prov"(n)$ saying "$n$ is the Gödel number of a provable sentence."
-Construct a sentence $G$:
-
-#align(center)[
-  #fancy-box[
-    $ G quad equiv quad #[$quote.l$I am not provable in $cal(T)$$quote.r$] $
-  ]
-]
-
-#grid(
-  columns: 2,
-  column-gutter: 2em,
-  [
-    *If $G$ is provable in $cal(T)$:*
-    - $cal(T)$ proves $G$
-    - $G$ says "$G$ is not provable"
-    - So $cal(T)$ proves something false
-    - Contradicts _consistency_ of $cal(T)$
-  ],
-  [
-    *If $G$ is not provable:*
-    - $G$'s assertion is _true_
-    - So $G$ is true but unprovable
-    - $cal(T)$ is _incomplete_
-  ],
-)
-
-#Block(color: blue)[
-  Incompleteness means _no_ verification system can prove _all_ true program properties.
-  In practice, automated tools are remarkably effective for _specific_ programs.
+#Block(color: orange)[
+  Completeness is about the logic itself; incompleteness is about particular theories interpreted in $NN$.
 ]
 
 == The Landscape of Logics
