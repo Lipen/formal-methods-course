@@ -753,35 +753,62 @@ Assume $T^*$ is maximally consistent and Henkin.
   By compactness, $T$ has a model, yielding a non-standard element larger than every standard numeral.
 ]
 
-== Löwenheim--Skolem: Downward and Upward
+== Downward Löwenheim--Skolem
 
-#grid(
-  columns: 2,
-  column-gutter: 2em,
-  [
-    *Downward LS:*
-    If a theory in language $L$ has an infinite model,
-    then it has elementary submodels of smaller infinite cardinalities.
-    In particular, for countable $L$, every infinite model has a countable elementary submodel.
-  ],
-  [
-    *Upward LS:*
-    If a theory has an infinite model,
-    then it has models of all larger infinite cardinalities.
-    (Compactness + fresh constants.)
-  ],
-)
+#theorem[
+  Let $L$ be a language and let $T$ be an $L$-theory with an infinite model.
+  If $L$ is countable, then $T$ has a _countable_ model.
 
-#Block(color: teal)[
-  *Skolem paradox:* a countable model of set theory may contain sets it calls "uncountable".
-
-  "Uncountable" is interpreted internally: no bijection with $NN$ exists _inside that model_.
+  More generally, if $T$ has a model of size at least $max(aleph_0, |L|)$,
+  then it has models of every infinite size $kappa$ with
+  $max(aleph_0, |L|) <= kappa <= |M|$.
 ]
 
-Consequences for FOL expressiveness:
-- cannot force "the domain is finite" by a single sentence;
-- cannot characterize $NN$ up to isomorphism in pure first-order arithmetic;
-- cannot control infinite cardinality uniquely.
+#proof[(idea)][
+  Start with a set $A$ of parameters of the desired size.
+  Close $A$ under witness-producing operations for existential formulas.
+  The closure stays small, but is rich enough to satisfy the Tarski--Vaught test.
+  Hence it forms an elementary submodel.
+]
+
+#Block(color: blue)[
+  In the countable-language case, an infinite model always has a countable elementary submodel.
+  So~first-order logic cannot force an infinite model to be uncountable.
+]
+
+== Upward Löwenheim--Skolem
+
+#theorem[
+  If an $L$-theory $T$ has an infinite model, then for every infinite cardinal $kappa >= max(aleph_0, |L|)$,
+  the theory $T$ has a model of size at least $kappa$.
+]
+
+#proof[(compactness argument)][
+  Add fresh constants $c_i$ for $i < kappa$ and add sentences $c_i != c_j$ for all distinct $i, j$.
+  Every finite subset of this expanded theory is satisfiable in the original infinite model,
+  because only finitely many distinct constants need interpretation.
+  By compactness, the whole expanded theory has a model with at least $kappa$ distinct elements.
+]
+
+#note[
+  With a standard cardinality argument, one can refine this to obtain a model of size exactly $kappa$.
+]
+
+== Skolem's Paradox and What LS Means
+
+#Block(color: teal)[
+  *Skolem's paradox (1922):* ZFC proves that uncountable sets exist, yet by Löwenheim--Skolem,
+  if ZFC has any model at all, then it has a countable model.
+
+  Resolution: "uncountable" is relative to the model's membership relation.
+  Inside that countable model, there is no _internal_ bijection between the set and $NN$,
+  even though from the outside the whole model is countable.
+]
+
+Consequences for first-order expressiveness:
+- no first-order theory with an infinite model can force a unique infinite cardinality;
+- pure first-order arithmetic cannot characterize $NN$ up to isomorphism;
+- properties such as "the domain is finite" or "the domain is countable" are not first-order axiomatizable in the intended absolute sense.
 
 == FOL Validity is Undecidable
 
