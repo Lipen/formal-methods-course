@@ -265,7 +265,7 @@ A formula with no free variables is a _sentence_ (closed formula).
   - $frak(Z) = (ZZ, 0, S, +, times, <, =)$ --- a different, equally valid structure.
   - The sentence $forall x. thin exists y. thin x = S(y) or x = 0$ is true in $frak(N)$ (every natural number is 0 or a successor) but _false_ in $frak(Z)$ (take $x = -1$: it is not $0$ and not a successor of any integer under the standard successor).
 
-  This illustrates a key point: the same sentence can be true in one structure and false in another. \
+  The same sentence may be true in one structure and false in another. \
   _Validity_ means truth in _all_ structures.
 ]
 
@@ -633,7 +633,7 @@ Now we step back and analyze FOL _itself_.
   Maximal means: for every sentence $psi$, either $psi in T^*$ or $not psi in T^*$.
 ]
 
-#proof[(construction sketch)][
+#proof[(idea)][
   Enumerate sentences as $psi_0, psi_1, psi_2, dots$ and build $T_0 subset.eq T_1 subset.eq dots$ with $T_0 = T$.
 
   At stage $n$:
@@ -642,7 +642,8 @@ Now we step back and analyze FOL _itself_.
 
   Let $T^* = T_0 union T_1 union dots$
 
-  "Finite-proof-uses-finite-premises" implies consistency is preserved, and every sentence is decided.
+  Any proof uses finitely many premises, so any contradiction would already appear at some finite stage.
+  Hence consistency is preserved, and every sentence is decided.
 ]
 
 == Step 2: Henkinization (Adding Witnesses)
@@ -663,16 +664,15 @@ Maximal consistency alone does _not_ guarantee explicit witnesses for existentia
     introduce a fresh constant $c_psi$ and add a witness condition.
   ],
   [
-    *Consistency key point:*
+    *Consistency argument:*
     Add witness only when the existential branch is consistent.
-    Freshness of $c_psi$ avoids accidental contradictions.
+    Freshness of $c_psi$ ensures the new name does not interact with earlier formulas.
   ],
 )
 
 #Block(color: orange)[
-  Technical core: if $T_n union {exists x. thin psi(x)}$ is consistent, then
+  If $T_n union {exists x. thin psi(x)}$ is consistent, then
   $T_n union {exists x. thin psi(x), psi(c)}$ is consistent for fresh $c$.
-  This is the Henkin consistency lemma used in all standard proofs.
 ]
 
 == Step 3: Canonical Term Model
@@ -704,7 +704,7 @@ Assume $T^*$ is maximally consistent and Henkin.
   In particular, for every sentence $phi$: $frak(M) models phi iff phi in T^*$.
 ]
 
-#proof[(induction sketch)][
+#proof[(sketch)][
   By structural induction on $phi$:
   - atomic case by definition of the term model;
   - Boolean connectives by maximal consistency;
@@ -716,10 +716,10 @@ Assume $T^*$ is maximally consistent and Henkin.
 
 #theorem[Completeness][
   For every theory $T$ and sentence $phi$:
-  $ T models phi quad -> quad T entails phi $
+  $ T models phi quad imply quad T entails phi $
 ]
 
-#proof[(contrapositive sketch)][
+#proof[(contrapositive argument)][
   Assume $T entails.not phi$.
   Then $T union {not phi}$ is consistent.
   Extend it to a maximally consistent Henkin theory $T^*$.
@@ -757,13 +757,13 @@ Assume $T^*$ is maximally consistent and Henkin.
   columns: 2,
   column-gutter: 2em,
   [
-    *Downward LS (informal):*
+    *Downward LS:*
     If a theory in language $L$ has an infinite model,
-    then it has elementary submodels of smaller infinite cardinalities
-    (at least down to $max(aleph_0, |L|)$).
+    then it has elementary submodels of smaller infinite cardinalities.
+    In particular, for countable $L$, every infinite model has a countable elementary submodel.
   ],
   [
-    *Upward LS (informal):*
+    *Upward LS:*
     If a theory has an infinite model,
     then it has models of all larger infinite cardinalities.
     (Compactness + fresh constants.)
@@ -773,7 +773,7 @@ Assume $T^*$ is maximally consistent and Henkin.
 #Block(color: teal)[
   *Skolem paradox:* a countable model of set theory may contain sets it calls "uncountable".
 
-  No contradiction --- "countable" is _internal_ to that model.
+  "Uncountable" is interpreted internally: no bijection with $NN$ exists _inside that model_.
 ]
 
 Consequences for FOL expressiveness:
@@ -805,9 +805,10 @@ Despite completeness, there is _no_ algorithm that always terminates and correct
   ],
 )
 
-#Block(color: green)[
-  Completeness + undecidability means: proof search is complete but may diverge on invalid formulas.
-  This is why FM tools use decidable fragments and domain theories (SMT).
+#Block(color: yellow)[
+  Proof search is complete, but not terminating in general.
+
+  Therefore FM tools rely on _decidable fragments_ and background theories (SMT).
 ]
 
 == Gödel Incompleteness
@@ -956,7 +957,7 @@ Here are examples over the signature of arithmetic: $Sigma = angle.l {0, S, +, t
 + Convert to prenex normal form:
   $(forall x. thin P(x)) imply (exists y. thin Q(y))$
 
-+ Explain informally: why does $exists x. thin forall y. thin R(x, y) thin models thin forall y. thin exists x. thin R(x, y)$ hold, but $forall y. thin exists x. thin R(x, y) thin models.not thin exists x. thin forall y. thin R(x, y)$?
++ Explain precisely why $exists x. thin forall y. thin R(x, y) thin models thin forall y. thin exists x. thin R(x, y)$ holds, but $forall y. thin exists x. thin R(x, y) thin models.not thin exists x. thin forall y. thin R(x, y)$.
   Give a concrete counterexample for the latter.
 
 == Exercises: FOL Proofs and Metatheorems
