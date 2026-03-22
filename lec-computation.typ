@@ -82,10 +82,10 @@ Formal languages are classified into four nested levels:
     align: (center, left, left, left),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header([*Type*], [*Class*], [*Recognizing Machine*], [*Example Language*]),
-    [3], [Regular],            [DFA / NFA],           [$a^* b^*$, ${ a^n mid(|) n "even" }$],
-    [2], [Context-Free],       [Pushdown Automaton],   [${ a^n b^n mid(|) n geq 0 }$],
-    [1], [Context-Sensitive],  [Linear-Bounded TM],   [${ a^n b^n c^n mid(|) n geq 0 }$],
-    [0], [Recursively Enum.],  [Turing Machine],      [${ angle.l M, w angle.r mid(|) M "halts on" w }$],
+    [3], [Regular], [DFA / NFA], [$a^* b^*$, ${ a^n mid(|) n "even" }$],
+    [2], [Context-Free], [Pushdown Automaton], [${ a^n b^n mid(|) n geq 0 }$],
+    [1], [Context-Sensitive], [Linear-Bounded TM], [${ a^n b^n c^n mid(|) n geq 0 }$],
+    [0], [Recursively Enum.], [Turing Machine], [${ angle.l M, w angle.r mid(|) M "halts on" w }$],
   )
 ]
 
@@ -122,7 +122,7 @@ Formal languages are classified into four nested levels:
 
     *Halting Problem:* Given a TM $M$ and input $w$, does $M$ halt on $w$?
     $ "HALT" = { angle.l M, w angle.r mid(|) "TM" M "halts on input" w } $
-  ]
+  ],
 )
 
 #Block(color: yellow)[
@@ -221,7 +221,7 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
 
 #v(1em)
 #align(center)[
-  #import fletcher: diagram, node, edge
+  #import fletcher: diagram, edge, node
   #diagram(
     node-corner-radius: 2pt,
     edge-stroke: 1pt,
@@ -351,7 +351,7 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
       content("a.center")[$a$]
       rect((3, 0), (rel: (2, 1)), name: "v")
       content("v.center")[$v$]
-      for-each-anchor("a", (name) => {}, exclude: ("center",))
+      for-each-anchor("a", name => {}, exclude: ("center",))
       line((0, 0), (5.5, 0))
       line((0, 1), (5.5, 1))
       line((5.5, 0), (6.2, 0), stroke: (dash: "dashed"))
@@ -488,8 +488,12 @@ How does one configuration yield the next?
       content((-0.3, 0.5))[$tapestart$]
       // Draw head pointer
       line(
-        (1.5, -0.15), (1.1, -0.6), (1.9, -0.6),
-        close: true, fill: orange.lighten(60%), stroke: 0.6pt,
+        (1.5, -0.15),
+        (1.1, -0.6),
+        (1.9, -0.6),
+        close: true,
+        fill: orange.lighten(60%),
+        stroke: 0.6pt,
       )
       content((1.5, -1.0), anchor: "north")[$q_0$]
     })
@@ -512,14 +516,14 @@ Step-by-step configuration trace for input $0011$ ($n = 2$). The _underlined_ sy
     align: (left, auto, left),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header([*Step*], [*Configuration $(u ; q ; v)$*], [*Action*]),
-    [Start],           [$(#tapestart ; q_0 ; 0011)$],         [Read `0` → write `X`, move right],
-    [Mark first 0],    [$(#tapestart X ; q_1 ; 011)$],        [Scan right past 0s to find `1`],
-    [Found first 1],   [$(#tapestart X 0 ; q_2 ; 11)$],       [Write `Y`, move left],
-    [Mark first 1],    [$(#tapestart X 0 Y ; q_3 ; 1)$],      [Move back to start],
-    [Back at start],   [$(#tapestart ; q_0 ; X 0 Y 1)$],      [Read `X` → skip, find next `0`],
-    [Mark second 0],   [$(#tapestart X X ; q_1 ; Y 1)$],      [Scan right past Y to find `1`],
-    [Found second 1],  [$(#tapestart X X Y ; q_2 ; 1)$],      [Write `Y`, move left],
-    [All matched],     [$(#tapestart X X Y Y ; q_"acc" ; #Blank)$], [Tape is all X/Y --- *Accept!*],
+    [Start], [$(#tapestart ; q_0 ; 0011)$], [Read `0` → write `X`, move right],
+    [Mark first 0], [$(#tapestart X ; q_1 ; 011)$], [Scan right past 0s to find `1`],
+    [Found first 1], [$(#tapestart X 0 ; q_2 ; 11)$], [Write `Y`, move left],
+    [Mark first 1], [$(#tapestart X 0 Y ; q_3 ; 1)$], [Move back to start],
+    [Back at start], [$(#tapestart ; q_0 ; X 0 Y 1)$], [Read `X` → skip, find next `0`],
+    [Mark second 0], [$(#tapestart X X ; q_1 ; Y 1)$], [Scan right past Y to find `1`],
+    [Found second 1], [$(#tapestart X X Y ; q_2 ; 1)$], [Write `Y`, move left],
+    [All matched], [$(#tapestart X X Y Y ; q_"acc" ; #Blank)$], [Tape is all X/Y --- *Accept!*],
   )
 ]
 
@@ -535,13 +539,13 @@ Step-by-step configuration trace for input $0011$ ($n = 2$). The _underlined_ sy
     align: (left, center, center, center),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header([*Property*], [*DFA*], [*PDA*], [*TM*]),
-    [Memory],           [None (finite states)],     [Stack (LIFO)],              [Infinite R/W tape],
-    [Reading],          [Left-to-right,\ each symbol once], [Left-to-right,\ each symbol once], [Arbitrary R/W movement],
-    [Language class],   [Regular],                  [Context-Free],              [RE (or R if decider)],
-    [Determinism],      [Equivalent to NDFA],        [NDPDA more powerful],        [NTM = DTM],
-    [Emptiness check],  [Decidable],                [Decidable],                 [Undecidable],
-    [Equality check],   [Decidable],                [Undecidable],               [Undecidable],
-    [Example language], [$a^n (n "even")$],         [$a^n b^n$],                 [$a^n b^n c^n$],
+    [Memory], [None (finite states)], [Stack (LIFO)], [Infinite R/W tape],
+    [Reading], [Left-to-right,\ each symbol once], [Left-to-right,\ each symbol once], [Arbitrary R/W movement],
+    [Language class], [Regular], [Context-Free], [RE (or R if decider)],
+    [Determinism], [Equivalent to NDFA], [NDPDA more powerful], [NTM = DTM],
+    [Emptiness check], [Decidable], [Decidable], [Undecidable],
+    [Equality check], [Decidable], [Undecidable], [Undecidable],
+    [Example language], [$a^n (n "even")$], [$a^n b^n$], [$a^n b^n c^n$],
   )
 ]
 
@@ -753,14 +757,14 @@ $ Sigma_(k+1)^P = "NP"^(Sigma_k^P), quad Pi_(k+1)^P = "co-NP"^(Sigma_k^P) $
     align: (left, center, left),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header([*Problem*], [*Complexity*], [*Practical Approach*]),
-    [Propositional SAT],        [NP-complete],        [CDCL SAT solvers (CaDiCaL, MiniSat)],
+    [Propositional SAT], [NP-complete], [CDCL SAT solvers (CaDiCaL, MiniSat)],
     [QBF (SMT over $2^"nd"$ order)], [PSPACE-complete], [QBF solvers (DepQBF)],
-    [Linear arith. ($RR$)],     [P (LP), NP in SMT],  [Simplex + DPLL(T) (Z3, CVC5)],
-    [Linear arith. ($ZZ$)],     [NP-hard],            [Branch-and-bound + cutting planes],
+    [Linear arith. ($RR$)], [P (LP), NP in SMT], [Simplex + DPLL(T) (Z3, CVC5)],
+    [Linear arith. ($ZZ$)], [NP-hard], [Branch-and-bound + cutting planes],
     [Non-linear arith. ($RR$)], [Decidable (Tarski)], [Cylindrical Algebraic Decomp.],
     [Non-linear arith. ($ZZ$)], [Undecidable (Hilbert 10)], [Semi-decidable fragments only],
-    [FOL validity],             [Undecidable (semi-decidable)], [Tableau / resolution (incomplete)],
-    [Program verification],     [Undecidable (Rice)],  [Require invariants, bounded checking],
+    [FOL validity], [Undecidable (semi-decidable)], [Tableau / resolution (incomplete)],
+    [Program verification], [Undecidable (Rice)], [Require invariants, bounded checking],
   )
 ]
 
@@ -799,8 +803,8 @@ See also: #link("https://complexityzoo.net/Petting_Zoo")[Complexity Zoo Petting 
 
 _Computable functions:_
 - $f(x) = x^2$, $f(x) = x!$, $f(x) = x mod 2$ --- basic arithmetic
-- $f(n) = $ the $n$-th prime --- search computable
-- $f(n) = $ the $n$-th digit of $pi$ --- BBP formula
+- $f(n) =$ the $n$-th prime --- search computable
+- $f(n) =$ the $n$-th digit of $pi$ --- BBP formula
 - The Ackermann function $A(m, n)$ --- computable but not primitive recursive
 
 _Non-computable functions:_
@@ -1235,9 +1239,9 @@ In general, it is _undecidable_.
 
   Hence, it is sufficient to successively test (using truth tables)
   $
-    emptyset &models alpha, \
-    {sigma_1} &models alpha, \
-    {sigma_1, sigma_2} &models alpha, \
+              emptyset & models alpha, \
+             {sigma_1} & models alpha, \
+    {sigma_1, sigma_2} & models alpha, \
   $
   and so on.
   If any of these tests succeeds (each is decidable), then $Sigma models alpha$.
@@ -1298,10 +1302,16 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
       let w = n
       let h = n
 
-      grid((0, 0), (rel: (w + .3, h + .3)))
+      grid(
+        (0, 0),
+        (rel: (w + .3, h + .3)),
+      )
       // grid((-1, 0), (rel: (1, h + .3)))
       // grid((0, -1), (rel: (w + .3, 1)))
-      grid((0, h + 1), (rel: (w + 0.3, 1)))
+      grid(
+        (0, h + 1),
+        (rel: (w + 0.3, 1)),
+      )
       line((0, 0), (rel: (-0.3, -0.3)))
 
       // for i in range(n) {
