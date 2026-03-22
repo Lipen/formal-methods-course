@@ -300,7 +300,6 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
 ]
 
 #Block(color: yellow)[
-  *The crucial distinction:*
   - A _recognizer_ only needs to accept members of $L$. It may loop forever on non-members.
   - A _decider_ must always halt --- it accepts members and _rejects_ non-members.
 
@@ -308,9 +307,9 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
 ]
 
 #definition[
-  A TM is a _decider_ for $L$ if it halts on _every_ input (accepting $L$ and rejecting its complement).
-  A language is _decidable_ (recursive) if it has a decider.
-  A language is _recognizable_ (RE) if it has a recognizer.
+  A TM is a _decider_ for $L$ if it halts on _every_ input (accepting $L$ and rejecting $overline(L)$).
+  - A language is _decidable_ (recursive) if it has a decider.
+  - A language is _recognizable_ (RE) if it has a recognizer.
 ]
 
 == TM Configuration
@@ -332,7 +331,7 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
   )
 }
 
-#definition[TM Configuration][
+#definition[
   A _configuration_ describes the complete state of a TM at a given moment:
   $ (u ; q ; v) quad u, v in Gamma^*, quad q in Q $
   - $u$ --- tape contents to the _left_ of the head
@@ -366,7 +365,7 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
 
 == TM Computation
 
-#definition[Computation][
+#definition[
   A _computation_ of TM $M$ on input $w$ is a sequence of configurations:
   $ C_1 yields C_2 yields dots.c yields C_n $
   - $C_1 = (#tapestart ; q_0 ; w)$ --- _start configuration_
@@ -391,7 +390,7 @@ The relation $yields^*$ (yields in any number of steps) is the reflexive-transit
 
 How does one configuration yield the next?
 
-#definition[Yields ($yields$)][
+#definition[
   Let $u, v in Gamma^*$, $a, b, c in Gamma$, $q_i, q_j in Q$.
 
   *Move left* ($L$): $(u a ; q_i ; b v) yields (u ; q_j ; a c v)$ when $delta(q_i, b) = (q_j, c, L)$
@@ -501,21 +500,26 @@ How does one configuration yield the next?
     })
   ]
 
-  Blue cells = input. The head (orange triangle) points at the first cell. State is $q_0$.
+  Blue cells = input.
+  The head (orange triangle) points at the first cell. State is $q_0$.
 ]
 
 #note[
-  The machine strategy: repeatedly find the leftmost `0`, mark it `X`, find the matching `1`, mark it `Y`. Accept when all 0s and 1s are paired. Reject if counts mismatch.
+  The machine strategy: repeatedly find the leftmost `0`, mark it `X`, find the matching `1`, mark it `Y`.
+  Accept when all 0s and 1s are paired.
+  Reject if counts mismatch.
 ]
 
 == TM Example: Recognizing *$0^n 1^n$*
 
-Step-by-step configuration trace for input $0011$ ($n = 2$). The _underlined_ symbol is at the head.
+Step-by-step configuration trace for input $0011$ ($n = 2$).
+// The _underlined_ symbol is at the head.
 
+#v(-0.5em)
 #align(center)[
   #table(
     columns: 3,
-    align: (left, auto, left),
+    align: left,
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header([*Step*], [*Configuration $(u ; q ; v)$*], [*Action*]),
     [Start], [$(#tapestart ; q_0 ; 0011)$], [Read `0` → write `X`, move right],
@@ -528,9 +532,13 @@ Step-by-step configuration trace for input $0011$ ($n = 2$). The _underlined_ sy
     [All matched], [$(#tapestart X X Y Y ; q_"acc" ; #Blank)$], [Tape is all X/Y --- *Accept!*],
   )
 ]
+#v(-0.5em)
 
 #Block(color: yellow)[
-  *Key insight:* The tape acts as scratch memory. At each round, one `0`--`1` pair is matched and "consumed" by overwriting with `X` and `Y`. This requires $O(n^2)$ steps for input length $2n$.
+  *Key insight:*
+  The tape acts as scratch memory.
+  At each round, one `0`--`1` pair is matched and "consumed" by overwriting with `X` and `Y`.
+  This requires $O(n^2)$ steps for input length $2n$.
 ]
 
 == Machine Comparison
@@ -552,7 +560,8 @@ Step-by-step configuration trace for input $0011$ ($n = 2$). The _underlined_ sy
 ]
 
 #note[
-  NTM $=$ DTM is the _Church--Turing thesis_ in action: non-determinism does not add power, only speed. Compare with NP vs P!
+  NTM $=$ DTM is the _Church--Turing thesis_ in action: non-determinism does not add power, only speed.
+  Compare with "NP vs P"!
 ]
 
 == TM Variants
@@ -571,7 +580,7 @@ All the following are equivalent in computational power (they recognize the same
   *Non-deterministic TM (NTM)*
   - At each step, choose from multiple transitions
   - Accepts if _any_ branch accepts
-  - Non-determinism $arrow.r$ exponential simulation overhead
+  - Non-determinism $=>$ exponential simulation
 
   #colbreak()
 
@@ -589,7 +598,8 @@ All the following are equivalent in computational power (they recognize the same
 ]
 
 #Block(color: yellow)[
-  *Church--Turing thesis (operational form):* Any reasonable model of computation computes exactly the same class of functions as a Turing machine. The thesis is supported by the equivalence of all known models.
+  *Church--Turing thesis:* Any reasonable model of computation computes exactly the same class of functions as a Turing machine.
+  The thesis is supported by the equivalence of all known models.
 ]
 
 == Recognizing vs Deciding
@@ -607,11 +617,14 @@ There are _two_ types of Turing machines:
 #definition[Decision][
   A TM _decides_ language $L$ if it accepts every $w in L$ and _rejects_ every $w notin L$; it always halts.
 
-  Such a language is called _decidable_ (also: recursive, computable). The class of all decidable languages is *R* ($subset.neq$ RE).
+  Such a language is called _decidable_ (also called: recursive, computable).
+  The class of all decidable languages is *R* ($subset.neq$~RE).
 ]
 
 #Block(color: yellow)[
-  *Key distinction:* A recognizer is allowed to loop on non-members. A decider _must_ halt and give an answer for every input.
+  *Key distinction:*
+  - A recognizer is allowed to loop on non-members.
+  - A decider _must_ halt and give an answer for every input.
 ]
 
 == MIU. MU?
@@ -700,7 +713,20 @@ _Open question_: $"NP" eq.quest "co-NP"$? Implies $"P" neq "NP"$ if false.
 
 == Computational Hierarchy
 
-#place(top + right)[
+$"P" subset.eq "NP" subset.eq "PSPACE" subset.eq "EXP" subset "R" subset "RE"$
+
+- *RE* --- Languages _accepted_ by any TM. Not all RE languages are decidable.
+- *R* = RE $inter$ co-RE --- Languages _decided_ by a halting TM. Closed under complement.
+- *EXP* --- Decided in _exponential time_ by a deterministic TM. Closed, proper superset of NP.
+- *PSPACE* --- Decided in _polynomial space_. Contains NP and co-NP. QBF is PSPACE-complete.
+- *NP* --- Accepted by a _non-deterministic_ TM in polynomial time. SAT, graph coloring, etc.
+- *P* --- Decided in _polynomial time_ by a deterministic TM. Primality, BFS/DFS, LP.
+
+#note[
+  All containments are known, but many strict separations are open: $"P" eq.quest "NP"$, $"NP" eq.quest "co-NP"$, $"NP" eq.quest "PSPACE"$, etc.
+]
+
+#place(center)[
   #cetz.canvas({
     import cetz.draw: *
     circle((0, 0), radius: (0.5, 0.5))
@@ -718,34 +744,29 @@ _Open question_: $"NP" eq.quest "co-NP"$? Implies $"P" neq "NP"$ if false.
   })
 ]
 
-$"P" subset.eq "NP" subset.eq "PSPACE" subset.eq "EXP" subset "R" subset "RE"$
-
-- *RE* --- Languages _accepted_ by any TM. Not all RE languages are decidable.
-- *R* = RE $inter$ co-RE --- Languages _decided_ by a halting TM. Closed under complement.
-- *EXP* --- Decided in _exponential time_ by a deterministic TM. Closed, proper superset of NP.
-- *PSPACE* --- Decided in _polynomial space_. Contains NP and co-NP. QBF is PSPACE-complete.
-- *NP* --- Accepted by a _non-deterministic_ TM in polynomial time. SAT, graph coloring, etc.
-- *P* --- Decided in _polynomial time_ by a deterministic TM. Primality, BFS/DFS, LP.
-
-#note[
-  All containments are known, but many strict separations are open: $"P" eq.quest "NP"$, $"NP" eq.quest "co-NP"$, $"NP" eq.quest "PSPACE"$, etc.
-]
-
 == Polynomial Hierarchy
 
 The _polynomial hierarchy_ PH refines the NP/co-NP picture using alternating quantifiers:
 
-$ Sigma_0^P = Pi_0^P = "P" $
-$ Sigma_(k+1)^P = "NP"^(Sigma_k^P), quad Pi_(k+1)^P = "co-NP"^(Sigma_k^P) $
+$
+  Sigma_0^P = Pi_0^P = "P" \
+  Sigma_(k+1)^P = "NP"^(Sigma_k^P), quad Pi_(k+1)^P = "co-NP"^(Sigma_k^P)
+$
 
 - $Sigma_1^P = "NP"$: $exists$ witness, polynomial verifier
 - $Pi_1^P = "co-NP"$: $forall$ witnesses, polynomial verifier
 - $Sigma_2^P$: $exists forall$ witnesses (e.g., "does $phi$ have an assignment that satisfies all clauses for every setting of some variables?")
 - $Pi_2^P$: $forall exists$ witnesses
 
+#v(-0.3em)
 #Block(color: yellow)[
-  *Relevance to FM:* Model checking for $mu$-calculus is PSPACE-complete. Bounded model checking for quantified Boolean formulas (QBF) is PSPACE-complete. SMT with quantifiers ($forall/exists$) stratifies across the polynomial hierarchy.
+  #v(-0.3em)
+  - Model checking for $mu$-calculus is PSPACE-complete.
+  - Bounded model checking for quantified Boolean formulas (QBF) is PSPACE-complete.
+  - SMT with quantifiers ($forall/exists$) stratifies across the polynomial hierarchy.
+  #v(-0.3em)
 ]
+#v(-0.3em)
 
 #note[
   If PH collapses to any level (i.e., $Sigma_k^P = Sigma_(k+1)^P$ for some $k$), it implies strong consequences about the structure of NP. In particular, P $=$ NP would collapse the entire hierarchy to P.
@@ -756,7 +777,7 @@ $ Sigma_(k+1)^P = "NP"^(Sigma_k^P), quad Pi_(k+1)^P = "co-NP"^(Sigma_k^P) $
 #align(center)[
   #table(
     columns: 3,
-    align: (left, center, left),
+    align: left,
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header([*Problem*], [*Complexity*], [*Practical Approach*]),
     [Propositional SAT], [NP-complete], [CDCL SAT solvers (CaDiCaL, MiniSat)],
@@ -773,26 +794,33 @@ $ Sigma_(k+1)^P = "NP"^(Sigma_k^P), quad Pi_(k+1)^P = "co-NP"^(Sigma_k^P) $
 #Block(color: blue)[
   *Why decidable fragments matter:* SMT works precisely because it uses _restricted but decidable_ theories.
   Once you add full integer multiplication or quantified arithmetic, the theories become undecidable --- and no complete solver can exist.
+  #h(1fr)
+  #text(0.7em)[
+    See also: #link("https://complexityzoo.net/Petting_Zoo")[Complexity Zoo Petting Zoo]
+  ]
 ]
-
-See also: #link("https://complexityzoo.net/Petting_Zoo")[Complexity Zoo Petting Zoo]
 
 = Computability
 
 == The Church--Turing Thesis
 
-#definition[Church--Turing Thesis][
-  _Every effectively computable function is computable by a Turing machine._
-
-  "Effectively computable" means: can be carried out by a finite, deterministic, mechanical step-by-step procedure, with no creativity or luck required.
+#theorem(title: [Church--Turing Thesis], numbering: none)[
+  Every _effectively computable_ function is computable by a Turing machine.
 ]
 
 #note[
-  This is a *thesis*, not a theorem. "Effectively computable" is informal. We cannot formally _prove_ the thesis, but no counterexample has ever been found.
+  "Effectively computable" means: can be carried out by a _finite_, _deterministic_, _mechanical_ step-by-step _procedure_, with no creativity or _luck_ required.
+]
+
+#note[
+  This is a *thesis*, not a theorem, since the notion "effectively computable" is informal and cannot be precisely defined.
+  We cannot formally _prove_ the thesis, but no counterexample has ever been found.
 ]
 
 #Block(color: teal)[
-  *Historical note:* In 1936, Alonzo Church ($lambda$-calculus) and Alan Turing (Turing machines) independently formalized computability and proved these models equivalent. Every other general-purpose model proposed since --- register machines, $mu$-recursive functions, Post systems --- computes exactly the same class of functions.
+  *Historical note:* In 1936, Alonzo Church ($lambda$-calculus) and Alan Turing (Turing machines) independently formalized computability and proved these models equivalent.
+
+  Every other general-purpose model proposed since --- register machines, $mu$-recursive functions, Post systems, Markov normal algorithms --- computes exactly the same class of functions.
 ]
 
 == Computable Functions
@@ -826,14 +854,17 @@ $"BB"$ grows faster than _any_ computable function:
 ]
 
 #Block(color: orange)[
-  *BB is not computable.* Suppose we could compute $"BB"(n)$. Then to check whether an $n$-state TM $M$ halts on blank tape: run $M$ for $"BB"(n)$ steps. If $M$ hasn't halted by then, it never will. But this solves the Halting Problem --- a contradiction.
+  *BB is not computable.* Suppose we could compute $"BB"(n)$.
+  Then to check whether an $n$-state TM~$M$ halts on blank tape: run $M$ for $"BB"(n)$ steps.
+  If $M$ hasn't halted by then, it never will.
+  But this solves the Halting Problem --- a contradiction.
 ]
 
 = Decidability
 
 == Decidable Sets
 
-#definition[Decidable set][
+#definition[
   Given a universal set $cal(U)$, a set $S subset.eq cal(U)$ is _decidable_ (or _computable_, or~_recursive_) if there exists a computable function $f : cal(U) to {0,1}$ such that $f(x) = 1$ iff $x in S$.
 ]
 
@@ -850,7 +881,7 @@ $"BB"$ grows faster than _any_ computable function:
 
 == Undecidable Sets
 
-#definition[Undecidable set][
+#definition[
   A set $S$ is _undecidable_ if it is not decidable.
 ]
 
@@ -873,12 +904,12 @@ $"BB"$ grows faster than _any_ computable function:
 
 == Halting Problem
 
-#definition[Halting problem #href("https://en.wikipedia.org/wiki/Halting_problem")][
-  Given a program $P$ and an input $x$, determine whether $P$ halts on $x$ (stops after finite time) or loops forever.
+#definition[Halting problem][
+  Given a program $P$ and an input $x$, determine whether $P$ _halts_ on $x$ (stops after finite time) or _loops_ forever.
 ]
 
 #theorem[Turing, 1936][
-  The halting problem is undecidable.
+  The halting problem is _undecidable_.
 ]
 
 #proof[sketch][
@@ -912,31 +943,36 @@ Observe that ```py halts(self_halts, self_halts)``` cannot return neither ```py 
 Thus, the `halts` function _does not exist_ (cannot be implemented), and the halting problem is _undecidable_.
 
 #Block(color: orange)[
-  *Common confusion:* The halting problem is _undecidable_ for TMs (and all equivalent models). It does _not_ mean we cannot detect simple loops in practice --- a static analyzer can catch obvious infinite loops. It means there is _no algorithm_ that correctly decides all possible programs.
+  *Common confusion:* The halting problem is _undecidable_ for TMs (and all equivalent models).
+  It does _not_ mean we cannot detect simple loops in practice --- a static analyzer can catch obvious infinite loops.
+  It means there is _no algorithm_ that correctly decides all possible programs.
 ]
 
 == Many-One Reductions
 
-#definition[Many-one reduction][
-  Language $A$ is _many-one reducible_ to language $B$, written $A leq_m B$, if there exists a _total computable_ function $f : Sigma^* to Sigma^*$ such that for all $w in Sigma^*$:
+#definition[
+  Language $A$ is _many-one reducible_ to language $B$, written $A scripts(leq)_m B$, if there exists a _total computable_ function $f : Sigma^* to Sigma^*$ such that for all $w in Sigma^*$:
   $ w in A iff f(w) in B $
   The function $f$ is called the _reduction function_.
 ]
 
 #theorem[
-  If $A leq_m B$ and $B$ is decidable, then $A$ is decidable.
+  If $A scripts(leq)_m B$ and $B$ is decidable, then $A$ is decidable.
 ]
 
 #Block(color: yellow)[
-  *Contrapositive (more useful):* If $A leq_m B$ and $A$ is _undecidable_, then $B$ is _undecidable_.
+  *Contrapositive (more useful):* If $A scripts(leq)_m B$ and $A$ is _undecidable_, then $B$ is _undecidable_.
 
-  *Strategy:* To prove $B$ is undecidable, show $"HALT" leq_m B$ (or reduce from another known undecidable $A$).
+  *Strategy:* To prove $B$ is undecidable, show $"HALT" scripts(leq)_m B$ (or reduce from another problem $A$ known to be undecidable).
 ]
+
+#pagebreak()
 
 #example[
   To prove $E_"TM" = { angle.l M angle.r mid(|) cal(L)(M) = emptyset }$ is undecidable:
 
-  Reduce $"HALT"$ to the _complement_ of $E_"TM"$: from $angle.l M, w angle.r$, construct $M'$ that ignores its own input and simulates $M$ on $w$. Then $M'$ accepts something iff $M$ halts on $w$.
+  Reduce $"HALT"$ to the _complement_ of $E_"TM"$: from $angle.l M, w angle.r$, construct $M'$ that ignores its own input and simulates $M$ on $w$.
+  Then $M'$ accepts something iff $M$ halts on $w$.
 
   Since $"HALT"$ is undecidable and the reduction is computable, $E_"TM"$ is undecidable.
 ]
@@ -954,9 +990,8 @@ Thus, the `halts` function _does not exist_ (cannot be implemented), and the hal
 #theorem[Rice, 1953][
   Every non-trivial semantic property of Turing machines is _undecidable_.
 
-  That is, for any non-trivial semantic property $P$, the language
+  That is, for any non-trivial semantic property $P$, the language $L_P$ is undecidable, where:
   $ L_P = { angle.l M angle.r mid(|) M "has property" P } $
-  is undecidable.
 ] <rice>
 
 #Block(color: orange)[
@@ -1008,8 +1043,6 @@ Thus, the `halts` function _does not exist_ (cannot be implemented), and the hal
 ]
 
 #Block(color: blue)[
-  *The key message for Formal Methods:*
-
   Automated _complete_ program verification is _mathematically impossible_ in full generality.
   This is not just an engineering obstacle --- it is a _theorem_.
 
@@ -1025,56 +1058,62 @@ Thus, the `halts` function _does not exist_ (cannot be implemented), and the hal
 #align(center)[
   #cetz.canvas({
     import cetz.draw: *
-    set-style(stroke: 1pt)
 
     // Outer rectangle = all languages
     rect((-5.5, -3), (5.5, 3), stroke: 0.8pt, name: "all")
-    content((4.5, 2.3))[All languages]
+    content((5.5, 3), anchor: "north-east", padding: 0.2)[All languages]
 
     // RE circle (left-shifted)
-    circle((-1.5, 0), radius: (3.2, 2.4), stroke: blue + 1pt, fill: blue.lighten(92%))
+    circle((-1.5, 0), radius: (3.2, 2.4), stroke: blue + 1pt, fill: blue.transparentize(90%))
     content((-4.2, 0))[#set text(fill: blue); RE]
 
     // co-RE circle (right-shifted)
-    circle((1.5, 0), radius: (3.2, 2.4), stroke: red + 1pt, fill: red.lighten(92%))
+    circle((1.5, 0), radius: (3.2, 2.4), stroke: red + 1pt, fill: red.transparentize(90%))
     content((4.2, 0))[#set text(fill: red); co-RE]
 
     // The intersection label
-    content((0, 0), padding: 3pt)[
+    content((0, 0))[
       #set text(fill: purple, weight: "bold")
       Decidable \
-      #set text(fill: purple, weight: "regular", size: 0.85em)
+      #set text(fill: purple, weight: "regular")
       $= "RE" inter "co-RE"$
     ]
 
     // Landmarks
-    circle((-0.9, 0.9), radius: 2.5pt, fill: orange)
-    content((-0.9, 0.9), anchor: "south", padding: 4pt)[#set text(size: 0.75em); SAT]
+    circle((-0.3, 1.1), radius: 2.5pt, fill: orange)
+    content((-0.3, 1.1), anchor: "south", padding: .2)[#set text(size: 0.8em); SAT]
 
-    circle((-0.3, -0.5), radius: 2.5pt, fill: orange)
-    content((-0.3, -0.5), anchor: "north", padding: 4pt)[#set text(size: 0.75em); HALT(bounded)]
+    circle((0, -0.9), radius: 2.5pt, fill: orange)
+    content((0, -0.9), anchor: "north", padding: .2)[#set text(size: 0.8em); HALT(bounded)]
 
     circle((-2.5, 0.4), radius: 2.5pt, fill: blue)
-    content((-2.5, 0.4), anchor: "south", padding: 4pt)[#set text(size: 0.75em, fill: blue); HALT]
+    content((-2.5, 0.4), anchor: "south", padding: .2)[#set text(size: 0.8em, fill: blue); HALT]
 
     circle((2.5, -0.4), radius: 2.5pt, fill: red)
-    content((2.5, -0.4), anchor: "north", padding: 4pt)[#set text(size: 0.75em, fill: red); $overline("HALT")$]
+    content((2.5, -0.4), anchor: "north", padding: .2)[#set text(size: 0.8em, fill: red); $overline("HALT")$]
 
-    circle((-4.5, 1.3), radius: 2.5pt, fill: gray)
-    content((-4.5, 1.3), anchor: "south", padding: 4pt)[#set text(size: 0.75em, fill: gray); $"REGULAR"_"TM"$]
+    circle((-4.2, 2.2), radius: 2.5pt, fill: gray)
+    content((-4.2, 2.2), anchor: "south", padding: .2)[#set text(size: 0.8em); $"REGULAR"_"TM"$]
   })
 ]
 
-#note[
-  *HALT* $in$ RE $setminus$ co-RE (recognizable but not co-recognizable).
-  $overline("HALT") in$ co-RE $setminus$ RE.
-  *SAT* $in$ R (decidable, NP-complete).
-  $"REGULAR"_"TM"$ --- in neither RE nor co-RE!
-]
+#grid(
+  columns: 2,
+  column-gutter: 1em,
+  [
+    - *$"HALT"$* $in "RE" setminus "co-RE"$ \ (recognizable but not co-recognizable).
+    - *$overline("HALT")$* $in "co-RE" setminus "RE"$.
+  ],
+  [
+    - *SAT* $in "R"$ (decidable, NP-complete).
+    - *Bounded HALT* $in "R"$ (decidable, co-NP-complete).
+    - *$"REGULAR"_"TM"$* --- in neither RE nor co-RE!
+  ],
+)
 
 == Post Correspondence Problem
 
-#definition[Post correspondence problem #href("https://en.wikipedia.org/wiki/Post_correspondence_problem")][
+#definition[Post correspondence problem][
   Given two finite lists $a_1, dots, a_n$ and $b_1, dots, b_n$ of strings (over the alphabet with at least two symbols), determine whether there exists a sequence of indices $i_1, dots, i_k$, such that $a_(i_1) dots med a_(i_k) = b_(i_1) dots med b_(i_k)$.
 ]
 
@@ -1504,18 +1543,23 @@ Beyond Turing machines, every general-purpose model computes the same class of f
 #align(center)[
   #table(
     columns: 2,
+    align: left,
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header([*Model*], [*Author (year)*]),
     [$lambda$-calculus], [Church (1936)],
     [$mu$-recursive functions], [Kleene (1936)],
     [Post correspondence systems], [Post (1943)],
+    [Markov algorithms], [Markov (1951)],
     [Register machines (RAM)], [Shepherdson & Sturgis (1963)],
     [Any general-purpose language], [(present day)],
   )
 ]
 
 #Block(color: teal)[
-  *Historical note:* Church and Turing independently proved these models equivalent in 1936. Their results also resolved Hilbert's Entscheidungsproblem: FOL validity is _not_ decidable.
+  *Historical note:*
+  Church and Turing independently proved these models equivalent in 1936.
+
+  Their results also resolved Hilbert's Entscheidungsproblem: FOL validity is _not_ decidable.
 ]
 
 == $lambda$-Calculus in a Nutshell
@@ -1523,6 +1567,7 @@ Beyond Turing machines, every general-purpose model computes the same class of f
 The $lambda$-calculus is a minimal language with just three constructs:
 
 #definition[$lambda$-Calculus Syntax][
+  #v(-0.5em)
   $ M ::= x | (lambda x. M) | (M space N) $
   Variables, abstraction (function definition), and application (function call).
 ]
@@ -1536,7 +1581,9 @@ The $lambda$-calculus is a minimal language with just three constructs:
 Computation is #emph[$beta$-reduction]: $(lambda x. M) space N arrow.squiggly M[x := N]$ (substitute $N$ for $x$ in $M$).
 
 #Block(color: yellow)[
-  *Key insight:* Despite having no numbers, booleans, or loops, $lambda$-calculus can encode _all_ computable functions. This is the theoretical foundation of functional programming (Haskell, ML, Coq, Lean).
+  *Key insight:*
+  Despite having no numbers, booleans, or loops, $lambda$-calculus can encode _all_ computable functions.
+  This is the theoretical foundation of functional programming (Haskell, ML, Coq, Lean).
 ]
 
 
@@ -1571,7 +1618,9 @@ Computation is #emph[$beta$-reduction]: $(lambda x. M) space N arrow.squiggly M[
 ]
 
 #Block(color: yellow)[
-  *The key message:* Undecidability is not a dead end --- it is a _design constraint_. Formal methods succeed by carefully choosing _what_ to verify and _how much_ automation to provide.
+  *The key message:*
+  Undecidability is not a dead end --- it is a _design constraint_.
+  Formal methods succeed by carefully choosing _what_ to verify and _how much_ automation to provide.
 ]
 
 == Looking Ahead
