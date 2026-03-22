@@ -1455,9 +1455,15 @@ Some Turing machines accept regular languages and some do not.
 This language is _neither_ recognizable nor co-recognizable.
 (See theorems on the next slides.)
 
-- _No computer program can confirm that a given Turing machine has a regular language._
-- _No computer program can confirm that a given Turing machine has a non-regular language._
-- _This problem is beyond the limits of what computers can ever do._
+#Block[
+  - No computer program can confirm that a given Turing machine has a _regular_ language.
+
+  - No computer program can confirm that a given Turing machine has a _non-regular_ language.
+]
+
+#Block(color: yellow)[
+  This problem is _beyond_ the limits of what computers can _ever_ do.
+]
 
 == REGULAR is not Recognizable
 
