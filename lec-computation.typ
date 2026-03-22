@@ -16,37 +16,40 @@
 
 == Why Theory of Computation?
 
-We have studied _propositional logic_, _SAT_, and _first-order logic_.
+We have studied _propositional logic_, _SAT_, and _first-order logic_. \
 A natural question recurs: *"Which problems can be solved automatically?"*
 
 #Block(color: yellow)[
   *The central question of this lecture:*
-
   Given a decision problem (e.g., "is this FOL formula valid?"), does there exist an _algorithm_ that always answers correctly in _finite time_?
 ]
 
-#columns(2)[
-  *We have already seen:*
-  - SAT is NP-complete --- hard, but _decidable_ \
-    _(an answer always exists, just slowly)_
-  - FOL validity is only _semi-decidable_ \
-    _(provability but not refutability)_
-  - Some SMT theories are _decidable_ \
-    _(e.g., linear arithmetic over $RR$)_
-  - FOL over $NN$ (Peano Arithmetic) is undecidable
+#grid(
+  columns: 2,
+  column-gutter: 1em,
+  [
+    *We have already seen:*
+    - SAT is NP-complete --- hard, but _decidable_ \
+      _(an answer always exists, just slowly)_
+    - FOL validity is only _semi-decidable_ \
+      _(provability but not refutability)_
+    - Some SMT theories are _decidable_ \
+      _(e.g., linear arithmetic over $RR$)_
+    - FOL over $NN$ (Peano Arithmetic) is undecidable
+  ],
+  [
+    *This lecture provides:*
+    - Formal definition of "computation"
+    - Precise meaning of _decidability_
+    - Turing machines as a model of computation
+    - Rice's theorem: why program verification is #box[_hard in general_]
+    - Why SMT solvers restrict to specific _theories_
+  ],
+)
 
-  #colbreak()
-
-  *This lecture provides:*
-  - Formal definition of "computation"
-  - Precise meaning of _decidability_
-  - Rice's theorem: why program verification is _hard in general_
-  - Why SMT solvers restrict to specific _theories_
-]
-
-#Block(color: blue)[
-  *Payoff:* You will understand precisely _why_ automated verification requires carefully chosen decidable fragments --- and why general program verification is fundamentally undecidable.
-]
+// #Block[
+//   You will understand precisely _why_ automated verification requires carefully chosen decidable fragments --- and why general program verification is fundamentally undecidable.
+// ]
 
 == Formal Languages
 
@@ -126,17 +129,22 @@ Formal languages are classified into four nested levels:
   ],
 )
 
-#Block(color: yellow)[
-  "Is $w in L$?" and "does the algorithm say yes on input $w$?" are _the same question_.
+#place[
+  #v(1em)
+  #Block(color: yellow)[
+    "Is $w in L$?" and "does the algorithm say yes on input $w$?" are _the same question_.
 
-  Formal language theory gives us the mathematics to study the _limits of computation_.
+    // Formal language theory gives us the mathematics to study the _limits of computation_.
+  ]
 ]
 
 == Language Complexity Classes
 
+#v(-1em)
 #align(center)[
   #cetz.canvas({
     import cetz.draw: *
+    scale(95%)
     circle((0, 0), radius: (0.8, 0.4))
     circle((0, 0.4), radius: (1.4, 0.8))
     circle((0, 0.8), radius: (2, 1.2))
@@ -159,8 +167,13 @@ Formal languages are classified into four nested levels:
   })
 ]
 
-#note[
-  *SAT* is decidable (NP-complete). *HALT* is recognizable but _not_ decidable: a TM can confirm halting by simulation, but cannot confirm non-halting. $"REGULAR"_"TM"$ = "does TM $M$ recognize a regular language?" --- in neither RE nor co-RE.
+#place[
+  #v(1em)
+  #note[
+    *SAT* is decidable (NP-complete).
+    *HALT* is recognizable but _not_ decidable: a TM can confirm halting by simulation, but cannot confirm non-halting.
+    $"REGULAR"_"TM"$ = "does TM $M$ recognize a regular language?" --- in neither RE nor co-RE.
+  ]
 ]
 
 = Machines
