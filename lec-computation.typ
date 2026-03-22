@@ -85,7 +85,7 @@ Formal languages are classified into four nested levels:
     [3], [Regular], [DFA / NFA], [$a^* b^*$, ${ a^n mid(|) n "even" }$],
     [2], [Context-Free], [Pushdown Automaton], [${ a^n b^n mid(|) n geq 0 }$],
     [1], [Context-Sensitive], [Linear-Bounded TM], [${ a^n b^n c^n mid(|) n geq 0 }$],
-    [0], [Recursively Enum.], [Turing Machine], [${ angle.l M, w angle.r mid(|) M "halts on" w }$],
+    [0], [Recursively Enumerable], [Turing Machine], [${ angle.l M, w angle.r mid(|) M "halts on" w }$],
   )
 ]
 
