@@ -1256,17 +1256,17 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
   A _universal Turing machine_ $U_"TM"$ is a Turing machine that can simulate any other TM.
 
   High-level description of a universal Turing machine $U_"TM"$:
-  - Given an input $chevron.l M, w chevron.r$, where $M$ is a TM and $w in Sigma^*$:
+  - Given an input $angle.l M, w angle.r$, where $M$ is a TM and $w in Sigma^*$:
     - Run (simulate a computation of) $M$ on $w$.
-    - If $M$ halts and accepts $w$, $U_"TM"$ accepts $chevron.l M, w chevron.r$.
-    - If $M$ halts and rejects $w$, $U_"TM"$ rejects $chevron.l M, w chevron.r$.
-    - _Implicitly_, if $M$ loops on $w$, $U_"TM"$ loops on $chevron.l M, w chevron.r$.
+    - If $M$ halts and accepts $w$, $U_"TM"$ accepts $angle.l M, w angle.r$.
+    - If $M$ halts and rejects $w$, $U_"TM"$ rejects $angle.l M, w angle.r$.
+    - _Implicitly_, if $M$ loops on $w$, $U_"TM"$ loops on $angle.l M, w angle.r$.
 ]
 
 #definition[
   The _language of a universal Turing machine_ $U_"TM"$ is the set $A_"TM"$ of all pairs $(M, w)$ such that $M$ is a TM and $M$ accepts $w$.
 
-  $ A_"TM" = cal(L)(U_"TM") = { chevron.l M, w chevron.r | M "is a TM and" w in cal(L)(M) } $
+  $ A_"TM" = cal(L)(U_"TM") = { angle.l M, w angle.r | M "is a TM and" w in cal(L)(M) } $
 ]
 
 == Diagonalization Language
@@ -1276,14 +1276,14 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
   column-gutter: 1em,
   [
     Consider all possible Turing machines, listed in some order, and all strings that are valid TM descriptions:
-    $ chevron.l M_0 chevron.r, chevron.l M_1 chevron.r, dots $
+    $ angle.l M_0 angle.r, angle.l M_1 angle.r, dots $
 
     #definition[
       Construct the _diagonalization language_ $L_Delta$ of all TMs that do not accept their own description:
-      $ L_Delta = cal(L)(M_Delta) = { chevron.l M chevron.r | M "is a TM and" chevron.l M chevron.r notin cal(L)(M) } $
+      $ L_Delta = cal(L)(M_Delta) = { angle.l M angle.r | M "is a TM and" angle.l M angle.r notin cal(L)(M) } $
     ]
 
-    #note[$M_Delta$ is _not_ listed in the table, since its behavior differs from each other $M_i$ at least on input $chevron.l M_i chevron.r$.]
+    #note[$M_Delta$ is _not_ listed in the table, since its behavior differs from each other $M_i$ at least on input $angle.l M_i angle.r$.]
   ],
   [
     #set align(center)
@@ -1314,7 +1314,7 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
         content((-1, j))[$M_#j$]
       }
       for i in range(0, w) {
-        content((i, -1))[$chevron.l M_#i chevron.r$]
+        content((i, -1))[$angle.l M_#i angle.r$]
       }
 
       for i in range(0, w) {
@@ -1364,7 +1364,7 @@ A _universal Turing machine_ is a Turing machine that is capable of computing an
 
 == Diagonalization Language is not Recognizable
 
-$L_Delta = { chevron.l M chevron.r | chevron.l M chevron.r notin cal(L)(M) }$
+$L_Delta = { angle.l M angle.r | angle.l M angle.r notin cal(L)(M) }$
 
 #theorem[
   $L_Delta notin "RE"$.
@@ -1373,16 +1373,16 @@ $L_Delta = { chevron.l M chevron.r | chevron.l M chevron.r notin cal(L)(M) }$
   Suppose $L_Delta$ is recognizable.
   Then there exists a recognizer $R$ such that $cal(L)(R) = L_Delta$.
 
-  It is the case that either $chevron.l R chevron.r notin cal(L)(R)$ or $chevron.l R chevron.r in cal(L)(R)$.
+  It is the case that either $angle.l R angle.r notin cal(L)(R)$ or $angle.l R angle.r in cal(L)(R)$.
 
-  + $chevron.l R chevron.r notin cal(L)(R)$.
-    Thus, $chevron.l R chevron.r in L_Delta$.
-    Since $cal(L)(R) = L_Delta$, $chevron.l R chevron.r notin cal(L)(R)$.
+  + $angle.l R angle.r notin cal(L)(R)$.
+    Thus, $angle.l R angle.r in L_Delta$.
+    Since $cal(L)(R) = L_Delta$, $angle.l R angle.r notin cal(L)(R)$.
     Contradiction.
 
-  + $chevron.l R chevron.r in cal(L)(R)$.
-    Thus, $chevron.l R chevron.r notin L_Delta$.
-    Since $cal(L)(R) = L_Delta$, $chevron.l R chevron.r in cal(L)(R)$.
+  + $angle.l R angle.r in cal(L)(R)$.
+    Thus, $angle.l R angle.r notin L_Delta$.
+    Since $cal(L)(R) = L_Delta$, $angle.l R angle.r in cal(L)(R)$.
     Contradiction.
 
   In either case, we reach a contradiction.
@@ -1392,7 +1392,7 @@ $L_Delta = { chevron.l M chevron.r | chevron.l M chevron.r notin cal(L)(M) }$
 
 == Universal Language
 
-$A_"TM" = cal(L)(U_"TM") = { chevron.l M, w chevron.r | M "is a TM and" w in cal(L)(M) }$
+$A_"TM" = cal(L)(U_"TM") = { angle.l M, w angle.r | M "is a TM and" w in cal(L)(M) }$
 
 #theorem[
   $A_"TM" in "RE"$.
@@ -1449,7 +1449,7 @@ Some Turing machines accept regular languages and some do not.
 #definition[
   Let *REGULAR* be the language of all TMs that accept regular languages.
 
-  $ "REGULAR"_"TM" = { chevron.l M chevron.r | cal(L)(M) "is regular" } $
+  $ "REGULAR"_"TM" = { angle.l M angle.r | cal(L)(M) "is regular" } $
 ]
 
 This language is _neither_ recognizable nor co-recognizable.
@@ -1590,14 +1590,14 @@ Each step makes the _gap between theory and practice_ narrower: from "undecidabl
 
 == Exercises: Decidability and Computability
 
-+ Show that the language ${ chevron.l M chevron.r | M "accepts at least one string" }$ is recognizable but not decidable.
++ Show that the language ${ angle.l M angle.r | M "accepts at least one string" }$ is recognizable but not decidable.
 
 + Using Rice's theorem, explain why each of the following is undecidable:
-  - ${ chevron.l M chevron.r | cal(L)(M) = Sigma^* }$ (universality)
-  - ${ chevron.l M chevron.r | cal(L)(M) "is context-free" }$
-  - ${ chevron.l M chevron.r | |cal(L)(M)| = 42 }$
+  - ${ angle.l M angle.r | cal(L)(M) = Sigma^* }$ (universality)
+  - ${ angle.l M angle.r | cal(L)(M) "is context-free" }$
+  - ${ angle.l M angle.r | |cal(L)(M)| = 42 }$
 
-+ Construct a reduction from $"HALT"_"TM"$ to $"TOTAL"_"TM" = { chevron.l M chevron.r | M "halts on all inputs" }$ to prove $"TOTAL"_"TM"$ is undecidable.
++ Construct a reduction from $"HALT"_"TM"$ to $"TOTAL"_"TM" = { angle.l M angle.r | M "halts on all inputs" }$ to prove $"TOTAL"_"TM"$ is undecidable.
 
 + Explain why Rice's theorem does _not_ apply to the property "M has fewer than 10 states." What kind of property is this?
 
