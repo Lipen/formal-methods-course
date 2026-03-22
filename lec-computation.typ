@@ -105,6 +105,7 @@ Formal languages are classified into four nested levels:
 
 #definition[
   A _decision problem_ is a question with a "yes" or "no" answer depending on the input.
+
   Formally, the set of inputs for which the answer is "yes" forms a language $L subset.eq Sigma^*$.
 
   _Deciding_ the problem = _recognizing_ the language $L$.
@@ -127,6 +128,7 @@ Formal languages are classified into four nested levels:
 
 #Block(color: yellow)[
   "Is $w in L$?" and "does the algorithm say yes on input $w$?" are _the same question_.
+
   Formal language theory gives us the mathematics to study the _limits of computation_.
 ]
 
