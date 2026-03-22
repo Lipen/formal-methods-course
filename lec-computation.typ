@@ -74,43 +74,36 @@ A natural question recurs: *"Which problems can be solved automatically?"*
 
 == Chomsky Hierarchy
 
-Formal languages are classified by the _Chomsky hierarchy_ --- a nested family of language classes, each recognized by a correspondingly more powerful machine.
+Formal languages are classified into four nested levels:
 
 #align(center)[
   #table(
     columns: 4,
     align: (center, left, left, left),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
-    table.header([*Type*], [*Class*], [*Machine*], [*Example*]),
-    [3], [Regular], [DFA / NFA], [${ a^n mid(|) n geq 0 }$, $a^* b^*$],
-    [2], [Context-Free], [Pushdown Automaton], [${ a^n b^n mid(|) n geq 0 }$],
-    [1], [Context-Sensitive], [Linear-Bounded TM], [${ a^n b^n c^n mid(|) n geq 0 }$],
-    [0], [Recognizable (RE)], [Turing Machine], [${ angle.l M, w angle.r mid(|) M "halts on" w }$],
+    table.header([*Type*], [*Class*], [*Recognizing Machine*], [*Example Language*]),
+    [3], [Regular],            [DFA / NFA],           [$a^* b^*$, ${ a^n mid(|) n "even" }$],
+    [2], [Context-Free],       [Pushdown Automaton],   [${ a^n b^n mid(|) n geq 0 }$],
+    [1], [Context-Sensitive],  [Linear-Bounded TM],   [${ a^n b^n c^n mid(|) n geq 0 }$],
+    [0], [Recursively Enum.],  [Turing Machine],      [${ angle.l M, w angle.r mid(|) M "halts on" w }$],
   )
 ]
 
-#align(center)[
-  #cetz.canvas({
-    import cetz.draw: *
-    circle((0, 0), radius: (1.1, 0.6))
-    circle((0, 0.55), radius: (1.8, 1.15))
-    circle((0, 1.1), radius: (2.6, 1.7))
-    circle((0, 1.65), radius: (3.4, 2.25))
-    content((0, 0))[Regular]
-    content((0, 1.0))[Context-Free]
-    content((0, 2.0))[Context-Sensitive]
-    content((0, 3.1))[Recursively Enumerable]
-  })
+#Block(color: blue)[
+  Each level adds _more memory_:
+  finite states $arrow.r$ unlimited stack $arrow.r$ bounded tape $arrow.r$ infinite tape.
+
+  More expressive = harder algorithmic questions about the language class.
 ]
 
-#Block(color: blue)[
-  Each level adds _more memory_: finite states $arrow$ stack $arrow$ bounded tape $arrow$ infinite tape.
-  More expressiveness comes at the cost of harder (or impossible) algorithmic questions.
+#note[
+  The classes are _nested_: every regular language is context-free, every context-free is context-sensitive, etc.
+  The containments are strict --- each level is strictly more powerful than the one below.
 ]
 
 == Decision Problems as Languages
 
-#definition[Decision problem][
+#definition[
   A _decision problem_ is a question with a "yes" or "no" answer depending on the input.
   Formally, the set of inputs for which the answer is "yes" forms a language $L subset.eq Sigma^*$.
 
@@ -173,37 +166,43 @@ Formal languages are classified by the _Chomsky hierarchy_ --- a nested family o
 == Finite Automata
 
 #definition[
-  Deterministic Finite Automaton (DFA) is a 5-tuple $(Q, Sigma, delta, q_0, F)$ where:
-  - $Q$ is a _finite_ set of states,
-  - $Sigma$ is an _alphabet_ (finite set of input symbols),
-  - $delta: Q times Sigma to Q$ is a _transition function_,
-  - $q_0 in Q$ is the _start_ state,
-  - $F subset.eq Q$ is a set of _accepting_ states.
+  A _Deterministic Finite Automaton_ (DFA) is a 5-tuple $(Q, Sigma, delta, q_0, F)$:
+  - $Q$ --- finite set of _states_
+  - $Sigma$ --- _input alphabet_
+  - $delta: Q times Sigma to Q$ --- _transition function_
+  - $q_0 in Q$ --- _start state_
+  - $F subset.eq Q$ --- set of _accepting states_
 
-  DFA recognizes _regular_ languages (Type 3).
+  A DFA processes input left-to-right, one symbol at a time, and accepts if it ends in an accepting state.
+  DFAs recognize exactly the _regular_ languages (Type 3 in the Chomsky hierarchy).
 ]
 
+== DFA Example: Even Number of 0s
+
 #example[
-  Automaton $cal(A)$ recognizing strings with an even number of 0s, $cal(L)(cal(A)) = { 0^n | n "is even" }$.
+  Automaton $cal(A)$ over $Sigma = {0, 1}$ recognizing $cal(L)(cal(A)) = { w mid(|) w "has an even number of 0s" }$.
+
+  States: $q_0$ = "seen even many 0s" (start, accepting), $q_1$ = "seen odd many 0s".
+  - Reading a *0*: flip parity (switch state).
+  - Reading a *1*: parity unchanged (stay in state).
 
   #let aut = (
-    q0: (q1: (0, 1)),
+    q0: (q1: 0, q0: 1),
     q1: (q0: 0, q1: 1),
   )
   #grid(
     columns: 2,
-    column-gutter: 2em,
+    column-gutter: 3em,
+    align: horizon,
     finite.transition-table(aut),
-    box(
-      height: 0pt,
-      finite.automaton(
-        aut,
-        final: ("q0",),
-        style: (
-          state: (radius: 0.5, extrude: 0.8),
-          transition: (curve: 0.6),
-          q1-q1: (anchor: top + right),
-        ),
+    finite.automaton(
+      aut,
+      final: ("q0",),
+      style: (
+        state: (radius: 0.5, extrude: 0.8),
+        transition: (curve: 0.4),
+        q0-q0: (anchor: top + left),
+        q1-q1: (anchor: top + right),
       ),
     ),
   )
@@ -289,21 +288,32 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
   TM recognizes _recursively enumerable_ languages (Type 0).
 ]
 
-== TM Language
+== TM Language and Acceptance
 
 #definition[
-  The language _recognized_ by a TM $M$, denoted $cal(L)(M)$, is the set of strings $w in Sigma^*$ that $M$ accepts, that is, for which $M$ halts in the _accept_ state.
+  The language _recognized_ by $M$, written $cal(L)(M)$, is the set of inputs $M$ accepts:
+  $ cal(L)(M) = { w in Sigma^* mid(|) M "halts in state" q_"acc" "on input" w } $
 
-  - For any $w in cal(L)(M)$, $M$ accepts $w$.
-  - For any $w notin cal(L)(M)$, $M$ does not accept $w$, that is, $M$ either _rejects_ $w$ or _loops forever_ on $w$.
+  For inputs _not_ in $cal(L)(M)$, the machine either _rejects_ (halts in $q_"rej"$) or _loops forever_.
+]
+
+#Block(color: yellow)[
+  *The crucial distinction:*
+  - A _recognizer_ only needs to accept members of $L$. It may loop forever on non-members.
+  - A _decider_ must always halt --- it accepts members and _rejects_ non-members.
+
+  $ "Decider" = "Recognizer that never loops" $
 ]
 
 #definition[
-  A TM is a _decider_ if it halts on all inputs.
+  A TM is a _decider_ for $L$ if it halts on _every_ input (accepting $L$ and rejecting its complement).
+  A language is _decidable_ (recursive) if it has a decider.
+  A language is _recognizable_ (RE) if it has a recognizer.
 ]
 
 == TM Configuration
 
+// Helper: draw TM read/write head pointing at a tape cell
 #let tm-head(pos, state, name: none, ..style) = {
   import cetz.draw: *
   group(
@@ -320,60 +330,86 @@ When the machine reaches the _accept_ or _reject_ state, it immediately halts.
   )
 }
 
-#definition[
-  A _configuration_ of a TM is a _string_ $(u ; q ; v)$ where $u,v in Gamma^*$, $q in Q$, meaning:
-  - Tape contents: $u v$ followed by the blanks.
-  - Current state is $q$.
-  - Head position: at the first symbol of $v$.
+#definition[TM Configuration][
+  A _configuration_ describes the complete state of a TM at a given moment:
+  $ (u ; q ; v) quad u, v in Gamma^*, quad q in Q $
+  - $u$ --- tape contents to the _left_ of the head
+  - $q$ --- current _state_
+  - $v$ --- tape contents from the head _rightward_ (head reads $v[0]$)
+]
 
-  For example, configuration $(u ; q ; a v)$, where $a in Gamma$, is represented as follows:
-  #cetz.canvas({
-    import cetz.draw: *
-    scale(50%)
-    content((-0.5, 0.5))[$tapestart$]
-    rect((0, 0), (rel: (2, 1)), name: "u")
-    content("u.center")[$u$]
-    rect((2, 0), (rel: (1, 1)), name: "a")
-    content("a.center")[$a$]
-    rect((3, 0), (rel: (2, 1)), name: "v")
-    content("v.center")[$v$]
-    tm-head((rel: (0, -1pt), to: "a.south"))[$q$]
-    line((0, 0), (5.5, 0))
-    line((0, 1), (5.5, 1))
-  })
+#example[
+  Configuration $(u ; q ; a v)$ is visualized as:
+  #align(center)[
+    #cetz.canvas({
+      import cetz.draw: *
+      scale(55%)
+      content((-0.5, 0.5))[$tapestart$]
+      rect((0, 0), (rel: (2, 1)), name: "u")
+      content("u.center")[$u$]
+      rect((2, 0), (rel: (1, 1)), name: "a", fill: orange.lighten(80%))
+      content("a.center")[$a$]
+      rect((3, 0), (rel: (2, 1)), name: "v")
+      content("v.center")[$v$]
+      for-each-anchor("a", (name) => {}, exclude: ("center",))
+      line((0, 0), (5.5, 0))
+      line((0, 1), (5.5, 1))
+      line((5.5, 0), (6.2, 0), stroke: (dash: "dashed"))
+      line((5.5, 1), (6.2, 1), stroke: (dash: "dashed"))
+      tm-head((rel: (0, -1pt), to: "a.south"))[$q$]
+    })
+  ]
+  The head reads $a$; the next transition depends on $(q, a)$.
 ]
 
 == TM Computation
 
 #definition[Computation][
-  The process of _computation_ by a TM on input $w in Sigma^*$ is a _sequence_ of configurations $C_1, C_2, dots, C_n$.
-  - $C_1 = (tapestart; q_0; w)$ is the _start_ configuration with input $w in Sigma^*$.
-  - $C_i yields C_(i+1)$ for each $i$.
-  - $C_n$ is a _final_ configuration.
+  A _computation_ of TM $M$ on input $w$ is a sequence of configurations:
+  $ C_1 yields C_2 yields dots.c yields C_n $
+  - $C_1 = (#tapestart ; q_0 ; w)$ --- _start configuration_
+  - $C_i yields C_{i+1}$ --- "$C_i$ yields $C_{i+1}$ in one step"
+  - $C_n$ is a _halting configuration_ (state is $q_"acc"$ or $q_"rej"$)
 ]
 
-Configuration $C_1$ _yields_ $C_2$, denoted $C_1 yields C_2$, if TM can move from $C_1$ to $C_2$ in _one_ step.
-- See the formal definition on the next slide.
+The relation $yields^*$ (yields in any number of steps) is the reflexive-transitive closure of $yields$.
 
-The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
-- $C_1 yields^* C_2$ denotes "yields in _some_ number of steps".
+#Block(color: yellow)[
+  *Intuition:* Think of a computation as a "snapshot sequence" of the machine.
+  Each snapshot captures the tape contents, the current state, and the head position.
+  The machine moves from snapshot to snapshot by applying one transition.
+]
+
+#note[
+  A _terminating_ computation always reaches $q_"acc"$ or $q_"rej"$.
+  A _looping_ computation produces an infinite sequence $C_1 yields C_2 yields dots.c$ that never halts.
+]
 
 == TM Yields Relation
 
-#definition[Yields][
-  Let $u,v in Gamma^*$, $a,b,c in Gamma$, $q_i, q_j in Q$.
-  - Move left: $(u a ; q_i ; b v) yields (u ; q_j ; a c v)$ if $delta(q_i, b) = (q_j, c, L)$ (overwrite $b$ with $c$, move left)
-  - Move right: $(u ; q_i ; b a v) yields (u c ; q_j ; a v)$ if $delta(q_i, b) = (q_j, c, R)$ (overwrite $b$ with $c$, move right)
+How does one configuration yield the next?
 
+#definition[Yields ($yields$)][
+  Let $u, v in Gamma^*$, $a, b, c in Gamma$, $q_i, q_j in Q$.
+
+  *Move left* ($L$): $(u a ; q_i ; b v) yields (u ; q_j ; a c v)$ when $delta(q_i, b) = (q_j, c, L)$
+
+  *Move right* ($R$): $(u ; q_i ; b a v) yields (u c ; q_j ; a v)$ when $delta(q_i, b) = (q_j, c, R)$
+
+  In both cases: overwrite $b$ with $c$, move the head, change to state $q_j$.
+]
+
+#align(center)[
   #cetz.canvas({
     import cetz.draw: *
     scale(50%)
 
+    // Left move: before
     rect((0, 0), (rel: (2, 1)), name: "u")
     content("u.center")[$u$]
     rect((2, 0), (rel: (1, 1)), name: "a")
     content("a.center")[$a$]
-    rect((3, 0), (rel: (1, 1)), name: "b")
+    rect((3, 0), (rel: (1, 1)), name: "b", fill: orange.lighten(80%))
     content("b.center")[$b$]
     rect((4, 0), (rel: (2, 1)), name: "v")
     content("v.center")[$v$]
@@ -384,9 +420,10 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
     translate(x: 8)
     content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, L))$]
 
+    // Left move: after
     rect((0, 0), (rel: (2, 1)), name: "u")
     content("u.center")[$u$]
-    rect((2, 0), (rel: (1, 1)), name: "a")
+    rect((2, 0), (rel: (1, 1)), name: "a", fill: orange.lighten(80%))
     content("a.center")[$a$]
     rect((3, 0), (rel: (1, 1)), name: "c")
     content("c.center")[$c$]
@@ -398,9 +435,10 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
 
     translate(x: 9)
 
+    // Right move: before
     rect((0, 0), (rel: (2, 1)), name: "u")
     content("u.center")[$u$]
-    rect((2, 0), (rel: (1, 1)), name: "b")
+    rect((2, 0), (rel: (1, 1)), name: "b", fill: orange.lighten(80%))
     content("b.center")[$b$]
     rect((3, 0), (rel: (1, 1)), name: "a")
     content("a.center")[$a$]
@@ -413,11 +451,12 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
     translate(x: 8)
     content((-1, -0.4))[$limits(yields)_(delta(q_i, b) = (q_j, c, R))$]
 
+    // Right move: after
     rect((0, 0), (rel: (2, 1)), name: "u")
     content("u.center")[$u$]
     rect((2, 0), (rel: (1, 1)), name: "c")
     content("c.center")[$c$]
-    rect((3, 0), (rel: (1, 1)), name: "a")
+    rect((3, 0), (rel: (1, 1)), name: "a", fill: orange.lighten(80%))
     content("a.center")[$a$]
     rect((4, 0), (rel: (2, 1)), name: "v")
     content("v.center")[$v$]
@@ -425,30 +464,29 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
     line((-0.3, 1), (6.3, 1))
     tm-head((rel: (0, -1pt), to: "a.south"))[$q_j$]
   })
+]
 
-  Special case for the left end:
-  - $(tapestart ; q_i ; b v) yields (tapestart ; q_j ; c v)$ if $delta(q_i, b) = (q_j, c, L)$ (overwrite $b$ with $c$, do not move).
+#note[
+  *Left-end special case:* If the head is at the tape start and the transition says "move left", the head stays in place:
+  $( #tapestart ; q_i ; b v) yields (#tapestart ; q_j ; c v)$ when $delta(q_i, b) = (q_j, c, L)$.
 ]
 
 == TM Tape Visualization
 
 #example[
-  A TM computing ${ 0^n 1^n mid(|) n geq 1 }$ --- it checks that the number of 0s equals the number of 1s.
-
-  Initial tape for input $0011$:
+  Initial tape state for ${ 0^n 1^n }$ TM on input $w = 0011$:
   #align(center)[
     #cetz.canvas({
       import cetz.draw: *
       scale(90%)
       let cells = ("", "0", "0", "1", "1", " ", " ", " ")
-      let pos = 0
       for (i, c) in cells.enumerate() {
         let fill-color = if c == "0" or c == "1" { blue.lighten(80%) } else { white }
         rect((i, 0), (i + 1, 1), fill: fill-color, stroke: 0.6pt)
         content((i + 0.5, 0.5))[#c]
       }
       content((-0.3, 0.5))[$tapestart$]
-      // Draw head
+      // Draw head pointer
       line(
         (1.5, -0.15), (1.1, -0.6), (1.9, -0.6),
         close: true, fill: orange.lighten(60%), stroke: 0.6pt,
@@ -457,34 +495,36 @@ The relation $yields^*$ is the _reflexive_ and _transitive_ closure of $yields$.
     })
   ]
 
-  At each step, the machine:
-  - Finds a `0`, marks it as `X`, scans right past `0`s to find a `1`, marks it as `Y`
-  - When all 0s and 1s are matched, accept; if mismatch found, reject
+  Blue cells = input. The head (orange triangle) points at the first cell. State is $q_0$.
 ]
 
-== TM Example: Recognizing $0^n 1^n$
+#note[
+  The machine strategy: repeatedly find the leftmost `0`, mark it `X`, find the matching `1`, mark it `Y`. Accept when all 0s and 1s are paired. Reject if counts mismatch.
+]
 
-Step-by-step configuration trace for input $0011$ ($n = 2$):
+== TM Example: Recognizing *$0^n 1^n$*
+
+Step-by-step configuration trace for input $0011$ ($n = 2$). The _underlined_ symbol is at the head.
 
 #align(center)[
   #table(
     columns: 3,
-    align: (left, center, left),
+    align: (left, auto, left),
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
-    table.header([*Step*], [*Tape* (head at $arrow.t$)], [*Action*]),
-    [Start],           [$tapestart overline(0) 0 1 1 #Blank$],             [Read 0, mark X],
-    [After mark 0],    [$tapestart X #sym.arrow.l 0 1 1 #Blank$],          [Find first 1],
-    [After scan right], [$tapestart X 0 1 #sym.arrow.l 1 #Blank$],         [Mark Y, go left],
-    [After mark 1],    [$tapestart X overline(0) 1 Y #Blank$],             [Read next 0, mark X],
-    [After mark 0],    [$tapestart X X 1 Y #Blank$],                       [Find next 1],
-    [After scan right], [$tapestart X X overline(Y) Y #Blank$],            [Already Y, skip],
-    [After scan right], [$tapestart X X Y overline(Y) #Blank$],            [Mark Y, go left],
-    [All matched],     [$tapestart X X Y Y overline(#Blank)$],             [All 0s paired --- *Accept!*],
+    table.header([*Step*], [*Configuration $(u ; q ; v)$*], [*Action*]),
+    [Start],           [$(#tapestart ; q_0 ; 0011)$],         [Read `0` → write `X`, move right],
+    [Mark first 0],    [$(#tapestart X ; q_1 ; 011)$],        [Scan right past 0s to find `1`],
+    [Found first 1],   [$(#tapestart X 0 ; q_2 ; 11)$],       [Write `Y`, move left],
+    [Mark first 1],    [$(#tapestart X 0 Y ; q_3 ; 1)$],      [Move back to start],
+    [Back at start],   [$(#tapestart ; q_0 ; X 0 Y 1)$],      [Read `X` → skip, find next `0`],
+    [Mark second 0],   [$(#tapestart X X ; q_1 ; Y 1)$],      [Scan right past Y to find `1`],
+    [Found second 1],  [$(#tapestart X X Y ; q_2 ; 1)$],      [Write `Y`, move left],
+    [All matched],     [$(#tapestart X X Y Y ; q_"acc" ; #Blank)$], [Tape is all X/Y --- *Accept!*],
   )
 ]
 
 #Block(color: yellow)[
-  The key insight: a TM can use its _tape as memory_ --- something DFAs and even PDAs cannot do for all languages. The tape provides unbounded read/write storage.
+  *Key insight:* The tape acts as scratch memory. At each round, one `0`--`1` pair is matched and "consumed" by overwriting with `X` and `Y`. This requires $O(n^2)$ steps for input length $2n$.
 ]
 
 == Machine Comparison
@@ -496,7 +536,7 @@ Step-by-step configuration trace for input $0011$ ($n = 2$):
     stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
     table.header([*Property*], [*DFA*], [*PDA*], [*TM*]),
     [Memory],           [None (finite states)],     [Stack (LIFO)],              [Infinite R/W tape],
-    [Reading],          [Left-to-right, each symbol once], [Left-to-right, each symbol once], [Arbitrary R/W movement],
+    [Reading],          [Left-to-right,\ each symbol once], [Left-to-right,\ each symbol once], [Arbitrary R/W movement],
     [Language class],   [Regular],                  [Context-Free],              [RE (or R if decider)],
     [Determinism],      [Equivalent to NDFA],        [NDPDA more powerful],        [NTM = DTM],
     [Emptiness check],  [Decidable],                [Decidable],                 [Undecidable],
@@ -549,19 +589,23 @@ All the following are equivalent in computational power (they recognize the same
 == Recognizing vs Deciding
 
 There are _two_ types of Turing machines:
-+ Total TM: always halts. Also called _decider_.
-+ General TM: may loop forever. Also called _recognizer_.
++ *Decider* (total TM): always halts on every input.
++ *Recognizer* (general TM): may loop forever on some inputs.
 
 #definition[Recognition][
-  A TM _recognizes_ a language $L$, if it halts and accepts all words $w in L$, but no others.
-  A language recognized by a TM is called _semi-decidable_ or _recursively enumerable_ or _recursively computable_ or _Turing-recognizable_.
-  The set of all recognizable languages is denoted by *RE*.
+  A TM _recognizes_ language $L$ if it accepts every $w in L$ and does not accept any $w notin L$ (but may loop on non-members).
+
+  Such a language is called _recognizable_ (also: Turing-recognizable, recursively enumerable, semi-decidable --- all equivalent). The class of all recognizable languages is *RE*.
 ]
 
 #definition[Decision][
-  A TM _decides_ a language $L$, if it halts and accepts all words $w in L$, and halts and rejects any other word $w notin L$.
-  A language decided by a TM is called _decidable_ or _recursive_ or _computable_.
-  The set of all decidable languages is denoted by *R*.
+  A TM _decides_ language $L$ if it accepts every $w in L$ and _rejects_ every $w notin L$; it always halts.
+
+  Such a language is called _decidable_ (also: recursive, computable). The class of all decidable languages is *R* ($subset.neq$ RE).
+]
+
+#Block(color: yellow)[
+  *Key distinction:* A recognizer is allowed to loop on non-members. A decider _must_ halt and give an answer for every input.
 ]
 
 == MIU. MU?
@@ -729,63 +773,54 @@ See also: #link("https://complexityzoo.net/Petting_Zoo")[Complexity Zoo Petting 
 
 = Computability
 
-== Computable Functions
+== The Church--Turing Thesis
 
-#definition[Church--Turing thesis][
-  _Every effectively computable function_ --- anything that _can_ be computed by a mechanical, step-by-step procedure --- _is computable by a Turing machine._
+#definition[Church--Turing Thesis][
+  _Every effectively computable function is computable by a Turing machine._
 
-  This is a *thesis*, not a theorem. "Effectively computable" is an informal, intuitive notion; we cannot formally _prove_ the thesis, but no counterexample has ever been found.
+  "Effectively computable" means: can be carried out by a finite, deterministic, mechanical step-by-step procedure, with no creativity or luck required.
 ]
 
 #note[
-  In 1936, Alonzo Church ($lambda$-calculus) and Alan Turing (Turing machines) independently formalized computability. They proved these models equivalent --- and _every other model proposed since_ computes exactly the same class of functions.
+  This is a *thesis*, not a theorem. "Effectively computable" is informal. We cannot formally _prove_ the thesis, but no counterexample has ever been found.
 ]
+
+#Block(color: teal)[
+  *Historical note:* In 1936, Alonzo Church ($lambda$-calculus) and Alan Turing (Turing machines) independently formalized computability and proved these models equivalent. Every other general-purpose model proposed since --- register machines, $mu$-recursive functions, Post systems --- computes exactly the same class of functions.
+]
+
+== Computable Functions
 
 #definition[Computable function][
-  A partial function $f : NN^k arrow.hook NN$ is _computable_ ("can be calculated") if there exists a computer program with the following properties:
-  - If $f(x)$ is defined, then the program terminates on the input $x$ with the value $f(x)$ stored in memory.
-  - If $f(x)$ is undefined, then the program never terminates on the input $x$.
+  A partial function $f : NN^k arrow.hook NN$ is _computable_ if there exists a TM $M$ such that:
+  - If $f(arrow(x))$ is defined: $M$ halts on input $arrow(x)$ with output $f(arrow(x))$.
+  - If $f(arrow(x))$ is undefined: $M$ loops forever on input $arrow(x)$.
 ]
 
-== Effective Procedures
-
-#definition[Effective procedure][
-  An _effective procedure_ is a finite, deterministic, mechanical algorithm that guarantees to terminate and produce the correct answer in a finite number of steps.
-
-  An algorithm (set of instructions) is called an _effective procedure_ if it:
-  - Consists of _exact_, finite steps.
-  - Always _terminates_ in finite time.
-  - Produces the _correct_ answer for given inputs.
-  - Requires no external assistance to execute.
-  - Can be performed _manually_, with pencil and paper.
-]
-
-#definition[
-  A function is _computable_ if there exists an effective procedure that computes it.
-]
-
-== Examples of Computable Functions
-
-_Examples of computable functions:_
-- $f(x) = x^2$, $f(x) = x!$, $f(x) = x mod 2$
-- $f(n) =$ the $n$-th prime number
-- $f(n) =$ the $n$-th digit of $pi$
+_Computable functions:_
+- $f(x) = x^2$, $f(x) = x!$, $f(x) = x mod 2$ --- basic arithmetic
+- $f(n) = $ the $n$-th prime --- search computable
+- $f(n) = $ the $n$-th digit of $pi$ --- BBP formula
 - The Ackermann function $A(m, n)$ --- computable but not primitive recursive
-- The stopping time of the Collatz sequence at $n$ (assuming the Collatz conjecture)
 
-_Examples of non-computable functions:_
+_Non-computable functions:_
 
 #definition[Busy Beaver][
-  $"BB"(n)$ = the maximum number of 1s a _halting_ $n$-state TM over $\{0, 1\}$ can write on an initially blank tape.
+  $"BB"(n)$ = the maximum number of 1s a _halting_ $n$-state TM over ${0, 1}$ can write on an initially blank tape.
 ]
+
+== The Busy Beaver
+
+$"BB"$ grows faster than _any_ computable function:
 
 #example[
   $"BB"(1) = 1$, $"BB"(2) = 4$, $"BB"(3) = 6$, $"BB"(4) = 13$, $"BB"(5) geq 47{,}176{,}870$.
-  $"BB"(6)$ is astronomically large (on the order of $10^{10^{10^{10^{18705352}}}}}$).
+
+  $"BB"(6)$ is astronomically large (on the order of $10^{10^{10^{10^{18705352}}}}$).
 ]
 
 #Block(color: orange)[
-  *BB grows faster than any computable function.* No algorithm can compute $"BB"(n)$ for all $n$ --- if it could, we could solve the halting problem: does TM $M$ (with $n$ states) halt? Run it for $"BB"(n)$ steps; if it hasn't halted, it never will. But this contradicts undecidability of halting.
+  *BB is not computable.* Suppose we could compute $"BB"(n)$. Then to check whether an $n$-state TM $M$ halts on blank tape: run $M$ for $"BB"(n)$ steps. If $M$ hasn't halted by then, it never will. But this solves the Halting Problem --- a contradiction.
 ]
 
 = Decidability
@@ -1100,7 +1135,7 @@ In general, it is _undecidable_.
 ]
 
 #note[
-  There are more synonyms for _computably enumerable_, such as _effectively enumerable_, _recursively enumerable_ (do not confuse with just _recursive_!), and _Turing-recognizable_, or simply _recorgizable_.
+  There are more synonyms for _computably enumerable_, such as _effectively enumerable_, _recursively enumerable_ (do not confuse with just _recursive_!), and _Turing-recognizable_, or simply _recognizable_.
 ]
 
 #note[
@@ -1387,7 +1422,24 @@ $A_"TM" = cal(L)(U_"TM") = { chevron.l M, w chevron.r | M "is a TM and" w in cal
 
 == Mapping Reductions
 
-TODO
+_Many-one reductions_ are the primary tool for proving undecidability: show that if you could decide $B$, you could decide $A$ (which is already known to be undecidable).
+
+#definition[Many-one reduction ($scripts(lt.eq)_M$)][
+  $A scripts(lt.eq)_M B$ ("$A$ reduces to $B$") means there is a computable total function $f$ such that for all $x$: $x in A iff f(x) in B$.
+
+  If $A scripts(lt.eq)_M B$ and $B$ is decidable, then $A$ is decidable.
+
+  _Contrapositive:_ If $A scripts(lt.eq)_M B$ and $A$ is undecidable, then $B$ is undecidable.
+]
+
+#Block(color: yellow)[
+  *Pattern for undecidability proofs:*
+  + Take a known undecidable problem $A$ (e.g., the Halting Problem $"HALT"_"TM"$).
+  + Show $A scripts(lt.eq)_M B$ by constructing $f$ explicitly.
+  + Conclude $B$ is undecidable.
+]
+
+See the Undecidability section for worked examples: Halting Problem $scripts(lt.eq)_M$ Rice's theorem problems.
 
 == Extremely Hard Problem
 
@@ -1425,86 +1477,27 @@ This language is _neither_ recognizable nor co-recognizable.
   $overline(L)_Delta scripts(lt.eq)_M "REGULAR"_"TM"$.
 ]
 
-= Rice's Theorem
-
-== Rice's Theorem
-
-Rice's theorem shows that _any_ non-trivial property of the language recognized by a Turing machine is undecidable.
-
-#definition[Semantic Property][
-  A property $P$ of Turing machines is _semantic_ (or a _property of languages_) if whenever $cal(L)(M_1) = cal(L)(M_2)$, then $P(M_1) iff P(M_2)$.
-
-  A semantic property is _non-trivial_ if some TMs satisfy it and others do not.
-]
-
-#example[
-  - "$cal(L)(M)$ is finite" --- semantic, non-trivial.
-  - "$cal(L)(M)$ is regular" --- semantic, non-trivial.
-  - "$M$ has at most 5 states" --- _not_ semantic (depends on machine, not language).
-]
-
-== Rice's Theorem: Statement and Proof
-
-#theorem[Rice's Theorem][
-  Every non-trivial semantic property of TMs is undecidable. \
-  That is, if $P$ is non-trivial and semantic, then ${ chevron.l M chevron.r | P(M) }$ is undecidable.
-]
-
-#proof[
-  Assume WLOG that $P(M_emptyset) = "false"$ (where $cal(L)(M_emptyset) = emptyset$). Since $P$ is non-trivial, there exists some~$M_P$ with $P(M_P) = "true"$.
-
-  We reduce $"HALT"_"TM"$ to $P$: given $chevron.l M, w chevron.r$, construct $M'$ that on input $x$:
-  + Simulates $M$ on $w$.
-  + If $M$ accepts $w$, simulates $M_P$ on $x$.
-
-  Then: $M$ halts on $w$ $imply$ $cal(L)(M') = cal(L)(M_P)$ $imply$ $P(M') = "true"$. \
-  If $M$ does not halt on $w$ $imply$ $cal(L)(M') = emptyset$ $imply$ $P(M') = "false"$.
-]
-
-== Rice's Theorem: Consequences for FM
-
-#Block(color: orange)[
-  *What Rice's theorem tells us:*
-  - _"Does this program terminate?"_ --- undecidable (halting is semantic & non-trivial).
-  - _"Does this program satisfy its spec?"_ --- undecidable.
-  - _"Is this program equivalent to that one?"_ --- undecidable.
-
-  *Every interesting program property is undecidable in general.*
-]
-
-#Block(color: blue)[
-  *The FM response:* We don't give up --- we _approximate_:
-  - *Sound* over-approximation (abstract interpretation): may report false alarms, but never misses bugs.
-  - *Decidable fragments* (SMT theories): restrict to decidable sub-problems.
-  - *Programmer annotations* (Dafny): provide enough hints to make verification tractable.
-  - *Bounded checking* (SAT/BMC): verify up to bound $k$, not for all inputs.
-]
-
-
 = Alternative Models of Computation
 
-== The Church--Turing Thesis
+== Alternative Models
 
-Beyond Turing machines, other models capture the same notion of "computability":
+Beyond Turing machines, every general-purpose model computes the same class of functions:
 
-#columns(2)[
-  *Equivalent models:*
-  - $lambda$-calculus (Church, 1936)
-  - $mu$-recursive functions (Kleene)
-  - Post systems
-  - Register machines (RAM)
-  - ...and every general-purpose programming language
-
-  #colbreak()
-
-  *The Church--Turing Thesis:*
-  _Every effectively computable function is computable by a Turing machine._
-
-  This is a _thesis_, not a theorem --- it cannot be formally proved because "effectively computable" is an informal notion.
+#align(center)[
+  #table(
+    columns: 2,
+    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
+    table.header([*Model*], [*Author (year)*]),
+    [$lambda$-calculus], [Church (1936)],
+    [$mu$-recursive functions], [Kleene (1936)],
+    [Post correspondence systems], [Post (1943)],
+    [Register machines (RAM)], [Shepherdson & Sturgis (1963)],
+    [Any general-purpose language], [(present day)],
+  )
 ]
 
 #Block(color: teal)[
-  *Historical note:* Church and Turing independently arrived at equivalent definitions of computability in 1936. Church used $lambda$-calculus; Turing used his machines. Both showed the Entscheidungsproblem is unsolvable.
+  *Historical note:* Church and Turing independently proved these models equivalent in 1936. Their results also resolved Hilbert's Entscheidungsproblem: FOL validity is _not_ decidable.
 ]
 
 == $lambda$-Calculus in a Nutshell
