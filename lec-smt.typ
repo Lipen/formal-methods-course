@@ -1829,8 +1829,18 @@ Is there an integer solution to $x + 2 y gt.eq 5$, $x - y lt.eq 1$, $x gt.eq 0$,
 (exit)
 ```
 
+#pagebreak()
+
 #Block(color: blue)[
-  *Logic naming convention:* `QF_` = quantifier-free. `L` = linear, `N` = non-linear. `I` = integers, `R` = reals. `A` = arrays. `UF` = uninterpreted functions. `BV` = bit-vectors. So `QF_AUFLIA` = quantifier-free arrays + UF + linear integer arithmetic.
+  *Logic naming convention:*
+  - `QF_` = quantifier-free.
+  - `L` = linear, `N` = non-linear.
+  - `I` = integers, `R` = reals.
+  - `A` = arrays.
+  - `UF` = uninterpreted functions.
+  - `BV` = bit-vectors.
+
+  So, for example, `QF_AUFLIA` = quantifier-free arrays + UF + linear integer arithmetic.
 ]
 
 == Z3: An SMT Solver
