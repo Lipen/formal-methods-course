@@ -35,26 +35,26 @@
 
 == From Logic to Verification: The SMT Bridge
 
-We have built up a substantial logical toolkit over the past lectures:
+The preceding lectures have developed the logical foundations this course builds on:
 
 #columns(2)[
   *What we know:*
   - _Propositional logic_ and SAT solving (DPLL, CDCL)
   - _First-order logic_: syntax, semantics, natural deduction
-  - _Theory of computation_: decidability, Rice's theorem, why we need restricted fragments
+  - _Theory of computation_: decidability, Rice's theorem, why restricted fragments matter
 
   #colbreak()
 
-  *What SMT adds:*
-  - _Many-sorted FOL_: typed variables matching programming reality
+  *What SMT contributes:*
+  - _Many-sorted FOL_: typed variables corresponding directly to programming language types
   - _Background theories_: arithmetic, arrays, equality
-  - _Decidable fragments_: the "sweet spot" between expressiveness and automation
-  - _Combination_: mixing theories in a single formula
+  - _Decidable fragments_: syntactically restricted classes where automated reasoning is tractable
+  - _Combination_: reasoning over formulas that mix multiple theories
   - _Practical tools_: SMT-LIB, Z3
 ]
 
 #Block(color: yellow)[
-  *The big picture:* SMT is the bridge from logic theory to verification practice. A program verifier asks "is this property always true?" --- SMT answers it by reducing to decidable theory reasoning.
+  *The big picture:* Program verification reduces to checking whether a formula is $cal(T)$-unsatisfiable for some background theory $cal(T)$ --- and this is precisely what SMT solvers decide.
 ]
 
 = Many-Sorted First-Order Logic
@@ -482,15 +482,14 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
 
 == Why Decidable Theories?
 
-We have just seen that the landscape of first-order theories is unruly:
+The decidability landscape for first-order theories is far from uniform:
 
-- _Full FOL_ has no decidable validity problem --- this is Gödel's first incompleteness theorem in action.
+- _Full FOL_ validity is undecidable --- a consequence of Gödel's first incompleteness theorem.
 - Even in important theories, quantifiers make satisfiability undecidable: $cal(T)_"IA"$ with quantifiers, $cal(T)_"AX"$ in full --- all undecidable.
-- Restricting to _quantifier-free fragments_ recovers decidability for many practically useful theories.
+- Restricting to _quantifier-free fragments_ recovers decidability for many of the theories that matter in practice.
 
 #Block(color: yellow)[
-  *SMT's core insight:* Rather than reasoning about _arbitrary_ first-order formulas, SMT solvers work in _decidable quantifier-free fragments_ of carefully chosen theories --- and combine those solvers to handle mixed formulas. \
-  The discipline: pick the right theory for the job, stay quantifier-free, and compose.
+  *SMT's core insight:* Rather than reasoning about _arbitrary_ first-order formulas, SMT solvers target _decidable quantifier-free fragments_ of carefully chosen theories. When a property involves multiple theories, dedicated solvers for each are composed into a single combined decision procedure.
 ]
 
 == Common Theories in SMT
@@ -828,11 +827,11 @@ Hereinafter, we will assume that all literals are _flat_.
 Let `QF_UF` be the quantifier-free fragment of FOL over some signature $Sigma$.
 
 #Block(color: yellow)[
-  *How the system works:* Start from $Gamma$ = the input set of flat literals.
-  At each step, choose an applicable rule and _extend_ $Gamma$ with the derived literal.
-  - Terminate with *UNSAT* when _Contr_ fires: $Gamma$ contains both $x eqq y$ and $x neqq y$.
-  - Terminate with *SAT* when $Gamma$ is _irreducible_ (no rule adds anything new): the current $Gamma$ is a consistent model.
-  The rules thus perform _equality closure_ incrementally.
+  *How the system works:* $Gamma$ is initialized to the input set of flat literals.
+  At each step, an applicable rule is chosen and its conclusion is added to $Gamma$.
+  - The derivation ends with *UNSAT* when _Contr_ applies: $Gamma$ contains both $x eqq y$ and $x neqq y$ for some $x, y$.
+  - The derivation ends with *SAT* when $Gamma$ is _irreducible_: no rule is applicable, and $Gamma$ itself constitutes a satisfying assignment.
+  Collectively, the rules compute the _congruence closure_ of the equality literals in $Gamma$.
 ]
 
 (see the next slide for the rules of _satisfiability proof system_)
@@ -1734,7 +1733,7 @@ _Method:_ For any term $t$ from theory $cal(T)_i$ that appears as an argument in
   This entails $x eqq 0 or x eqq 1$, yet _neither_ disjunct alone is entailed.
   Thus $cal(T)_"IA"$ is _not_ convex.
 
-  Consequence: for non-convex theories, equality propagation is not enough --- Nelson-Oppen would need to case-split on _which_ equality holds. This is one reason why $cal(T)_"IA"$ is handled separately in practice (via Omega test or ILP), rather than through the basic N-O combination directly.
+  For non-convex theories, propagating equalities between solvers is insufficient; the method must additionally enumerate which disjunct holds --- a non-deterministic case split. For this reason, $cal(T)_"IA"$ is typically handled by a dedicated procedure (e.g. the Omega test or an ILP solver) rather than via direct Nelson-Oppen combination.
 ]
 
 == Nelson-Oppen: Worked Example
@@ -1968,7 +1967,7 @@ SyGuS competitions (since 2014) drive solver development. Key solvers: *CVC5* (b
 ]
 
 #note[
-  *Next lecture --- Dafny:* We will write programs together with their formal specifications and prove them correct. Every verification condition Dafny generates is an SMT query --- typically combining $cal(T)_"EUF"$, linear integer arithmetic, and array theories --- sent directly to Z3. Everything we have studied in this lecture is the foundation that makes it work.
+  *Next lecture --- Dafny:* Dafny is a programming language with built-in formal specifications. Each annotation gives rise to a _verification condition_ --- an SMT query, typically over $cal(T)_"EUF"$, linear integer arithmetic, and array theories --- discharged automatically by Z3. The theory solvers and combination methods developed in this lecture underlie every such check.
 ]
 
 = Exercises
