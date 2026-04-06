@@ -501,7 +501,7 @@ Further, we are going to study:
 ]
 
 #align(center)[
-  #import fletcher: diagram, node, edge
+  #import fletcher: diagram, edge, node
   #import fletcher.shapes: *
   #diagram(
     // debug: true,
@@ -519,7 +519,9 @@ Further, we are going to study:
 ]
 
 #Block(color: yellow)[
-  *Key insight:* A $cal(T)$-solver is the bridge between SAT and theory reasoning. It answers: "Is this set of theory literals consistent in this domain?"
+  *Key insight:* A $cal(T)$-solver is the bridge between SAT and theory reasoning.
+
+  It answers: "Is this set of theory literals consistent in this domain?"
 ]
 
 == Theory of Uninterpreted Functions
@@ -658,6 +660,7 @@ In the following sections, we will study _theory solvers_ for several important 
 
 We will then see how to _combine_ theory solvers (Nelson-Oppen method), build a complete _SMT solver_ (CDCL($cal(T)$) architecture), and use the _SMT-LIB_ standard language with the Z3 solver.
 
+
 = Difference Logic
 
 == Difference Logic
@@ -703,7 +706,7 @@ Normalize the literals:
 - $(z - w < 0) arrow.double.long (z - w lt.eq -1)$
 
 #place(bottom + right, dy: -1cm)[
-  #import fletcher: diagram, node, edge
+  #import fletcher: diagram, edge, node
   #import fletcher.shapes: *
   #diagram(
     edge-stroke: 1pt,
@@ -1118,8 +1121,8 @@ _Quantifier-free linear real arithmetic_ (`QF_LRA`) is the theory of _linear ine
 #example[
   Maximize $2 x_2 - x_1$ subject to:
   $
-    x_1 + x_2 &lt.eq 3 \
-    2 x_1 - x_2 &lt.eq -5 \
+      x_1 + x_2 & lt.eq 3 \
+    2 x_1 - x_2 & lt.eq -5 \
   $
 
   #set math.vec(delim: "[")
@@ -1228,21 +1231,23 @@ The final system is _satisfiable_ iff the _optimal value_ for $y$ is _positive_.
 
 Any LP can be transformed to _standard form_:
 $
-  "maximize" & sum_(j=1)^n c_j x_j \
+   "maximize" & sum_(j=1)^n c_j x_j \
   "such that" & sum_(j=1)^m a_(i j) x_j lt.eq b_i "for" i = 1, dots, m \
-  & x_j gt.eq 0 "for" j = 1, dots, n
+              & x_j gt.eq 0 "for" j = 1, dots, n
 $
+
+#pagebreak()
 
 #example[
   Next, we are going to use the following running example LP:
   $
-    "maximize" & 5 x_1 + 4 x_2 + 3 x_3 \
+     "maximize" & 5 x_1 + 4 x_2 + 3 x_3 \
     "such that" & cases(
-      2 x_1 + 3 x_2 + x_3 lt.eq 5,
-      4 x_1 + x_2 + 2 x_3 lt.eq 11,
-      3 x_1 + 4 x_2 + 2 x_3 lt.eq 8,
-      x_1\, x_2\, x_3 gt.eq 0,
-    )
+                    2 x_1 + 3 x_2 + x_3 lt.eq 5,
+                    4 x_1 + x_2 + 2 x_3 lt.eq 11,
+                    3 x_1 + 4 x_2 + 2 x_3 lt.eq 8,
+                    x_1\, x_2\, x_3 gt.eq 0,
+                  )
   $
 ]
 
@@ -1259,7 +1264,7 @@ $
   $z = 5 x_1 + 4 x_2 + 3 x_3$
 
 #align(center)[
-  #import fletcher: diagram, node, edge
+  #import fletcher: diagram, edge, node
   #diagram(
     // debug: true,
     edge-stroke: 1pt,
@@ -1267,26 +1272,26 @@ $
     node-outset: 3pt,
     blob((0, 0))[
       $
-        max & 5 x_1 + 4 x_2 + 3 x_3 \
+           max & 5 x_1 + 4 x_2 + 3 x_3 \
         "s.t." & cases(
-          2 x_1 + 3 x_2 + x_3 lt.eq 5,
-          4 x_1 + x_2 + 2 x_3 lt.eq 11,
-          3 x_1 + 4 x_2 + 2 x_3 lt.eq 8,
-          x_1\, x_2\, x_3 gt.eq 0,
-        )
+                   2 x_1 + 3 x_2 + x_3 lt.eq 5,
+                   4 x_1 + x_2 + 2 x_3 lt.eq 11,
+                   3 x_1 + 4 x_2 + 2 x_3 lt.eq 8,
+                   x_1\, x_2\, x_3 gt.eq 0,
+                 )
       $
     ],
     edge("-|>"),
     blob((1, 0))[
       $
-        max & z \
+           max & z \
         "s.t." & cases(
-          x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
-          x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
-          x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
-          z = 5 x_1 + 4 x_2 + 3 x_3,
-          x_1\, x_2\, x_3\, x_4\, x_5\, x_6 gt.eq 0,
-        )
+                   x_4 = 5 - 2 x_1 - 3 x_2 - x_3,
+                   x_5 = 11 - 4 x_1 - x_2 - 2 x_3,
+                   x_6 = 8 - 3 x_1 - 4 x_2 - 2 x_3,
+                   z = 5 x_1 + 4 x_2 + 3 x_3,
+                   x_1\, x_2\, x_3\, x_4\, x_5\, x_6 gt.eq 0,
+                 )
       $
     ],
   )
@@ -1330,12 +1335,11 @@ We can't increase $x_1$ _too much_.
 Let's increase it as much as possible, _without compromising feasibility_.
 
 #align(center)[
-  #import fletcher: diagram, node, edge
+  #import fletcher: diagram, edge, node
   #diagram(
     // debug: true,
     edge-stroke: 1pt,
     node-corner-radius: 5pt,
-    node-outset: 3pt,
     blob((0, 0))[
       $
         x_1 maps 0, x_2 maps 0, x_3 maps 0 \
@@ -1347,7 +1351,7 @@ Let's increase it as much as possible, _without compromising feasibility_.
         )
       $
     ],
-    edge("-|>"),
+    edge("-}>"),
     blob((1, 0))[
       $
         cases(
@@ -1359,18 +1363,19 @@ Let's increase it as much as possible, _without compromising feasibility_.
     ],
   )
 ]
+#v(-0.5em)
 
 Select the _tightest bound_, $x_1 lt.eq 5/2$.
 - New assignment: $x_1 maps 5/2, x_2 maps x_3 maps x_4 maps 0, x_5 maps 1, x_6 maps 1/2, z maps 25/2$.
 
 Now _pivot_: since $x_1$ became positive and $x_4$ became 0, swap them by isolating $x_1$ from the equation for $x_4$, then eliminating $x_1$ from all other equations:
 
-#align(center)[
-  #import fletcher: diagram, node, edge
+#v(1em)
+#place(center)[
+  #import fletcher: diagram, edge, node
   #diagram(
     edge-stroke: 1pt,
     node-corner-radius: 5pt,
-    node-outset: 3pt,
     blob((0, 0))[
       $
         cases(
@@ -1381,7 +1386,7 @@ Now _pivot_: since $x_1$ became positive and $x_4$ became 0, swap them by isolat
         )
       $
     ],
-    edge("-|>"),
+    edge("-}>"),
     blob((1, 0))[
       $
         cases(
@@ -1401,11 +1406,11 @@ Now _pivot_: since $x_1$ became positive and $x_4$ became 0, swap them by isolat
   $
     & x_1 maps 5 / 2, x_2 maps 0, x_3 maps 0, x_4 maps 0 \
     & cases(
-      x_1 = 5/2 - 3/2 x_2 - 1/2 x_3 - 1/2 x_4,
-      x_5 = 1 + 5 x_2 + #hide[$+ 0 x_3$] + 2 x_4,
-      x_6 = 1/2 + 1/2 x_2 - 1/2 x_3 + 3/2 x_4,
-      z = 25/2 - 7/2 x_2 + 1/2 x_3 - 5/2 x_4,
-    )
+        x_1 = 5/2 - 3/2 x_2 - 1/2 x_3 - 1/2 x_4,
+        x_5 = 1 + 5 x_2 + #hide[$+ 0 x_3$] + 2 x_4,
+        x_6 = 1/2 + 1/2 x_2 - 1/2 x_3 + 3/2 x_4,
+        z = 25/2 - 7/2 x_2 + 1/2 x_3 - 5/2 x_4,
+      )
   $
 ]
 
@@ -1422,7 +1427,7 @@ We increase $x_3$ to its tightest bound 1.
 As before, we switch $x_6$ and $x_3$, and _eliminate_ $x_3$ from the right-hand-side:
 
 #align(center)[
-  #import fletcher: diagram, node, edge
+  #import fletcher: diagram, edge, node
   #diagram(
     edge-stroke: 1pt,
     node-corner-radius: 5pt,
@@ -1458,11 +1463,11 @@ As before, we switch $x_6$ and $x_3$, and _eliminate_ $x_3$ from the right-hand-
     & x_1 maps 2, x_2 maps 0, x_3 maps 1, \
     & x_4 maps 0, x_6 maps 0 \
     & cases(
-      x_1 = 2 - 2 x_2 - 2 x_4 + x_6,
-      x_5 = 1 + 5 x_2 + 2 x_4,
-      x_3 = 1 + x_2 + 3 x_4 - 2 x_6,
-      z = 13 - 3 x_2 - x_4 - x_6,
-    )
+        x_1 = 2 - 2 x_2 - 2 x_4 + x_6,
+        x_5 = 1 + 5 x_2 + 2 x_4,
+        x_3 = 1 + x_2 + 3 x_4 - 2 x_6,
+        z = 13 - 3 x_2 - x_4 - x_6,
+      )
   $
 ]
 
@@ -1512,7 +1517,7 @@ $cal(T)$-solver:
 == Typical SMT Solver Architecture
 
 #[
-  #import fletcher: diagram, node, edge
+  #import fletcher: diagram, edge, node
   #import fletcher.shapes: *
   #diagram(
     // debug: true,
@@ -1682,6 +1687,7 @@ After purification with shared variables $v_1, v_2$:
 
 *Conclusion:* The original mixed formula is unsatisfiable.
 
+
 = SMT-LIB and Z3
 
 == SMT-LIB: The Standard Language
@@ -1787,13 +1793,11 @@ The _z3py_ library provides a Pythonic interface to Z3:
 
 ```python
 from z3 import *
-
 x, y = Ints('x y')
 s = Solver()
 s.add(x + 2*y >= 5)
 s.add(x - y <= 1)
 s.add(x >= 0, y >= 0)
-
 if s.check() == sat:
     m = s.model()
     print(f"x = {m[x]}, y = {m[y]}")
@@ -1821,6 +1825,8 @@ s.add(Not(And(Select(b, i) == Select(a, j),
               Select(b, j) == Select(a, i))))
 print(s.check())  # unsat => swap is correct
 ```
+
+#pagebreak()
 
 *Simple scheduling:*
 ```python
