@@ -31,6 +31,32 @@
 #let XSort = Sort("X")
 #let YSort = Sort("Y")
 
+= Satisfiability Modulo Theories
+
+== From Logic to Verification: The SMT Bridge
+
+We have built up a substantial logical toolkit over the past lectures:
+
+#columns(2)[
+  *What we know:*
+  - _Propositional logic_ and SAT solving (DPLL, CDCL)
+  - _First-order logic_: syntax, semantics, natural deduction
+  - _Theory of computation_: decidability, Rice's theorem, why we need restricted fragments
+
+  #colbreak()
+
+  *What SMT adds:*
+  - _Many-sorted FOL_: typed variables matching programming reality
+  - _Background theories_: arithmetic, arrays, equality
+  - _Decidable fragments_: the "sweet spot" between expressiveness and automation
+  - _Combination_: mixing theories in a single formula
+  - _Practical tools_: SMT-LIB, Z3
+]
+
+#Block(color: yellow)[
+  *The big picture:* SMT is the bridge from logic theory to verification practice. A program verifier asks "is this property always true?" --- SMT answers it by reducing to decidable theory reasoning.
+]
+
 = Many-Sorted First-Order Logic
 
 == Why Many-Sorted?
@@ -454,6 +480,19 @@ Recall that a set $A$ is _decidable_ if there exists a _terminating_ procedure t
 
 = Introduction to SMT
 
+== Why Decidable Theories?
+
+We have just seen that the landscape of first-order theories is unruly:
+
+- _Full FOL_ has no decidable validity problem --- this is Gödel's first incompleteness theorem in action.
+- Even in important theories, quantifiers make satisfiability undecidable: $cal(T)_"IA"$ with quantifiers, $cal(T)_"AX"$ in full --- all undecidable.
+- Restricting to _quantifier-free fragments_ recovers decidability for many practically useful theories.
+
+#Block(color: yellow)[
+  *SMT's core insight:* Rather than reasoning about _arbitrary_ first-order formulas, SMT solvers work in _decidable quantifier-free fragments_ of carefully chosen theories --- and combine those solvers to handle mixed formulas. \
+  The discipline: pick the right theory for the job, stay quantifier-free, and compose.
+]
+
 == Common Theories in SMT
 
 Satisfiability Modulo Theories (SMT) traditionally focuses on theories with _decidable quantifier-free fragments_.
@@ -691,6 +730,16 @@ A solver for difference logic consists of three steps:
 - If $G$ contains a negative cycle, the set of literals is _inconsistent_ (UNSAT).
 - Otherwise, the set of literals is _consistent_ (SAT).
 
+#pagebreak()
+
+#Block(color: yellow)[
+  *Why does a negative cycle mean UNSAT?*
+  Each edge $x arrow^c y$ encodes the constraint $x - y lt.eq c$.
+  A path $v_0 arrow^(c_1) v_1 arrow^(c_2) dots arrow^(c_k) v_0$ back to the start accumulates: $v_0 - v_0 lt.eq c_1 + dots + c_k$.
+  If the total weight is _negative_, this becomes $0 lt.eq W < 0$ --- a direct arithmetic contradiction.
+  Conversely, if no negative cycle exists, shortest-path distances give a satisfying assignment.
+]
+
 == Difference Logic Example
 
 Consider the following set of difference logic literals:
@@ -777,6 +826,18 @@ Hereinafter, we will assume that all literals are _flat_.
 == Satisfiability Proof System for `QF_UF`
 
 Let `QF_UF` be the quantifier-free fragment of FOL over some signature $Sigma$.
+
+#Block(color: yellow)[
+  *How the system works:* Start from $Gamma$ = the input set of flat literals.
+  At each step, choose an applicable rule and _extend_ $Gamma$ with the derived literal.
+  - Terminate with *UNSAT* when _Contr_ fires: $Gamma$ contains both $x eqq y$ and $x neqq y$.
+  - Terminate with *SAT* when $Gamma$ is _irreducible_ (no rule adds anything new): the current $Gamma$ is a consistent model.
+  The rules thus perform _equality closure_ incrementally.
+]
+
+(see the next slide for the rules of _satisfiability proof system_)
+
+#pagebreak()
 
 Below is a simple _satisfiability proof system_ $R_"UF"$ for `QF_UF`:
 #align(center)[
@@ -1668,6 +1729,14 @@ _Method:_ For any term $t$ from theory $cal(T)_i$ that appears as an argument in
   A theory $cal(T)$ is _convex_ if whenever $cal(T) models (ell_1 and dots and ell_n) imply (x_1 eqq y_1 or dots or x_k eqq y_k)$, then $cal(T) models (ell_1 and dots and ell_n) imply (x_i eqq y_i)$ for some $i$.
 ]
 
+#example[Non-convex theory: $cal(T)_"IA"$][
+  Consider the conjunction $0 lt.eq x and x lt.eq 1$ in integer arithmetic.
+  This entails $x eqq 0 or x eqq 1$, yet _neither_ disjunct alone is entailed.
+  Thus $cal(T)_"IA"$ is _not_ convex.
+
+  Consequence: for non-convex theories, equality propagation is not enough --- Nelson-Oppen would need to case-split on _which_ equality holds. This is one reason why $cal(T)_"IA"$ is handled separately in practice (via Omega test or ILP), rather than through the basic N-O combination directly.
+]
+
 == Nelson-Oppen: Worked Example
 
 *Formula:* $f(x) - f(y) gt.eq 1 and x eqq y$
@@ -1896,6 +1965,10 @@ SyGuS competitions (since 2014) drive solver development. Key solvers: *CVC5* (b
 
 #Block(color: blue)[
   *The big picture:* SMT solvers are not just decision procedures --- they are the _engine_ behind program analysis, synthesis, and verification. Everything from Dafny to KLEE to CVC5's synthesizer relies on efficient SMT solving.
+]
+
+#note[
+  *Next lecture --- Dafny:* We will write programs together with their formal specifications and prove them correct. Every verification condition Dafny generates is an SMT query --- typically combining $cal(T)_"EUF"$, linear integer arithmetic, and array theories --- sent directly to Z3. Everything we have studied in this lecture is the foundation that makes it work.
 ]
 
 = Exercises
