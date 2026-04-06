@@ -1681,7 +1681,7 @@ A single-theory solver cannot handle such formulas. We need a _combination metho
 
 == The Nelson-Oppen Method
 
-The _Nelson-Oppen_ (N-O) method combines decision procedures for _signature-disjoint_, _stably infinite_ theories.
+The _Nelson-Oppen_ method combines decision procedures for _signature-disjoint_, _stably infinite_ theories.
 
 #definition[
   Two theories $cal(T)_1$ and $cal(T)_2$ are _signature-disjoint_ if $Sigma^F_1 inter Sigma^F_2 = {eqq}$ --- the only shared symbol is equality.
