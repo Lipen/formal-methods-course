@@ -86,19 +86,19 @@ Specification of a program can be seen as a _contract_:
 Formal verification is a _machine-checked proof_ that a program satisfies its specification for *every* input satisfying the pre-conditions.
 
 #grid(
-  columns: (1fr, 1fr, 1fr),
-  gutter: 0.8em,
-  Block(color: green)[
+  columns: 3,
+  gutter: 1em,
+  Block(color: green, width: 100%)[
     *1. Specification*
 
     A formal description of the _required_ behavior: what the program must do.
   ],
-  Block(color: blue)[
+  Block(color: blue, width: 100%)[
     *2. Proof calculus*
 
     A formal system for reasoning --- Floyd-Hoare triples, WP/SP calculus.
   ],
-  Block(color: yellow)[
+  Block(color: yellow, width: 100%)[
     *3. Automation*
 
     An SMT solver (Z3) to discharge the generated proof obligations.
