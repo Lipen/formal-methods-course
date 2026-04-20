@@ -10,6 +10,15 @@
 
 #show table.cell.where(y: 0): strong
 
+#show raw.where(block: true): it => block(
+  it,
+  fill: luma(249),
+  stroke: 0.4pt + luma(195),
+  radius: 4pt,
+  inset: (x: 0.8em, y: 0.6em),
+  // width: 100%,
+)
+
 #let WPsym = $cal(W P)$
 #let SPsym = $cal(S P)$
 
@@ -80,21 +89,26 @@ Formal verification is a _machine-checked proof_ that a program satisfies its sp
   columns: (1fr, 1fr, 1fr),
   gutter: 0.8em,
   Block(color: green)[
-    *1. Specification* \
+    *1. Specification*
+
     A formal description of the _required_ behavior: what the program must do.
   ],
   Block(color: blue)[
-    *2. Proof calculus* \
+    *2. Proof calculus*
+
     A formal system for reasoning --- Floyd-Hoare triples, WP/SP calculus.
   ],
   Block(color: yellow)[
-    *3. Automation* \
+    *3. Automation*
+
     An SMT solver (Z3) to discharge the generated proof obligations.
   ],
 )
 
 #Block(color: teal)[
-  *Connection to this course:* We already know how SAT and SMT solvers work. Dafny uses the same Z3 engine --- but generates queries _automatically_ from annotated code. We write programs with contracts instead of encoding logic formulas by hand.
+  *Connection to this course:* We already know how SAT and SMT solvers work.
+  Dafny uses the same Z3 engine --- but generates queries _automatically_ from annotated code.
+  We write programs with contracts instead of encoding logic formulas by hand.
 ]
 
 == Enter Dafny
@@ -111,9 +125,9 @@ _Dafny_ (K. R. M. Leino, Microsoft Research, 2009) is simultaneously a programmi
   #colbreak()
 
   *Verification pipeline:*
-  - Dafny $arrow.r$ *Boogie* (intermediate verification language)
-  - Boogie $arrow.r$ *Z3* (SMT solver)
-  - Z3 discharges all VCs $arrow.r$ program is correct
+  - Dafny $=>$ *Boogie* \ (intermediate verification language)
+  - Boogie $=>$ *Z3* (SMT solver)
+  - Z3 discharges all VCs $=>$ program is correct
 ]
 
 In this lecture we learn to _specify_, _verify_, and _derive_ programs using Dafny.
@@ -133,36 +147,46 @@ method Triple(x: int) returns (r: int)
 
 A Dafny method has:
 - A *signature*: name, input parameters, return variable(s)
-- A *specification*: `requires` (pre-condition) and `ensures` (post-condition)
+- A *specification*: ```dafny requires``` (pre-condition) and ```dafny ensures``` (post-condition)
 - A *body*: implementation that Dafny verifies against the spec
 
 #note[
-  The _caller_ need not know the _implementation_, only the _specification_. The method is _opaque_ to the caller.
+  The _caller_ need not know the _implementation_, only the _specification_.
+  The method is _opaque_ to the caller.
 ]
 
 == Composing Methods
 
 Methods can call each other, reasoning through specifications alone:
 
-```dafny
-method Triple(x: int) returns (r: int)
-  requires x >= 0
-  ensures r == 3 * x
-{
-  var y := Double(x);
-  r := x + y;
-}
+#grid(
+  columns: 2,
+  column-gutter: 1em,
+  [
+    ```dafny
+    method Triple(x: int) returns (r: int)
+      requires x >= 0
+      ensures r == 3 * x
+    {
+      var y := Double(x);
+      r := x + y;
+    }
 
-method Double(x: int) returns (r: int)
-  requires x >= 0
-  ensures r == 2 * x
-```
+    method Double(x: int) returns (r: int)
+      requires x >= 0
+      ensures r == 2 * x
+    ```
+  ],
+  [
+    #Block(color: yellow)[
+      *Key insight:* ```dafny Triple``` uses only ```dafny Double```'s _contract_ --- it does not inspect the implementation.
+      This _modularity_ is the power of design by contract.
 
-#Block(color: yellow)[
-  *Key insight:* `Triple` does not know _how_ `Double` works --- it only uses `Double`'s contract. This _modularity_ is the power of design by contract.
-]
-
-#note(title: "Exercise")[Remove `requires x >= 0` from `Triple`. What change to `Double`'s specification makes this possible?]
+      *Exercise:* Remove ```dafny requires x >= 0``` from ```dafny Triple```.
+      What change to ```dafny Double```'s specification makes this possible?
+    ]
+  ],
+)
 
 == Logic in Dafny
 
@@ -189,46 +213,44 @@ Source:~@leino2017
 
 #columns(2, gutter: 0pt)[
   #set text(size: 0.8em)
-  #block(stroke: 0.4pt, inset: 1em, radius: 5pt)[
-    ```dafny
-    // find the index range [k..m) that gives the largest sum of any index range
-    method MaxSegSum(a: array<int>)
-      returns (k: int, m: int)
-      ensures 0 ≤ k ≤ m ≤ a.Length
-      ensures forall p, q ::
-              0 ≤ p ≤ q ≤ a.Length ==>
-              Sum(a, p, q) ≤ Sum(a, k, m)
+  ```dafny
+  // find the index range [k..m) that gives the largest sum of any index range
+  method MaxSegSum(a: array<int>)
+    returns (k: int, m: int)
+    ensures 0 ≤ k ≤ m ≤ a.Length
+    ensures forall p, q ::
+            0 ≤ p ≤ q ≤ a.Length ==>
+            Sum(a, p, q) ≤ Sum(a, k, m)
+  {
+    k, m := 0, 0;
+    var s, n, c, t := 0, 0, 0, 0;
+    while n < a.Length
+      invariant 0 ≤ k ≤ m ≤ n ≤ a.Length &&
+                s == Sum(a, k, m)
+      invariant forall p, q ::
+                0 ≤ p ≤ q ≤ n ==> Sum(a, p, q) ≤ s
+      invariant 0 ≤ c ≤ n && t == Sum(a, c, n)
+      invariant forall b ::
+                0 ≤ b ≤ n ==> Sum(a, b, n) ≤ t
     {
-      k, m := 0, 0;
-      var s, n, c, t := 0, 0, 0, 0;
-      while n < a.Length
-        invariant 0 ≤ k ≤ m ≤ n ≤ a.Length &&
-                  s == Sum(a, k, m)
-        invariant forall p, q ::
-                  0 ≤ p ≤ q ≤ n ==> Sum(a, p, q) ≤ s
-        invariant 0 ≤ c ≤ n && t == Sum(a, c, n)
-        invariant forall b ::
-                  0 ≤ b ≤ n ==> Sum(a, b, n) ≤ t
-      {
-        t, n := t + a[n], n + 1;
-        if t < 0 {
-          c, t := n, 0;
-        } else if s < t {
-          k, m, s := c, n, t;
-        }
+      t, n := t + a[n], n + 1;
+      if t < 0 {
+        c, t := n, 0;
+      } else if s < t {
+        k, m, s := c, n, t;
       }
     }
+  }
 
-    // sum of the elements in the index range [m..n)
-    function Sum(a: array<int>, m: int, n: int): int
-      requires 0 ≤ m ≤ n ≤ a.Length
-      reads a
-    {
-      if m == n then 0
-      else Sum(a, m, n-1) + a[n-1]
-    }
-    ```
-  ]
+  // sum of the elements in the index range [m..n)
+  function Sum(a: array<int>, m: int, n: int): int
+    requires 0 ≤ m ≤ n ≤ a.Length
+    reads a
+  {
+    if m == n then 0
+    else Sum(a, m, n-1) + a[n-1]
+  }
+  ```
 ]
 
 == Program State
@@ -313,7 +335,7 @@ Write the post-condition specification for this method.
 == Exercise \#2
 
 Consider a method that attempts to reconstruct the arguments `x` and `y` from the return values of `MaxSum`.
-In~other words, in other words, consider a method with the following type signature and _the same post-condition_ as in Exercise~1:
+That is, consider a method with the following type signature and _the same post-condition_ as in Exercise~1:
 
 ```dafny
 method ReconstructFromMaxSum(s: int, m: int)
@@ -454,6 +476,13 @@ $
   $A$ is _weaker_ than $B$ if $B imply A$ is a valid formula.
 ]
 
+#Block(color: blue)[
+  *Duality of strength:*
+  - $A$ is _stronger_ than $B$: $A imply B$ (more restrictive --- fewer states satisfy $A$)
+  - $A$ is _weaker_ than $B$: $B imply A$ (more permissive --- more states satisfy $A$)
+  - $"false"$ is the _strongest_ predicate; $"true"$ is the _weakest_
+]
+
 == Weakest Pre-condition for Assignment
 
 #definition[
@@ -511,7 +540,8 @@ Let's prove that it indeed swaps the values, by performing the backward reasonin
 First, we need a way to refer to the initial values of $x$ and $y$ in the post-condition.
 For this, we use _logical variables_ that stand for some values (initially, $x = X$ and $y = Y$) in our proof, yet cannot be used in the program itself.
 
-#context [
+#[
+  #set text(0.8em)
   #let program = ```dafny
   // { x == X, y == Y }
   // { ? }
@@ -522,7 +552,7 @@ For this, we use _logical variables_ that stand for some values (initially, $x =
   y := tmp
   // { y == Y, x == X }
   ```
-  #place(dx: -1em)[
+  #context place(dx: -1em)[
     #cetz.canvas({
       import cetz.draw: *
       line((0, 0), (0, measure(program).height + 2pt), mark: (end: "stealth"))
@@ -889,9 +919,12 @@ Weakest pre-condition:
   (i.e., starting from any state satisfying $P$, executing $B$ establishes $Q$).
 ]
 
-#Block(color: yellow)[
-  *Key Insight:* This single logical implication encapsulates the entire verification task for a method.
-  If~this formula is valid (which Z3 checks), the method implementation satisfies its interface contract!
+#place[
+  #v(1em)
+  #Block(color: yellow)[
+    *Key insight:* This single logical implication encapsulates the entire verification task for a method.
+    If~this formula is valid (which Z3 checks), the method implementation satisfies its interface contract!
+  ]
 ]
 
 == Method Calls
@@ -914,7 +947,7 @@ Methods are _opaque_, i.e., we reason in terms of their _specifications_, not th
 
 We need to _relate_ the _actual_ parameters (arguments of the method call) with the _formal_ parameters (of the method).
 
-To avoid any name slashes, we first _rename_ the formal parameters to _fresh_ variables:
+To avoid any name _clashes_, we first _rename_ the formal parameters to _fresh_ variables:
 
 ```dafny
 method Triple(x1: int) returns (y1: int)
@@ -929,7 +962,7 @@ v := y1;
 
 == Assumptions
 
-The called can assume that the method's post-condition holds.
+The _caller_ can assume that the method's post-condition holds.
 
 We introduce a new statement, ```dafny assume E```, to capture this:
 $
@@ -1061,7 +1094,8 @@ Differences from method calls:
 - The body is an _expression_, not a statement.
 - Functions are _transparent_: we reason about them in terms of their definition by _unfolding_ it.
 
-#align(center)[
+#place(center)[
+  #v(1em)
   #import fletcher: diagram, edge, node
   #diagram(
     // debug: true,
@@ -1070,7 +1104,7 @@ Differences from method calls:
     spacing: 2em,
     blob((0, 0))[
       ```dafny
-      method Triple(x: int) return (r: int)
+      method Triple(x: int) returns (r: int)
         ensures r == 3 * x
       { r := Average(2*x, 4*x); }
       ```
@@ -1078,7 +1112,7 @@ Differences from method calls:
     edge("-}>"),
     blob((.5, 1))[
       ```dafny
-      method Triple(x: int) return (r: int)
+      method Triple(x: int) returns (r: int)
         ensures r == 3 * x
       { r := (2*x + 4*x) / 2; }
       ```
@@ -1119,11 +1153,19 @@ Associated with such _partial expressions_ are _implicit assertions_.
 Function may have pre-conditions, making calls to them _partial_.
 
 #example[
-  ```dafny
-  function MinusOne(x: int): int
-    requires 0 < x
-  ```
-  The call ```dafny z := MinusOne(y + 1)``` has an implicit assertion ```dafny assert 0 < y + 1```.
+  #grid(
+    columns: 2,
+    column-gutter: 2em,
+    [
+      ```dafny
+      function MinusOne(x: int): int
+        requires 0 < x
+      ```
+    ],
+    [
+      The call ```dafny z := MinusOne(y + 1)``` has an implicit assertion ```dafny assert 0 < y + 1```.
+    ],
+  )
 ]
 
 == Exercises
@@ -1223,11 +1265,12 @@ Function may have pre-conditions, making calls to them _partial_.
 
 == Recursive Methods
 
-#text(size: 0.9em)[
+#[
+  #set text(0.85em)
   ```dafny
   method Double(x: int) returns (y: int)
     requires x >= 0
-    ensures r == 2 * x
+    ensures y == 2 * x
   {
     // { x != 0 ==> x > 0 }
     // { (x == 0) ==> (0 == 2 * x)  &&  (x != 0) ==> (x - 1 >= 0) }
@@ -1268,8 +1311,6 @@ method BadDouble(x: int) returns (y: int)
 }
 ```
 
-#h(1em)
-
 ```dafny
 method PartialIdentity(x: int) returns (y: int)
   ensures y == x
@@ -1284,73 +1325,53 @@ method PartialIdentity(x: int) returns (y: int)
 
 == Avoiding Infinite Recursion
 
-#columns(2)[
-  #box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
-    #set text(0.8em)
+The `decreases` clause declares a _termination metric_ --- an expression that Dafny verifies to decrease strictly at each recursive call.
+
+#grid(
+  columns: (1fr, 1fr, 1fr),
+  gutter: 0.6em,
+  block(stroke: 0.4pt, inset: 0.5em, radius: 3pt, width: 100%)[
+    #set text(0.78em)
+    _Single natural number:_
     ```dafny
     function Fib(n: nat): nat
-      decreases n  // measure of size
+      decreases n
     {
       if n < 2 then n
-      else Fib(n - 2) + Fib(n - 1)
+      else Fib(n-2) + Fib(n-1)
     }
     ```
-  ]
-]
-
-#place(right + top)[
-  #import fletcher: diagram, edge, node
-  #diagram(
-    node-stroke: 1pt,
-    node-corner-radius: 3pt,
-    spacing: (1.5em, 1.5em),
-    node((0, 0), `Fib(4)`),
-    node((-1, 1), `Fib(2)`),
-    node((1, 1), `Fib(3)`),
-    node((-1.5, 2), `...`),
-    node((-0.5, 2), `...`),
-    node((0.5, 2), `Fib(1)`),
-    node((1.5, 2), `Fib(2)`),
-    edge((0, 0), (-1, 1), "-}>"),
-    edge((0, 0), (1, 1), "-}>"),
-    edge((-1, 1), (-1.5, 2), "-}>"),
-    edge((-1, 1), (-0.5, 2), "-}>"),
-    edge((1, 1), (0.5, 2), "-}>"),
-    edge((1, 1), (1.5, 2), "-}>"),
-  )
-]
-
-#block(above: 1em, inset: (left: 3em))[
-  #box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
-    #set text(0.8em)
+  ],
+  block(stroke: 0.4pt, inset: 0.5em, radius: 3pt, width: 100%)[
+    #set text(0.78em)
+    _Lexicographic tuple:_
     ```dafny
     function Ack(m: nat, n: nat): nat
-      decreases m, n  // tuples can also be used
+      decreases m, n
     {
       if m == 0 then n + 1
-      else if n == 0 then Ack(m - 1, 1)
-      else Ack(m - 1, Ack(m, n - 1))
+      else if n == 0 then Ack(m-1, 1)
+      else Ack(m-1, Ack(m, n-1))
     }
     ```
-  ]
-]
-
-#place[
-  #v(1em)
-  #block(above: 1em, inset: (left: 6em))[
-    #box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
-      #set text(0.8em)
-      ```dafny
-      function SeqSum(s: seq<int>, lo: nat, hi: nat): int
-        requires 0 <= lo <= hi <= |s|
-        decreases hi - lo  // complex expressions can be used!
-      {
-        if lo == hi then 0 else s[lo] + SeqSum(s, lo + 1, hi)
-      }
-      ```
-    ]
-  ]
-]
+  ],
+  block(stroke: 0.4pt, inset: 0.5em, radius: 3pt, width: 100%)[
+    #set text(0.78em)
+    _Arithmetic expression:_
+    ```dafny
+    function SeqSum(
+      s: seq<int>,
+      lo: nat, hi: nat
+    ): int
+      requires 0 <= lo <= hi <= |s|
+      decreases hi - lo
+    {
+      if lo == hi then 0
+      else s[lo] + SeqSum(s, lo+1, hi)
+    }
+    ```
+  ],
+)
 
 == Exercises
 
@@ -1395,19 +1416,6 @@ method PartialIdentity(x: int) returns (y: int)
     else if x % 2 == y % 2 then I(x - 1, y)
   }
   ```
-]
-
-#box[
-  #exercise[
-    Write a ```dafny decreases``` clause that proves the termination of the following function:
-
-    ```dafny
-    function I(x: nat, y: nat): int {
-      if x == 0 || y == 0 then 12
-      else if x % 2 == y % 2 then I(x - 1, y)
-    }
-    ```
-  ]
 ]
 
 #pagebreak()
@@ -1677,19 +1685,25 @@ _Loops_ are fundamentally different:
 
 == Loops in Dafny
 
-```dafny
-while G
-  decreases M
-  invariant J
-{
-  Body
-}
-```
-
-- $G$ is the _loop guard_, a Boolean expression
-- $M$ is the _termination measure_, an expression that _decreases_ in each iteration
-- $J$ is the _loop invariant_, a condition that _holds_ in each iteration
-
+#grid(
+  columns: 2,
+  column-gutter: 2em,
+  [
+    ```dafny
+    while G
+      decreases M
+      invariant J
+    {
+      Body
+    }
+    ```
+  ],
+  [
+    - $G$ is the _loop guard_, a Boolean expression
+    - $M$ is the _termination measure_, an expression that _decreases_ in each iteration
+    - $J$ is the _loop invariant_, a condition that _holds_ in each iteration
+  ],
+)
 #note[
   While loops are _opaque_, they are always abstracted by their invariant.
 
@@ -1702,33 +1716,40 @@ while G
   ```
 ]
 
-== Examples
+== Loop Invariant Examples
 
-```dafny
-while x < 300
-  invariant x % 2 == 0
-```
+#columns(2)[
+  *Guard and invariant on different variables:*
+  ```dafny
+  while x < 300
+    invariant x % 2 == 0
+  ```
 
-```dafny
-while x % 2 == 1
-  invariant 0 <= x <= 100
-```
+  *Invariant bounds the loop variable:*
+  ```dafny
+  while x % 2 == 1
+    invariant 0 <= x <= 100
+  ```
 
-```dafny
-x := 2;
-while x < 50
-  invariant x % 2 == 0
-// After the loop, the invariant and
-// the negation of the guard hold:
-assert x >= 50 && x % 2 == 0;
-```
+  #colbreak()
 
-```dafny
-x := 0;
-while x % 2 == 0
-  invariant 0 <= x <= 20
-assert x == 19; // not provable!
-```
+  *Post-condition = invariant $and$ negated guard:*
+  ```dafny
+  x := 2;
+  while x < 50
+    invariant x % 2 == 0
+  // After the loop, both hold:
+  assert x >= 50 && x % 2 == 0;
+  ```
+
+  *Weak invariant --- assertion unprovable:*
+  ```dafny
+  x := 0;
+  while x % 2 == 0
+    invariant 0 <= x <= 20
+  assert x == 19; // not provable!
+  ```
+]
 
 == Attaining Equality
 
@@ -2177,12 +2198,10 @@ Dafny compiles your program _and_ its proof obligations into a single pipeline:
   )
 ]
 
-#place[
-  #v(1em)
-  #Block(color: yellow)[
-    Dafny translates your program into _Boogie_ (an intermediate verification language), which generates _verification conditions_ (VCs) --- first-order formulas that Z3 checks. \
-    If all VCs are valid, the program is correct.
-  ]
+#Block(color: yellow)[
+  *Key insight:* Dafny translates your program into _Boogie_ (an intermediate verification language),
+  which generates _verification conditions_ (VCs) --- first-order formulas that Z3 checks.
+  If all VCs are valid, the program is correct.
 ]
 
 == Algebraic Datatypes
@@ -2261,12 +2280,14 @@ Dafny's `calc` statement lets you write _equational proofs_ step by step:
 ]
 
 #note[
-  Each step in a `calc` block is verified by Z3. You only need to provide enough intermediate steps for Z3 to "connect the dots."
+  Each step in a `calc` block is verified by Z3.
+  You only need to provide enough intermediate steps for Z3 to "connect the dots."
 ]
 
 == Arrays and Framing
 
-Arrays in Dafny are _heap-allocated_ mutable objects. Verification requires _framing_ --- specifying which memory locations a method may read or modify.
+Arrays in Dafny are _heap-allocated_ mutable objects.
+Verification requires _framing_ --- specifying which memory locations a method may read or modify.
 
 #example[
   ```dafny
@@ -2285,7 +2306,8 @@ Arrays in Dafny are _heap-allocated_ mutable objects. Verification requires _fra
 ]
 
 #Block(color: orange)[
-  *The frame problem:* `modifies a` declares that `Swap` may change array `a`. The last `ensures` clause explicitly states that _all other elements are unchanged_ --- Dafny does not infer this automatically.
+  *The frame problem:* `modifies a` declares that `Swap` may change array `a`.
+  The last `ensures` clause explicitly states that _all other elements are unchanged_ --- Dafny does not infer this automatically.
 ]
 
 == Sequences
@@ -2320,7 +2342,8 @@ Dafny also has _immutable sequences_ `seq<T>` --- useful for specifications:
 
 == Objects and Classes
 Dafny is an object-oriented language.
-You can declare `class`es, which are heap-allocated structures containing fields and methods. Since objects live on the heap, verification involves the *frame problem*, similar to arrays.
+You can declare `class`es, which are heap-allocated structures containing fields and methods.
+Since objects live on the heap, verification involves the *frame problem*, similar to arrays.
 
 #example[
   #grid(
@@ -2478,12 +2501,10 @@ We have come a long way from bit-level boolean logic down to real-world verified
   )
 ]
 
-#place[
-  #v(1em)
-  #Block(color: green)[
-    *Formal methods are the future of critical systems!*
-    We write specifications, build implementations, and compiler-integrated solvers verify that they match.
-  ]
+#Block(color: green)[
+  *Formal methods are the future of critical systems.*
+
+  We write specifications, build implementations, and compiler-integrated solvers verify that they match.
 ]
 
 == Bibliography
