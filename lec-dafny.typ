@@ -84,6 +84,12 @@ To formally verify a program you need:
 - Automated tools for verification and reasoning.
 - Domain-specific expertise.
 
+#Block(color: blue)[
+  We spent the previous lectures learning how to encode logic problems and verify theorems using SAT and SMT solvers.
+  Now, we raise the abstraction level.
+  Instead of writing formulas by hand, we write *programs and specifications*, and let the compiler generate the formulas for the SMT solver!
+]
+
 #Block(color: teal)[
   *Historical context:* Floyd-Hoare logic (1969) laid the theoretical foundations. Dijkstra's weakest precondition calculus (1975) made it practical. Modern tools like Dafny (2009, Microsoft Research) combine:
   - Programming language design
@@ -853,16 +859,25 @@ Weakest pre-condition:
 
 == Method Correctness
 
-Given
-```dafny
-method M(x: Tx) returns (y: Ty)
-  requires P
-  ensures Q
-{
-  B
-}
-```
-we need to prove $P imply WP(B, Q)$.
+#definition[
+  A method $M$ with body $B$ and specifications $P$ (pre-condition) and $Q$ (post-condition):
+  ```dafny
+  method M(x: Tx) returns (y: Ty)
+    requires P
+    ensures Q
+  {
+    B
+  }
+  ```
+  is _correct_ if and only if:
+  $ P imply WP(B, Q) $
+  (i.e., starting from any state satisfying $P$, executing $B$ establishes $Q$).
+]
+
+#Block(color: yellow)[
+  *Key Insight:* This single logical implication encapsulates the entire verification task for a method.
+  If~this formula is valid (which Z3 checks), the method implementation satisfies its interface contract!
+]
 
 == Method Calls
 
@@ -1254,43 +1269,72 @@ method PartialIdentity(x: int) returns (y: int)
 
 == Avoiding Infinite Recursion
 
-#box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
-  #set text(0.8em)
-  ```dafny
-  function Fib(n: nat): nat
-    decreases n  // suggestion for Dafny
-  {
-    if n < 2 then n else Fib(n - 2) + Fib(n - 1)
-  }
-  ```
-]
-// TODO: fib tree
-
-#h(3em)
-#box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
-  #set text(0.8em)
-  ```dafny
-  function Ack(m: nat, n: nat): nat
-    decreases m, n  // tuples can also be used
-  {
-    if m == 0 then n + 1
-    else if n == 0 then Ack(m - 1, 1)
-    else Ack(m - 1, Ack(m, n - 1))
-  }
-  ```
+#columns(2)[
+  #box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
+    #set text(0.8em)
+    ```dafny
+    function Fib(n: nat): nat
+      decreases n  // measure of size
+    {
+      if n < 2 then n
+      else Fib(n - 2) + Fib(n - 1)
+    }
+    ```
+  ]
 ]
 
-#h(6em)
-#box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
-  #set text(0.8em)
-  ```dafny
-  function SeqSum(s: seq<int>, lo: nat, hi: nat): int
-    requires 0 <= lo <= hi <= |s|
-    decreases hi - lo  // complex expressions can be used!
-  {
-    if lo == hi then 0 else s[lo] + SeqSum(s, lo + 1, hi)
-  }
-  ```
+#place(right + top)[
+  #import fletcher: diagram, edge, node
+  #diagram(
+    node-stroke: 1pt,
+    node-corner-radius: 3pt,
+    spacing: (1.5em, 1.5em),
+    node((0, 0), `Fib(4)`),
+    node((-1, 1), `Fib(2)`),
+    node((1, 1), `Fib(3)`),
+    node((-1.5, 2), `...`),
+    node((-0.5, 2), `...`),
+    node((0.5, 2), `Fib(1)`),
+    node((1.5, 2), `Fib(2)`),
+    edge((0, 0), (-1, 1), "-}>"),
+    edge((0, 0), (1, 1), "-}>"),
+    edge((-1, 1), (-1.5, 2), "-}>"),
+    edge((-1, 1), (-0.5, 2), "-}>"),
+    edge((1, 1), (0.5, 2), "-}>"),
+    edge((1, 1), (1.5, 2), "-}>"),
+  )
+]
+
+#block(above: 1em, inset: (left: 3em))[
+  #box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
+    #set text(0.8em)
+    ```dafny
+    function Ack(m: nat, n: nat): nat
+      decreases m, n  // tuples can also be used
+    {
+      if m == 0 then n + 1
+      else if n == 0 then Ack(m - 1, 1)
+      else Ack(m - 1, Ack(m, n - 1))
+    }
+    ```
+  ]
+]
+
+#place[
+  #v(1em)
+  #block(above: 1em, inset: (left: 6em))[
+    #box(stroke: 0.4pt, inset: 0.5em, radius: 3pt)[
+      #set text(0.8em)
+      ```dafny
+      function SeqSum(s: seq<int>, lo: nat, hi: nat): int
+        requires 0 <= lo <= hi <= |s|
+        decreases hi - lo  // complex expressions can be used!
+      {
+        if lo == hi then 0 else s[lo] + SeqSum(s, lo + 1, hi)
+      }
+      ```
+    ]
+  ]
 ]
 
 == Exercises
@@ -1597,6 +1641,24 @@ method Learn(n: nat, h: nat)
 ]
 
 = Loops
+
+== Why Loops are Hard to Verify
+
+In the previous section, we analyzed _conditional paths_ and _variable assignments_. \
+These were straight-line or finitely branching.
+
+_Loops_ are fundamentally different:
+- A loop can execute zero times, $n$ times, or *infinitely* many times.
+- SMT solvers (like Z3) cannot handle infinite execution paths automatically.
+- We must provide a finite mathematical abstraction of the loop's entire behavior!
+
+#Block(color: yellow)[
+  We "abstract away" the loop's body and dynamic execution using two formal contracts:
+
+  + *Invariant*: What remains true before, during, and after the loop.
+
+  + *Termination metric* (Variant): A measure that guarantees the loop eventually stops.
+]
 
 == Loops in Dafny
 
@@ -2083,19 +2145,29 @@ method SquareRoot(N: nat) returns (r: nat)
 Dafny compiles your program _and_ its proof obligations into a single pipeline:
 
 #align(center)[
-  #table(
-    columns: 3,
-    stroke: (x, y) => if y == 0 { (bottom: 0.8pt) },
-    table.header[*Stage*][*What happens*][*Tool*],
-    [1. Parse + type-check], [Syntax, types, well-formedness], [Dafny frontend],
-    [2. Generate VCs], [Verification conditions from specs + code], [Boogie],
-    [3. Discharge VCs], [Check each VC via SMT], [Z3],
-    [4. Compile], [Generate target code (C\#, Java, Go, etc.)], [Dafny backend],
+  #import fletcher: diagram, edge, node
+  #diagram(
+    node-stroke: 1pt,
+    node-corner-radius: 3pt,
+    spacing: (1em, 2em),
+    node((0, 0), [Dafny Code + Specs], shape: fletcher.shapes.rect, fill: blue.lighten(80%)),
+    edge("-}>", [Parse & Type-check]),
+    node((0, 1), [Abstract Syntax Tree], shape: fletcher.shapes.rect, fill: purple.lighten(80%)),
+    edge("-}>", [Generate VCs]),
+    node((0, 2), [Boogie (IVL)], shape: fletcher.shapes.rect, fill: yellow.lighten(80%)),
+    edge((0, 2), (-1, 3), "-}>", [Compile]),
+    edge((0, 2), (1, 3), "-}>", [Discharge]),
+    node((-1, 3), [C\#/Java/Go Code], shape: fletcher.shapes.rect, fill: green.lighten(80%)),
+    node((1, 3), [Z3 (SMT Solver)], shape: fletcher.shapes.rect, fill: red.lighten(80%)),
   )
 ]
 
-#Block(color: yellow)[
-  *Key insight:* Dafny translates your program into _Boogie_ (an intermediate verification language), which generates _verification conditions_ (VCs) --- first-order formulas that Z3 checks. If all VCs are valid, the program is correct.
+#place[
+  #v(1em)
+  #Block(color: yellow)[
+    Dafny translates your program into _Boogie_ (an intermediate verification language), which generates _verification conditions_ (VCs) --- first-order formulas that Z3 checks. \
+    If all VCs are valid, the program is correct.
+  ]
 ]
 
 == Algebraic Datatypes
@@ -2231,6 +2303,40 @@ Dafny also has _immutable sequences_ `seq<T>` --- useful for specifications:
   ```
 ]
 
+== Objects and Classes
+Dafny is an object-oriented language.
+You can declare `class`es, which are heap-allocated structures containing fields and methods. Since objects live on the heap, verification involves the *frame problem*, similar to arrays.
+
+#example[
+  #grid(
+    columns: 2,
+    column-gutter: 1em,
+    [
+      ```dafny
+      class Counter {
+        var count: nat
+
+        constructor()
+          ensures count == 0
+        { count := 0; }
+
+        method Increment()
+          modifies this
+          ensures count == old(count) + 1
+        { count := count + 1; }
+      }
+      ```
+    ],
+    [
+      #Block(color: blue)[
+        *Allocation & Modification:*
+        - The `constructor` initializes a new heap allocation.
+        - The `modifies this` specification says `Increment` changes the fields of the receiving object but leaves all other objects alone.
+      ]
+    ],
+  )
+]
+
 == Verified Sorting: Insertion Sort
 
 #example[
@@ -2334,6 +2440,36 @@ A sorting algorithm must satisfy _two_ properties:
     ensures forall i :: 0 <= i < a.Length ==> a[i] == old(a[a.Length - 1 - i])
   ```
   What loop invariant do you need for the swapping loop?
+
+== Key Takeaways (Whole Course)
+
+We have come a long way from bit-level boolean logic down to real-world verified software.
+
+#align(center)[
+  #import fletcher: diagram, edge, node
+  #diagram(
+    node-stroke: 1pt,
+    node-corner-radius: 3pt,
+    spacing: 1.5em,
+    node((0, 0), [Propositional Logic], fill: yellow.lighten(80%), shape: fletcher.shapes.rect),
+    edge("-}>", [Boolean variables], label-side: left),
+    node((0, 1), [SAT Solvers], fill: red.lighten(80%), shape: fletcher.shapes.rect),
+    edge("-}>", [Variables & Theories], label-side: left),
+    node((0, 2), [FOL & SMT Solvers], fill: purple.lighten(80%), shape: fletcher.shapes.rect),
+    edge("-}>", [Programs & Specifications], label-side: left),
+    node((0, 3), [Hoare Logic & WP Calc], fill: blue.lighten(80%), shape: fletcher.shapes.rect),
+    edge("-}>", [Automated Verification], label-side: left),
+    node((0, 4), [Dafny], fill: green.lighten(80%), shape: fletcher.shapes.rect),
+  )
+]
+
+#place[
+  #v(1em)
+  #Block(color: green)[
+    *Formal methods are the future of critical systems!*
+    We write specifications, build implementations, and compiler-integrated solvers verify that they match.
+  ]
+]
 
 == Bibliography
 #bibliography("refs.yml")
