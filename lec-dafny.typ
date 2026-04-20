@@ -52,10 +52,6 @@ _"Given integers $a$ and $b$, the program computes and stores in $x$ the product
 
 #pagebreak()
 
-#note[
-  A program can be _correct_ only with respect to a _specification_.
-]
-
 Is this program correct with respect to the following specification? #YES
 
 _"Given *positive* integers $a$ and $b$, the program computes and stores in $x$ the product of $a$ and $b$."_
@@ -78,38 +74,49 @@ Specification of a program can be seen as a _contract_:
 
 == Formal Verification
 
-To formally verify a program you need:
-- A formal specification (mathematical description) of the program.
-- A formal proof that the specification is correct.
-- Automated tools for verification and reasoning.
-- Domain-specific expertise.
+Formal verification is a _machine-checked proof_ that a program satisfies its specification for *every* input satisfying the pre-conditions.
 
-#Block(color: blue)[
-  We spent the previous lectures learning how to encode logic problems and verify theorems using SAT and SMT solvers.
-  Now, we raise the abstraction level.
-  Instead of writing formulas by hand, we write *programs and specifications*, and let the compiler generate the formulas for the SMT solver!
-]
+#grid(
+  columns: (1fr, 1fr, 1fr),
+  gutter: 0.8em,
+  Block(color: green)[
+    *1. Specification* \
+    A formal description of the _required_ behavior: what the program must do.
+  ],
+  Block(color: blue)[
+    *2. Proof calculus* \
+    A formal system for reasoning --- Floyd-Hoare triples, WP/SP calculus.
+  ],
+  Block(color: yellow)[
+    *3. Automation* \
+    An SMT solver (Z3) to discharge the generated proof obligations.
+  ],
+)
 
 #Block(color: teal)[
-  *Historical context:* Floyd-Hoare logic (1969) laid the theoretical foundations. Dijkstra's weakest precondition calculus (1975) made it practical. Modern tools like Dafny (2009, Microsoft Research) combine:
-  - Programming language design
-  - SMT solvers (Z3) for automation
-  - Boogie intermediate verification language
-  - User-friendly syntax inspired by C\# and Java
+  *Connection to this course:* We already know how SAT and SMT solvers work. Dafny uses the same Z3 engine --- but generates queries _automatically_ from annotated code. We write programs with contracts instead of encoding logic formulas by hand.
 ]
 
-#pagebreak()
+== Enter Dafny
 
-There are many tools and even specific languages for writing specs and verifying them.
+_Dafny_ (K. R. M. Leino, Microsoft Research, 2009) is simultaneously a programming language and a program verifier, designed for high-assurance software.
 
-One of them is _Dafny_, both a specification language and a program verifier.
+#columns(2)[
+  *Specification layer:*
+  - `requires` / `ensures` --- method contracts
+  - `invariant` --- loop invariants
+  - `decreases` --- termination metrics
+  - `ghost` --- proof-only variables and code
 
-Next, we are going to learn how to:
-- _specify_ precisely what a program is supposed to do
-- _prove_ that the specification is correct
-- _verify_ that the program behaves as specified
-- _derive_ a program from a specification
-- use the _Dafny_ programming language and verifier
+  #colbreak()
+
+  *Verification pipeline:*
+  - Dafny $arrow.r$ *Boogie* (intermediate verification language)
+  - Boogie $arrow.r$ *Z3* (SMT solver)
+  - Z3 discharges all VCs $arrow.r$ program is correct
+]
+
+In this lecture we learn to _specify_, _verify_, and _derive_ programs using Dafny.
 
 = Dafny
 
@@ -124,14 +131,18 @@ method Triple(x: int) returns (r: int)
 }
 ```
 
+A Dafny method has:
+- A *signature*: name, input parameters, return variable(s)
+- A *specification*: `requires` (pre-condition) and `ensures` (post-condition)
+- A *body*: implementation that Dafny verifies against the spec
+
 #note[
-  The _caller_ does not need to know anything about the _implementation_ of the method, only its _specification_, which abstracts the method's behavior.
-  The method is _opaque_ to the caller.
+  The _caller_ need not know the _implementation_, only the _specification_. The method is _opaque_ to the caller.
 ]
 
-#pagebreak()
+== Composing Methods
 
-Completing the example:
+Methods can call each other, reasoning through specifications alone:
 
 ```dafny
 method Triple(x: int) returns (r: int)
@@ -147,7 +158,11 @@ method Double(x: int) returns (r: int)
   ensures r == 2 * x
 ```
 
-*Exercise:* Fix the above code/spec to avoid `requires x >= 0` in the `Triple` method.
+#Block(color: yellow)[
+  *Key insight:* `Triple` does not know _how_ `Double` works --- it only uses `Double`'s contract. This _modularity_ is the power of design by contract.
+]
+
+#note(title: "Exercise")[Remove `requires x >= 0` from `Triple`. What change to `Double`'s specification makes this possible?]
 
 == Logic in Dafny
 
