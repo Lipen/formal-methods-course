@@ -541,7 +541,7 @@ First, we need a way to refer to the initial values of $x$ and $y$ in the post-c
 For this, we use _logical variables_ that stand for some values (initially, $x = X$ and $y = Y$) in our proof, yet cannot be used in the program itself.
 
 #[
-  #set text(0.8em)
+  #set text(0.9em)
   #let program = ```dafny
   // { x == X, y == Y }
   // { ? }
