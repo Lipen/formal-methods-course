@@ -427,7 +427,7 @@ These two notions --- _implication_ and _entailment_ --- are distinct but deeply
 
   Let $nu$ be any interpretation.
   We show $nu models alpha imply beta$.
-  - If $nu models.not alpha$, then $Eval(alpha imply beta) = max(0, Eval(beta)) = 1$, so $nu models alpha imply beta$.
+  - If $nu models.not alpha$, then $Eval(alpha imply beta) = max(1-0, Eval(beta)) = 1$, so $nu models alpha imply beta$.
   - If $nu models alpha$, then since $alpha models beta$, we have $nu models beta$, so $Eval(alpha imply beta) = max(0, 1) = 1$.
 
   In both cases, $nu models alpha imply beta$.
@@ -440,7 +440,7 @@ These two notions --- _implication_ and _entailment_ --- are distinct but deeply
   Let $nu$ be a model of $alpha$, i.e., $nu models alpha$.
   Since $alpha imply beta$ is valid, $nu models alpha imply beta$.
   By the definition of $imply$: $max(#box[$1 - Eval(alpha)$], Eval(beta)) = 1$.
-  Since $Eval(alpha) = 1$, we have $max(1-0, Eval(beta)) = 1$, so $Eval(beta) = 1$, i.e., $nu models beta$.
+  Since $Eval(alpha) = 1$, we have $max(0, Eval(beta)) = 1$, so $Eval(beta) = 1$, i.e., $nu models beta$.
 
   Thus every model of $alpha$ is a model of $beta$.
 ]
