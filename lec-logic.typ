@@ -427,7 +427,7 @@ These two notions --- _implication_ and _entailment_ --- are distinct but deeply
 
   Let $nu$ be any interpretation.
   We show $nu models alpha imply beta$.
-  - If $nu models.not alpha$, then $Eval(alpha imply beta) = max(0, Eval(beta)) = 1$, so $nu models alpha imply beta$.
+  - If $nu models.not alpha$, then $Eval(alpha imply beta) = max(1-0, Eval(beta)) = 1$, so $nu models alpha imply beta$.
   - If $nu models alpha$, then since $alpha models beta$, we have $nu models beta$, so $Eval(alpha imply beta) = max(0, 1) = 1$.
 
   In both cases, $nu models alpha imply beta$.
