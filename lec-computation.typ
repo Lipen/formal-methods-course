@@ -1441,12 +1441,12 @@ $L_Delta = { angle.l M angle.r | angle.l M angle.r notin cal(L)(M) }$
 
   + $angle.l R angle.r notin cal(L)(R)$.
     Thus, $angle.l R angle.r in L_Delta$.
-    Since $cal(L)(R) = L_Delta$, $angle.l R angle.r notin cal(L)(R)$.
+    Since $cal(L)(R) = L_Delta$, $angle.l R angle.r in cal(L)(R)$.
     Contradiction.
 
   + $angle.l R angle.r in cal(L)(R)$.
     Thus, $angle.l R angle.r notin L_Delta$.
-    Since $cal(L)(R) = L_Delta$, $angle.l R angle.r in cal(L)(R)$.
+    Since $cal(L)(R) = L_Delta$, $angle.l R angle.r notin cal(L)(R)$.
     Contradiction.
 
   In either case, we reach a contradiction.
@@ -1511,7 +1511,7 @@ Regular languages are decidable.
 Some Turing machines accept regular languages and some do not.
 
 #definition[
-  Let *REGULAR* be the language of all TMs that accept regular languages.
+  Let *$"REGULAR"_"TM"$* be the language of all TMs that accept regular languages.
 
   $ "REGULAR"_"TM" = { angle.l M angle.r | cal(L)(M) "is regular" } $
 ]
